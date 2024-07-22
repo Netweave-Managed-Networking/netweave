@@ -1,4 +1,4 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Netweave Logo"></a></p>
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
@@ -7,60 +7,75 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About Netweave
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Netweave aims to connect Stakeholders with scientific methods on a local level.
+This software application holds a database with information about stakeholders, their relations resources and desires.
+The Netweave platform serves two main functions: Being a custom questions survey & giving networking advice & suggestions for local stakeholders.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## About the TechStack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Netweave is built with Laravel connected with React by Inertia.js.
 
-## Learning Laravel
+Laravel [documentation](https://laravel.com/docs), [Laravel Bootcamp](https://bootcamp.laravel.com), [Laracasts](https://laracasts.com)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Inertia
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+React
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Deployment
 
-## Laravel Sponsors
+<sup>Deploy your `Laravel + Inertia + React / Vue` application to a shared hosting server</sup>
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### I. First time set up
 
-### Premium Partners
+1. LOCALLY
+   1. `npm install`
+   2. `npm run build` (or `tsc && vite build`)
+2. REMOTE
+   1. create a directory for your application, choose any name, e.g. `mkdir ~/my.application.com`. This is where your application will live.\
+   2. create a directory named `public` inside the new dir, e.g. `mkdir ~/my.application.com/public`
+   3. configure your server to point at that `public` directory.
+      1. e.g. for Ionos Web Hosting go to https://mein.ionos.de/webhosting, select "connect webspace to directory", choose `~/my.application.com/public`
+   4. test it:
+      1. create an example index.html: `touch ~/my.application.com/public/index.html``
+      2. fill it with any content: `echo "<p>hello world</p>" >> ~/my.application.com/public/index.html`
+      3. Now you should be able to see the Hello World page in the browser on `my.application.com`
+   5. delete the public folder for now, `rm -r ~/my.application.com/public`
+3. REMOTE <-> LOCAL
+   1. Now upload the real application, upload all the files and folders except
+      1. `node_modules` not needed since `vite build` bundled all needed javascript to the build folder
+      2. `vendor` not needed since we will install the dependencies later directly to the server itself
+      3. `.git` not needed (it is needed if you want to deploy changes via git of course, but for that `npm` must be executable on your server)
+4. REMOTE
+   1. configure your .env file with Database information provided by your shared web hosting portal
+      1. e.g. for me I had to set `DB_HOST`, `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD`.
+      2. also when deploying for production, set `APP_DEBUG` to `false` and `APP_ENV` to `production`.
+   2. For me it was necessary to make one important change in your `.htaccess` file
+      1. instead of `RewriteRule ^ index.php [L]` I added a slash before index.php -> `RewriteRule ^ /index.php [L]`
+   3. install composer dependencies
+      1. download composer.phar via curl from the official website
+      2. run `php composer.phar install --no-dev --optimize-autoloader`
+   4. `php artisan storage:link`
+   5. `php artisan migrate`
+   6. allow the web server application to access the directories and files
+      1. `chmod -R 755 ~/my.application.com`
+      2. `chmod -R 775 ~/my.application.com/storage ~/my.application.com/bootstrap/cache`
+   7. make some optimizations, activate caching for better performance
+      1. `php artisan optimize`
+      2. `php artisan config:cache`
+      3. `php artisan event:cache`
+      4. `php artisan route:cache`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+#### II. Deploy new version / Update the app
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. LOCALLY
+   1. `npm install`
+   2. `npm run build` (or `tsc && vite build`)
+2. REMOTE <-> LOCAL
+   1. upload and overwrite all the files and folders except
+      1. `.env` you should not overwrite the production `.env` file with your local `.env` file
+      2. `node_modules` not needed since `vite build` bundled all needed javascript to the build folder
+      3. `vendor` not needed since we will install the dependencies later directly to the server itself
+      4. `.git` not needed (it is needed if you want to deploy changes via git of course, but for that `npm` must be executable on your server)
+3. REMOTE 3. install composer dependencies 1. download composer.phar via curl from the official website 2. run `php composer.phar install --no-dev --optimize-autoloader` 4. `php artisan storage:link` 5. `php artisan migrate` 6. allow the web server application to access the directories and files 1. `chmod -R 755 ~/my.application.com` 2. `chmod -R 775 ~/my.application.com/storage ~/my.application.com/bootstrap/cache` 7. make some optimizations, activate caching for better performance 1. `php artisan optimize` 2. `php artisan config:cache` 3. `php artisan event:cache` 4. `php artisan route:cache`
