@@ -11,6 +11,10 @@ The Netweave platform serves two main functions: Being a custom questions survey
 
 Netweave is built with Laravel connected with React by Inertia.js.
 
+## Database Schema
+
+see [entities-relations.md](./docs/db/entities-relations.md).
+
 ## Deployment
 
 <sup>Deploy your `Laravel + Inertia + React / Vue` application to a shared hosting server</sup>
