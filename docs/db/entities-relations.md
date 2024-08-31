@@ -44,7 +44,7 @@
 <pre>name: short, unique</pre>
 <pre>email?: email, unique</pre>
 <pre>phone?: short, unique</pre>
-<pre>postalcode_city?: short</pre>
+<pre>postcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
 
 ### StakeholderNote
@@ -60,14 +60,14 @@
 ### stakeholder_to_stakeholder (pivot table)
 
 <small>Each Stakeholder has a specific relationship type to every other Stakeholder.</small>
-<small>This relation is unidirectional and not agreed on. One Stakeholder states the relation it has to another one. No matter what the affected Stakeholder thinks about the relation to the stakeholder stating.</small>
+<small>This relation is unidirectional and not agreed on. One Stakeholder states the relation it has to another one. No matter what the stated Stakeholder thinks about the relation to the stakeholder stating.</small>
 <small>When a stakeholder says he doesnt know a stakeholder, conflict is not allowed to be true.</small>
 <small>When a stakeholder says he knows/exchanges with/cooperates with a stakeholder, conflict is allowed to be true or false.</small>
 
 <pre>type: "doesnt" | "knows" | "exchanges" | "cooperates"</pre>
 <pre>conflict: boolean, default: "false"</pre>
 <pre>🗝️stakeholder_stating_id: StakeholderOrganization, onDelete: cascade</pre>
-<pre>🗝️stakeholder_affected_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️stakeholder_stated_id: StakeholderOrganization, onDelete: cascade</pre>
 
 ### StakeholderCategory
 
@@ -93,7 +93,7 @@
 <pre>email?: email</pre>
 <pre>phone?: short</pre>
 <pre>street_hnr?: short</pre>
-<pre>postalcode_city?: short</pre>
+<pre>postcode_city?: short</pre>
 <pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
 
 ### StakeholderRestriction
