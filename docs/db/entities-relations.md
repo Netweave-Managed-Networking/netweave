@@ -38,7 +38,7 @@
 <small>The most important entity. The StakeholderOrganization that works on a local level and needs networking possibilities.</small>
 <small>When the term ‘Stakeholder’ is used, this is synonymous with ‘StakeholderOrganization’.</small>
 <small>Each Stakeholder has a specific relationship type to every other Stakeholder. See stakeholder_to_stakeholder pivot table.</small>
-<small>Each stakeholder belongs to exactly one category.</small>
+<small>Each stakeholder belongs to one or sometimes more than one category.</small>
 <small>This entity soft deletes.</small>
 
 <pre>name: short, unique</pre>
@@ -46,7 +46,6 @@
 <pre>phone?: short, unique</pre>
 <pre>postalcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
-<pre>🗝️stakeholder_category_id: StakeholderCategory, onDelete: no action</pre>
 
 ### StakeholderNote
 
@@ -72,10 +71,17 @@
 
 ### StakeholderCategory
 
-<small>A catgeory of a stakeholder.</small>
-<small>Each stakeholder belongs to exactly one category.</small>
+<small>A category of a stakeholder.</small>
+<small>Each stakeholder belongs to one or sometimes more than one category.</small>
 
 <pre>name: short, unique</pre>
+
+### stakeholder_to_category (pivot table)
+
+<small>Stakeholder n:m StakeholderCategory.</small>
+
+<pre>🗝️stakeholder_category_id: StakeholderCategory, onDelete: cascade</pre>
+<pre>🗝️stakeholder_id: Stakeholder, onDelete: cascade</pre>
 
 ### StakeholderContactPerson
 
@@ -92,9 +98,12 @@
 
 ### StakeholderRestriction
 
-<small>A restriction of a stakeholder. Stakeholders can have multiple restrictions. Each regional or topical.</small>
+<small>A restriction of a stakeholder.</small>
+<small>Stakeholders may have restrictions in their area of work. These can be…</small>
+<small><br>&emsp;- `regional`, e.g. the focus on a district or a municipality.</small>
+<small><br>&emsp;- `thematic`, e.g. a focus on research projects in the field of zoology, e.g. commissioned work in landscape planning.</small>
 
-<pre>type: "regional" | "topical"</pre>
+<pre>type: "regional" | "thematic"</pre>
 <pre>description: text, index: fulltext</pre>
 <pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
 
@@ -125,8 +134,10 @@
 <small>A stakeholder either has or needs a resource.</small>
 <small>Resources can be used for matching stakeholders by their needs.</small>
 <small>Descriptions of resources often have to be read out and compared with the descriptions of resources of other stakeholders.</small>
+<small>For better human readability/faster understanding of a resource, resources can have a summary with a short explanation of the resource.</small>
 <small>This entity soft deletes.</small>
 
+<pre>summary?: text, index: fulltext</pre>
 <pre>description: text, index: fulltext</pre>
 <pre>type: "resource" | "requirement", index: B-tree</pre>
 <pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
@@ -135,7 +146,7 @@
 
 <small>A category of a resource.</small>
 <small>Resources can belong to multiple categories (not more than 3 would be good). Categories have multiple Resources. So ResourceCategory n:m Resource.</small>
-<small>A category can be something not-materialistic like 'Education' or 'Biological Knowledge' or something materialistic like 'Areas' or 'Geräte'</small>
+<small>A category can be something not-materialistic like 'Education' or 'Biological Knowledge' or something materialistic like 'Areas' or 'Tools'</small>
 
 <pre>title: short, unique</pre>
 <pre>definition: text, unique, index: fulltext</pre>
