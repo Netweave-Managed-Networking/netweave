@@ -75,6 +75,7 @@
 <small>Each stakeholder belongs to one or sometimes more than one category.</small>
 
 <pre>name: short, unique</pre>
+<pre>description?: text</pre>
 
 ### stakeholder_to_category (pivot table)
 
