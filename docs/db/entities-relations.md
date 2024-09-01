@@ -165,13 +165,13 @@
 
 <small>A question is of a specific type.</small>
 <small>Each question belongs to exactly one topic.</small>
+<small>Each question has a specific position where it is displayed. This is handled by the topic it belongs to.</small>
 <small>This entity soft deletes.</small>
 
 <pre>text: short</pre>
 <pre>type: "text" | "choice" | "range" | "likert" | "budget" | "org_culture", default: "text"</pre>
 <pre>is_required: boolean, default: "false"</pre>
 <pre>is_active: boolean, default: "true"</pre>
-<pre>position: u_int, unique, increments</pre>
 <pre>tooltip?: text</pre>
 <pre>🗝️survey_topic_id: SurveyTopic, onDelete: no action</pre>
 
@@ -232,24 +232,29 @@
 
 <small>A topic of multiple questions. Used to group questions.</small>
 <small>Each question belongs to exactly one topic.</small>
-<small>Each topic belongs to one surveys. But can be reused unchanged in newer surveys. SurveyTopic n:m Survey</small>
+<small>Each topic usually belongs to one survey. But can be reused unchanged in newer surveys or used in another survey at the same time.</small>
+<small>SurveyTopic n:m Survey</small>
+<small>Each topic has a specific position where it is displayed. This is handled by the survey it belongs to.</small>
 
 <pre>title: short, unique</pre>
 <pre>description: text, unique</pre>
 <pre>text_size?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"</pre>
 <pre>is_active: boolean, default: "true"</pre>
-<pre>position: u_int, unique, increments</pre>
+<pre>question_positions: json, default: "[]"</pre>
 <pre>tooltip?: text</pre>
 
 ### Survey
 
 <small>A Survey which is active and can be replaced by newer surveys. This helps with versioning different survey without every updating questions.</small>
 <small>A group of multiple topics thus questions.</small>
-<small>Each topic belongs to one surveys. But can be reused unchanged in newer surveys. SurveyTopic n:m Survey</small>
+<small>Each topic usually belongs to one survey. But can be reused unchanged in newer surveys or used in another survey at the same time.</small>
+<small>SurveyTopic n:m Survey</small>
+<small>Each topic has a specific position where it is displayed. This is handled by the survey it belongs to.</small>
 
 <pre>name: short</pre>
 <pre>description?: text</pre>
 <pre>is_active: boolean, default: "true"</pre>
+<pre>topic_positions: json, default: "[]"</pre>
 
 ### topic_to_survey (pivot table)
 
