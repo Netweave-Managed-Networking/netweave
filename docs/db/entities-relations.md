@@ -150,7 +150,7 @@
 <small>A category can be something not-materialistic like 'Education' or 'Biological Knowledge' or something materialistic like 'Areas' or 'Tools'</small>
 
 <pre>title: short, unique</pre>
-<pre>definition: text, unique, index: fulltext</pre>
+<pre>definition?: text, unique</pre>
 
 ### resource_to_category (pivot table)
 
