@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -43,5 +46,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's role as an enum.
+     *
+     * @return UserRole
+     */
+    public function getRoleAttribute(): UserRole
+    {
+        return UserRole::from($this->attributes['role']);
+    }
+
+    /**
+     * Set the user's role from an enum.
+     *
+     * @param  UserRole  $role
+     * @return void
+     */
+    public function setRoleAttribute(UserRole $role): void
+    {
+        $this->attributes['role'] = $role->value;
     }
 }
