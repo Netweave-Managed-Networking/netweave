@@ -238,7 +238,6 @@
 
 <pre>title: short, unique</pre>
 <pre>description: text, unique</pre>
-<pre>text_size?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"</pre>
 <pre>is_active: boolean, default: "true"</pre>
 <pre>question_positions: json, default: "[]"</pre>
 <pre>tooltip?: text</pre>
