@@ -59,7 +59,12 @@ export default function DeleteUserForm({
         </p>
       </header>
 
-      <DangerButton onClick={confirmUserDeletion}>Delete Account</DangerButton>
+      <DangerButton onClick={confirmUserDeletion} disabled>
+        Delete Account
+      </DangerButton>
+      <p className="mt-1 text-sm text-gray-600">
+        <strong>Account deletion is temporary disabled.</strong>
+      </p>
 
       <Modal show={confirmingUserDeletion} onClose={closeModal}>
         <form onSubmit={deleteUser} className="p-6">

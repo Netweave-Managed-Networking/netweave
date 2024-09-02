@@ -45,18 +45,21 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
 
-        $user = $request->user();
+        // ACCOUNT DELETION IS TEMPORARY DISABLED.
+        
+        // $request->validate([
+        //     'password' => ['required', 'current_password'],
+        // ]);
 
-        Auth::logout();
+        // $user = $request->user();
 
-        $user->delete();
+        // Auth::logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // $user->delete();
+
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
 
         return Redirect::to('/');
     }

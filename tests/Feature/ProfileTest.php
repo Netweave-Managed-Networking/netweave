@@ -63,8 +63,10 @@ test('user can delete their account', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect('/');
 
-    $this->assertGuest();
-    $this->assertNull($user->fresh());
+    // ACCOUNT DELETION IS TEMPORARY DISABLED.
+    // $this->assertGuest();
+    // $this->assertNull($user->fresh());
+    $this->assertNotNull($user->fresh());
 });
 
 test('correct password must be provided to delete account', function () {
@@ -77,9 +79,10 @@ test('correct password must be provided to delete account', function () {
             'password' => 'wrong-password',
         ]);
 
-    $response
-        ->assertSessionHasErrors('password')
-        ->assertRedirect('/profile');
+    // ACCOUNT DELETION IS TEMPORARY DISABLED.
+    // $response
+    //     ->assertSessionHasErrors('password')
+    //     ->assertRedirect('/profile');
 
     $this->assertNotNull($user->fresh());
 });
