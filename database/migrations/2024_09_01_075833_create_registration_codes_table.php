@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->char('code', length: 6)->unique();
             $table->foreignId('editor_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('admin_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('admin_id')->constrained('users')->noActionOnDelete();
             $table->timestamps();
         });
     }
