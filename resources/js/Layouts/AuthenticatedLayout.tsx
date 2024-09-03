@@ -68,7 +68,7 @@ export default function Authenticated({
                       Profile
                     </Dropdown.Link>
                     <Dropdown.Link href={route('registration-codes.index')}>
-                      Registration Codes
+                      User & Registrierungs-Codes
                     </Dropdown.Link>
                     <Dropdown.Link
                       href={route('logout')}
