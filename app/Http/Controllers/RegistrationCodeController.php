@@ -11,7 +11,7 @@ class RegistrationCodeController extends Controller
 {
     public function index(Request $request): Response
     {
-        $registrationCodes = RegistrationCode::all();
+        $registrationCodes = RegistrationCode::with('admin:id,name,email')->with('editor:id,name,email')->get();
         return Inertia::render('RegistrationCodes/Overview', [
             'registrationCodes' => $registrationCodes,
         ]);

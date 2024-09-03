@@ -8,6 +8,14 @@ export default function Overview({
   auth,
   registrationCodes,
 }: PageProps<{ registrationCodes: RegistrationCode[] }>) {
+  const registrationCodesTableData = registrationCodes.map(
+    ({ code, editor, admin }) => {
+      const editorInfo = (editor?.name ?? '') + ', ' + (editor?.email ?? '');
+      const adminInfo = admin?.name + ', ' + admin?.email;
+      return [code, editorInfo, adminInfo];
+    }
+  );
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -22,12 +30,8 @@ export default function Overview({
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
           <Table
-            headerTitles={['code', 'editor_id', 'admin_id']}
-            rowItems={registrationCodes.map(code => [
-              code.code,
-              '' + (code.editor_id ?? ''),
-              '' + code.admin_id,
-            ])}
+            headerTitles={['code', 'editor', 'admin']}
+            rowItems={registrationCodesTableData}
           ></Table>
         </div>
       </div>
