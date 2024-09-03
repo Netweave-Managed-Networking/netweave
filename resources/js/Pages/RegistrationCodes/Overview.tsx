@@ -1,6 +1,7 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps, RegistrationCode } from '@/types';
+import { PageProps } from '@/types';
+import { RegistrationCode } from '@/types/registration-code.model';
 import { Head } from '@inertiajs/react';
 
 export default function Overview({
