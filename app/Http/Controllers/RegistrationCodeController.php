@@ -12,7 +12,7 @@ class RegistrationCodeController extends Controller
     public function index(Request $request): Response
     {
         $registrationCodes = RegistrationCode::all();
-        return Inertia::render('RegistrationCodes/List', [
+        return Inertia::render('RegistrationCodes/Overview', [
             'registrationCodes' => $registrationCodes,
         ]);
     }

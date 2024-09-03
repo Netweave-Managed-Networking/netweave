@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, RegistrationCode } from '@/types';
 import { Head } from '@inertiajs/react';
 
-export default function List({
+export default function Overview({
   auth,
   registrationCodes,
 }: PageProps<{ registrationCodes: RegistrationCode[] }>) {
