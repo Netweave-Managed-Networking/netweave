@@ -1,3 +1,4 @@
+import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, RegistrationCode } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -19,16 +20,14 @@ export default function Overview({
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-          {registrationCodes.map(registrationCode => {
-            return (
-              <div
-                key={registrationCode.id}
-                className="p-4 sm:p-8 bg-white shadow sm:rounded-lg"
-              >
-                {registrationCode.code}
-              </div>
-            );
-          })}
+          <Table
+            headerTitles={['code', 'editor_id', 'admin_id']}
+            rowItems={registrationCodes.map(code => [
+              code.code,
+              '' + (code.editor_id ?? ''),
+              '' + code.admin_id,
+            ])}
+          ></Table>
         </div>
       </div>
     </AuthenticatedLayout>
