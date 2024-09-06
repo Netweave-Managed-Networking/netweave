@@ -25,6 +25,10 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, bcmath, xml, pdo, pdo_mysql
       - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
       - name: Clear Composer cache
         run: composer clear-cache
       - name: Cache Composer dependencies
@@ -40,6 +44,10 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
         run: composer install --verbose --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install NPM dependencies
+        run: npm install
+      - name: Build Vite assets
+        run: npm run build
       - name: Generate key
         run: php artisan key:generate
       - name: Directory Permissions
