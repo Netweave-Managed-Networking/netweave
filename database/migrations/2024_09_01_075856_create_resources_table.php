@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('resources', function (Blueprint $table) {
@@ -14,8 +13,8 @@ return new class extends Migration
             $table->string('description', length: 8192)->fullText();
             $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
             $table->foreignId('stakeholder_organization_id')->constrained('stakeholder_organizations')->cascadeOnDelete();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

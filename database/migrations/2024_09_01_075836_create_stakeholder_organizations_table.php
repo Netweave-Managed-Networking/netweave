@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('stakeholder_organizations', function (Blueprint $table) {
@@ -15,8 +14,8 @@ return new class extends Migration
             $table->string('phone', length: 64)->nullable()->unique();
             $table->string('postcode_city', length: 64)->nullable();
             $table->string('street_hnr', length: 128)->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
