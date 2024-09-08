@@ -1,10 +1,9 @@
-export default function Table({
-  headerTitles,
-  rowItems,
-}: {
+export type TableProps = {
   headerTitles: string[];
   rowItems: string[][];
-}) {
+};
+
+export default function Table({ headerTitles, rowItems }: TableProps) {
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">
