@@ -1,12 +1,12 @@
-import { User } from '.';
+import { UserMin } from './user-min.model';
 
 export interface RegistrationCode {
   id: number;
   code: string;
   editor_id: number | null;
-  editor: Pick<User, 'id' | 'name' | 'email'> | null;
+  editor: UserMin | null;
   admin_id: number;
-  admin: Pick<User, 'id' | 'name' | 'email'>;
+  admin: UserMin;
   created_at: string;
   updated_at: string;
 }
