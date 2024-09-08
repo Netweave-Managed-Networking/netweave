@@ -17,7 +17,7 @@ export default function DisplayUserRole({
 
         <p className="mt-1 text-sm text-gray-600">
           <span>You are an&nbsp;</span>
-          <code style={{ backgroundColor: 'yellow' }}>{user.role}</code>.
+          <code className="bg-pink-300 px-1">{user.role}</code>.
         </p>
         <p className="mt-1 text-sm text-gray-600">
           {user.role === 'admin' ? (
