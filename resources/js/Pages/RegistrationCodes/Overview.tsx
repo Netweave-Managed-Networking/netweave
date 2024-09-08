@@ -1,21 +1,17 @@
+import CheckMark from '@/Components/CheckMark';
+import CrossMark from '@/Components/CrossMark';
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { RegistrationCode } from '@/types/registration-code.model';
+import { UserMin } from '@/types/user-min.model';
 import { Head } from '@inertiajs/react';
+import { ReactNode } from 'react';
 
 export default function Overview({
   auth,
   registrationCodes,
 }: PageProps<{ registrationCodes: RegistrationCode[] }>) {
-  const registrationCodesTableData = registrationCodes.map(
-    ({ code, editor, admin }) => {
-      const editorInfo = (editor?.name ?? '') + ', ' + (editor?.email ?? '');
-      const adminInfo = admin?.name + ', ' + admin?.email;
-      return [code, editorInfo, adminInfo];
-    }
-  );
-
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -30,11 +26,29 @@ export default function Overview({
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
           <Table
-            headerTitles={['code', 'editor', 'admin']}
-            rowItems={registrationCodesTableData}
+            headerTitles={['code', 'usable', 'used by', 'admin']}
+            rowItems={createRows(registrationCodes)}
           ></Table>
         </div>
       </div>
     </AuthenticatedLayout>
   );
 }
+
+const createRows = (registrationCodes: RegistrationCode[]): ReactNode[][] =>
+  registrationCodes.map(({ code, editor, admin }) => [
+    code,
+    editor ? <CrossMark /> : <CheckMark />,
+    editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
+    userMail(admin),
+  ]);
+
+const userMail = (user: UserMin): ReactNode => (
+  <a
+    className="text-blue-800"
+    href={`mailto:${user.email}`}
+    aria-label={`Email ${user.name}`}
+  >
+    {user.name}
+  </a>
+);

@@ -1,6 +1,8 @@
+import { ReactNode } from 'react';
+
 export type TableProps = {
   headerTitles: string[];
-  rowItems: string[][];
+  rowItems: ReactNode[][];
 };
 
 export default function Table({ headerTitles, rowItems }: TableProps) {
@@ -28,7 +30,7 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
                   <tr key={item.join()}>
                     {item.map(value => (
                       <td
-                        key={value}
+                        key={value?.toString()}
                         className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap"
                       >
                         {value}
