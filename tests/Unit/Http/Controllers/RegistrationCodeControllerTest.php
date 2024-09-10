@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-test('it can render the registration codes overview page', function () {
+test('it can render the registration codes page', function () {
 
     $requestor = User::factory()->create(['role' => UserRole::ADMIN]);
     $this->actingAs($requestor);
@@ -32,7 +32,7 @@ test('it can render the registration codes overview page', function () {
     // Assert Inertia renders the correct view with the expected data
     $response->assertInertia(
         fn (Assert $page) => $page
-            ->component('RegistrationCodes/Overview')
+            ->component('RegistrationCodes/RegistrationCodesTable')
             ->has('registrationCodes', 3)
             ->has(
                 'registrationCodes.0.admin',

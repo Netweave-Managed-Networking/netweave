@@ -13,7 +13,7 @@ class RegistrationCodeController extends Controller
     {
         $registrationCodes = RegistrationCode::with('admin:id,name,email')->with('editor:id,name,email')->get();
 
-        return Inertia::render('RegistrationCodes/Overview', [
+        return Inertia::render('RegistrationCodes/RegistrationCodesTable', [
             'registrationCodes' => $registrationCodes,
         ]);
     }

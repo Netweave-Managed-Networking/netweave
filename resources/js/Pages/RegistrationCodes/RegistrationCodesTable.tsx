@@ -8,7 +8,7 @@ import { UserMin } from '@/types/user-min.model';
 import { Head } from '@inertiajs/react';
 import { ReactNode } from 'react';
 
-export default function Overview({
+export default function RegistrationCodesTable({
   auth,
   registrationCodes,
 }: PageProps<{ registrationCodes: RegistrationCode[] }>) {
