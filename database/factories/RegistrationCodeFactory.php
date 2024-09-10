@@ -27,7 +27,7 @@ class RegistrationCodeFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => Str::random(length: 6), // Random 6-character code like 'AB123C'
+            'code' => Str::lower(Str::random(length: 8)), // Random 8-character code like 'ab123cde'
             'editor_id' => $this->faker->boolean(50) ? User::factory() : null, // 50% chance of being null or a user
             'admin_id' => User::factory(), // Always assigns a valid user as admin
             'created_at' => now(),
