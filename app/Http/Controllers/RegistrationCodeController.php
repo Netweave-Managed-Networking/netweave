@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\RegistrationCode;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -11,10 +14,23 @@ class RegistrationCodeController extends Controller
 {
     public function index(Request $request): Response
     {
-        $registrationCodes = RegistrationCode::with('admin:id,name,email')->with('editor:id,name,email')->get();
+        $registrationCodes = RegistrationCode::with('admin:id,name,email')->with('editor:id,name,email')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('RegistrationCodes/RegistrationCodesTable', [
             'registrationCodes' => $registrationCodes,
         ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        /** @var User */
+        $requestor = $request->user(); // admin middleware guarantees that user is an admin
+        $code = Str::lower(Str::random(length: 8)); // Random 8-character code like 'ab123cde'
+        RegistrationCode::create([
+            'code' => $code,
+            'admin_id' => $requestor->id,
+        ]);
+
+        return redirect()->route('registration-codes.index');
     }
 }

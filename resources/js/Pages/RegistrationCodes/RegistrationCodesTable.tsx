@@ -1,5 +1,6 @@
 import CheckMark from '@/Components/CheckMark';
 import CrossMark from '@/Components/CrossMark';
+import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButton';
 import Table, { Row } from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
@@ -35,8 +36,12 @@ export default function RegistrationCodesTable({
   );
 }
 
-const createRows = (registrationCodes: RegistrationCode[]): Row[] =>
-  registrationCodes.map(({ code, editor, admin }) => ({
+const createRows = (registrationCodes: RegistrationCode[]): Row[] => [
+  {
+    key: 'RegistrationCodeAddButton',
+    nodes: [<RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />],
+  },
+  ...registrationCodes.map(({ code, editor, admin }) => ({
     key: code,
     nodes: [
       code,
@@ -44,7 +49,8 @@ const createRows = (registrationCodes: RegistrationCode[]): Row[] =>
       editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
       userMail(admin),
     ],
-  }));
+  })),
+];
 
 const userMail = (user: UserMin): ReactNode => (
   <a

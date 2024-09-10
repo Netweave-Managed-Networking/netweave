@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/registration-codes', [RegistrationCodeController::class, 'index'])->name('registration-codes.index');
+    Route::post('/registration-codes', [RegistrationCodeController::class, 'store'])->name('registration-codes.store');
 });
 
 require __DIR__.'/auth.php';
