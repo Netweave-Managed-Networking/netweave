@@ -1,24 +1,23 @@
-import { useEffect, FormEventHandler } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
+import { RegistrationCodeTooltipButton } from '@/Components/RegistrationCodeTooltipButton';
 import TextInput from '@/Components/TextInput';
+import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+
+import { FormEventHandler, useEffect } from 'react';
 
 export default function Register() {
   const { data, setData, post, processing, errors, reset } = useForm({
+    registration_code: '',
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
   });
 
-  useEffect(() => {
-    return () => {
-      reset('password', 'password_confirmation');
-    };
-  }, []);
+  useEffect(() => () => reset('password', 'password_confirmation'), []); // reset when unmount
 
   const submit: FormEventHandler = e => {
     e.preventDefault();
@@ -32,6 +31,27 @@ export default function Register() {
 
       <form onSubmit={submit}>
         <div>
+          <div className="flex items-center">
+            <InputLabel htmlFor="registration_code" value="Code" />
+            <RegistrationCodeTooltipButton />
+          </div>
+
+          <TextInput
+            id="registration_code"
+            name="registration_code"
+            value={data.registration_code}
+            placeholder="e.g. g4zw8byq"
+            maxLength={8}
+            className="mt-1 block w-full"
+            style={{ textTransform: 'lowercase' }}
+            onChange={e => setData('registration_code', e.target.value)}
+            required
+          />
+
+          <InputError message={errors.registration_code} className="mt-2" />
+        </div>
+
+        <div className="mt-4">
           <InputLabel htmlFor="name" value="Name" />
 
           <TextInput
@@ -66,7 +86,7 @@ export default function Register() {
         </div>
 
         <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
+          <InputLabel htmlFor="password" value="Passwort" />
 
           <TextInput
             id="password"
@@ -85,7 +105,7 @@ export default function Register() {
         <div className="mt-4">
           <InputLabel
             htmlFor="password_confirmation"
-            value="Confirm Password"
+            value="Passwort Bestätigen"
           />
 
           <TextInput
@@ -107,11 +127,11 @@ export default function Register() {
             href={route('login')}
             className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Already registered?
+            Bereits registriert?
           </Link>
 
           <PrimaryButton className="ms-4" disabled={processing}>
-            Register
+            Registrieren
           </PrimaryButton>
         </div>
       </form>
