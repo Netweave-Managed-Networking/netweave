@@ -3,7 +3,7 @@ import CrossMark from '@/Components/CrossMark';
 import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButton';
 import Table, { Row } from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import { PageProps, User } from '@/types';
 import { RegistrationCode } from '@/types/registration-code.model';
 import { UserMin } from '@/types/user-min.model';
 import { Head } from '@inertiajs/react';
@@ -13,6 +13,23 @@ export default function RegistrationCodesTable({
   auth,
   registrationCodes,
 }: PageProps<{ registrationCodes: RegistrationCode[] }>) {
+  const showAddCodeButton =
+    !hasActiveAdminAlreadyCreatedOneStillUnusedRegistrationCode(
+      registrationCodes,
+      auth.user
+    );
+
+  const addCodeButtonRow: Row | undefined = showAddCodeButton
+    ? {
+        key: 'RegistrationCodeAddButton',
+        nodes: [
+          <RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />,
+        ],
+      }
+    : undefined;
+
+  const tableRows = createRows(registrationCodes, addCodeButtonRow);
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -28,7 +45,7 @@ export default function RegistrationCodesTable({
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
           <Table
             headerTitles={['code', 'usable', 'used by', 'admin']}
-            rowItems={createRows(registrationCodes)}
+            rowItems={tableRows}
           ></Table>
         </div>
       </div>
@@ -36,11 +53,19 @@ export default function RegistrationCodesTable({
   );
 }
 
-const createRows = (registrationCodes: RegistrationCode[]): Row[] => [
-  {
-    key: 'RegistrationCodeAddButton',
-    nodes: [<RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />],
-  },
+const hasActiveAdminAlreadyCreatedOneStillUnusedRegistrationCode = (
+  registrationCodes: RegistrationCode[],
+  admin: User
+): boolean =>
+  registrationCodes
+    .filter(registrationCode => registrationCode.admin_id === admin.id)
+    .filter(registrationCode => registrationCode.editor_id === null).length > 0;
+
+const createRows = (
+  registrationCodes: RegistrationCode[],
+  addCodeButtonRow?: Row
+): Row[] => [
+  ...(addCodeButtonRow ? [addCodeButtonRow] : []),
   ...registrationCodes.map(({ code, editor, admin }) => ({
     key: code,
     nodes: [
