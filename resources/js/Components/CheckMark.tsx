@@ -6,10 +6,10 @@ export default function CheckMark() {
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      stroke="green"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="stroke-green-700"
     >
       <path d="M5 12l5 5L20 7" />
     </svg>
