@@ -14,7 +14,12 @@ class RegistrationCodeController extends Controller
 {
     public function index(Request $request): Response
     {
-        $registrationCodes = RegistrationCode::with('admin:id,name,email')->with('editor:id,name,email')->orderBy('created_at', 'desc')->get();
+        $registrationCodes = RegistrationCode::with('admin:id,name,email')
+            ->with('editor:id,name,email')
+            ->orderByRaw('CASE WHEN editor_id IS NULL THEN 0 ELSE 1 END')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('editor_id', 'desc')
+            ->get();
 
         return Inertia::render('RegistrationCodes/RegistrationCodesTable', [
             'registrationCodes' => $registrationCodes,
