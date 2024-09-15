@@ -2,12 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\UserRole;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsAdmin
 {
@@ -20,5 +19,4 @@ class EnsureUserIsAdmin
     {
         return Auth::check() && $request->user()->role === UserRole::ADMIN ? $next($request) : redirect('');
     }
-
 }

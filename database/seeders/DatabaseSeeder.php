@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         /** @var User */ $morv = User::factory()->create([
-            'name' => 'Test Morv',
-            'email' => 'marvinfrede@gmx.de',
-            'role' => UserRole::ADMIN
-        ]);
+                    'name' => 'Test Morv',
+                    'email' => 'marvinfrede@gmx.de',
+                    'role' => UserRole::ADMIN,
+                ]);
 
-        /** @var Array<RegistrationCode>*/ $codes = RegistrationCode::factory(10)->create(['admin_id' => $morv->id]);
+        /** @var \Illuminate\Support\Collection<RegistrationCode> */ $codes = RegistrationCode::factory(10)->create(['admin_id' => $morv->id]);
     }
 }

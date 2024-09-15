@@ -29,4 +29,4 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/registration-codes', [RegistrationCodeController::class, 'index'])->name('registration-codes.index');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

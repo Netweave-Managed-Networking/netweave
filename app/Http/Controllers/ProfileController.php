@@ -47,7 +47,7 @@ class ProfileController extends Controller
     {
 
         // ACCOUNT DELETION IS TEMPORARY DISABLED.
-        
+
         // $request->validate([
         //     'password' => ['required', 'current_password'],
         // ]);

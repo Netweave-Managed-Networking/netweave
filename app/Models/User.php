@@ -51,8 +51,6 @@ class User extends Authenticatable
 
     /**
      * Get the user's role as an enum.
-     *
-     * @return UserRole
      */
     public function getRoleAttribute(): UserRole
     {
@@ -61,9 +59,6 @@ class User extends Authenticatable
 
     /**
      * Set the user's role from an enum.
-     *
-     * @param  UserRole  $role
-     * @return void
      */
     public function setRoleAttribute(UserRole $role): void
     {

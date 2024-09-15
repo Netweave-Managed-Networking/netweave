@@ -31,19 +31,19 @@ test('it can render the registration codes overview page', function () {
 
     // Assert Inertia renders the correct view with the expected data
     $response->assertInertia(
-        fn(Assert $page) => $page
+        fn (Assert $page) => $page
             ->component('RegistrationCodes/Overview')
             ->has('registrationCodes', 3)
             ->has(
                 'registrationCodes.0.admin',
-                fn(Assert $regCodeAdmin) => $regCodeAdmin
+                fn (Assert $regCodeAdmin) => $regCodeAdmin
                     ->where('id', $admin->id)
                     ->where('name', $admin->name)
                     ->where('email', $admin->email)
             )
             ->has(
                 'registrationCodes.0.editor',
-                fn(Assert $regCodeEditor) => $regCodeEditor
+                fn (Assert $regCodeEditor) => $regCodeEditor
                     ->where('id', $editor->id)
                     ->where('name', $editor->name)
                     ->where('email', $editor->email)
