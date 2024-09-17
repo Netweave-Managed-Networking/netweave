@@ -23,7 +23,7 @@ export function RegistrationCodeTooltipButton() {
       placement="right-end"
       arrow
     >
-      <IconButton>
+      <IconButton sx={{ padding: 0, paddingLeft: '8px' }}>
         <HelpOutlineIcon fontSize="small" />
       </IconButton>
     </Tooltip>

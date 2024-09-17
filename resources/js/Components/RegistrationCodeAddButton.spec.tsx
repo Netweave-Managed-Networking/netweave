@@ -3,7 +3,9 @@ import { RegistrationCodeAddButton } from './RegistrationCodeAddButton';
 
 // Mock Inertia.js `useForm`
 const mockPost = jest.fn();
-jest.mock('@inertiajs/react', () => ({ useForm: () => ({ post: mockPost }) }));
+jest.mock('@inertiajs/react', () => ({
+  useForm: () => ({ post: mockPost }),
+}));
 
 describe('RegistrationCodeAddButton', () => {
   beforeEach(() => {

@@ -1,6 +1,7 @@
 import CheckMark from '@/Components/CheckMark';
 import CrossMark from '@/Components/CrossMark';
 import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButton';
+import { RegistrationCodeDeleteButton } from '@/Components/RegistrationCodeDeleteButton';
 import Table, { Row } from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, User } from '@/types';
@@ -20,12 +21,7 @@ export default function RegistrationCodesTable({
     );
 
   const addCodeButtonRow: Row | undefined = showAddCodeButton
-    ? {
-        key: 'RegistrationCodeAddButton',
-        nodes: [
-          <RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />,
-        ],
-      }
+    ? createAddCodeButtonRow()
     : undefined;
 
   const tableRows = createRows(registrationCodes, addCodeButtonRow);
@@ -44,7 +40,13 @@ export default function RegistrationCodesTable({
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
           <Table
-            headerTitles={['code', 'anwendbar', 'eingeladen', 'angelegt durch']}
+            headerTitles={[
+              'code',
+              'Anwendbar',
+              'Eingeladen',
+              'Angelegt Durch',
+              'Löschen',
+            ]}
             rowItems={tableRows}
           ></Table>
         </div>
@@ -63,19 +65,32 @@ const hasActiveAdminAlreadyCreatedOneStillUnusedRegistrationCode = (
 
 const createRows = (
   registrationCodes: RegistrationCode[],
-  addCodeButtonRow?: Row
+  addCodeButtonRow: Row | undefined
 ): Row[] => [
   ...(addCodeButtonRow ? [addCodeButtonRow] : []),
-  ...registrationCodes.map(({ code, editor, admin }) => ({
+  ...registrationCodes.map(({ id, code, editor, admin }) => ({
     key: code,
     nodes: [
       code,
       editor ? <CrossMark /> : <CheckMark />,
       editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
       userMail(admin),
+      createDeleteCodeButton(id, editor),
     ],
   })),
 ];
+
+const createAddCodeButtonRow = () => ({
+  key: 'RegistrationCodeAddButton',
+  nodes: [<RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />],
+});
+
+const createDeleteCodeButton = (codeId: number, editor: UserMin | null) =>
+  editor ? (
+    <></>
+  ) : (
+    <RegistrationCodeDeleteButton key={`delete_code_${codeId}`} id={codeId} />
+  );
 
 const userMail = (user: UserMin): ReactNode => (
   <a

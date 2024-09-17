@@ -20,8 +20,11 @@ export function RegistrationCodeAddButton() {
       placement="right"
       arrow
     >
-      <IconButton onClick={postRequestToCreateNewRegistrationCode}>
-        <AddCircleIcon fontSize="small" />
+      <IconButton
+        onClick={postRequestToCreateNewRegistrationCode}
+        sx={{ padding: 0 }}
+      >
+        <AddCircleIcon />
       </IconButton>
     </Tooltip>
   );
