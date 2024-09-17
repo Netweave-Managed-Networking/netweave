@@ -2,10 +2,29 @@ import { ReactNode } from 'react';
 
 export type TableProps = {
   headerTitles: string[];
-  rowItems: ReactNode[][];
+  rowItems: Row[];
+};
+
+export type Row = {
+  key: string;
+  nodes: ReactNode[];
+};
+
+type RowWithKeys = {
+  key: string;
+  items: RowItem[];
+};
+
+type RowItem = {
+  key: string;
+  node: ReactNode;
 };
 
 export default function Table({ headerTitles, rowItems }: TableProps) {
+  const rowsKeyed = addKeysToTableColumns(rowItems, headerTitles);
+
+  console.log({ rowsKeyed });
+
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">
@@ -26,14 +45,14 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {rowItems.map(item => (
-                  <tr key={item.join()}>
-                    {item.map(value => (
+                {rowsKeyed.map(row => (
+                  <tr key={row.key}>
+                    {row.items.map(item => (
                       <td
-                        key={value?.toString()}
+                        key={item.key}
                         className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap"
                       >
-                        {value}
+                        {item.node}
                       </td>
                     ))}
                   </tr>
@@ -46,3 +65,15 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
     </div>
   );
 }
+
+const addKeysToTableColumns = (
+  rowItems: Row[],
+  headerTitles: string[]
+): RowWithKeys[] =>
+  rowItems.map(row => ({
+    key: row.key,
+    items: row.nodes.map((node, index) => ({
+      key: `${row.key}_${headerTitles.at(index)?.replaceAll(' ', '_')}`,
+      node: node,
+    })),
+  }));

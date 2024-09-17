@@ -1,6 +1,6 @@
 import CheckMark from '@/Components/CheckMark';
 import CrossMark from '@/Components/CrossMark';
-import Table from '@/Components/Table';
+import Table, { Row } from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { RegistrationCode } from '@/types/registration-code.model';
@@ -35,13 +35,16 @@ export default function Overview({
   );
 }
 
-const createRows = (registrationCodes: RegistrationCode[]): ReactNode[][] =>
-  registrationCodes.map(({ code, editor, admin }) => [
-    code,
-    editor ? <CrossMark /> : <CheckMark />,
-    editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
-    userMail(admin),
-  ]);
+const createRows = (registrationCodes: RegistrationCode[]): Row[] =>
+  registrationCodes.map(({ code, editor, admin }) => ({
+    key: code,
+    nodes: [
+      code,
+      editor ? <CrossMark /> : <CheckMark />,
+      editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
+      userMail(admin),
+    ],
+  }));
 
 const userMail = (user: UserMin): ReactNode => (
   <a
