@@ -68,3 +68,5 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: root
         run: php artisan test
+      - name: Run Jest tests
+        run: npm test -- --coverage
