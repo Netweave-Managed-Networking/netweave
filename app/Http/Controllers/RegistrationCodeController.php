@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RegistrationCode;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -41,8 +42,13 @@ class RegistrationCodeController extends Controller
 
     public function destroy(Request $request, RegistrationCode $registrationCode): RedirectResponse
     {
-        $registrationCode->delete();
+        try {
+            $registrationCode->delete();
 
-        return redirect()->route('registration-codes.index')->with('success', 'Registration code deleted successfully.');
+            return redirect()->route('registration-codes.index')->with('success', 'Registration code deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->route('registration-codes.index')->with('error', $e->getMessage());
+        }
+
     }
 }
