@@ -1,4 +1,4 @@
-import { infoMail } from '@/const/email.const';
+import { infoMail } from '@/constants/email.const';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { IconButton, Tooltip } from '@mui/material';
 
