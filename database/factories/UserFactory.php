@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ *
+ * Always creates users with role EDITOR and picks one random ADMIN
  */
 class UserFactory extends Factory
 {

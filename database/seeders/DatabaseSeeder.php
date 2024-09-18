@@ -14,14 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory()->create([
+            'name' => 'Test Morv',
+            'email' => 'marvinfrede@gmx.de',
+            'role' => UserRole::ADMIN,
+        ]);
 
-        /** @var User */ $morv = User::factory()->create([
-                    'name' => 'Test Morv',
-                    'email' => 'marvinfrede@gmx.de',
-                    'role' => UserRole::ADMIN,
-                ]);
+        /** @var \Illuminate\Support\Collection<RegistrationCode> */
+        $codes = RegistrationCode::factory(9)->create(); // Create 9 RegistrationCodes with newly created editor
+        $codes->push(RegistrationCode::factory()->state([
+            'editor_id' => random_int(0, 1) ? User::factory() : null,
+        ])->create());
 
-        /** @var \Illuminate\Support\Collection<RegistrationCode> */ $codes = RegistrationCode::factory(10)->create(['admin_id' => $morv->id]);
     }
 }
