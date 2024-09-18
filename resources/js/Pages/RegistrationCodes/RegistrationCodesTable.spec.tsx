@@ -6,15 +6,19 @@ import RegistrationCodesTable from './RegistrationCodesTable';
 
 // Mocking child components used in RegistrationCodesTable
 jest.mock('@/Components/CheckMark', () => () => <div>CheckMark</div>);
+
 jest.mock('@/Components/CrossMark', () => () => <div>CrossMark</div>);
-jest.mock('@/Components/RegistrationCodeAddButton', () => () => (
-  <button>Add Code</button>
-));
-jest.mock(
-  '@/Components/RegistrationCodeDeleteButton',
-  () =>
-    ({ id }: { id: number }) => <button>Delete {id}</button>
-);
+
+jest.mock('@/Components/RegistrationCodeAddButton', () => ({
+  RegistrationCodeAddButton: () => <button>Add Code</button>,
+}));
+
+jest.mock('@/Components/RegistrationCodeDeleteButton', () => ({
+  RegistrationCodeDeleteButton: ({ id }: { id: number }) => (
+    <button>Delete {id}</button>
+  ),
+}));
+
 jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
 }));
