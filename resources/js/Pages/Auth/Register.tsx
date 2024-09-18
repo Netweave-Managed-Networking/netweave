@@ -9,8 +9,12 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 
 export default function Register() {
+  const registrationCodeFromSearchParam: string | null = new URLSearchParams(
+    window.location.search
+  ).get('code');
+
   const { data, setData, post, processing, errors, reset } = useForm({
-    registration_code: '',
+    registration_code: registrationCodeFromSearchParam ?? '',
     name: '',
     email: '',
     password: '',

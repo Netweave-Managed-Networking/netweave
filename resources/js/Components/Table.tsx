@@ -23,8 +23,6 @@ type RowItem = {
 export default function Table({ headerTitles, rowItems }: TableProps) {
   const rowsKeyed = addKeysToTableColumns(rowItems, headerTitles);
 
-  console.log({ rowsKeyed });
-
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">

@@ -2,6 +2,7 @@ import CheckMark from '@/Components/CheckMark';
 import CrossMark from '@/Components/CrossMark';
 import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButton';
 import { RegistrationCodeDeleteButton } from '@/Components/RegistrationCodeDeleteButton';
+import RegistrationCodeInvitationLinkButton from '@/Components/RegistrationCodeInvitationLinkButton';
 import Table, { Row } from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, User } from '@/types';
@@ -73,7 +74,11 @@ const createRows = (
     nodes: [
       code,
       editor ? <CrossMark /> : <CheckMark />,
-      editor ? userMail(editor) : '-' /* TODO replace '-' by invitation link */,
+      editor ? (
+        userMail(editor)
+      ) : (
+        <RegistrationCodeInvitationLinkButton code={code} />
+      ),
       userMail(admin),
       createDeleteCodeButton(id, editor),
     ],

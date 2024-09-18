@@ -9,6 +9,10 @@ jest.mock('@/Components/CheckMark', () => () => <div>CheckMark</div>);
 
 jest.mock('@/Components/CrossMark', () => () => <div>CrossMark</div>);
 
+jest.mock('@/Components/RegistrationCodeInvitationLinkButton', () => () => (
+  <div>RegistrationCodeInvitationLinkButton</div>
+));
+
 jest.mock('@/Components/RegistrationCodeAddButton', () => ({
   RegistrationCodeAddButton: () => <button>Add Code</button>,
 }));
@@ -116,5 +120,19 @@ describe('RegistrationCodesTable', () => {
 
     expect(screen.getByText('Delete 1')).toBeInTheDocument(); // Unused code
     expect(screen.queryByText('Delete 2')).toBeNull(); // Used code
+  });
+
+  it('renders RegistrationCodeInvitationLinkButton buttons for unused codes', () => {
+    render(
+      <RegistrationCodesTable
+        auth={{ user: mockUser }}
+        registrationCodes={mockRegistrationCodes}
+      />
+    );
+
+    expect(
+      screen.getByText('RegistrationCodeInvitationLinkButton')
+    ).toBeInTheDocument(); // Unused code
+    expect(screen.queryByText('-')).toBeNull(); // Used code
   });
 });
