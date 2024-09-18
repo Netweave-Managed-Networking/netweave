@@ -4,8 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// TODO better like this or have the stakeholderOrg have a set of retsrictions as one column??
-
 return new class extends Migration
 {
     public function up()
