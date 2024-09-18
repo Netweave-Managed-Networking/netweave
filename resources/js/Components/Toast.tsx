@@ -1,6 +1,6 @@
 import { Snackbar, SnackbarCloseReason, SnackbarOrigin } from '@mui/material';
 
-interface ToastProps {
+export interface ToastProps {
   open: boolean;
   message: string;
   position?: `${SnackbarOrigin['vertical']}-${SnackbarOrigin['horizontal']}`;
