@@ -49,7 +49,7 @@ jobs:
         run: composer clear-cache
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Install Dependencies
+      - name: Install Composer Dependencies
         run: composer install --verbose --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Install NPM dependencies
         run: npm install
