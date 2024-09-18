@@ -10,6 +10,15 @@
     "format": "prettier 'resources/{js,jsx}/**/*.{ts,tsx}' --write",
     "pre-commit": "npm run format && lint-staged && pretty-quick --staged"
   },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.0.2",
+    "@mui/material": "^6.0.2"
+  },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@headlessui/react": "^2.0.0",
@@ -50,14 +59,5 @@
     "typescript": "^5.0.2",
     "typescript-eslint": "^8.3.0",
     "vite": "^5.0"
-  },
-  "lint-staged": {
-    "*.js": "eslint --cache --fix"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.0.2",
-    "@mui/material": "^6.0.2"
   }
 }
