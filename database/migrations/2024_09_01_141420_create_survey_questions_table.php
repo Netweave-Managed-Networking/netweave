@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('tooltip', length: 1024)->nullable();
             $table->foreignId('survey_topic_id')->constrained('survey_topics')->noActionOnDelete();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

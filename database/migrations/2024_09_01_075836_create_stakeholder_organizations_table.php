@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('postcode_city', length: 64)->nullable();
             $table->string('street_hnr', length: 128)->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
