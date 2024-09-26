@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -62,5 +64,21 @@ class User extends Authenticatable
     public function setRoleAttribute(UserRole $role): void
     {
         $this->attributes['role'] = $role->value;
+    }
+
+    /**
+     * Get the registration codes created by the admin.
+     */
+    public function createdRegistrationCodes(): HasMany
+    {
+        return $this->hasMany(RegistrationCode::class, 'admin_id');
+    }
+
+    /**
+     * Get the registration code associated with an editor.
+     */
+    public function registrationCode(): HasOne
+    {
+        return $this->hasOne(RegistrationCode::class, 'editor_id');
     }
 }
