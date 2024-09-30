@@ -93,7 +93,7 @@ const createAddCodeButtonRow = () => ({
 
 const createDeleteButton = (codeId: number, editor: UserMin | null) =>
   editor ? (
-    <UserDeleteButton key={`delete_user_${editor.id}`} id={editor.id} />
+    <UserDeleteButton key={`delete_user_${editor.id}`} user={editor} />
   ) : (
     <RegistrationCodeDeleteButton key={`delete_code_${codeId}`} id={codeId} />
   );
