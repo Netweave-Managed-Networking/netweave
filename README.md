@@ -35,7 +35,7 @@ see [entities-relations.md](./docs/db/entities-relations.md).
       3. Now you should be able to see the Hello World page in the browser on `my.application.com`
    5. delete the public folder for now, `rm -r ~/my.application.com/public`
 3. REMOTE <-> LOCAL
-   1. Now upload the real application, upload all the files and folders except
+   1. Now upload the real application, upload all the files and folders into `~/my.application.com/` (overwriting the public folder), except
       1. `node_modules` not needed since `vite build` bundled all needed javascript to the build folder
       2. `vendor` not needed since we will install the dependencies later directly to the server itself
       3. `.git` not needed (it is needed if you want to deploy changes via git of course, but for that `npm` must be executable on your server)
@@ -66,8 +66,20 @@ see [entities-relations.md](./docs/db/entities-relations.md).
    2. `npm run build` (or `tsc && vite build`)
 2. REMOTE <-> LOCAL
    1. upload and overwrite all the files and folders except
-      1. `.env` you should not overwrite the production `.env` file with your local `.env` file
+      1. `.env` you should not overwrite the production `.env` file with your local `.env` file (better compare the old .env (on the server) with the new .env.example)
       2. `node_modules` not needed since `vite build` bundled all needed javascript to the build folder
       3. `vendor` not needed since we will install the dependencies later directly to the server itself
       4. `.git` not needed (it is needed if you want to deploy changes via git of course, but for that `npm` must be executable on your server)
-3. REMOTE 3. install composer dependencies 1. download composer.phar via curl from the official website 2. run `php composer.phar install --no-dev --optimize-autoloader` 4. `php artisan storage:link` 5. `php artisan migrate` 6. allow the web server application to access the directories and files 1. `chmod -R 755 ~/my.application.com` 2. `chmod -R 775 ~/my.application.com/storage ~/my.application.com/bootstrap/cache` 7. make some optimizations, activate caching for better performance 1. `php artisan optimize` 2. `php artisan config:cache` 3. `php artisan event:cache` 4. `php artisan route:cache`
+3. REMOTE
+   1. `source ~/.bashrc`
+   2. `composer install --no-dev --optimize-autoloader`
+   3. `php artisan storage:link`
+   4. `php artisan migrate`
+   5. allow the web server application to access the directories and files
+      1. `chmod -R 755 ~/my.application.com`
+      2. `chmod -R 775 ~/my.application.com/storage ~/my.application.com/bootstrap/cache`
+   6. make some optimizations, activate caching for better performance
+      1. `php artisan optimize`
+      2. `php artisan config:cache`
+      3. `php artisan event:cache`
+      4. `php artisan route:cache`
