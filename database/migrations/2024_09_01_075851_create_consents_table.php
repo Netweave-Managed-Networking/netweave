@@ -14,7 +14,6 @@ return new class extends Migration
             $table->timestamp('review_date')->nullable()->comment('date in future on which the consent text must be review');
             $table->timestamp('valid_until')->nullable()->comment('date in future on which the consent text will be invalidated automatically');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

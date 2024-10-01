@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('survey_range_questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('survey_question_id')->constrained('survey_questions')->onDelete('cascade');
+            $table->foreignId('survey_question_id')->constrained('survey_questions')->cascadeOnDelete();
             $table->integer('from');
             $table->integer('to');
             $table->unsignedInteger('step');

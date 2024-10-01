@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationCodeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +30,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/registration-codes', [RegistrationCodeController::class, 'index'])->name('registration-codes.index');
     Route::post('/registration-codes', [RegistrationCodeController::class, 'store'])->name('registration-codes.store');
     Route::delete('/registration-codes/{registrationCode}', [RegistrationCodeController::class, 'destroy'])->name('registration-codes.destroy');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 require __DIR__.'/auth.php';

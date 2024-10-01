@@ -4,6 +4,7 @@ import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButto
 import { RegistrationCodeDeleteButton } from '@/Components/RegistrationCodeDeleteButton';
 import RegistrationCodeInvitationLinkButton from '@/Components/RegistrationCodeInvitationLinkButton';
 import Table, { Row } from '@/Components/Table';
+import { UserDeleteButton } from '@/Components/UserDeleteButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, User } from '@/types';
 import { RegistrationCode } from '@/types/registration-code.model';
@@ -80,7 +81,7 @@ const createRows = (
         <RegistrationCodeInvitationLinkButton code={code} />
       ),
       userMail(admin),
-      createDeleteCodeButton(id, editor),
+      createDeleteButton(id, editor),
     ],
   })),
 ];
@@ -90,9 +91,9 @@ const createAddCodeButtonRow = () => ({
   nodes: [<RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />],
 });
 
-const createDeleteCodeButton = (codeId: number, editor: UserMin | null) =>
+const createDeleteButton = (codeId: number, editor: UserMin | null) =>
   editor ? (
-    <></>
+    <UserDeleteButton key={`delete_user_${editor.id}`} user={editor} />
   ) : (
     <RegistrationCodeDeleteButton key={`delete_code_${codeId}`} id={codeId} />
   );

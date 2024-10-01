@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import { User } from '@/types';
 import { RegistrationCode } from '@/types/registration-code.model';
+import { UserMin } from '@/types/user-min.model';
 import { render, screen } from '@testing-library/react';
 import RegistrationCodesTable from './RegistrationCodesTable';
 
@@ -20,6 +21,12 @@ jest.mock('@/Components/RegistrationCodeAddButton', () => ({
 jest.mock('@/Components/RegistrationCodeDeleteButton', () => ({
   RegistrationCodeDeleteButton: ({ id }: { id: number }) => (
     <button>Delete {id}</button>
+  ),
+}));
+
+jest.mock('@/Components/UserDeleteButton', () => ({
+  UserDeleteButton: ({ user }: { user: UserMin }) => (
+    <button>Delete {user.name}</button>
   ),
 }));
 

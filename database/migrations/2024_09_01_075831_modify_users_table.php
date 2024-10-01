@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('role', length: 64)->after('email')->default('editor')->comment("type 'admin'|'editor'");
-            $table->softDeletes();
         });
     }
 

@@ -9,11 +9,11 @@ interface RegistrationCodeDeleteButtonProps {
 export function RegistrationCodeDeleteButton({
   id,
 }: RegistrationCodeDeleteButtonProps) {
-  const { delete: httpDelete } = useForm({});
+  const { delete: destroy } = useForm({});
 
   const handleDelete = async () => {
     try {
-      httpDelete(route('registration-codes.destroy', id));
+      destroy(route('registration-codes.destroy', id));
     } catch (error) {
       console.error('Error deleting registration code:', error);
     }

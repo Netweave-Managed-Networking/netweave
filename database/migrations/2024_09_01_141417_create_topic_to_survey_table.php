@@ -9,8 +9,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('topic_to_survey', function (Blueprint $table) {
-            $table->foreignId('survey_id')->constrained('surveys')->onDelete('cascade');
-            $table->foreignId('survey_topic_id')->constrained('survey_topics')->onDelete('cascade');
+            $table->foreignId('survey_id')->constrained('surveys')->cascadeOnDelete();
+            $table->foreignId('survey_topic_id')->constrained('survey_topics')->cascadeOnDelete();
             $table->primary(['survey_id', 'survey_topic_id']); // Composite primary key
             $table->timestamps();
         });

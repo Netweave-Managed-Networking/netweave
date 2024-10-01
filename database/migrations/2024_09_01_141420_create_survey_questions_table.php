@@ -15,9 +15,8 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->boolean('is_active')->default(true);
             $table->string('tooltip', length: 1024)->nullable();
-            $table->foreignId('survey_topic_id')->constrained('survey_topics')->onDelete('no action');
+            $table->foreignId('survey_topic_id')->constrained('survey_topics')->noActionOnDelete();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

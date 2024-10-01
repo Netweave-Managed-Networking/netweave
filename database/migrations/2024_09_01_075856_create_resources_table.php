@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
             $table->foreignId('stakeholder_organization_id')->constrained('stakeholder_organizations')->cascadeOnDelete();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
