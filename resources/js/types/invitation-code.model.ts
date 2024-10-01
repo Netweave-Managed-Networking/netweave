@@ -1,6 +1,6 @@
 import { UserMin } from './user-min.model';
 
-export interface RegistrationCode {
+export interface InvitationCode {
   id: number;
   code: string;
   editor_id: number | null;

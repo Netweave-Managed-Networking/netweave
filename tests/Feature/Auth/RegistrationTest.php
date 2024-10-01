@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
-use App\Models\RegistrationCode;
+use App\Models\InvitationCode;
 use App\Models\User;
 
 test('registration screen can be rendered', function () {
@@ -11,19 +11,19 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users register with code', function () {
-    $registrationCode = createAdminAndRegCode(null);
+    $invitationCode = createAdminAndRegCode(null);
 
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
-        'registration_code' => $registrationCode->code,
+        'invitation_code' => $invitationCode->code,
     ]);
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
-    $this->assertNotNull($registrationCode->fresh()->editor);
+    $this->assertNotNull($invitationCode->fresh()->editor);
 
 });
 
@@ -36,7 +36,7 @@ test('new users cannot register without code', function () {
     ]);
 
     $this->assertGuest();
-    $response->assertInvalid(['registration_code']);
+    $response->assertInvalid(['invitation_code']);
 });
 
 test('new users cannot register with invalid code', function () {
@@ -45,27 +45,27 @@ test('new users cannot register with invalid code', function () {
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
-        'registration_code' => 'abcdefgh',
+        'invitation_code' => 'abcdefgh',
     ]);
 
     $this->assertGuest();
-    $response->assertInvalid(['registration_code']);
+    $response->assertInvalid(['invitation_code']);
 });
 
 test('new users cannot register with code which was already used', function () {
     $editor = createEditor();
-    $registrationCode = createAdminAndRegCode($editor);
+    $invitationCode = createAdminAndRegCode($editor);
 
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
-        'registration_code' => $registrationCode->code,
+        'invitation_code' => $invitationCode->code,
     ]);
 
     $this->assertGuest();
-    $response->assertInvalid(['registration_code']);
+    $response->assertInvalid(['invitation_code']);
 });
 
 function createEditor(): User
@@ -77,7 +77,7 @@ function createEditor(): User
     ]);
 }
 
-function createAdminAndRegCode(?User $editor): RegistrationCode
+function createAdminAndRegCode(?User $editor): InvitationCode
 {
     User::factory()->create([
         'name' => 'Test Admin',
@@ -85,5 +85,5 @@ function createAdminAndRegCode(?User $editor): RegistrationCode
         'role' => UserRole::ADMIN,
     ]);
 
-    return RegistrationCode::factory()->create(['editor_id' => $editor?->id]);
+    return InvitationCode::factory()->create(['editor_id' => $editor?->id]);
 }

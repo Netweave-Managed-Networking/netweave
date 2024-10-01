@@ -2,13 +2,13 @@ import { infoMail } from '@/constants/email.const';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { IconButton, Tooltip } from '@mui/material';
 
-export function RegistrationCodeTooltipButton() {
+export function InvitationCodeTooltipButton() {
   return (
     <Tooltip
       title={
         <>
           <p>
-            Ein <strong>Registrierungs-Code</strong> wird benötigt, um sich bei
+            Ein <strong>Einladungscode</strong> wird benötigt, um sich bei
             Netweave zu registrieren.
           </p>
           <p>

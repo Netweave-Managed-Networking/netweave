@@ -4,13 +4,13 @@ import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import Toast from './Toast';
 
-interface RegistrationCodeInvitationLinkButtonProps {
+interface InvitationCodeInvitationLinkButtonProps {
   code: string;
 }
 
-export default function RegistrationCodeInvitationLinkButton({
+export default function InvitationCodeInvitationLinkButton({
   code,
-}: RegistrationCodeInvitationLinkButtonProps) {
+}: InvitationCodeInvitationLinkButtonProps) {
   const [toastOpen, setToastOpen] = useState(false);
 
   const copyLinkToClipboard = () => {

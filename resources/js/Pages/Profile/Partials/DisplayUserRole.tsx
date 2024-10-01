@@ -22,8 +22,8 @@ export default function DisplayUserRole({
         <p className="mt-1 text-sm text-gray-600">
           {user.role === 'admin' ? (
             <span>
-              This allows you to create RegistrationCodes in order to register
-              new users.
+              This allows you to create InvitationCodes in order to register new
+              users.
             </span>
           ) : (
             <span>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\RegistrationCode;
+use App\Models\InvitationCode;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Query\Builder;
@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'registration_code' => ['required', 'string', $this->getValidRegCodeExistsRule()],
+            'invitation_code' => ['required', 'string', $this->getValidRegCodeExistsRule()],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $this->invalidateRegistrationCodeAfterSuccessfulRegistration($validated['registration_code'], $user->id);
+        $this->invalidateInvitationCodeAfterSuccessfulRegistration($validated['invitation_code'], $user->id);
         event(new Registered($user));
 
         Auth::login($user);
@@ -58,14 +58,14 @@ class RegisteredUserController extends Controller
     private function getValidRegCodeExistsRule()
     {
         // case insensitive
-        return Rule::exists('registration_codes', 'code')->where(fn (Builder $query) => $query->where('editor_id', null));
+        return Rule::exists('invitation_codes', 'code')->where(fn (Builder $query) => $query->where('editor_id', null));
     }
 
-    private function invalidateRegistrationCodeAfterSuccessfulRegistration(string $code, $editorId)
+    private function invalidateInvitationCodeAfterSuccessfulRegistration(string $code, $editorId)
     {
-        /** @var RegistrationCode */
-        $registration_code = RegistrationCode::where('code', $code)->first();
-        $registration_code->editor_id = $editorId;
-        $registration_code->save();
+        /** @var InvitationCode */
+        $invitation_code = InvitationCode::where('code', $code)->first();
+        $invitation_code->editor_id = $editorId;
+        $invitation_code->save();
     }
 }

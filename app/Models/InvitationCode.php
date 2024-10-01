@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RegistrationCode extends Model
+class InvitationCode extends Model
 {
     use HasFactory;
 
@@ -42,7 +42,7 @@ class RegistrationCode extends Model
     }
 
     /**
-     * Get the user that owns the registration code as an editor.
+     * Get the user that owns the invitation code as an editor.
      *
      * @return BelongsTo<User, self>|null
      */
@@ -52,7 +52,7 @@ class RegistrationCode extends Model
     }
 
     /**
-     * Get the user that owns the registration code as an admin.
+     * Get the user that owns the invitation code as an admin.
      *
      * @return BelongsTo<User, self>
      */

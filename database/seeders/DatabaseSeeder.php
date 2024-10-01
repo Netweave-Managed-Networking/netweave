@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
-use App\Models\RegistrationCode;
+use App\Models\InvitationCode;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::ADMIN,
         ]);
 
-        /** @var \Illuminate\Support\Collection<RegistrationCode> */
-        $codes = RegistrationCode::factory(9)->create(); // Create 9 RegistrationCodes with newly created editor
-        $codes->push(RegistrationCode::factory()->state([
+        /** @var \Illuminate\Support\Collection<InvitationCode> */
+        $codes = InvitationCode::factory(9)->create(); // Create 9 InvitationCodes with newly created editor
+        $codes->push(InvitationCode::factory()->state([
             'editor_id' => random_int(0, 1) ? User::factory() : null,
         ])->create());
 

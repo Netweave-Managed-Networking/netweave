@@ -1,24 +1,24 @@
 import CheckMark from '@/Components/CheckMark';
 import CrossMark from '@/Components/CrossMark';
-import { RegistrationCodeAddButton } from '@/Components/RegistrationCodeAddButton';
-import { RegistrationCodeDeleteButton } from '@/Components/RegistrationCodeDeleteButton';
-import RegistrationCodeInvitationLinkButton from '@/Components/RegistrationCodeInvitationLinkButton';
+import { InvitationCodeAddButton } from '@/Components/InvitationCodeAddButton';
+import { InvitationCodeDeleteButton } from '@/Components/InvitationCodeDeleteButton';
+import InvitationCodeInvitationLinkButton from '@/Components/InvitationCodeInvitationLinkButton';
 import Table, { Row } from '@/Components/Table';
 import { UserDeleteButton } from '@/Components/UserDeleteButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, User } from '@/types';
-import { RegistrationCode } from '@/types/registration-code.model';
+import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
 import { Head } from '@inertiajs/react';
 import { ReactNode } from 'react';
 
-export default function RegistrationCodesTable({
+export default function InvitationCodesTable({
   auth,
-  registrationCodes,
-}: PageProps<{ registrationCodes: RegistrationCode[] }>) {
+  invitationCodes,
+}: PageProps<{ invitationCodes: InvitationCode[] }>) {
   const showAddCodeButton =
-    !hasActiveAdminAlreadyCreatedOneStillUnusedRegistrationCode(
-      registrationCodes,
+    !hasActiveAdminAlreadyCreatedOneStillUnusedInvitationCode(
+      invitationCodes,
       auth.user
     );
 
@@ -26,18 +26,18 @@ export default function RegistrationCodesTable({
     ? createAddCodeButtonRow()
     : undefined;
 
-  const tableRows = createRows(registrationCodes, addCodeButtonRow);
+  const tableRows = createRows(invitationCodes, addCodeButtonRow);
 
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-          User & Registrierungs-Codes
+          User & Einladungen
         </h2>
       }
     >
-      <Head title="User & Registrierungs-Codes" />
+      <Head title="User & Einladungen" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -57,20 +57,20 @@ export default function RegistrationCodesTable({
   );
 }
 
-const hasActiveAdminAlreadyCreatedOneStillUnusedRegistrationCode = (
-  registrationCodes: RegistrationCode[],
+const hasActiveAdminAlreadyCreatedOneStillUnusedInvitationCode = (
+  invitationCodes: InvitationCode[],
   admin: User
 ): boolean =>
-  registrationCodes
-    .filter(registrationCode => registrationCode.admin_id === admin.id)
-    .filter(registrationCode => registrationCode.editor_id === null).length > 0;
+  invitationCodes
+    .filter(invitationCode => invitationCode.admin_id === admin.id)
+    .filter(invitationCode => invitationCode.editor_id === null).length > 0;
 
 const createRows = (
-  registrationCodes: RegistrationCode[],
+  invitationCodes: InvitationCode[],
   addCodeButtonRow: Row | undefined
 ): Row[] => [
   ...(addCodeButtonRow ? [addCodeButtonRow] : []),
-  ...registrationCodes.map(({ id, code, editor, admin }) => ({
+  ...invitationCodes.map(({ id, code, editor, admin }) => ({
     key: code,
     nodes: [
       code,
@@ -78,7 +78,7 @@ const createRows = (
       editor ? (
         userMail(editor)
       ) : (
-        <RegistrationCodeInvitationLinkButton code={code} />
+        <InvitationCodeInvitationLinkButton code={code} />
       ),
       userMail(admin),
       createDeleteButton(id, editor),
@@ -87,15 +87,15 @@ const createRows = (
 ];
 
 const createAddCodeButtonRow = () => ({
-  key: 'RegistrationCodeAddButton',
-  nodes: [<RegistrationCodeAddButton key={'RegistrationCodeAddButton'} />],
+  key: 'InvitationCodeAddButton',
+  nodes: [<InvitationCodeAddButton key={'InvitationCodeAddButton'} />],
 });
 
 const createDeleteButton = (codeId: number, editor: UserMin | null) =>
   editor ? (
     <UserDeleteButton key={`delete_user_${editor.id}`} user={editor} />
   ) : (
-    <RegistrationCodeDeleteButton key={`delete_code_${codeId}`} id={codeId} />
+    <InvitationCodeDeleteButton key={`delete_code_${codeId}`} id={codeId} />
   );
 
 const userMail = (user: UserMin): ReactNode => (

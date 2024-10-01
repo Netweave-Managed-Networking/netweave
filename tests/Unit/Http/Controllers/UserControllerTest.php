@@ -28,7 +28,7 @@ it('allows an admin to delete another user', function () {
     $this->assertModelMissing($user);
 
     // Assert a successful redirect
-    $response->assertRedirect(route('registration-codes.index'));
+    $response->assertRedirect(route('invitation-codes.index'));
     $response->assertSessionHas('success');
 });
 
@@ -46,16 +46,16 @@ it('prevents an admin from deleting themselves', function () {
     $this->assertModelExists($admin);
 
     // Assert a failure redirect
-    $response->assertRedirect(route('registration-codes.index'));
+    $response->assertRedirect(route('invitation-codes.index'));
     $response->assertSessionHas('error');
 });
 
-it('prevents an admin from deleting a user who has created registration codes', function () {
+it('prevents an admin from deleting a user who has created invitation codes', function () {
     // Create an admin user
     $admin = User::factory()->create(['role' => UserRole::ADMIN]);
 
-    // Create a user who has created registration codes
-    $user = User::factory()->hasCreatedRegistrationCodes()->create();
+    // Create a user who has created invitation codes
+    $user = User::factory()->hasCreatedInvitationCodes()->create();
 
     // Simulate the admin being authenticated
     actingAs($admin);
@@ -67,7 +67,7 @@ it('prevents an admin from deleting a user who has created registration codes', 
     $this->assertModelExists($user);
 
     // Assert a failure redirect
-    $response->assertRedirect(route('registration-codes.index'));
+    $response->assertRedirect(route('invitation-codes.index'));
     $response->assertSessionHas('error');
 });
 
@@ -111,6 +111,6 @@ it('handles exceptions when deleting a user', function () {
     $this->assertModelExists($user);
 
     // Assert a failure redirect
-    $response->assertRedirect(route('registration-codes.index'));
+    $response->assertRedirect(route('invitation-codes.index'));
     $response->assertSessionHas('error');
 });

@@ -1,10 +1,10 @@
 import { infoMail } from '@/constants/email.const';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { RegistrationCodeTooltipButton } from './RegistrationCodeTooltipButton';
+import { InvitationCodeTooltipButton } from './InvitationCodeTooltipButton';
 
-describe('RegistrationCodeTooltipButton', () => {
-  test('renders RegistrationCodeTooltipButton with tooltip content on hover', async () => {
-    render(<RegistrationCodeTooltipButton />);
+describe('InvitationCodeTooltipButton', () => {
+  test('renders InvitationCodeTooltipButton with tooltip content on hover', async () => {
+    render(<InvitationCodeTooltipButton />);
 
     const iconButton = screen.getByRole('button');
     expect(iconButton).toBeInTheDocument();
@@ -13,7 +13,7 @@ describe('RegistrationCodeTooltipButton', () => {
 
     // wait for tooltip to appear and check its content
     await waitFor(() => {
-      const tooltipText = screen.getByText(/Registrierungs-Code/i);
+      const tooltipText = screen.getByText(/Einladungscode/i);
       expect(tooltipText).toBeInTheDocument();
 
       const emailLink = screen.getByText(infoMail);

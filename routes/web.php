@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegistrationCodeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +27,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/registration-codes', [RegistrationCodeController::class, 'index'])->name('registration-codes.index');
-    Route::post('/registration-codes', [RegistrationCodeController::class, 'store'])->name('registration-codes.store');
-    Route::delete('/registration-codes/{registrationCode}', [RegistrationCodeController::class, 'destroy'])->name('registration-codes.destroy');
+    Route::get('/invitation-codes', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
+    Route::post('/invitation-codes', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
+    Route::delete('/invitation-codes/{invitationCode}', [InvitationCodeController::class, 'destroy'])->name('invitation-codes.destroy');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
