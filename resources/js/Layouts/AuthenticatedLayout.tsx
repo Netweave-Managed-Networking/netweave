@@ -3,7 +3,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { ToastProvider } from '@/Providers/ToastProvider';
-import { User } from '@/types';
+import { User } from '@/types/user.model';
 import { Link } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 

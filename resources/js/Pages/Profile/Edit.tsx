@@ -1,10 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { PageProps } from '@/types/page-props.type';
+import { Head } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
+import DisplayUserRole from './Partials/DisplayUserRole';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
-import { Head } from '@inertiajs/react';
-import { PageProps } from '@/types';
-import DisplayUserRole from './Partials/DisplayUserRole';
 
 export default function Edit({
   auth,

@@ -6,9 +6,10 @@ import InvitationCodeInvitationLinkButton from '@/Components/InvitationCodeInvit
 import Table, { Row } from '@/Components/Table';
 import { UserDeleteButton } from '@/Components/UserDeleteButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps, User } from '@/types';
 import { InvitationCode } from '@/types/invitation-code.model';
+import { PageProps } from '@/types/page-props.type';
 import { UserMin } from '@/types/user-min.model';
+import { User } from '@/types/user.model';
 import { Head } from '@inertiajs/react';
 import { ReactNode } from 'react';
 

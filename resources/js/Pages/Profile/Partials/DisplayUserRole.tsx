@@ -1,4 +1,4 @@
-import { PageProps } from '@/types';
+import { PageProps } from '@/types/page-props.type';
 import { usePage } from '@inertiajs/react';
 
 export default function DisplayUserRole({

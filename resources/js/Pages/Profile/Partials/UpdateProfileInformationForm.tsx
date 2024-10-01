@@ -2,10 +2,10 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types/page-props.type';
 import { Transition } from '@headlessui/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { PageProps } from '@/types';
 
 export default function UpdateProfileInformation({
   mustVerifyEmail,
