@@ -29,9 +29,9 @@ it('prevents admin from deleting themselves', function () {
     expect($canDelete->allowed())->toBeFalse();
 });
 
-it('prevents admin from deleting a user who has created registration codes', function () {
+it('prevents admin from deleting a user who has created invitation codes', function () {
     $admin = User::factory()->create(['role' => UserRole::ADMIN]);
-    $userWithCodes = User::factory()->hasCreatedRegistrationCodes()->create();
+    $userWithCodes = User::factory()->hasCreatedInvitationCodes()->create();
 
     $policy = new UserPolicy;
 

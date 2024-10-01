@@ -1,25 +1,25 @@
 /* eslint-disable react/display-name */
 import { User } from '@/types';
-import { RegistrationCode } from '@/types/registration-code.model';
+import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
 import { render, screen } from '@testing-library/react';
-import RegistrationCodesTable from './RegistrationCodesTable';
+import InvitationCodesTable from './InvitationCodesTable';
 
-// Mocking child components used in RegistrationCodesTable
+// Mocking child components used in InvitationCodesTable
 jest.mock('@/Components/CheckMark', () => () => <div>CheckMark</div>);
 
 jest.mock('@/Components/CrossMark', () => () => <div>CrossMark</div>);
 
-jest.mock('@/Components/RegistrationCodeInvitationLinkButton', () => () => (
-  <div>RegistrationCodeInvitationLinkButton</div>
+jest.mock('@/Components/InvitationCodeInvitationLinkButton', () => () => (
+  <div>InvitationCodeInvitationLinkButton</div>
 ));
 
-jest.mock('@/Components/RegistrationCodeAddButton', () => ({
-  RegistrationCodeAddButton: () => <button>Add Code</button>,
+jest.mock('@/Components/InvitationCodeAddButton', () => ({
+  InvitationCodeAddButton: () => <button>Add Code</button>,
 }));
 
-jest.mock('@/Components/RegistrationCodeDeleteButton', () => ({
-  RegistrationCodeDeleteButton: ({ id }: { id: number }) => (
+jest.mock('@/Components/InvitationCodeDeleteButton', () => ({
+  InvitationCodeDeleteButton: ({ id }: { id: number }) => (
     <button>Delete {id}</button>
   ),
 }));
@@ -41,7 +41,7 @@ jest.mock(
     ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 );
 
-describe('RegistrationCodesTable', () => {
+describe('InvitationCodesTable', () => {
   const mockUser: User = {
     id: 1,
     name: 'Admin User',
@@ -49,7 +49,7 @@ describe('RegistrationCodesTable', () => {
     role: 'admin',
   } as User;
 
-  const mockRegistrationCodes: RegistrationCode[] = [
+  const mockInvitationCodes: InvitationCode[] = [
     {
       id: 1,
       code: 'CODE123',
@@ -66,17 +66,17 @@ describe('RegistrationCodesTable', () => {
       editor: { id: 2, name: 'Editor User', email: 'editor@example.com' },
       admin: { id: 1, name: 'Admin User', email: 'admin@example.com' },
     },
-  ] as RegistrationCode[];
+  ] as InvitationCode[];
 
-  it('renders the table with registration codes', () => {
+  it('renders the table with invitation codes', () => {
     render(
-      <RegistrationCodesTable
+      <InvitationCodesTable
         auth={{ user: mockUser }}
-        registrationCodes={mockRegistrationCodes}
+        invitationCodes={mockInvitationCodes}
       />
     );
 
-    expect(screen.getByText('User & Registrierungs-Codes')).toBeInTheDocument();
+    expect(screen.getByText('User & Einladungen')).toBeInTheDocument();
     expect(screen.getByText('CODE123')).toBeInTheDocument();
     expect(screen.getByText('CODE456')).toBeInTheDocument();
     expect(screen.getByText('CheckMark')).toBeInTheDocument(); // For unused code
@@ -84,7 +84,7 @@ describe('RegistrationCodesTable', () => {
   });
 
   it('shows the Add Code button if no unused code is available for the admin', () => {
-    // Modify the registration codes to simulate the condition where no unused code exists
+    // Modify the invitation codes to simulate the condition where no unused code exists
     const noUnusedCodes = [
       {
         id: 2,
@@ -94,12 +94,12 @@ describe('RegistrationCodesTable', () => {
         editor: { id: 2, name: 'Editor User', email: 'editor@example.com' },
         admin: { id: 1, name: 'Admin User', email: 'admin@example.com' },
       },
-    ] as RegistrationCode[];
+    ] as InvitationCode[];
 
     render(
-      <RegistrationCodesTable
+      <InvitationCodesTable
         auth={{ user: mockUser }}
-        registrationCodes={noUnusedCodes}
+        invitationCodes={noUnusedCodes}
       />
     );
 
@@ -108,9 +108,9 @@ describe('RegistrationCodesTable', () => {
 
   it('does not show the Add Code button if an unused code is available for the admin', () => {
     render(
-      <RegistrationCodesTable
+      <InvitationCodesTable
         auth={{ user: mockUser }}
-        registrationCodes={mockRegistrationCodes}
+        invitationCodes={mockInvitationCodes}
       />
     );
 
@@ -119,9 +119,9 @@ describe('RegistrationCodesTable', () => {
 
   it('renders delete buttons for unused codes', () => {
     render(
-      <RegistrationCodesTable
+      <InvitationCodesTable
         auth={{ user: mockUser }}
-        registrationCodes={mockRegistrationCodes}
+        invitationCodes={mockInvitationCodes}
       />
     );
 
@@ -129,16 +129,16 @@ describe('RegistrationCodesTable', () => {
     expect(screen.queryByText('Delete 2')).toBeNull(); // Used code
   });
 
-  it('renders RegistrationCodeInvitationLinkButton buttons for unused codes', () => {
+  it('renders InvitationCodeInvitationLinkButton buttons for unused codes', () => {
     render(
-      <RegistrationCodesTable
+      <InvitationCodesTable
         auth={{ user: mockUser }}
-        registrationCodes={mockRegistrationCodes}
+        invitationCodes={mockInvitationCodes}
       />
     );
 
     expect(
-      screen.getByText('RegistrationCodeInvitationLinkButton')
+      screen.getByText('InvitationCodeInvitationLinkButton')
     ).toBeInTheDocument(); // Unused code
     expect(screen.queryByText('-')).toBeNull(); // Used code
   });

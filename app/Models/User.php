@@ -67,18 +67,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the registration codes created by the admin.
+     * Get the invitation codes created by the admin.
      */
-    public function createdRegistrationCodes(): HasMany
+    public function createdInvitationCodes(): HasMany
     {
-        return $this->hasMany(RegistrationCode::class, 'admin_id');
+        return $this->hasMany(InvitationCode::class, 'admin_id');
     }
 
     /**
-     * Get the registration code associated with an editor.
+     * Get the invitation code associated with an editor.
      */
-    public function registrationCode(): HasOne
+    public function invitationCode(): HasOne
     {
-        return $this->hasOne(RegistrationCode::class, 'editor_id');
+        return $this->hasOne(InvitationCode::class, 'editor_id');
     }
 }

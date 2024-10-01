@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { RegistrationCodeAddButton } from './RegistrationCodeAddButton';
+import { InvitationCodeAddButton } from './InvitationCodeAddButton';
 
 // Mock Inertia.js `useForm`
 const mockPost = jest.fn();
@@ -7,13 +7,13 @@ jest.mock('@inertiajs/react', () => ({
   useForm: () => ({ post: mockPost }),
 }));
 
-describe('RegistrationCodeAddButton', () => {
+describe('InvitationCodeAddButton', () => {
   beforeEach(() => {
     mockPost.mockClear(); // Clear mock calls before each test
   });
 
   it('renders the button and triggers post request on click', () => {
-    render(<RegistrationCodeAddButton />);
+    render(<InvitationCodeAddButton />);
 
     // Find the button
     const button = screen.getByRole('button');
@@ -22,6 +22,6 @@ describe('RegistrationCodeAddButton', () => {
     fireEvent.click(button);
 
     // Assert post request is called
-    expect(mockPost).toHaveBeenCalledWith('/registration-codes');
+    expect(mockPost).toHaveBeenCalledWith('/invitation-codes');
   });
 });

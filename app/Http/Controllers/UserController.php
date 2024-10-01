@@ -17,11 +17,11 @@ class UserController extends Controller
             $name = $user->name;
             $user->delete();
 
-            return redirect()->route('registration-codes.index')->with('success', "\"$name\" wurde gelöscht.");
+            return redirect()->route('invitation-codes.index')->with('success', "\"$name\" wurde gelöscht.");
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return redirect()->route('registration-codes.index')->with('error', $e->getMessage());
+            return redirect()->route('invitation-codes.index')->with('error', $e->getMessage());
         } catch (\Exception $e) {
-            return redirect()->route('registration-codes.index')->with('error', 'Nutzer konnte nicht gelöscht werden: '.$e->getMessage());
+            return redirect()->route('invitation-codes.index')->with('error', 'Nutzer konnte nicht gelöscht werden: '.$e->getMessage());
         }
     }
 }

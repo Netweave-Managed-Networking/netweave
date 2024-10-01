@@ -2,20 +2,20 @@ import { useForm } from '@inertiajs/react';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import { IconButton, Tooltip } from '@mui/material';
 
-interface RegistrationCodeDeleteButtonProps {
+interface InvitationCodeDeleteButtonProps {
   id: number;
 }
 
-export function RegistrationCodeDeleteButton({
+export function InvitationCodeDeleteButton({
   id,
-}: RegistrationCodeDeleteButtonProps) {
+}: InvitationCodeDeleteButtonProps) {
   const { delete: destroy } = useForm({});
 
   const handleDelete = async () => {
     try {
-      destroy(route('registration-codes.destroy', id));
+      destroy(route('invitation-codes.destroy', id));
     } catch (error) {
-      console.error('Error deleting registration code:', error);
+      console.error('Error deleting invitation code:', error);
     }
   };
 

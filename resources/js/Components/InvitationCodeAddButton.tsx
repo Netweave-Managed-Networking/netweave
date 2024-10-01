@@ -2,26 +2,25 @@ import { useForm } from '@inertiajs/react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { IconButton, Tooltip } from '@mui/material';
 
-export function RegistrationCodeAddButton() {
+export function InvitationCodeAddButton() {
   const { post } = useForm({});
 
-  const postRequestToCreateNewRegistrationCode = () => {
-    post('/registration-codes');
+  const postRequestToCreateNewInvitationCode = () => {
+    post('/invitation-codes');
   };
 
   return (
     <Tooltip
       title={
         <>
-          Einen neuen Registrierungscode hinzufügen, um einen neuen User
-          einzuladen.
+          Einen neuen Einladungscode hinzufügen, um einen neuen User einzuladen.
         </>
       }
       placement="right"
       arrow
     >
       <IconButton
-        onClick={postRequestToCreateNewRegistrationCode}
+        onClick={postRequestToCreateNewInvitationCode}
         sx={{ padding: 0 }}
       >
         <AddCircleIcon />

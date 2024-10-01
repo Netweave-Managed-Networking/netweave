@@ -71,8 +71,8 @@ export default function Authenticated({
                         Profile
                       </Dropdown.Link>
                       {user.role === 'admin' && (
-                        <Dropdown.Link href={route('registration-codes.index')}>
-                          User & Registrierungs-Codes
+                        <Dropdown.Link href={route('invitation-codes.index')}>
+                          User & Einladungen
                         </Dropdown.Link>
                       )}
                       <Dropdown.Link

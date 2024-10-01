@@ -21,7 +21,7 @@ class UserPolicy
             return Response::deny('Du bist nicht berechtigt, dein eigenes Profil über diese Route zu löschen.');
         }
 
-        if ($userToBeDeleted->createdRegistrationCodes()->exists()) {
+        if ($userToBeDeleted->createdInvitationCodes()->exists()) {
             return Response::deny('Du bist nicht berechtigt, Nutzer zu löschen, die bereits andere Nutzer eingeladen haben.');
         }
 

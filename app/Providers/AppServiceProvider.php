@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\RegistrationCode;
-use App\Observers\RegistrationCodeObserver;
+use App\Models\InvitationCode;
+use App\Observers\InvitationCodeObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RegistrationCode::observe(RegistrationCodeObserver::class);
+        InvitationCode::observe(InvitationCodeObserver::class);
     }
 }

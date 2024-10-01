@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { RegistrationCodeDeleteButton } from './RegistrationCodeDeleteButton';
+import { InvitationCodeDeleteButton } from './InvitationCodeDeleteButton';
 
 // Mock the `useForm` hook from Inertia.js
 jest.mock('@inertiajs/react', () => ({
@@ -14,7 +14,7 @@ const route = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = route;
 
-describe('RegistrationCodeDeleteButton', () => {
+describe('InvitationCodeDeleteButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -24,17 +24,17 @@ describe('RegistrationCodeDeleteButton', () => {
     const mockDelete = jest.fn();
     (useForm as jest.Mock).mockReturnValue({ delete: mockDelete });
 
-    render(<RegistrationCodeDeleteButton id={id} />);
+    render(<InvitationCodeDeleteButton id={id} />);
 
     // Simulate button click
     fireEvent.click(screen.getByRole('button'));
 
     // Verify `route` was called with correct arguments
-    expect(route).toHaveBeenCalledWith('registration-codes.destroy', id);
+    expect(route).toHaveBeenCalledWith('invitation-codes.destroy', id);
 
     // Verify `httpDelete` was called with the correct route URL
     expect(mockDelete).toHaveBeenCalledWith(
-      route('registration-codes.destroy', id)
+      route('invitation-codes.destroy', id)
     );
   });
 });

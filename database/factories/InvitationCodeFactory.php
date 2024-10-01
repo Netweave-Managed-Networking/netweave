@@ -3,24 +3,24 @@
 namespace Database\Factories;
 
 use App\Enums\UserRole;
-use App\Models\RegistrationCode;
+use App\Models\InvitationCode;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RegistrationCode>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InvitationCode>
  *
  * Needs at least one admin to exist
  */
-class RegistrationCodeFactory extends Factory
+class InvitationCodeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RegistrationCode::class;
+    protected $model = InvitationCode::class;
 
     /**
      * Define the model's default state.

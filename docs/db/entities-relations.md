@@ -23,9 +23,9 @@
 <pre>...all laravel attributes (name, email, remember_token...)</pre>
 <pre>role: "admin" | "editor", default: "editor"</pre>
 
-### RegistrationCode
+### InvitationCode
 
-<small>A RegistrationCode is needed in order to register new users. Admins create codes (admin_id). The new user uses the code during registration (editor_id).</small>
+<small>A InvitationCode is needed in order to register new users. Admins create codes (admin_id). The new user uses the code during registration (editor_id).</small>
 
 <pre>code: short, unique</pre>
 <pre>🗝️editor_id?: User, onDelete: set null</pre>
