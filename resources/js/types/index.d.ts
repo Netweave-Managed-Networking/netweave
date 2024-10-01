@@ -11,7 +11,7 @@ export interface User {
 export type PageProps<
   T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
-  auth: {
-    user: User;
-  };
+  error_message?: string | null;
+  success_message?: string | null;
+  auth: { user: User };
 };

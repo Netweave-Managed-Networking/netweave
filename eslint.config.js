@@ -1,8 +1,8 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
-import pluginTs from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import pluginReact from 'eslint-plugin-react';
+import globals from 'globals';
+import pluginTs from 'typescript-eslint';
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -26,5 +26,10 @@ export default [
   ...pluginTs.configs.recommended,
   pluginReact.configs.flat.recommended,
   eslintPluginPrettierRecommended,
-  { rules: { 'react/react-in-jsx-scope': 'off' } },
+  {
+    rules: {
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
+    },
+  },
 ];

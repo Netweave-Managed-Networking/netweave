@@ -41,6 +41,7 @@ export default function RegistrationCodeInvitationLinkButton({
         open={toastOpen}
         message="Der Einladungslink wurde in die Zwischenablage kopiert."
         position="top-center"
+        severity="info"
       />
     </>
   );

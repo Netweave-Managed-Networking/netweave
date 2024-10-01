@@ -14,13 +14,14 @@ class UserController extends Controller
     {
         try {
             Gate::authorize('delete', $user);
+            $name = $user->name;
             $user->delete();
 
-            return redirect()->route('registration-codes.index')->with('success', 'User deleted successfully.');
+            return redirect()->route('registration-codes.index')->with('success', "\"$name\" wurde gelöscht.");
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return redirect()->route('registration-codes.index')->with('error', 'You are not authorized to delete this user.');
+            return redirect()->route('registration-codes.index')->with('error', $e->getMessage());
         } catch (\Exception $e) {
-            return redirect()->route('registration-codes.index')->with('error', 'Failed to delete the user: '.$e->getMessage());
+            return redirect()->route('registration-codes.index')->with('error', 'Nutzer konnte nicht gelöscht werden: '.$e->getMessage());
         }
     }
 }

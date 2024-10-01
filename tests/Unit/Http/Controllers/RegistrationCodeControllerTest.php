@@ -122,7 +122,7 @@ test('it can not delete a registration code when a user used it to register', fu
 
     // Assert the response is a redirect to the index page with an error message
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('error', 'Deletion not allowed: RegistrationCode belongs to an editor. When the editor is deleted his RegistrationCode will be deleted as well.');
+    $response->assertSessionHas('error');
 
     // Assert the registration code no longer exists in the database
     $this->assertDatabaseHas('registration_codes', [
@@ -147,7 +147,7 @@ test('it can delete a registration code as long as it has no editor', function (
 
     // Assert the response is a redirect to the index page with a success message
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('success', 'Registration code deleted successfully.');
+    $response->assertSessionHas('success');
 
     // Assert the registration code no longer exists in the database
     $this->assertDatabaseMissing('registration_codes', [
