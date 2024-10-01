@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
-import { User } from '@/types';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
+import { User } from '@/types/user.model';
 import { render, screen } from '@testing-library/react';
 import InvitationCodesTable from './InvitationCodesTable';
 

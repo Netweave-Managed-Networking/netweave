@@ -1,5 +1,5 @@
 import Toast, { ToastPosition } from '@/Components/Toast';
-import { PageProps } from '@/types';
+import { PageProps } from '@/types/page-props.type';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
