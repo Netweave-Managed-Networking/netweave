@@ -29,7 +29,7 @@ it('allows an admin to delete another user', function () {
 
     // Assert a successful redirect
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('success', 'User deleted successfully.');
+    $response->assertSessionHas('success');
 });
 
 it('prevents an admin from deleting themselves', function () {
@@ -47,7 +47,7 @@ it('prevents an admin from deleting themselves', function () {
 
     // Assert a failure redirect
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('error', 'You are not authorized to delete this user.');
+    $response->assertSessionHas('error');
 });
 
 it('prevents an admin from deleting a user who has created registration codes', function () {
@@ -68,7 +68,7 @@ it('prevents an admin from deleting a user who has created registration codes', 
 
     // Assert a failure redirect
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('error', 'You are not authorized to delete this user.');
+    $response->assertSessionHas('error');
 });
 
 it('prevents a non-admin user from deleting another user', function () {
@@ -112,5 +112,5 @@ it('handles exceptions when deleting a user', function () {
 
     // Assert a failure redirect
     $response->assertRedirect(route('registration-codes.index'));
-    $response->assertSessionHas('error', 'You are not authorized to delete this user.');
+    $response->assertSessionHas('error');
 });

@@ -16,7 +16,7 @@ it('allows admin to delete a different user', function () {
 
     $canDelete = $policy->delete($admin, $userToBeDeleted);
 
-    expect($canDelete)->toBeTrue();
+    expect($canDelete->allowed())->toBeTrue();
 });
 
 it('prevents admin from deleting themselves', function () {
@@ -26,7 +26,7 @@ it('prevents admin from deleting themselves', function () {
 
     $canDelete = $policy->delete($admin, $admin);
 
-    expect($canDelete)->toBeFalse();
+    expect($canDelete->allowed())->toBeFalse();
 });
 
 it('prevents admin from deleting a user who has created registration codes', function () {
@@ -37,7 +37,7 @@ it('prevents admin from deleting a user who has created registration codes', fun
 
     $canDelete = $policy->delete($admin, $userWithCodes);
 
-    expect($canDelete)->toBeFalse();
+    expect($canDelete->allowed())->toBeFalse();
 });
 
 it('prevents a non-admin user from deleting another user', function () {
@@ -48,5 +48,5 @@ it('prevents a non-admin user from deleting another user', function () {
 
     $canDelete = $policy->delete($editor, $userToBeDeleted);
 
-    expect($canDelete)->toBeFalse();
+    expect($canDelete->allowed())->toBeFalse();
 });

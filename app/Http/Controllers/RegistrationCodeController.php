@@ -37,7 +37,7 @@ class RegistrationCodeController extends Controller
             'admin_id' => $admin->id,
         ]);
 
-        return redirect()->route('registration-codes.index');
+        return redirect()->route('registration-codes.index')->with('success', 'Neuer Einladungscode erstellt.');
     }
 
     public function destroy(Request $request, RegistrationCode $registrationCode): RedirectResponse
@@ -45,7 +45,7 @@ class RegistrationCodeController extends Controller
         try {
             $registrationCode->delete();
 
-            return redirect()->route('registration-codes.index')->with('success', 'Registration code deleted successfully.');
+            return redirect()->route('registration-codes.index')->with('success', 'Einladungscode gelöscht.');
         } catch (Exception $e) {
             return redirect()->route('registration-codes.index')->with('error', $e->getMessage());
         }
