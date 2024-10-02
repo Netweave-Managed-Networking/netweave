@@ -154,6 +154,11 @@ export default function Authenticated({
                 <ResponsiveNavLink href={route('profile.edit')}>
                   Profile
                 </ResponsiveNavLink>
+                {user.role === 'admin' && (
+                  <ResponsiveNavLink href={route('invitation-codes.index')}>
+                    User & Einladungen
+                  </ResponsiveNavLink>
+                )}
                 <ResponsiveNavLink
                   method="post"
                   href={route('logout')}
