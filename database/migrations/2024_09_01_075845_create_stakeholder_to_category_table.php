@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('stakeholder_to_category', function (Blueprint $table) {
             $table->foreignId('stakeholder_category_id')->constrained('stakeholder_categories')->cascadeOnDelete();
-            $table->foreignId('stakeholder_id')->constrained('stakeholder_organizations')->cascadeOnDelete();
-            $table->primary(['stakeholder_category_id', 'stakeholder_id']);
+            $table->foreignId('stakeholder_organizations_id')->constrained('stakeholder_organizations')->cascadeOnDelete();
+            $table->primary(['stakeholder_category_id', 'stakeholder_organizations_id']);
             $table->timestamps();
         });
     }
