@@ -1,7 +1,8 @@
 /* eslint-disable react/display-name */
+import { mockInvitationCodes } from '@/testing/mock-invitation-codes.mock';
+import { mockUser } from '@/testing/mock-users.mock';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
-import { User } from '@/types/user.model';
 import { render, screen } from '@testing-library/react';
 import InvitationCodesTable from './InvitationCodesTable';
 
@@ -42,32 +43,6 @@ jest.mock(
 );
 
 describe('InvitationCodesTable', () => {
-  const mockUser: User = {
-    id: 1,
-    name: 'Admin User',
-    email: 'admin@example.com',
-    role: 'admin',
-  } as User;
-
-  const mockInvitationCodes: InvitationCode[] = [
-    {
-      id: 1,
-      code: 'CODE123',
-      admin_id: 1,
-      editor_id: null, // still unused
-      editor: null,
-      admin: { id: 1, name: 'Admin User', email: 'admin@example.com' },
-    },
-    {
-      id: 2,
-      code: 'CODE456',
-      admin_id: 1,
-      editor_id: 2,
-      editor: { id: 2, name: 'Editor User', email: 'editor@example.com' },
-      admin: { id: 1, name: 'Admin User', email: 'admin@example.com' },
-    },
-  ] as InvitationCode[];
-
   it('renders the table with invitation codes', () => {
     render(
       <InvitationCodesTable
