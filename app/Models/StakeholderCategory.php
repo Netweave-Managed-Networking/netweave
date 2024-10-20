@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StakeholderCategory extends Model
 {
@@ -46,10 +46,10 @@ class StakeholderCategory extends Model
     ];
 
     /**
-     * Get the stakeholders associated with the category.
+     * Get the stakeholder_organizations associated with the category.
      */
-    // public function stakeholders(): HasMany
-    // {
-    //     return $this->hasMany(Stakeholder::class, 'stakeholder_category_id');
-    // }
+    public function stakeholderOrganizations(): BelongsToMany
+    {
+        return $this->belongsToMany(StakeholderOrganization::class, 'stakeholder_to_category');
+    }
 }
