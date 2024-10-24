@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StakeholderOrganizationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/stakeholder-organizations/create', [StakeholderOrganizationController::class, 'create'])->name('stakeholder-organizations.create');
+    Route::post('/stakeholder-organizations', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
 });
 
 require __DIR__.'/auth.php';

@@ -70,6 +70,7 @@ see [entities-relations.md](./docs/db/entities-relations.md).
       2. `node_modules` not needed since `vite build` bundled all needed javascript to the build folder
       3. `vendor` not needed since we will install the dependencies later directly to the server itself
       4. `.git` not needed (it is needed if you want to deploy changes via git of course, but for that `npm` must be executable on your server)
+   2. be sure that there is no file `public/hot`. Delete that file if it exists.
 3. REMOTE
    1. `source ~/.bashrc`
    2. `composer install --no-dev --optimize-autoloader`

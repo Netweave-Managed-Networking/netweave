@@ -82,7 +82,7 @@
 <small>Stakeholder n:m StakeholderCategory.</small>
 
 <pre>🗝️stakeholder_category_id: StakeholderCategory, onDelete: cascade</pre>
-<pre>🗝️stakeholder_id: Stakeholder, onDelete: cascade</pre>
+<pre>stakeholder_organization_id: Stakeholder, onDelete: cascade</pre>
 
 ### StakeholderContactPerson
 
