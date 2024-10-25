@@ -6,7 +6,7 @@ type Element = {
   name: string;
 };
 
-type ElementBadgeSelectorProps = {
+type BadgeSelectProps = {
   elements: Element[];
   onChange: (selectedElements: number[]) => void;
   className?: string;
@@ -16,7 +16,7 @@ export default function BadgeSelect({
   elements,
   onChange,
   className,
-}: ElementBadgeSelectorProps) {
+}: BadgeSelectProps) {
   const [selectedElements, setSelectedElements] = useState<number[]>([]);
 
   useEffect(() => onChange(selectedElements), [selectedElements, onChange]);
