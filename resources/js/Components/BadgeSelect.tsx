@@ -35,7 +35,11 @@ export default function BadgeSelect({
     <Box display="flex" flexWrap="wrap" gap={1} className={className}>
       {sortedElements.map(element => (
         <div key={element.id} onClick={() => toggleElement(element.id)}>
-          <Badge element={element} isActivated={isSelected(element.id)}></Badge>
+          <Badge
+            element={element}
+            isActivated={isSelected(element.id)}
+            isClickable={true}
+          ></Badge>
         </div>
       ))}
     </Box>
