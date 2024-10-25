@@ -14,6 +14,11 @@ export default function StakeholderOrganizationsCreate({
 }: PageProps<{
   stakeholderCategories: Array<{ id: number; name: string }>;
 }>) {
+  const stakeholderCategoryBadges = stakeholderCategories.map(category => ({
+    ...category,
+    label: category.name,
+  }));
+
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const { data, setData, post, errors, processing } = useForm({
@@ -56,7 +61,7 @@ export default function StakeholderOrganizationsCreate({
                     required
                   />
                   <BadgeSelect
-                    elements={stakeholderCategories}
+                    elements={stakeholderCategoryBadges}
                     onChange={selected => setSelectedCategories(selected)}
                     className="mt-1 block w-full"
                   />

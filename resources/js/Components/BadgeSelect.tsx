@@ -1,13 +1,9 @@
-import { Box, Chip } from '@mui/material';
+import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-
-type Element = {
-  id: number;
-  name: string;
-};
+import Badge, { BadgeElement } from './Badge';
 
 type BadgeSelectProps = {
-  elements: Element[];
+  elements: BadgeElement[];
   onChange: (selectedElements: number[]) => void;
   className?: string;
 };
@@ -31,25 +27,16 @@ export default function BadgeSelect({
 
   const isSelected = (id: number): boolean => selectedElements.includes(id);
 
-  const sortedElements = elements.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedElements = elements.sort((a, b) =>
+    a.label.localeCompare(b.label)
+  );
 
   return (
     <Box display="flex" flexWrap="wrap" gap={1} className={className}>
       {sortedElements.map(element => (
-        <Chip
-          key={element.id}
-          label={element.name}
-          clickable
-          onClick={() => toggleElement(element.id)}
-          sx={{
-            backgroundColor: isSelected(element.id) ? 'grey.900' : 'grey.300',
-            color: isSelected(element.id) ? 'white' : 'black',
-            textShadow: isSelected(element.id) ? '.001em .001em #fff' : 'none',
-            '&:hover': {
-              backgroundColor: isSelected(element.id) ? 'grey.800' : 'grey.200',
-            },
-          }}
-        />
+        <div key={element.id} onClick={() => toggleElement(element.id)}>
+          <Badge element={element} isActivated={isSelected(element.id)}></Badge>
+        </div>
       ))}
     </Box>
   );
