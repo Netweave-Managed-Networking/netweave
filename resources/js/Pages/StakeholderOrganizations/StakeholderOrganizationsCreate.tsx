@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
@@ -14,11 +15,6 @@ export default function StakeholderOrganizationsCreate({
 }: PageProps<{
   stakeholderCategories: Array<{ id: number; name: string }>;
 }>) {
-  const stakeholderCategoryBadges = stakeholderCategories.map(category => ({
-    ...category,
-    label: category.name,
-  }));
-
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const { data, setData, post, errors, processing } = useForm({
@@ -61,7 +57,7 @@ export default function StakeholderOrganizationsCreate({
                     required
                   />
                   <BadgeSelect
-                    elements={stakeholderCategoryBadges}
+                    elements={stakeholderCategories.map(idNameToIdLabel)}
                     onChange={selected => setSelectedCategories(selected)}
                     className="mt-1 block w-full"
                   />
