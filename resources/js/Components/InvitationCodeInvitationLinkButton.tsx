@@ -1,4 +1,4 @@
-import { copyToClipboard } from '@/helpers/copyToClipboard';
+import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';

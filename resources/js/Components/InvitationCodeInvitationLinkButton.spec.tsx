@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
-import { copyToClipboard } from '@/helpers/copyToClipboard';
+import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import InvitationCodeInvitationLinkButton from './InvitationCodeInvitationLinkButton';
 import { ToastProps } from './Toast';
 
 // Mock the copyToClipboard helper function
-jest.mock('@/helpers/copyToClipboard', () => ({
+jest.mock('@/helpers/copyToClipboard.helper', () => ({
   copyToClipboard: jest.fn(),
 }));
 

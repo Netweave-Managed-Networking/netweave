@@ -4,9 +4,9 @@ import BadgeSelect from './BadgeSelect';
 
 describe('BadgeSelect Component', () => {
   const elements = [
-    { id: 1, name: 'Element A' },
-    { id: 2, name: 'Element B' },
-    { id: 3, name: 'Element C' },
+    { id: 1, label: 'Element A' },
+    { id: 2, label: 'Element B' },
+    { id: 3, label: 'Element C' },
   ];
   let onChangeMock: jest.Mock;
 
@@ -17,15 +17,15 @@ describe('BadgeSelect Component', () => {
   it('should render without crashing', () => {
     render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
     elements.forEach(element => {
-      expect(screen.getByText(element.name)).toBeInTheDocument();
+      expect(screen.getByText(element.label)).toBeInTheDocument();
     });
   });
 
   it('should sort elements alphabetically', () => {
     const unorderedElements = [
-      { id: 3, name: 'Element C' },
-      { id: 1, name: 'Element A' },
-      { id: 2, name: 'Element B' },
+      { id: 3, label: 'Element C' },
+      { id: 1, label: 'Element A' },
+      { id: 2, label: 'Element B' },
     ];
     render(
       <BadgeSelect elements={unorderedElements} onChange={onChangeMock} />

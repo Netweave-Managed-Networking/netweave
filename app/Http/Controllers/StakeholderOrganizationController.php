@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StakeholderCategory;
 use App\Models\StakeholderOrganization;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,6 +12,13 @@ use Inertia\Response;
 
 class StakeholderOrganizationController extends Controller
 {
+    public function indexJson(Request $request): JsonResponse
+    {
+        $stakeholderOrganizations = StakeholderOrganization::with('stakeholderCategories:id,name')->orderBy('created_at', 'desc')->get();
+
+        return response()->json($stakeholderOrganizations);
+    }
+
     public function create(Request $request): Response
     {
         $stakeholder_categories = StakeholderCategory::select(['id', 'name'])->get();

@@ -42,4 +42,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/stakeholder-organizations', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
 });
 
+Route::prefix('api')->group(function () {
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/stakeholder-organizations', [StakeholderOrganizationController::class, 'indexJson'])->name('api.stakeholder-organizations.index');
+    });
+});
+
 require __DIR__.'/auth.php';

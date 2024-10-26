@@ -1,3 +1,5 @@
+import StakeholderOrganizationsList from '@/Components/StakeholderOrganizationsList';
+import { Tile } from '@/Components/Tile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
@@ -15,25 +17,19 @@ export default function Dashboard({ auth }: PageProps) {
     >
       <Head title="Dashboard" />
 
-      <div className="pt-12 pb-3">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div className="p-6 text-gray-900">Du bist angemeldet!</div>
-          </div>
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="pt-12 pb-3">
+          <a href="/stakeholder-organizations/create">
+            <Tile>
+              <AddCircleOutline fontSize="medium" />
+              <span>Neue Organisation anlegen</span>
+            </Tile>
+          </a>
         </div>
-      </div>
 
-      <div className="py-3">
-        <a href="/stakeholder-organizations/create">
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-              <div className="p-6 text-gray-900 flex gap-2">
-                <AddCircleOutline fontSize="medium" />
-                <span>Neue Organisation anlegen</span>
-              </div>
-            </div>
-          </div>
-        </a>
+        <div className="py-3" style={{ height: '60vh', overflow: 'auto' }}>
+          <StakeholderOrganizationsList />
+        </div>
       </div>
     </AuthenticatedLayout>
   );

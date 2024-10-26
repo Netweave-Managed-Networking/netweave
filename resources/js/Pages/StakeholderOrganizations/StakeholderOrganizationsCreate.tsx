@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
@@ -56,7 +57,7 @@ export default function StakeholderOrganizationsCreate({
                     required
                   />
                   <BadgeSelect
-                    elements={stakeholderCategories}
+                    elements={stakeholderCategories.map(idNameToIdLabel)}
                     onChange={selected => setSelectedCategories(selected)}
                     className="mt-1 block w-full"
                   />
