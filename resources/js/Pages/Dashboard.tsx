@@ -1,3 +1,4 @@
+import StakeholderOrganizationsList from '@/Components/StakeholderOrganizationsList';
 import { Tile } from '@/Components/Tile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
@@ -24,6 +25,10 @@ export default function Dashboard({ auth }: PageProps) {
               <span>Neue Organisation anlegen</span>
             </Tile>
           </a>
+        </div>
+
+        <div className="py-3" style={{ height: '60vh', overflow: 'auto' }}>
+          <StakeholderOrganizationsList />
         </div>
       </div>
     </AuthenticatedLayout>
