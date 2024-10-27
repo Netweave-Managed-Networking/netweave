@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.BadgeChip.Mui-focusVisible {
+  background-color: theme('colors.gray.400') !important;
+}
+
+.BadgeChip.BadgeChipActivated.Mui-focusVisible {
+  background-color: theme('colors.gray.600') !important;
+}

@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Badge, { BadgeElement } from './Badge';
 
-type BadgeSelectProps = {
+export type BadgeSelectProps = {
   elements: BadgeElement[];
   onChange: (selectedElements: number[]) => void;
   className?: string;
@@ -13,9 +13,9 @@ export default function BadgeSelect({
   onChange,
   className,
 }: BadgeSelectProps) {
-  const [selectedElements, setSelectedElements] = useState<number[]>([]);
+  const [selectedElementIds, setSelectedElements] = useState<number[]>([]);
 
-  useEffect(() => onChange(selectedElements), [selectedElements, onChange]);
+  useEffect(() => onChange(selectedElementIds), [selectedElementIds, onChange]);
 
   const toggleElement = (id: number) => {
     setSelectedElements(selectedElements =>
@@ -25,22 +25,23 @@ export default function BadgeSelect({
     );
   };
 
-  const isSelected = (id: number): boolean => selectedElements.includes(id);
+  const selectableElements = elements.map(elem => ({
+    ...elem,
+    isActivated: elem.isActivated ? true : selectedElementIds.includes(elem.id),
+    onClick: () => {
+      toggleElement(elem.id);
+      return elem.onClick ? elem.onClick() : void 0;
+    },
+  }));
 
-  const sortedElements = elements.sort((a, b) =>
+  const sortedElements = selectableElements.sort((a, b) =>
     a.label.localeCompare(b.label)
   );
 
   return (
     <Box display="flex" flexWrap="wrap" gap={1} className={className}>
       {sortedElements.map(element => (
-        <div key={element.id} onClick={() => toggleElement(element.id)}>
-          <Badge
-            element={element}
-            isActivated={isSelected(element.id)}
-            isClickable={true}
-          ></Badge>
-        </div>
+        <Badge key={element.id} element={element}></Badge>
       ))}
     </Box>
   );
