@@ -58,6 +58,10 @@ export default function StakeholderOrganizationsCreate({
                   <BadgeSelect
                     elements={stakeholderCategories.map(idNameToIdLabel)}
                     onChange={selected => setSelectedCategories(selected)}
+                    add={{
+                      label: 'Neue Kategorie',
+                      onAdd: () => console.log('addClicked'),
+                    }}
                     className="mt-1 block w-full"
                   />
                   <InputError

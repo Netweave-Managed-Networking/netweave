@@ -1,18 +1,20 @@
-import { Chip } from '@mui/material';
+import { Chip, ChipOwnProps } from '@mui/material';
 
 export type BadgeElement = {
   id: number;
   label: string;
+  icon?: ChipOwnProps['icon'];
   isActivated?: boolean;
   onClick?: () => void;
 };
 
 export default function Badge({ element }: { element: BadgeElement }) {
-  const { label, onClick, isActivated } = element;
+  const { label, icon, onClick, isActivated } = element;
   const isClickable = !!onClick;
 
   return (
     <Chip
+      icon={icon}
       label={label}
       clickable={isClickable}
       onClick={onClick}
