@@ -1,11 +1,11 @@
-import BadgeSelect from '@/Components/BadgeSelect';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
+import StakeholderCategoriesSelectAdd from '@/Components/StakeholderCategoriesSelectAdd';
 import TextInput from '@/Components/TextInput';
-import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
+import { StakeholderCategoryMin } from '@/types/stakeholder-category-min.model';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
@@ -13,7 +13,7 @@ export default function StakeholderOrganizationsCreate({
   auth,
   stakeholderCategories,
 }: PageProps<{
-  stakeholderCategories: Array<{ id: number; name: string }>;
+  stakeholderCategories: StakeholderCategoryMin[];
 }>) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
@@ -49,26 +49,12 @@ export default function StakeholderOrganizationsCreate({
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 bg-white border-b border-gray-200">
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <InputLabel
-                    htmlFor="stakeholder_categories"
-                    value="Kategorien"
-                    required
-                  />
-                  <BadgeSelect
-                    elements={stakeholderCategories.map(idNameToIdLabel)}
-                    onChange={selected => setSelectedCategories(selected)}
-                    add={{
-                      label: 'Neue Kategorie',
-                      onAdd: () => console.log('addClicked'),
-                    }}
-                    className="mt-1 block w-full"
-                  />
-                  <InputError
-                    message={errors.stakeholder_categories}
-                    className="mt-2"
-                  />
-                </div>
+                {/* Categories */}
+                <StakeholderCategoriesSelectAdd
+                  stakeholderCategories={stakeholderCategories}
+                  stakeholder_categories_errors={errors.stakeholder_categories}
+                  onChange={selected => setSelectedCategories(selected)}
+                />
 
                 {/* Organization Name */}
                 <div>
