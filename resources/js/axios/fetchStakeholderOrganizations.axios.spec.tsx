@@ -6,8 +6,8 @@ jest.mock('axios');
 // Mock the `route` function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = jest.fn().mockImplementation((name: string) => {
-  if (name === 'api.stakeholder-organizations.index') {
-    return '/api/stakeholder-organizations'; // Replace with the actual API endpoint
+  if (name === 'stakeholder-organizations.api.index') {
+    return '/stakeholder-organizations/api'; // Replace with the actual API endpoint
   }
 });
 
@@ -21,8 +21,8 @@ describe('fetchStakeholderOrganizations', () => {
 
     const result = await fetchStakeholderOrganizations();
 
-    expect(route).toHaveBeenCalledWith('api.stakeholder-organizations.index');
-    expect(axios.get).toHaveBeenCalledWith('/api/stakeholder-organizations');
+    expect(route).toHaveBeenCalledWith('stakeholder-organizations.api.index');
+    expect(axios.get).toHaveBeenCalledWith('/stakeholder-organizations/api');
     expect(result).toEqual(mockData);
   });
 
@@ -33,7 +33,7 @@ describe('fetchStakeholderOrganizations', () => {
     await expect(fetchStakeholderOrganizations()).rejects.toThrow(
       'Network Error'
     );
-    expect(route).toHaveBeenCalledWith('api.stakeholder-organizations.index');
-    expect(axios.get).toHaveBeenCalledWith('/api/stakeholder-organizations');
+    expect(route).toHaveBeenCalledWith('stakeholder-organizations.api.index');
+    expect(axios.get).toHaveBeenCalledWith('/stakeholder-organizations/api');
   });
 });

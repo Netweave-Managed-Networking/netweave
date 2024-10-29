@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export async function fetchStakeholderOrganizations() {
-  return (await axios.get(route('api.stakeholder-organizations.index'))).data;
+  return (await axios.get(route('stakeholder-organizations.api.index'))).data;
 }

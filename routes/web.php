@@ -7,8 +7,13 @@ use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response;
 
-Route::get('/', function () {
+//////////
+// OPEN //
+//////////
+
+Route::get('/', function (): Response {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -17,34 +22,43 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
+Route::get('/dashboard', function (): Response {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+///////////
+// ADMIN //
+///////////
+
+Route::middleware(['auth', 'admin'])->group(function (): void {
+    Route::prefix('invitation-codes')->group(function (): void {
+        Route::get('', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
+        Route::post('', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
+        Route::delete('/{invitationCode}', [InvitationCodeController::class, 'destroy'])->name('invitation-codes.destroy');
+    });
+
+    Route::prefix('users')->group(function (): void {
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/invitation-codes', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
-    Route::post('/invitation-codes', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
-    Route::delete('/invitation-codes/{invitationCode}', [InvitationCodeController::class, 'destroy'])->name('invitation-codes.destroy');
-});
+//////////
+// AUTH //
+//////////
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-});
+Route::middleware('auth')->group(function (): void {
+    Route::prefix('profile')->group(function (): void {
+        Route::get('', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/stakeholder-organizations/create', [StakeholderOrganizationController::class, 'create'])->name('stakeholder-organizations.create');
-    Route::post('/stakeholder-organizations', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
-});
-
-Route::prefix('api')->group(function () {
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/stakeholder-organizations', [StakeholderOrganizationController::class, 'indexJson'])->name('api.stakeholder-organizations.index');
+    Route::prefix('stakeholder-organizations')->group(function (): void {
+        Route::get('/create', [StakeholderOrganizationController::class, 'create'])->name('stakeholder-organizations.create');
+        Route::post('', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
+        Route::prefix('api')->group(function (): void {
+            Route::get('', [StakeholderOrganizationController::class, 'indexJson'])->name('stakeholder-organizations.api.index');
+        });
     });
 });
 
