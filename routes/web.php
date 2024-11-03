@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StakeholderCategoryController;
 use App\Http\Controllers\StakeholderOrganizationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -58,6 +59,12 @@ Route::middleware('auth')->group(function (): void {
         Route::post('', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
         Route::prefix('api')->group(function (): void {
             Route::get('', [StakeholderOrganizationController::class, 'indexJson'])->name('stakeholder-organizations.api.index');
+        });
+    });
+
+    Route::prefix('stakeholder-categories')->group(function (): void {
+        Route::prefix('api')->group(function (): void {
+            Route::post('', [StakeholderCategoryController::class, 'storeJson'])->name('stakeholder-categories.api');
         });
     });
 });

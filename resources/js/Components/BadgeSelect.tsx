@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import Badge, { BadgeElement } from './Badge';
 
 export type BadgeSelectProps = {
@@ -16,36 +16,30 @@ export default function BadgeSelect({
   add,
   className,
 }: BadgeSelectProps) {
-  const [selectedElementIds, setSelectedElements] = useState<number[]>([]);
-
-  useEffect(() => onChange(selectedElementIds), [selectedElementIds, onChange]);
-
-  const toggleElement = (id: number) => {
-    setSelectedElements(selectedElements =>
-      selectedElements.includes(id)
-        ? selectedElements.filter(elementId => elementId !== id)
-        : [...selectedElements, id]
-    );
-  };
-
-  const selectableElements = elements.map(elem => ({
-    ...elem,
-    isActivated: elem.isActivated ? true : selectedElementIds.includes(elem.id),
-    onClick: () => {
-      toggleElement(elem.id);
-      return elem.onClick ? elem.onClick() : void 0;
+  // toggle element and callback with changes
+  const toggleElement = useCallback(
+    (id: number) => {
+      toggleBadgeElement(id, elements);
+      onChange(getOnlyActivated(elements));
     },
-  }));
-
-  const sortedElements = selectableElements.sort((a, b) =>
-    a.label.localeCompare(b.label)
+    [elements]
   );
+
+  // react to changes to elements array from outside
+  useEffect(() => onChange(getOnlyActivated(elements)), [elements]);
+
+  // make elements able to toggle and sort them
+  const elementsSelectable = addFnToOnClick(elements, toggleElement);
+  const elementsSelectableSorted = sortByLabel(elementsSelectable);
 
   return (
     <Box display="flex" flexWrap="wrap" gap={1} className={className}>
-      {sortedElements.map(element => (
+      {/* categories */}
+      {elementsSelectableSorted.map(element => (
         <Badge key={element.id} element={element} />
       ))}
+
+      {/* add button */}
       {!!add && (
         <Badge
           element={{
@@ -60,3 +54,29 @@ export default function BadgeSelect({
     </Box>
   );
 }
+
+const toggleBadgeElement = (
+  toToggleId: number,
+  allElements: BadgeElement[]
+) => {
+  const elemToToggle = allElements.find(elem => elem.id === toToggleId);
+  if (elemToToggle) {
+    elemToToggle.isActivated = !elemToToggle.isActivated;
+  }
+  return allElements;
+};
+
+const addFnToOnClick = (elements: BadgeElement[], fn: (id: number) => void) =>
+  elements.map(elem => ({
+    ...elem,
+    onClick: () => {
+      fn(elem.id);
+      return elem.onClick ? elem.onClick() : void 0;
+    },
+  }));
+
+const sortByLabel = (elements: BadgeElement[]) =>
+  elements.sort((a, b) => a.label.localeCompare(b.label));
+
+const getOnlyActivated = (elements: BadgeElement[]) =>
+  elements.filter(e => e.isActivated).map(e => e.id);

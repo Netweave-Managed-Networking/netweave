@@ -1,22 +1,43 @@
 import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import { StakeholderCategoryMin } from '@/types/stakeholder-category-min.model';
-import { useState } from 'react';
+import { StakeholderCategory } from '@/types/stakeholder-category.model';
+import { useCallback, useState } from 'react';
+import { BadgeElement } from './Badge';
 import BadgeSelect from './BadgeSelect';
 import InputError from './InputError';
 import InputLabel from './InputLabel';
+import { StakeholderCategoryCreateModal } from './StakeholderCategoryCreateModal';
 
 export interface StakeholderCategoriesSelectAdd {
   stakeholderCategories: StakeholderCategoryMin[];
-  stakeholder_categories_errors: string | undefined;
+  stakeholderCategoriesErrors: string | undefined;
   onChange: (selectedCategoryIds: number[]) => void;
 }
 
 export default function StakeholderCategoriesSelectAdd({
   stakeholderCategories,
-  stakeholder_categories_errors,
+  stakeholderCategoriesErrors,
   onChange,
 }: StakeholderCategoriesSelectAdd) {
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
+  const [modalIsActive, setModalIsActive] = useState<boolean>(false);
+  const showModal = () => setModalIsActive(true);
+  const hideModal = () => setModalIsActive(false);
+
+  const [stakeholderCategoryBadges, setStakeholderCategoryBadges] = useState<
+    BadgeElement[]
+  >(stakeholderCategories.map(idNameToIdLabel));
+
+  const addCategoryToBadges = useCallback(
+    (newCategory: StakeholderCategory | undefined) => {
+      if (newCategory) {
+        stakeholderCategories.push(newCategory);
+        const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
+        setStakeholderCategoryBadges([...stakeholderCategoryBadges, newBadge]);
+      }
+      hideModal();
+    },
+    [stakeholderCategories]
+  );
 
   return (
     <div>
@@ -26,18 +47,17 @@ export default function StakeholderCategoriesSelectAdd({
         required
       />
       <BadgeSelect
-        elements={stakeholderCategories.map(idNameToIdLabel)}
-        onChange={selected => {
-          setSelectedCategoryIds(selected);
-          onChange(selectedCategoryIds);
-        }}
-        add={{
-          label: 'Neue Kategorie',
-          onAdd: () => console.log('addClicked'),
-        }}
+        elements={stakeholderCategoryBadges}
+        onChange={onChange}
+        add={{ label: 'Neue Kategorie', onAdd: () => showModal() }}
         className="mt-1 block w-full"
       />
-      <InputError message={stakeholder_categories_errors} className="mt-2" />
+      <InputError message={stakeholderCategoriesErrors} className="mt-2" />
+
+      <StakeholderCategoryCreateModal
+        show={modalIsActive}
+        onClose={addCategoryToBadges}
+      />
     </div>
   );
 }

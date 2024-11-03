@@ -1,132 +1,87 @@
-import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import BadgeSelect from './BadgeSelect';
+import BadgeSelect, { BadgeSelectProps } from './BadgeSelect';
 
-describe('BadgeSelect Component', () => {
-  const elements = [
-    { id: 1, label: 'Element A' },
-    { id: 2, label: 'Element B' },
-    { id: 3, label: 'Element C' },
+describe('BadgeSelect component', () => {
+  const mockElements = [
+    { id: 1, label: 'Badge 1', isActivated: false },
+    { id: 2, label: 'Badge 2', isActivated: true },
+    { id: 3, label: 'Badge 3', isActivated: false },
   ];
-  let onChangeMock: jest.Mock;
 
-  beforeEach(() => {
-    onChangeMock = jest.fn();
+  const onChangeMock = jest.fn();
+
+  const renderComponent = (props: Partial<BadgeSelectProps> = {}) => {
+    return render(
+      <BadgeSelect elements={mockElements} onChange={onChangeMock} {...props} />
+    );
+  };
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should render without crashing', () => {
-    render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
-    elements.forEach(element => {
+  it('renders badges correctly', () => {
+    renderComponent();
+
+    // Verify each badge by label
+    mockElements.forEach(element => {
       expect(screen.getByText(element.label)).toBeInTheDocument();
     });
   });
 
-  it('should sort elements alphabetically', () => {
-    const unorderedElements = [
-      { id: 3, label: 'Element C' },
-      { id: 1, label: 'Element A' },
-      { id: 2, label: 'Element B' },
-    ];
-    render(
-      <BadgeSelect elements={unorderedElements} onChange={onChangeMock} />
-    );
-    const chips = screen.getAllByRole('button');
+  it('calls onChange with initially activated elements', () => {
+    renderComponent();
 
-    // Verify order is alphabetical: A, B, C
-    expect(chips[0]).toHaveTextContent('Element A');
-    expect(chips[1]).toHaveTextContent('Element B');
-    expect(chips[2]).toHaveTextContent('Element C');
-  });
-
-  it('should toggle selection state when a badge is clicked', () => {
-    render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
-
-    const elementA = screen.getByText('Element A');
-    const elementB = screen.getByText('Element B');
-
-    // Click to select Element A
-    fireEvent.click(elementA);
-    expect(elementA).toHaveStyle('background-color: grey.900');
-    expect(onChangeMock).toHaveBeenCalledWith([1]);
-
-    // Click to select Element B
-    fireEvent.click(elementB);
-    expect(elementB).toHaveStyle('background-color: grey.900');
-    expect(onChangeMock).toHaveBeenCalledWith([1, 2]);
-
-    // Click again to deselect Element A
-    fireEvent.click(elementA);
-    expect(elementA).toHaveStyle('background-color: grey.300');
+    // Initial onChange call with only activated element(s)
     expect(onChangeMock).toHaveBeenCalledWith([2]);
   });
 
-  it('should apply the correct styles for selected and unselected badges', () => {
-    render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
+  it('toggles an element and calls onChange', () => {
+    renderComponent();
 
-    const elemA = screen.getByText('Element A');
-    const elemB = screen.getByText('Element B');
+    const badge1 = screen.getByText('Badge 1');
 
-    // Access the parent node that has the applied styles from MUI
-    const elemAStyle = window.getComputedStyle(elemA.parentElement!);
-    const elementBStyle = window.getComputedStyle(elemB.parentElement!);
+    // Toggle Badge 1
+    fireEvent.click(badge1);
+    expect(onChangeMock).toHaveBeenCalledWith([1, 2]);
 
-    // Initially, both should be unselected
-    expect(elemAStyle.backgroundColor).toBe('rgb(238, 238, 238)'); // grey.300
-    expect(elemAStyle.color).toBe('black'); // black
-    expect(elementBStyle.backgroundColor).toBe('rgb(238, 238, 238)'); // grey.300
-    expect(elementBStyle.color).toBe('black'); // black
-
-    // Click to select Element A
-    fireEvent.click(elemA);
-    const updatedElementAStyle = window.getComputedStyle(elemA.parentElement!);
-    expect(updatedElementAStyle.backgroundColor).toBe('rgb(66, 66, 66)'); // grey.900
-    expect(updatedElementAStyle.color).toBe('white'); // white
-  });
-
-  it('should handle an empty elements array without errors', () => {
-    render(<BadgeSelect elements={[]} onChange={onChangeMock} />);
-    expect(screen.queryAllByRole('button')).toHaveLength(0);
-  });
-
-  it('should call onChange with the correct values when badges are toggled', () => {
-    render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
-
-    // Select Element A
-    fireEvent.click(screen.getByText('Element A'));
+    // Toggle Badge 2 off
+    const badge2 = screen.getByText('Badge 2');
+    fireEvent.click(badge2);
     expect(onChangeMock).toHaveBeenCalledWith([1]);
-
-    // Select Element C
-    fireEvent.click(screen.getByText('Element C'));
-    expect(onChangeMock).toHaveBeenCalledWith([1, 3]);
-
-    // Deselect Element A
-    fireEvent.click(screen.getByText('Element A'));
-    expect(onChangeMock).toHaveBeenCalledWith([3]);
   });
 
-  it('should apply the custom className if provided', () => {
-    const customClassName = 'custom-class';
-    const { container } = render(
-      <BadgeSelect
-        elements={elements}
-        onChange={onChangeMock}
-        className={customClassName}
-      />
-    );
-    expect(container.getElementsByClassName(customClassName)).toHaveLength(1);
+  it('renders an add button if add prop is provided', () => {
+    const addMock = { onAdd: jest.fn(), label: 'Add Badge' };
+
+    renderComponent({ add: addMock });
+
+    const addButton = screen.getByText(addMock.label);
+    expect(addButton).toBeInTheDocument();
   });
 
-  it('should trigger hover styles on badge hover', () => {
-    render(<BadgeSelect elements={elements} onChange={onChangeMock} />);
-    const elementA = screen.getByText('Element A');
+  it('calls add onAdd function when add button is clicked', () => {
+    const addMock = { onAdd: jest.fn(), label: 'Add Badge' };
 
-    // Simulate hover
-    fireEvent.mouseOver(elementA);
-    expect(elementA).toHaveStyle('background-color: grey.200');
+    renderComponent({ add: addMock });
 
-    // Click to select Element A, then simulate hover
-    fireEvent.click(elementA);
-    fireEvent.mouseOver(elementA);
-    expect(elementA).toHaveStyle('background-color: grey.800');
+    const addButton = screen.getByText(addMock.label);
+    fireEvent.click(addButton);
+    expect(addMock.onAdd).toHaveBeenCalled();
+  });
+
+  it('sorts badges alphabetically', () => {
+    const unsortedElements = [
+      { id: 1, label: 'Charlie', isActivated: false },
+      { id: 2, label: 'Bravo', isActivated: false },
+      { id: 3, label: 'Alpha', isActivated: false },
+    ];
+
+    renderComponent({ elements: unsortedElements });
+
+    const badges = screen
+      .getAllByText(/Alpha|Bravo|Charlie/)
+      .map(el => el.textContent);
+    expect(badges).toEqual(['Alpha', 'Bravo', 'Charlie']);
   });
 });

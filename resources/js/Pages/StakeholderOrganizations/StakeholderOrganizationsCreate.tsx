@@ -49,13 +49,6 @@ export default function StakeholderOrganizationsCreate({
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 bg-white border-b border-gray-200">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Categories */}
-                <StakeholderCategoriesSelectAdd
-                  stakeholderCategories={stakeholderCategories}
-                  stakeholder_categories_errors={errors.stakeholder_categories}
-                  onChange={selected => setSelectedCategories(selected)}
-                />
-
                 {/* Organization Name */}
                 <div>
                   <InputLabel
@@ -65,6 +58,7 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <TextInput
                     id="name"
+                    autoFocus
                     value={data.name}
                     onChange={e => setData('name', e.target.value)}
                     required
@@ -72,6 +66,13 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.name} className="mt-2" />
                 </div>
+
+                {/* Categories */}
+                <StakeholderCategoriesSelectAdd
+                  stakeholderCategories={stakeholderCategories}
+                  stakeholderCategoriesErrors={errors.stakeholder_categories}
+                  onChange={selected => setSelectedCategories(selected)}
+                />
 
                 {/* Email */}
                 <div>
