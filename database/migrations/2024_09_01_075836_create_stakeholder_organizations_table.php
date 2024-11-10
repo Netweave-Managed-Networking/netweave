@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('phone', length: 64)->nullable()->unique();
             $table->string('postcode_city', length: 64)->nullable();
             $table->string('street_hnr', length: 128)->nullable();
+            $table->foreignId('stakeholder_parent_id')->nullable()->constrained('stakeholder_organizations')->cascadeOnDelete();
             $table->timestamps();
         });
     }
