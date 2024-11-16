@@ -31,14 +31,14 @@
 <pre>🗝️editor_id?: User, onDelete: set null</pre>
 <pre>🗝️admin_id: User, onDelete: cascade</pre>
 
-## Stakeholders and Resources
+## Organizations and Resources
 
-### StakeholderOrganization
+### Organization
 
-<small>The most important entity. The StakeholderOrganization that works on a local level and needs networking possibilities.</small>
-<small>When the term ‘Stakeholder’ is used, this is synonymous with ‘StakeholderOrganization’.</small>
-<small>Each Stakeholder has a specific relationship type to every other Stakeholder. See stakeholder_to_stakeholder pivot table.</small>
-<small>Each stakeholder belongs to one or sometimes more than one category.</small>
+<small>The most important entity. The Organization that works on a local level and needs networking possibilities.</small>
+<small>When the term ‘Stakeholder’ is used, this is synonymous with ‘Organization’.</small>
+<small>Each Organization has a specific relationship type to every other Organization. See organization_to_organization pivot table.</small>
+<small>Each Organization belongs to one or sometimes more than one category.</small>
 <small>This entity soft deletes.</small>
 
 <pre>name: short, unique</pre>
@@ -47,101 +47,101 @@
 <pre>postcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
 
-### StakeholderNote
+### OrganizationNote
 
-<small>Each stakeholder can have additional notes which would be often queried if they exist.</small>
-<small>Each stakeholder can at most one StakeholderNote. Stakeholder 1:1 StakeholderNote.</small>
+<small>Each organization can have additional notes which would be often queried if they exist.</small>
+<small>Each organization can at most one OrganizationNote. Organization 1:1 OrganizationNote.</small>
 
 <pre>notes?: text, index: fulltext</pre>
 <pre>criteria_for_coop?: text, index: fulltext</pre>
 <pre>criteria_knockout_for_coop?: text, index: fulltext</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
-### stakeholder_to_stakeholder (pivot table)
+### organization_to_organization (pivot table)
 
-<small>Each Stakeholder has a specific relationship type to every other Stakeholder.</small>
-<small>This relation is unidirectional and not agreed on. One Stakeholder states the relation it has to another one. No matter what the stated Stakeholder thinks about the relation to the stakeholder stating.</small>
-<small>When a stakeholder says he doesnt know a stakeholder, conflict is not allowed to be true.</small>
-<small>When a stakeholder says he knows/exchanges with/cooperates with a stakeholder, conflict is allowed to be true or false.</small>
+<small>Each Organization has a specific relationship type to every other Organization.</small>
+<small>This relation is unidirectional and not agreed on. One Organization states the relation it has to another one. No matter what the stated Organization thinks about the relation to the organization stating.</small>
+<small>When a organization says it doesnt know a organization, conflict is not allowed to be true.</small>
+<small>When a organization says it knows/exchanges with/cooperates with a organization, conflict is allowed to be true or false.</small>
 
 <pre>type: "doesnt" | "knows" | "exchanges" | "cooperates"</pre>
 <pre>conflict: boolean, default: "false"</pre>
-<pre>🗝️stakeholder_stating_id: StakeholderOrganization, onDelete: cascade</pre>
-<pre>🗝️stakeholder_stated_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_stating_id: Organization, onDelete: cascade</pre>
+<pre>🗝️organization_stated_id: Organization, onDelete: cascade</pre>
 
-### StakeholderCategory
+### OrganizationCategory
 
-<small>A category of a stakeholder.</small>
-<small>Each stakeholder belongs to one or sometimes more than one category.</small>
+<small>A category of a organization.</small>
+<small>Each organization belongs to one or sometimes more than one category.</small>
 
 <pre>name: short, unique</pre>
 <pre>description?: text</pre>
 
-### stakeholder_to_category (pivot table)
+### organization_to_category (pivot table)
 
-<small>Stakeholder n:m StakeholderCategory.</small>
+<small>Organization n:m OrganizationCategory.</small>
 
-<pre>🗝️stakeholder_category_id: StakeholderCategory, onDelete: cascade</pre>
-<pre>stakeholder_organization_id: Stakeholder, onDelete: cascade</pre>
+<pre>🗝️organization_category_id: OrganizationCategory, onDelete: cascade</pre>
+<pre>organization_id: Organization, onDelete: cascade</pre>
 
-### StakeholderContactPerson
+### OrganizationContactPerson
 
-<small>A contact person of a stakeholder. Stakeholders in most cases have one sometimes more contact persons.</small>
+<small>A contact person of a organization. Organizations in most cases have one sometimes more contact persons.</small>
 <small>Both email and phone are optional. But one of the two must be given.</small>
-<small>As each StakeholderContactPerson belongs to exactly one StakeholderOrganization, in the exceptional case that one person is the contact person of several StakeholderOrganizations, this person must be created several times, once for each organization.</small>
+<small>As each OrganizationContactPerson belongs to exactly one Organization, in the exceptional case that one person is the contact person of several Organizations, this person must be created several times, once for each organization.</small>
 
 <pre>name: short</pre>
 <pre>email?: email</pre>
 <pre>phone?: short</pre>
 <pre>street_hnr?: short</pre>
 <pre>postcode_city?: short</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
-### StakeholderRestriction
+### OrganizationRestriction
 
-<small>A restriction of a stakeholder.</small>
-<small>Stakeholders may have restrictions in their area of work. These can be…</small>
+<small>A restriction of a organization.</small>
+<small>Organizations may have restrictions in their area of work. These can be…</small>
 <small><br>&emsp;- `regional`, e.g. the focus on a district or a municipality.</small>
 <small><br>&emsp;- `thematic`, e.g. a focus on research projects in the field of zoology, e.g. commissioned work in landscape planning.</small>
 
 <pre>type: "regional" | "thematic"</pre>
 <pre>description: text, index: fulltext</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
 ### Consent
 
-<small>A stakeholder gets asked about their consent to different things like being part of network survey or being asked for additional research or collecting personal data or something.</small>
-<small>A stakeholder can give or deny their consent to multiple things.</small>
-<small>A thing (paragraph of consent) can be allowed/denied by multiple stakeholders.</small>
-<small>StakeholderOrganization n:m Consent, see stakeholder_to_consent pivot table.</small>
+<small>A organization gets asked about their consent to different things like being part of network survey or being asked for additional research or collecting personal data or something.</small>
+<small>A organization can give or deny their consent to multiple things.</small>
+<small>A thing (paragraph of consent) can be allowed/denied by multiple organizations.</small>
+<small>Organization n:m Consent, see organization_to_consent pivot table.</small>
 <small>This entity soft deletes.</small>
 
 <pre>paragraph: text, unique</pre>
 <pre>review_date?: time</pre>
 <pre>valid_until?: time</pre>
 
-### stakeholder_to_consent (pivot table)
+### organization_to_consent (pivot table)
 
-<small>StakeholderOrganization n:m Consent.</small>
+<small>Organization n:m Consent.</small>
 
 <pre>agreed: boolean, default: "false"</pre>
 <pre>🗝️consent_id: Consent, onDelete: cascade</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
 ### Resource
 
-<small>The second most important entity. Stakeholders have interest in very specific resources.</small>
+<small>The second most important entity. Organizations have interest in very specific resources.</small>
 <small>Each resource belongs to at least one resource category.</small>
-<small>A stakeholder either has or needs a resource.</small>
-<small>Resources can be used for matching stakeholders by their needs.</small>
-<small>Descriptions of resources often have to be read out and compared with the descriptions of resources of other stakeholders.</small>
+<small>A organization either has or needs a resource.</small>
+<small>Resources can be used for matching organizations by their needs.</small>
+<small>Descriptions of resources often have to be read out and compared with the descriptions of resources of other organizations.</small>
 <small>For better human readability/faster understanding of a resource, resources can have a summary with a short explanation of the resource.</small>
 <small>This entity soft deletes.</small>
 
 <pre>summary?: text, index: fulltext</pre>
 <pre>description: text, index: fulltext</pre>
 <pre>type: "resource" | "requirement", index: B-tree</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
 ### ResourceCategory
 
@@ -262,14 +262,14 @@
 <pre>🗝️survey_id: Survey</pre>
 <pre>🗝️survey_topic_id: SurveyTopic</pre>
 
-### SurveyAnswer (pivot table, alternative name: question_stakeholder)
+### SurveyAnswer (pivot table, alternative name: question_organization)
 
-<small>Every question is answered by multiple Stakeholders. Every Stakeholder answers multiple questions.</small>
-<small>Question n:m StakeholderOrganization.</small>
-<small>Question 1:n SurveyAnswer (by multiple Stakeholders).</small>
-<small>StakeholderOrganization 1:n SurveyAnswer (because multiple Questions answered).</small>
-<small>The answer of the stakeholder will be parsed to a string incase a question of type "choice", "range" or "budget" is answered.</small>
+<small>Every question is answered by multiple Organizations. Every Organization answers multiple questions.</small>
+<small>Question n:m Organization.</small>
+<small>Question 1:n SurveyAnswer (by multiple Organizations).</small>
+<small>Organization 1:n SurveyAnswer (because multiple Questions answered).</small>
+<small>The answer of the organization will be parsed to a string incase a question of type "choice", "range" or "budget" is answered.</small>
 
 <pre>answer: text</pre>
 <pre>🗝️survey_question_id: SurveyQuestion, onDelete: no action</pre>
-<pre>🗝️stakeholder_organization_id: StakeholderOrganization, onDelete: cascade</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>

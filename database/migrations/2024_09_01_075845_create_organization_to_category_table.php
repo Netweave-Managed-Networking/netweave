@@ -8,18 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('resources', function (Blueprint $table) {
-            $table->id();
-            $table->string('summary', length: 256)->nullable()->fullText();
-            $table->string('description', length: 8192)->fullText();
-            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
+        Schema::create('organization_to_category', function (Blueprint $table) {
+            $table->foreignId('organization_category_id')->constrained('organization_categories')->cascadeOnDelete();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
+            $table->primary(['organization_category_id', 'organization_id']);
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('resources');
+        Schema::dropIfExists('organization_to_category');
     }
 };

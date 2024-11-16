@@ -8,11 +8,10 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('resources', function (Blueprint $table) {
+        Schema::create('organization_restrictions', function (Blueprint $table) {
             $table->id();
-            $table->string('summary', length: 256)->nullable()->fullText();
-            $table->string('description', length: 8192)->fullText();
-            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
+            $table->string('type', length: 16)->comment("type: regional' | 'thematic'");
+            $table->string('description', 1024)->fullText();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });
@@ -20,6 +19,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('resources');
+        Schema::dropIfExists('organization_restrictions');
     }
 };

@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Enums\UserRole;
 use App\Models\InvitationCode;
-use App\Models\StakeholderCategory;
-use App\Models\StakeholderOrganization;
+use App\Models\Organization;
+use App\Models\OrganizationCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->usersAndInvitationCodes();
-        $this->stakeholdersAndCategories();
+        $this->organizationsAndCategories();
 
     }
 
@@ -36,15 +36,15 @@ class DatabaseSeeder extends Seeder
         ])->create());
     }
 
-    private function stakeholdersAndCategories(): void
+    private function organizationsAndCategories(): void
     {
-        /** @var \Illuminate\Support\Collection<StakeholderCategory> */
-        $stakeholder_categories = StakeholderCategory::factory(20)->create();
+        /** @var \Illuminate\Support\Collection<OrganizationCategory> */
+        $organization_categories = OrganizationCategory::factory(20)->create();
 
-        /** @var \Illuminate\Support\Collection<StakeholderOrganization> */
-        $stakeholder_organizations = StakeholderOrganization::factory(120)->create()->each(function (StakeholderOrganization $stakeholder_organization) use ($stakeholder_categories): void {
-            $some_categories = $stakeholder_categories->random(fake()->numberBetween(1, 3));
-            $stakeholder_organization->stakeholderCategories()->saveMany($some_categories);
+        /** @var \Illuminate\Support\Collection<Organization> */
+        $organizations = Organization::factory(120)->create()->each(function (Organization $organization) use ($organization_categories): void {
+            $some_categories = $organization_categories->random(fake()->numberBetween(1, 3));
+            $organization->organizationCategories()->saveMany($some_categories);
         });
     }
 }
