@@ -27,7 +27,7 @@ export default function DisplayUserRole({
             </span>
           ) : (
             <span>
-              You are allowed to create and edit Stakeholders and Resources.
+              You are allowed to create and edit Organizations and Resources.
               <br />
               You are not allowed to register new users.
             </span>

@@ -3,9 +3,9 @@
 
 ## About Netweave
 
-Netweave aims to connect Stakeholders with scientific methods on a local level.
-This software application holds a database with information about stakeholders, their relations, resources and requirements.
-The Netweave platform serves two main functions: Being a custom questions survey & giving networking advice & suggestions for local stakeholders.
+Netweave aims to connect Organizations with scientific methods on a local level.
+This software application holds a database with information about organizations, their relations, resources and requirements.
+The Netweave platform serves two main functions: Being a custom questions survey & giving networking advice & suggestions for local organizations.
 
 ## About the TechStack
 

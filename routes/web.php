@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\InvitationCodeController;
+use App\Http\Controllers\OrganizationCategoryController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StakeholderCategoryController;
-use App\Http\Controllers\StakeholderOrganizationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -54,17 +54,17 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
-    Route::prefix('stakeholder-organizations')->group(function (): void {
-        Route::get('/create', [StakeholderOrganizationController::class, 'create'])->name('stakeholder-organizations.create');
-        Route::post('', [StakeholderOrganizationController::class, 'store'])->name('stakeholder-organizations.store');
+    Route::prefix('organizations')->group(function (): void {
+        Route::get('/create', [OrganizationController::class, 'create'])->name('organizations.create');
+        Route::post('', [OrganizationController::class, 'store'])->name('organizations.store');
         Route::prefix('api')->group(function (): void {
-            Route::get('', [StakeholderOrganizationController::class, 'indexJson'])->name('stakeholder-organizations.api.index');
+            Route::get('', [OrganizationController::class, 'indexJson'])->name('organizations.api.index');
         });
     });
 
-    Route::prefix('stakeholder-categories')->group(function (): void {
+    Route::prefix('organization-categories')->group(function (): void {
         Route::prefix('api')->group(function (): void {
-            Route::post('', [StakeholderCategoryController::class, 'storeJson'])->name('stakeholder-categories.api');
+            Route::post('', [OrganizationCategoryController::class, 'storeJson'])->name('organization-categories.api');
         });
     });
 });

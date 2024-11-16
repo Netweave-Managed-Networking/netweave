@@ -1,4 +1,4 @@
-import StakeholderOrganizationsList from '@/Components/StakeholderOrganizationsList';
+import OrganizationsList from '@/Components/OrganizationsList';
 import { Tile } from '@/Components/Tile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
@@ -19,7 +19,7 @@ export default function Dashboard({ auth }: PageProps) {
 
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="pt-12 pb-3">
-          <a href="/stakeholder-organizations/create">
+          <a href="/organizations/create">
             <Tile>
               <AddCircleOutline fontSize="medium" />
               <span>Neue Organisation anlegen</span>
@@ -28,7 +28,7 @@ export default function Dashboard({ auth }: PageProps) {
         </div>
 
         <div className="py-3" style={{ height: '60vh', overflow: 'auto' }}>
-          <StakeholderOrganizationsList />
+          <OrganizationsList />
         </div>
       </div>
     </AuthenticatedLayout>

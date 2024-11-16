@@ -8,18 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('resources', function (Blueprint $table) {
-            $table->id();
-            $table->string('summary', length: 256)->nullable()->fullText();
-            $table->string('description', length: 8192)->fullText();
-            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
+        Schema::create('organization_to_consent', function (Blueprint $table) {
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
+            $table->foreignId('consent_id')->constrained('consents')->cascadeOnDelete();
+            $table->boolean('agreed')->default(false);
+            $table->primary(['organization_id', 'consent_id']);
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('resources');
+        Schema::dropIfExists('organization_to_consent');
     }
 };

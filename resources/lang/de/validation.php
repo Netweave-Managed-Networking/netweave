@@ -26,8 +26,8 @@ return [
     'attributes' => [
         'name' => 'Name',
         'description' => 'Beschreibung',
-        'stakeholder_categories' => 'Stakeholder Kategorien',
-        'stakeholder_categories.*' => 'Stakeholder Kategorie',
+        'organization_categories' => 'Organisations-Kategorien',
+        'organization_categories.*' => 'Organisations-Kategorie',
         // Add more mappings here
     ],
 ];
