@@ -67,14 +67,16 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.name} className="mt-2" />
                 </div>
-
                 {/* Categories */}
+                <InputLabel value="Kategorien" required />
                 <OrganizationCategoriesSelectAdd
                   organizationCategories={organizationCategories}
-                  organizationCategoriesErrors={errors.organization_categories}
                   onChange={selected => setSelectedCategories(selected)}
                 />
-
+                <InputError
+                  message={errors.organization_categories}
+                  className="mt-2"
+                />
                 {/* Email */}
                 <div>
                   <InputLabel htmlFor="email" value="Email der Organisation" />
@@ -87,7 +89,6 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.email} className="mt-2" />
                 </div>
-
                 {/* Phone */}
                 <div>
                   <InputLabel
@@ -102,7 +103,6 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.phone} className="mt-2" />
                 </div>
-
                 {/* Postcode and City */}
                 <div>
                   <InputLabel
@@ -117,7 +117,6 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.postcode_city} className="mt-2" />
                 </div>
-
                 {/* Street and House Number */}
                 <div>
                   <InputLabel
@@ -132,7 +131,6 @@ export default function StakeholderOrganizationsCreate({
                   />
                   <InputError message={errors.street_hnr} className="mt-2" />
                 </div>
-
                 <div className="flex justify-between mt-4 w-full">
                   <SecondaryButton
                     className="float-start"

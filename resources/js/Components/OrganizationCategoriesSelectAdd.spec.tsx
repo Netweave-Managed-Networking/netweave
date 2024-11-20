@@ -33,23 +33,10 @@ describe('OrganizationCategoriesSelectAdd', () => {
     mockOnChange.mockClear();
   });
 
-  it('renders the component with headline "Kategorien"', () => {
-    render(
-      <OrganizationCategoriesSelectAdd
-        organizationCategories={[]}
-        organizationCategoriesErrors={undefined}
-        onChange={mockOnChange}
-      />
-    );
-
-    expect(screen.getByText('Kategorien')).toBeInTheDocument();
-  });
-
   it('renders the component with initial categories', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
-        organizationCategoriesErrors={undefined}
         onChange={mockOnChange}
       />
     );
@@ -58,25 +45,12 @@ describe('OrganizationCategoriesSelectAdd', () => {
     expect(screen.getByText('Category 2')).toBeInTheDocument();
   });
 
-  it('displays the error message when provided', () => {
-    render(
-      <OrganizationCategoriesSelectAdd
-        organizationCategories={mockCategories}
-        organizationCategoriesErrors="An error occurred"
-        onChange={mockOnChange}
-      />
-    );
-
-    expect(screen.getByText('An error occurred')).toBeInTheDocument();
-  });
-
   it('opens and closes the modal when "Neue Kategorie" is clicked and closed', () => {
     const textInsideModal = 'Submit inside Modal';
 
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
-        organizationCategoriesErrors={undefined}
         onChange={mockOnChange}
       />
     );
@@ -99,7 +73,6 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
-        organizationCategoriesErrors={undefined}
         onChange={mockOnChange}
       />
     );
@@ -112,7 +85,6 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
-        organizationCategoriesErrors={undefined}
         onChange={mockOnChange}
       />
     );
