@@ -10,7 +10,7 @@ import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 
-export default function StakeholderOrganizationsCreate({
+export default function OrganizationsCreate({
   auth,
   organizationCategories,
 }: PageProps<{
@@ -43,7 +43,7 @@ export default function StakeholderOrganizationsCreate({
         </h2>
       }
     >
-      <Head title="Create Stakeholder Organization" />
+      <Head title="Create Organization" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
