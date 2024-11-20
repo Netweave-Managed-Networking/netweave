@@ -2,6 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategoriesSelectAdd';
 import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { OrganizationCategoryMin } from '@/types/organization-category-min.model';
@@ -132,10 +133,31 @@ export default function StakeholderOrganizationsCreate({
                   <InputError message={errors.street_hnr} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
-                  <PrimaryButton className="ml-4" disabled={processing}>
-                    Erstellen
-                  </PrimaryButton>
+                <div className="flex justify-between mt-4 w-full">
+                  <SecondaryButton
+                    className="float-start"
+                    disabled={processing}
+                    type="button"
+                    onClick={() => history.back()}
+                  >
+                    Abbrechen
+                  </SecondaryButton>
+                  <span>
+                    <PrimaryButton
+                      type="submit"
+                      className="ml-4"
+                      disabled={processing}
+                    >
+                      Fertig
+                    </PrimaryButton>
+                    <PrimaryButton
+                      className="ml-4"
+                      disabled={true /*processing*/}
+                      type="button" /*submit*/
+                    >
+                      Ressourcen hinzufügen
+                    </PrimaryButton>
+                  </span>
                 </div>
               </form>
             </div>
