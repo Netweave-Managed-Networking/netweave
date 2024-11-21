@@ -1,3 +1,4 @@
+import HeaderParagraphInfoModalButton from '@/Components/HeaderParagraphInfoModalButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategoriesSelectAdd';
@@ -5,7 +6,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { OrganizationCategoryMin } from '@/types/organization-category-min.model';
+import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
@@ -14,7 +15,7 @@ export default function OrganizationsCreate({
   auth,
   organizationCategories,
 }: PageProps<{
-  organizationCategories: OrganizationCategoryMin[];
+  organizationCategories: OrganizationCategory[];
 }>) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
@@ -69,10 +70,24 @@ export default function OrganizationsCreate({
                 </div>
                 {/* Categories */}
                 <InputLabel value="Kategorien" required />
-                <OrganizationCategoriesSelectAdd
-                  organizationCategories={organizationCategories}
-                  onChange={selected => setSelectedCategories(selected)}
-                />
+                <div className="flex">
+                  <span>
+                    <OrganizationCategoriesSelectAdd
+                      organizationCategories={organizationCategories}
+                      onChange={selected => setSelectedCategories(selected)}
+                    />
+                  </span>
+                  <span>
+                    <HeaderParagraphInfoModalButton
+                      infoButtonTooltip="Infos zu den Kategorien"
+                      modalTitle="Beschreibungen der Organisations-Kategorien"
+                      items={organizationCategories.map(cat => ({
+                        header: cat.name,
+                        paragraph: cat.description ?? '',
+                      }))}
+                    />
+                  </span>
+                </div>
                 <InputError
                   message={errors.organization_categories}
                   className="mt-2"

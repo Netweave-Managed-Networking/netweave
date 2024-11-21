@@ -21,7 +21,7 @@ class OrganizationController extends Controller
 
     public function create(Request $request): Response
     {
-        $organization_categories = OrganizationCategory::select(['id', 'name'])->get();
+        $organization_categories = OrganizationCategory::all();
 
         return Inertia::render('Organizations/OrganizationsCreate')->with('organizationCategories', $organization_categories);
     }
