@@ -1,3 +1,4 @@
+import { letters } from '@/constants/alphabet';
 import InfoIcon from '@mui/icons-material/Info';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
@@ -14,7 +15,10 @@ export default function HeaderParagraphInfoModalButton({
   modalTitle,
   infoButtonTooltip,
 }: HeaderParagraphInfoModalButtonProps) {
-  items = items.sort((a, b) => a.header.localeCompare(b.header));
+  items = [
+    ...items,
+    ...letters.map(l => ({ header: l.toUpperCase(), paragraph: '' })),
+  ].sort((a, b) => a.header.localeCompare(b.header));
 
   const [modalIsActive, setModalIsActive] = useState<boolean>(false);
   const showModal = () => setModalIsActive(true);
@@ -24,7 +28,7 @@ export default function HeaderParagraphInfoModalButton({
     <>
       <Tooltip title={infoButtonTooltip} placement="top">
         <IconButton onClick={showModal} sx={{ padding: 0 }}>
-          <InfoIcon className="text-black" />
+          <InfoIcon className="text-gray-800" />
         </IconButton>
       </Tooltip>
 

@@ -1,3 +1,4 @@
+import { letters } from '@/constants/alphabet';
 import { fireEvent, render, screen } from '@testing-library/react';
 import HeaderParagraphInfoModalButton, {
   HeaderParagraphInfoModalButtonProps,
@@ -26,7 +27,7 @@ describe('HeaderParagraphInfoModalButton', () => {
     expect(tooltipText).toBeInTheDocument();
   });
 
-  it('renders items in alphabetical order by header', () => {
+  it('renders items in alphabetical order with alphabet by header', () => {
     render(<HeaderParagraphInfoModalButton {...defaultProps} />);
 
     // Simulate clicking the info button to open the modal
@@ -41,13 +42,18 @@ describe('HeaderParagraphInfoModalButton', () => {
     const headerElements = screen.getAllByRole('heading', { level: 2 });
 
     // Get the expected sorted headers
-    const sortedHeaders = mockItems
+    const sortedHeaders = [
+      ...mockItems,
+      ...letters.map(l => ({ header: l, paragraph: '' })),
+    ]
       .sort((a, b) => a.header.localeCompare(b.header))
       .map(item => item.header);
 
-    // Assert the headers are displayed in the correct order
+    // Assert the headers are displayed in the correct order (case insensitive)
     sortedHeaders.forEach((header, index) => {
-      expect(headerElements[index]).toHaveTextContent(header);
+      expect(headerElements[index]).toHaveTextContent(
+        new RegExp(`^${header}$`, 'i')
+      );
     });
   });
 
