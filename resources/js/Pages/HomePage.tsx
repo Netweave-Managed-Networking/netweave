@@ -5,17 +5,17 @@ import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 
-export default function Dashboard({ auth }: PageProps) {
+export default function HomePage({ auth }: PageProps) {
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-          Dashboard
+          Home
         </h2>
       }
     >
-      <Head title="Dashboard" />
+      <Head title="Home" />
 
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="pt-12 pb-3">

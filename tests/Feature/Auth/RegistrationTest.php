@@ -22,7 +22,7 @@ test('new users register with code', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
     $this->assertNotNull($invitationCode->fresh()->editor);
 
 });

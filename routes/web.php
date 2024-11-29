@@ -23,9 +23,9 @@ Route::get('/', function (): Response {
     ]);
 });
 
-Route::get('/dashboard', function (): Response {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', function (): Response {
+    return Inertia::render('HomePage');
+})->middleware(['auth', 'verified'])->name('home');
 
 ///////////
 // ADMIN //

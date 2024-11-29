@@ -41,6 +41,6 @@ class OrganizationController extends Controller
         $organization = Organization::create($validated);
         $organization->organizationCategories()->sync($validated['organization_categories']);
 
-        return redirect()->route('dashboard')->with('success', "Neue Organisation '$organization->name' erfolgreich erstellt.");
+        return redirect()->route('home')->with('success', "Neue Organisation '$organization->name' erfolgreich erstellt.");
     }
 }

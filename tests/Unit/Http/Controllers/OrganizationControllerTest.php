@@ -52,7 +52,7 @@ it('can store a new organization', function () {
     $response = actingAs(User::factory()->create())->post(route('organizations.store'), $data);
 
     // Assert: check if the organization organization is in the database
-    $response->assertRedirect(route('dashboard'))
+    $response->assertRedirect(route('home'))
         ->assertSessionHas('success', "Neue Organisation 'New Organization' erfolgreich erstellt.");
     assertDatabaseHas('organizations', [
         'name' => 'New Organization',

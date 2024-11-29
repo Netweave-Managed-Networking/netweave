@@ -19,6 +19,7 @@ export default function Authenticated({
     <>
       <ToastProvider />
       <div className="min-h-screen bg-gray-100">
+        {/* Top Nav */}
         <nav className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
@@ -31,10 +32,10 @@ export default function Authenticated({
 
                 <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                   <NavLink
-                    href={route('dashboard')}
-                    active={route().current('dashboard')}
+                    href={route('home')}
+                    active={route().current('home')}
                   >
-                    Dashboard
+                    Home
                   </NavLink>
                 </div>
               </div>
@@ -125,7 +126,6 @@ export default function Authenticated({
               </div>
             </div>
           </div>
-
           <div
             className={
               (showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'
@@ -133,10 +133,10 @@ export default function Authenticated({
           >
             <div className="pt-2 pb-3 space-y-1">
               <ResponsiveNavLink
-                href={route('dashboard')}
-                active={route().current('dashboard')}
+                href={route('home')}
+                active={route().current('home')}
               >
-                Dashboard
+                Home
               </ResponsiveNavLink>
             </div>
 
@@ -171,14 +171,14 @@ export default function Authenticated({
           </div>
         </nav>
 
+        {/* Header Row with Title */}
         {header && (
           <header className="bg-white shadow">
-            <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
               {header}
             </div>
           </header>
         )}
-
         <main>{children}</main>
       </div>
     </>
