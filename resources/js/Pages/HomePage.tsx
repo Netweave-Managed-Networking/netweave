@@ -1,5 +1,5 @@
+import { NavTile } from '@/Components/NavTile';
 import OrganizationsList from '@/Components/OrganizationsList';
-import { Tile } from '@/Components/Tile';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
@@ -19,12 +19,11 @@ export default function HomePage({ auth }: PageProps) {
 
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="pt-12 pb-3">
-          <a href="/organizations/create">
-            <Tile>
-              <AddCircleOutline fontSize="medium" />
-              <span>Neue Organisation anlegen</span>
-            </Tile>
-          </a>
+          <NavTile
+            title="Neue Organisation anlegen"
+            href="/organizations/create"
+            icon={<AddCircleOutline fontSize="medium" />}
+          />
         </div>
 
         <div className="py-3" style={{ height: '60vh', overflow: 'auto' }}>
