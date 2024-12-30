@@ -1,13 +1,13 @@
 import { fetchOrganizationCategory } from '@/axios/fetchOrganizationCategory.axios';
-import DangerButton from '@/Components/DangerButton';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
+import SecondaryButton from '@/Components/Input/SecondaryButton';
+import Modal from '@/Components/Util/Modal';
 import { IdName } from '@/types/id-name.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useForm } from '@inertiajs/react';
 import { DeleteOutline } from '@mui/icons-material';
 import { Button, Tooltip } from '@mui/material';
 import { CSSProperties, useState } from 'react';
+import DangerButton from '../Input/DangerButton';
 
 interface OrganizationCategoryDeleteButtonProps {
   category: OrganizationCategory;

@@ -4,17 +4,17 @@ import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import Modal from './Modal';
 
-export interface HeaderParagraphInfoModalButtonProps {
+export interface HPItemsInfoModalButtonProps {
   items: { header: string; paragraph: string }[];
   modalTitle: string;
   infoButtonTooltip: string;
 }
 
-export default function HeaderParagraphInfoModalButton({
+export default function HPItemsInfoModalButton({
   items,
   modalTitle,
   infoButtonTooltip,
-}: HeaderParagraphInfoModalButtonProps) {
+}: HPItemsInfoModalButtonProps) {
   items = [
     ...items,
     ...letters.map(l => ({ header: l.toUpperCase(), paragraph: '' })),

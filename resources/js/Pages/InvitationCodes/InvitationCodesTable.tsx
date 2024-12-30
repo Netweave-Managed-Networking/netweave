@@ -1,10 +1,11 @@
-import CheckMark from '@/Components/CheckMark';
-import CrossMark from '@/Components/CrossMark';
-import { InvitationCodeAddButton } from '@/Components/InvitationCodeAddButton';
-import { InvitationCodeDeleteButton } from '@/Components/InvitationCodeDeleteButton';
-import InvitationCodeInvitationLinkButton from '@/Components/InvitationCodeInvitationLinkButton';
-import Table, { Row } from '@/Components/Table';
-import { UserDeleteButton } from '@/Components/UserDeleteButton';
+import CheckMark from '@/Components/Icon/CheckMark';
+import CrossMark from '@/Components/Icon/CrossMark';
+import { InvitationCodeAddButton } from '@/Components/InvitationCodes/InvitationCodeAddButton';
+import { InvitationCodeDeleteButton } from '@/Components/InvitationCodes/InvitationCodeDeleteButton';
+import InvitationCodeInvitationLinkButton from '@/Components/InvitationCodes/InvitationCodeInvitationLinkButton';
+import { UserDeleteButton } from '@/Components/Users/UserDeleteButton';
+
+import Table, { Row } from '@/Components/Util/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { PageProps } from '@/types/page-props.type';

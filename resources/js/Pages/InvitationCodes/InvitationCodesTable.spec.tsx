@@ -7,25 +7,26 @@ import { render, screen } from '@testing-library/react';
 import InvitationCodesTable from './InvitationCodesTable';
 
 // Mocking child components used in InvitationCodesTable
-jest.mock('@/Components/CheckMark', () => () => <div>CheckMark</div>);
+jest.mock('@/Components/Icon/CheckMark', () => () => <div>CheckMark</div>);
 
-jest.mock('@/Components/CrossMark', () => () => <div>CrossMark</div>);
+jest.mock('@/Components/Icon/CrossMark', () => () => <div>CrossMark</div>);
 
-jest.mock('@/Components/InvitationCodeInvitationLinkButton', () => () => (
-  <div>InvitationCodeInvitationLinkButton</div>
-));
+jest.mock(
+  '@/Components/InvitationCodes/InvitationCodeInvitationLinkButton',
+  () => () => <div>InvitationCodeInvitationLinkButton</div>
+);
 
-jest.mock('@/Components/InvitationCodeAddButton', () => ({
+jest.mock('@/Components/InvitationCodes/InvitationCodeAddButton', () => ({
   InvitationCodeAddButton: () => <button>Add Code</button>,
 }));
 
-jest.mock('@/Components/InvitationCodeDeleteButton', () => ({
+jest.mock('@/Components/InvitationCodes/InvitationCodeDeleteButton', () => ({
   InvitationCodeDeleteButton: ({ id }: { id: number }) => (
     <button>Delete {id}</button>
   ),
 }));
 
-jest.mock('@/Components/UserDeleteButton', () => ({
+jest.mock('@/Components/Users/UserDeleteButton', () => ({
   UserDeleteButton: ({ user }: { user: UserMin }) => (
     <button>Delete {user.name}</button>
   ),

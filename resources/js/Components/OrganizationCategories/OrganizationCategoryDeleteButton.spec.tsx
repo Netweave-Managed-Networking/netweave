@@ -3,7 +3,7 @@
 
 import { useForm } from '@inertiajs/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { UserDeleteButton } from './UserDeleteButton';
+import { UserDeleteButton } from '../Users/UserDeleteButton';
 
 // Mocking dependencies
 jest.mock('@inertiajs/react', () => ({
@@ -16,13 +16,13 @@ const route = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = route;
 
-jest.mock('@/Components/DangerButton', () => (props: any) => (
+jest.mock('@/Components/Input/DangerButton', () => (props: any) => (
   <button {...props} data-testid="danger-button">
     {props.children}
   </button>
 ));
 
-jest.mock('@/Components/SecondaryButton', () => (props: any) => (
+jest.mock('@/Components/Input/SecondaryButton', () => (props: any) => (
   <button {...props} data-testid="secondary-button">
     {props.children}
   </button>
@@ -32,7 +32,7 @@ jest.mock('@mui/icons-material/PersonRemove', () => () => (
   <div data-testid="person-remove-icon"></div>
 ));
 
-jest.mock('@/Components/Modal', () => (props: any) => (
+jest.mock('@/Components/Util/Modal', () => (props: any) => (
   <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
 ));
 

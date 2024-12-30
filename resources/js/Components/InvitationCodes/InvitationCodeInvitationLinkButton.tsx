@@ -2,7 +2,7 @@ import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import Toast from './Toast';
+import Toast from '../Util/Toast';
 
 interface InvitationCodeInvitationLinkButtonProps {
   code: string;

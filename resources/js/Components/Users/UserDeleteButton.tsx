@@ -1,11 +1,11 @@
-import DangerButton from '@/Components/DangerButton';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
+import SecondaryButton from '@/Components/Input/SecondaryButton';
+import Modal from '@/Components/Util/Modal';
 import { UserMin } from '@/types/user-min.model';
 import { useForm } from '@inertiajs/react';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
+import DangerButton from '../Input/DangerButton';
 
 interface UserDeleteButtonProps {
   user: UserMin;
