@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { ToastProps } from '@/Components/Toast';
+import { ToastProps } from '@/Components/Util/Toast';
 import { usePage } from '@inertiajs/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -12,7 +12,7 @@ jest.mock('@inertiajs/react', () => ({
 
 // Mocking the Toast component
 jest.mock(
-  '@/Components/Toast',
+  '@/Components/Util/Toast',
   () =>
     ({ open, message, onClose, severity, position }: ToastProps) => {
       return (

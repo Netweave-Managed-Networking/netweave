@@ -2,8 +2,8 @@ import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import { IdName } from '@/types/id-name.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useState } from 'react';
-import { BadgeElement } from './Badge';
-import BadgeSelect from './BadgeSelect';
+import BadgeSelect from '../Input/BadgeSelect';
+import { BadgeElement } from '../Util/Badge';
 import { OrganizationCategoryCreateModal } from './OrganizationCategoryCreateModal';
 
 export interface OrganizationCategoriesSelectAddProps {

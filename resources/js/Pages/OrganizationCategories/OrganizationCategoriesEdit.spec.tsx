@@ -17,9 +17,10 @@ jest.mock(
 );
 
 // Mock the OrganizationCategoryEdit component
-jest.mock('@/Components/OrganizationCategoryEdit', () => () => (
-  <div>OrganizationCategoryEdit</div>
-));
+jest.mock(
+  '@/Components/OrganizationCategories/OrganizationCategoryEdit',
+  () => () => <div>OrganizationCategoryEdit</div>
+);
 
 describe('OrganizationCategoriesEdit', () => {
   it('renders the page with organization categories', () => {

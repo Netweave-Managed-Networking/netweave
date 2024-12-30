@@ -1,8 +1,8 @@
 import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import { useOrganizations } from '@/hooks/useOrganizations.hook';
-import Badge from './Badge';
-import { LoadingDots } from './LoadingDots';
-import { Tile } from './Tile';
+import Badge from '../Util/Badge';
+import { LoadingDots } from '../Util/LoadingDots';
+import { Tile } from '../Util/Tile';
 
 export default function OrganizationsList() {
   const { organizations, isLoading, isError } = useOrganizations();

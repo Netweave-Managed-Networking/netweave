@@ -1,8 +1,8 @@
 import { letters } from '@/constants/alphabet';
 import { fireEvent, render, screen } from '@testing-library/react';
-import HeaderParagraphInfoModalButton, {
-  HeaderParagraphInfoModalButtonProps,
-} from './HeaderParagraphInfoModalButton';
+import HPItemsInfoModalButton, {
+  HPItemsInfoModalButtonProps,
+} from './HPItemsInfoModalButton';
 
 const mockItems = [
   { header: 'Bananas', paragraph: 'Info about bananas.' },
@@ -10,15 +10,15 @@ const mockItems = [
   { header: 'Cherries', paragraph: 'Info about cherries.' },
 ];
 
-const defaultProps: HeaderParagraphInfoModalButtonProps = {
+const defaultProps: HPItemsInfoModalButtonProps = {
   items: mockItems,
   modalTitle: 'Test Modal',
   infoButtonTooltip: 'Click for info',
 };
 
-describe('HeaderParagraphInfoModalButton', () => {
+describe('HPItemsInfoModalButton', () => {
   it('renders the button with a tooltip', async () => {
-    render(<HeaderParagraphInfoModalButton {...defaultProps} />);
+    render(<HPItemsInfoModalButton {...defaultProps} />);
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
 
@@ -28,7 +28,7 @@ describe('HeaderParagraphInfoModalButton', () => {
   });
 
   it('renders items in alphabetical order with alphabet by header', () => {
-    render(<HeaderParagraphInfoModalButton {...defaultProps} />);
+    render(<HPItemsInfoModalButton {...defaultProps} />);
 
     // Simulate clicking the info button to open the modal
     const button = screen.getByRole('button');
@@ -58,7 +58,7 @@ describe('HeaderParagraphInfoModalButton', () => {
   });
 
   it('displays items correctly in the modal', () => {
-    render(<HeaderParagraphInfoModalButton {...defaultProps} />);
+    render(<HPItemsInfoModalButton {...defaultProps} />);
     const button = screen.getByRole('button');
     fireEvent.click(button); // Open modal
 

@@ -1,8 +1,8 @@
 /* eslint-disable react/display-name */
 import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { ToastProps } from '../Util/Toast';
 import InvitationCodeInvitationLinkButton from './InvitationCodeInvitationLinkButton';
-import { ToastProps } from './Toast';
 
 // Mock the copyToClipboard helper function
 jest.mock('@/helpers/copyToClipboard.helper', () => ({
@@ -10,7 +10,7 @@ jest.mock('@/helpers/copyToClipboard.helper', () => ({
 }));
 
 // Mock the Toast component since it's part of the UI but not essential for testing logic
-jest.mock('@/Components/Toast', () => (props: ToastProps) => {
+jest.mock('@/Components/Util/Toast', () => (props: ToastProps) => {
   return props.open ? <div data-testid="toast">{props.message}</div> : null;
 });
 

@@ -16,11 +16,13 @@ jest.mock(
     ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 );
 
-jest.mock('@/Components/InputLabel', () => () => <div>InputLabel</div>);
-jest.mock('@/Components/BadgeSelect', () => () => <div>BadgeSelect</div>);
-jest.mock('@/Components/InputError', () => () => <div>InputError</div>);
-jest.mock('@/Components/TextInput', () => () => <div>TextInput</div>);
-jest.mock('@/Components/PrimaryButton', () => () => <div>PrimaryButton</div>);
+jest.mock('@/Components/Input/InputLabel', () => () => <div>InputLabel</div>);
+jest.mock('@/Components/Input/BadgeSelect', () => () => <div>BadgeSelect</div>);
+jest.mock('@/Components/Input/InputError', () => () => <div>InputError</div>);
+jest.mock('@/Components/Input/TextInput', () => () => <div>TextInput</div>);
+jest.mock('@/Components/Input/PrimaryButton', () => () => (
+  <div>PrimaryButton</div>
+));
 
 describe('OrganizationsCreate', () => {
   describe('complete form', () => {

@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/material';
 import { useCallback, useEffect } from 'react';
-import Badge, { BadgeElement } from './Badge';
+import Badge, { BadgeElement } from '../Util/Badge';
 
 export type BadgeSelectProps = {
   elements: BadgeElement[];

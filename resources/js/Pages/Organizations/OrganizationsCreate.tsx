@@ -1,10 +1,10 @@
-import HeaderParagraphInfoModalButton from '@/Components/HeaderParagraphInfoModalButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategoriesSelectAdd';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
+import InputError from '@/Components/Input/InputError';
+import InputLabel from '@/Components/Input/InputLabel';
+import PrimaryButton from '@/Components/Input/PrimaryButton';
+import SecondaryButton from '@/Components/Input/SecondaryButton';
+import TextInput from '@/Components/Input/TextInput';
+import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategories/OrganizationCategoriesSelectAdd';
+import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';
@@ -78,7 +78,7 @@ export default function OrganizationsCreate({
                     />
                   </span>
                   <span>
-                    <HeaderParagraphInfoModalButton
+                    <HPItemsInfoModalButton
                       infoButtonTooltip="Infos zu den Kategorien"
                       modalTitle="Beschreibungen der Organisations-Kategorien"
                       items={organizationCategories.map(cat => ({

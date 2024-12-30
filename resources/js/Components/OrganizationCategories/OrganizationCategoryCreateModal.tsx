@@ -6,13 +6,13 @@ import {
 import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useState } from 'react';
-import InputError from './InputError';
-import InputLabel from './InputLabel';
-import Modal from './Modal';
-import PrimaryButton from './PrimaryButton';
-import SecondaryButton from './SecondaryButton';
-import TextArea from './TextArea';
-import TextInput from './TextInput';
+import InputError from '../Input/InputError';
+import InputLabel from '../Input/InputLabel';
+import PrimaryButton from '../Input/PrimaryButton';
+import SecondaryButton from '../Input/SecondaryButton';
+import TextArea from '../Input/TextArea';
+import TextInput from '../Input/TextInput';
+import Modal from '../Util/Modal';
 
 export type OrganizationCategoryCreateModalProps = {
   show: boolean;

@@ -1,4 +1,4 @@
-import Toast, { ToastPosition } from '@/Components/Toast';
+import Toast, { ToastPosition } from '@/Components/Util/Toast';
 import { PageProps } from '@/types/page-props.type';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';

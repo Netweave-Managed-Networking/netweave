@@ -1,7 +1,8 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import Dropdown from '@/Components/Input/Dropdown';
+import ApplicationLogo from '@/Components/Logo/ApplicationLogo';
+
+import NavLink from '@/Components/Util/NavLink';
+import ResponsiveNavLink from '@/Components/Util/ResponsiveNavLink';
 import { ToastProvider } from '@/Providers/ToastProvider';
 import { User } from '@/types/user.model';
 import { Link } from '@inertiajs/react';
