@@ -1,5 +1,5 @@
 import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
-import { OrganizationCategoryMin } from '@/types/organization-category-min.model';
+import { IdName } from '@/types/id-name.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useState } from 'react';
 import { BadgeElement } from './Badge';
@@ -7,7 +7,7 @@ import BadgeSelect from './BadgeSelect';
 import { OrganizationCategoryCreateModal } from './OrganizationCategoryCreateModal';
 
 export interface OrganizationCategoriesSelectAddProps {
-  organizationCategories: OrganizationCategoryMin[];
+  organizationCategories: IdName[];
   onChange: (selectedCategoryIds: number[]) => void;
   className?: string;
 }

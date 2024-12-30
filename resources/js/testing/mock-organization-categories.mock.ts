@@ -1,6 +1,6 @@
-import { OrganizationCategoryMin } from '@/types/organization-category-min.model';
+import { IdName } from '@/types/id-name.model';
 
-export const mockOrganizationCategories: OrganizationCategoryMin[] = [
+export const mockOrganizationCategories: IdName[] = [
   { id: 1, name: 'Behörde' },
   { id: 2, name: 'Stiftung' },
   { id: 3, name: 'Gemeinde/Stadt' },

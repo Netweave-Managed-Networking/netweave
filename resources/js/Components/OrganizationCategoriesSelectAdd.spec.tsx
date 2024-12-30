@@ -1,4 +1,4 @@
-import { OrganizationCategoryMin } from '@/types/organization-category-min.model';
+import { IdName } from '@/types/id-name.model';
 import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoriesSelectAdd from './OrganizationCategoriesSelectAdd';
 import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCreateModal';
@@ -25,7 +25,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
   const mockCategories = [
     { id: 1, name: 'Category 1' },
     { id: 2, name: 'Category 2' },
-  ] as OrganizationCategoryMin[];
+  ] as IdName[];
 
   const mockOnChange = jest.fn();
 

@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
+import BuildCircleOutlined from '@mui/icons-material/BuildCircleOutlined';
 
 export default function HomePage({ auth }: PageProps) {
   return (
@@ -19,6 +20,14 @@ export default function HomePage({ auth }: PageProps) {
 
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="pt-12 pb-3">
+          <NavTile
+            title="Kategorien verwalten"
+            href="/organization-categories/edit"
+            icon={<BuildCircleOutlined fontSize="medium" />}
+          />
+        </div>
+
+        <div className="py-3">
           <NavTile
             title="Neue Organisation anlegen"
             href="/organizations/create"

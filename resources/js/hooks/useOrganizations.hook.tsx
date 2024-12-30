@@ -11,6 +11,7 @@ export function useOrganizations(): UseOrganizationsResult {
   const organizations = useQuery<Organization[]>({
     queryKey: ['organizations'],
     queryFn: () => fetchOrganizations(),
+    staleTime: 20000,
   });
   return {
     ...organizations,

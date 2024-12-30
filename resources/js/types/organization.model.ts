@@ -1,6 +1,6 @@
-import { OrganizationCategoryMin } from './organization-category-min.model';
+import { IdName } from './id-name.model';
 import { OrganizationMin } from './organization-min.model';
 
 export interface Organization extends OrganizationMin {
-  organization_categories: OrganizationCategoryMin[];
+  organization_categories: IdName[];
 }
