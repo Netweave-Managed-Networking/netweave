@@ -34,13 +34,12 @@ export default function OrganizationsList() {
       {organizations.map((organization, index) => (
         <div key={organization.id} className={index === 0 ? 'pb-3' : 'py-3'}>
           <Tile>
-            <strong>{organization.name}</strong>
-            {organization.organization_categories.map(category => (
-              <Badge
-                key={category.id}
-                element={idNameToIdLabel(category)}
-              ></Badge>
-            ))}
+            <div className="flex items-center gap-2">
+              <strong>{organization.name}</strong>
+              {organization.organization_categories.map(category => (
+                <Badge key={category.id} element={idNameToIdLabel(category)} />
+              ))}
+            </div>
           </Tile>
         </div>
       ))}

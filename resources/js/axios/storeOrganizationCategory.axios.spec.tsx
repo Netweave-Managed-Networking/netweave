@@ -11,7 +11,7 @@ jest.mock('axios');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = jest.fn().mockImplementation((name: string) => {
   if (name === 'organization-categories.api') {
-    return '/organization-categories/api'; // Replace with the actual API endpoint
+    return '/organization-categories/api';
   }
 });
 

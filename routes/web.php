@@ -57,15 +57,16 @@ Route::middleware('auth')->group(function (): void {
     Route::prefix('organizations')->group(function (): void {
         Route::get('/create', [OrganizationController::class, 'create'])->name('organizations.create');
         Route::post('', [OrganizationController::class, 'store'])->name('organizations.store');
-        Route::prefix('api')->group(function (): void {
-            Route::get('', [OrganizationController::class, 'indexJson'])->name('organizations.api.index');
-        });
+        Route::get('api', [OrganizationController::class, 'indexJson'])->name('organizations.api.index');
     });
 
     Route::prefix('organization-categories')->group(function (): void {
-        Route::prefix('api')->group(function (): void {
-            Route::post('', [OrganizationCategoryController::class, 'storeJson'])->name('organization-categories.api');
-        });
+        Route::get('api/{category}', [OrganizationCategoryController::class, 'getJson'])->name('organization-categories.api.get');
+        Route::post('api', [OrganizationCategoryController::class, 'storeJson'])->name('organization-categories.api.store');
+        Route::get('/edit', [OrganizationCategoryController::class, 'edit'])->name('organization-categories.edit');
+        // Route::put('/{category}', [OrganizationCategoryController::class, 'update'])->name('organization-categories.update'); // TODO add edit functionality
+        Route::delete('/{category}', [OrganizationCategoryController::class, 'destroy'])->name('organization-categories.destroy');
+
     });
 });
 
