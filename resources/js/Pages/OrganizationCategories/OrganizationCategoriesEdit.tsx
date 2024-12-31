@@ -1,3 +1,4 @@
+import OrganizationCategoryAdd from '@/Components/OrganizationCategories/OrganizationCategoryAdd';
 import OrganizationCategoryEdit from '@/Components/OrganizationCategories/OrganizationCategoryEdit';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { OrganizationCategory } from '@/types/organization-category.model';
@@ -23,6 +24,9 @@ export default function OrganizationCategoriesEdit({
 
       <div className="py-12 overflow-auto h-screen">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <OrganizationCategoryAdd
+            onOrganizationCategoryAdd={() => window.location.reload()}
+          />
           {organizationCategories.map(category => (
             <OrganizationCategoryEdit
               key={category.id}
