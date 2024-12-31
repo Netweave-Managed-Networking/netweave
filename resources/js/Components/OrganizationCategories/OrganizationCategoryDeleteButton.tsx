@@ -72,27 +72,33 @@ export function OrganizationCategoryDeleteButton({
           </h2>
 
           {/* text */}
-          <p className="mt-1 text-sm text-gray-600">
-            Beim Löschen wird diese Kategorie somit{' '}
-            <strong>
-              von allen {organizationsOfCat.length} Organisationen entfernt,
-              denen diese zurzeit zugewiesen ist
-            </strong>
-            .
-          </p>
-          <div className="mt-1 text-sm text-gray-600">
-            Diese sind{' '}
-            {organizationsOfCat.length > 5 && <span>unter anderem</span>}:
-            <ul className="my-4 px-10 list-disc">
-              {organizationsOfCat &&
-                organizationsOfCat
-                  .slice(0, 5)
-                  .map(organization => (
+          {organizationsOfCat.length > 0 ? (
+            <>
+              <p className="mt-1 text-sm text-gray-600">
+                Beim Löschen wird diese Kategorie somit{' '}
+                <strong>
+                  von allen {organizationsOfCat.length} Organisationen entfernt,
+                  denen diese zurzeit zugewiesen ist
+                </strong>
+                .
+              </p>
+              <div className="mt-1 text-sm text-gray-600">
+                Diese sind{' '}
+                {organizationsOfCat.length > 5 && <span>unter anderem</span>}:
+                <ul className="my-4 px-10 list-disc">
+                  {organizationsOfCat.slice(0, 5).map(organization => (
                     <li key={organization.id}>{organization.name}</li>
                   ))}
-              {organizationsOfCat.length > 5 && <li>...</li>}
-            </ul>
-          </div>
+                  {organizationsOfCat.length > 5 && <li>...</li>}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-gray-600">
+              Es gibt keine Organisationen mit dieser Kategorie. Das Löschen
+              dieser Kategorie hat somit keine Auswirkungen auf Organisationen.
+            </p>
+          )}
 
           {/* buttons */}
           <div className="mt-6 flex justify-end">
