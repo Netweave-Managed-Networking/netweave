@@ -58,7 +58,7 @@ export function OrganizationCategoryDeleteButton({
         <Button
           className={className}
           style={{ ...style, borderRadius: '0px' }}
-          onClick={() => openModal()}
+          onClick={openModal}
         >
           <DeleteOutline className="text-red-800" />
         </Button>

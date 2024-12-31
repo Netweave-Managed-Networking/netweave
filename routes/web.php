@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('api/{category}', [OrganizationCategoryController::class, 'getJson'])->name('organization-categories.api.get');
         Route::post('api', [OrganizationCategoryController::class, 'storeJson'])->name('organization-categories.api.store');
         Route::get('/edit', [OrganizationCategoryController::class, 'edit'])->name('organization-categories.edit');
-        // Route::put('/{category}', [OrganizationCategoryController::class, 'update'])->name('organization-categories.update'); // TODO add edit functionality
+        Route::put('/{category}', [OrganizationCategoryController::class, 'update'])->name('organization-categories.update');
         Route::delete('/{category}', [OrganizationCategoryController::class, 'destroy'])->name('organization-categories.destroy');
 
     });

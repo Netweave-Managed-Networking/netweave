@@ -1,5 +1,6 @@
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { OrganizationCategoryDeleteButton } from './OrganizationCategoryDeleteButton';
+import { OrganizationCategoryUpdateButton } from './OrganizationCategoryUpdateButton';
 
 export interface OrganizationCategoryEditProps {
   organizationCategory: OrganizationCategory;
@@ -18,11 +19,10 @@ export default function OrganizationCategoryEdit({
         <p>{organizationCategory.description}</p>
       </div>
       <div className="grid" style={{ borderLeft: '1px solid #e5e5e5' }}>
-        {/* TODO add edit functionality */}
-        {/* <OrganizationCategoryEditButton
-                  category={category}
-                  style={{ borderBottom: '1px solid #e5e5e5' }}
-                /> */}
+        <OrganizationCategoryUpdateButton
+          category={organizationCategory}
+          style={{ borderBottom: '1px solid #e5e5e5' }}
+        />
         <OrganizationCategoryDeleteButton category={organizationCategory} />
       </div>
     </div>

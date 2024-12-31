@@ -10,8 +10,10 @@ use Tests\TestCase;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
+use function Pest\Laravel\put;
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 
@@ -25,18 +27,12 @@ describe('storeJson', function () {
         $user = User::factory()->create();
         actingAs($user);
 
-        $payload = [
-            'name' => 'New Category',
-            'description' => 'A description for the new category',
-        ];
+        $payload = ['name' => 'New Category', 'description' => 'A description for the new category'];
 
         $response = post('/organization-categories/api', $payload);
 
         $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJson([
-                'name' => $payload['name'],
-                'description' => $payload['description'],
-            ]);
+            ->assertJson(['name' => $payload['name'], 'description' => $payload['description']]);
 
         assertDatabaseHas('organization_categories', $payload);
     });
@@ -46,10 +42,7 @@ describe('storeJson', function () {
         $user = User::factory()->create();
         actingAs($user);
 
-        $payload = [
-            'name' => $name,
-            'description' => 'Valid description',
-        ];
+        $payload = ['name' => $name, 'description' => 'Valid description'];
 
         $response = post('/organization-categories/api', $payload);
 
@@ -139,22 +132,54 @@ describe('getJson', function () {
 });
 
 describe('edit', function () {
-    beforeEach(function () use (&$cat) {
+    beforeEach(function () {
         actingAs(User::factory()->create());
         OrganizationCategory::factory()->count(10)->create();
     });
 
-    it('should have status 200', function () use (&$cat): void {
+    it('should have status 200', function (): void {
         $response = get('/organization-categories/edit');
         $response->assertOk();
     });
 
-    it('should return correct page with correct number of categories', function () use (&$cat): void {
+    it('should return correct page with correct number of categories', function (): void {
         $this->get('/organization-categories/edit')
             ->assertInertia(fn (Assert $page) => $page->component('OrganizationCategories/OrganizationCategoriesEdit')
                 ->has('organizationCategories', 10) // Adjust the count if needed
             );
     });
+});
+
+describe('update', function () {
+
+    $cat = null;
+    beforeEach(function () use (&$cat) {
+        $cat = OrganizationCategory::factory()->create(['name' => 'Old Name', 'description' => 'Old Description']);
+        actingAs(User::factory()->create());
+    });
+
+    it('should update a category with valid data', function ($name, $description) use (&$cat) {
+        $payload = ['name' => $name, 'description' => $description];
+        $response = put("/organization-categories/{$cat->id}", $payload);
+
+        $response->assertStatus(302);
+        assertDatabaseHas('organization_categories', $payload);
+    })->with([
+        ['Valid Name', 'Valid Description'], // valid data
+        ['Valid Name', null], // description nullable is valid
+    ]);
+
+    it('should validate the update request and not update the category', function ($name, $description) use (&$cat) {
+        $payload = ['name' => $name, 'description' => $description];
+        $response = put("/organization-categories/{$cat->id}", $payload);
+
+        $response->assertStatus(302);
+        assertDatabaseMissing('organization_categories', ['name' => $name, 'description' => $description]);
+    })->with([
+        ['', 'Valid Description'], // name required fails
+        [str_repeat('a', 65), 'Valid Description'], // name max:64 fails
+        ['Valid Name', str_repeat('a', 257)], // description max:256 fails
+    ]);
 });
 
 describe('destroy', function () {

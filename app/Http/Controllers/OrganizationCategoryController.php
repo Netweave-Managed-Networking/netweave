@@ -37,6 +37,18 @@ class OrganizationCategoryController extends Controller
         return Inertia::render('OrganizationCategories/OrganizationCategoriesEdit')->with('organizationCategories', $organization_categories);
     }
 
+    public function update(Request $request, OrganizationCategory $category): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => "required|string|max:64|unique:organization_categories,name,$category->id",
+            'description' => "nullable|string|max:256|unique:organization_categories,description,$category->id",
+        ]);
+
+        $category->update($validated);
+
+        return redirect()->route('organization-categories.edit')->with('success', "Organisationskategorie '$category->name' aktualisiert.");
+    }
+
     public function destroy(OrganizationCategory $category): RedirectResponse
     {
         $name = $category->name;
