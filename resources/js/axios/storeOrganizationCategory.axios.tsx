@@ -16,4 +16,4 @@ export type StoreOrganizationCategoryError = AxiosError<{
 export const storeOrganizationCategory = async (
   category: OrganizationCategoryCreate
 ): Promise<OrganizationCategory> | never =>
-  (await axios.post(route('organization-categories.api'), category)).data;
+  (await axios.post(route('organization-categories.api.store'), category)).data;

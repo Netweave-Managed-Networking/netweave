@@ -10,7 +10,7 @@ jest.mock('axios');
 // Mock the `route` function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = jest.fn().mockImplementation((name: string) => {
-  if (name === 'organization-categories.api') {
+  if (name === 'organization-categories.api.store') {
     return '/organization-categories/api';
   }
 });
@@ -35,7 +35,7 @@ describe('storeOrganizationCategory', () => {
 
     expect(result).toEqual(mockResponse);
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('organization-categories.api'),
+      route('organization-categories.api.store'),
       mockCategory
     );
   });
@@ -50,7 +50,7 @@ describe('storeOrganizationCategory', () => {
       'Request failed with status code 500'
     );
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('organization-categories.api'),
+      route('organization-categories.api.store'),
       mockCategory
     );
   });
