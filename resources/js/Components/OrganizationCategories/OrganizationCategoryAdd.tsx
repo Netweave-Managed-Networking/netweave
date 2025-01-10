@@ -18,10 +18,7 @@ export default function OrganizationCategoryAdd({
   const hideModal = () => setModalIsActive(false);
 
   return (
-    <div
-      key="createNewOrganizationCategory"
-      className="bg-white m-3 shadow-sm sm:rounded-lg flex justify-between"
-    >
+    <div className="bg-white m-3 shadow-sm sm:rounded-lg flex justify-between">
       <div className="px-6 py-6">
         <code className="italic">Kategorie hinzufügen</code>
       </div>
