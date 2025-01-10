@@ -13,7 +13,9 @@ class OrganizationCategoryController extends Controller
 {
     public function getJson(OrganizationCategory $category)
     {
-        $category->organizations = $category->organizations()->orderBy('name')->select(['id', 'name'])->get();
+        $category->load(['organizations' => function ($query) {
+            $query->orderBy('name')->select(['id', 'name']);
+        }]);
 
         return response()->json($category, 200);
     }
