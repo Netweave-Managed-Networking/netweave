@@ -3,6 +3,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoriesSelectAdd from './OrganizationCategoriesSelectAdd';
 import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCreateModal';
 
+let id = 2;
+const name = (id: number) => `Category ${id}`;
+
 jest.mock('./OrganizationCategoryCreateModal', () => ({
   __esModule: true,
   OrganizationCategoryCreateModal: ({
@@ -12,7 +15,12 @@ jest.mock('./OrganizationCategoryCreateModal', () => ({
     if (!show) return null;
     return (
       <div role="dialog">
-        <button onClick={() => onClose({ id: 3, name: 'Category 3' })}>
+        <button
+          onClick={() => {
+            id++;
+            return onClose({ id, name: name(id) });
+          }}
+        >
           Submit inside Modal
         </button>
         <button onClick={() => onClose(undefined)}>Close inside Modal</button>
@@ -98,5 +106,32 @@ describe('OrganizationCategoriesSelectAdd', () => {
 
     // Check that the new badge is rendered
     expect(screen.getByText('Category 3')).toBeInTheDocument();
+  });
+
+  it('adds two new categories when the modal is submitted twice', () => {
+    render(
+      <OrganizationCategoriesSelectAdd
+        organizationCategories={mockCategories}
+        onChange={mockOnChange}
+      />
+    );
+
+    // Open the modal
+    fireEvent.click(screen.getByText('Neue Kategorie'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Simulate adding a new category
+    fireEvent.click(screen.getByText('Submit inside Modal'));
+
+    // Open the modal
+    fireEvent.click(screen.getByText('Neue Kategorie'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Simulate adding a new category
+    fireEvent.click(screen.getByText('Submit inside Modal'));
+
+    // Check that the new badge is rendered
+    expect(screen.getByText('Category 3')).toBeInTheDocument();
+    expect(screen.getByText('Category 4')).toBeInTheDocument();
   });
 });

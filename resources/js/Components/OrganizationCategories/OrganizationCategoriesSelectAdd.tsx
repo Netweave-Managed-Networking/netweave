@@ -37,7 +37,7 @@ export default function OrganizationCategoriesSelectAdd({
       }
       hideModal();
     },
-    [organizationCategories]
+    [organizationCategories, organizationCategoryBadges]
   );
 
   return (
