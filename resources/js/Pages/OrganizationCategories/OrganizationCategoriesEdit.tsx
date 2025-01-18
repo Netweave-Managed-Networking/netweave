@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 export default function OrganizationCategoriesEdit({
   auth,
@@ -11,6 +12,27 @@ export default function OrganizationCategoriesEdit({
 }: PageProps<{
   organizationCategories: OrganizationCategory[];
 }>) {
+  const [categories, setCategories] = useState([...organizationCategories]);
+
+  useEffect(
+    // this is kind of a hack to set the categories state value to the organizationCategories PageProp value (after an "update" or "delete" operation)
+    // this needs to be done because the state value is only updated in case of an "add" (api returns json in that case)
+    // the state value will not be updated by the frontend in case of an update or delete (because here a redirect with new page props happens)
+    // in case of an update or delete the backend will redirect to the same page with the updated organizationCategories page prop value
+    // which is why we need to update the state value every time the organizationCategories prop value might have changed
+    () => setCategories([...organizationCategories]),
+    [organizationCategories]
+  );
+
+  const addCategorySorted = (newCategory: OrganizationCategory | undefined) => {
+    if (newCategory)
+      setCategories(
+        [...categories, newCategory].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
+      );
+  };
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -25,9 +47,11 @@ export default function OrganizationCategoriesEdit({
       <div className="py-12 overflow-auto h-screen">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <OrganizationCategoryAdd
-            onOrganizationCategoryAdd={() => window.location.reload()}
+            onOrganizationCategoryAdd={newCategory =>
+              addCategorySorted(newCategory)
+            }
           />
-          {organizationCategories.map(category => (
+          {categories.map(category => (
             <OrganizationCategoryEdit
               key={category.id}
               organizationCategory={category}
