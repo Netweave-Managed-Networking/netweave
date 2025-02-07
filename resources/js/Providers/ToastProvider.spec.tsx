@@ -15,7 +15,7 @@ jest.mock(
           <div data-testid="toast" role="alert">
             <p>{message}</p>
             <span>{severity}</span>
-            <span>{position}</span>
+            <span>{position?.toString()}</span>
             <button onClick={onClose}>Close</button>
           </div>
         )
@@ -31,7 +31,11 @@ const ComponentUsingToast = () => {
   const { showToast } = useToast();
 
   return (
-    <button onClick={() => showToast('Test message', 'success', 'top-left')}>
+    <button
+      onClick={() =>
+        showToast('Test message', 'success', { v: 'top', h: 'left' })
+      }
+    >
       Show Toast
     </button>
   );
@@ -58,7 +62,9 @@ describe('ToastProvider', () => {
 
     expect(await screen.findByText('Test message')).toBeInTheDocument();
     expect(screen.getByText('success')).toBeInTheDocument();
-    expect(screen.getByText('top-left')).toBeInTheDocument();
+    expect(
+      screen.getByText({ v: 'top', h: 'left' }.toString())
+    ).toBeInTheDocument();
   });
 
   it('should close the toast when the close button is clicked', async () => {
