@@ -1,6 +1,7 @@
 import OrganizationCategoryAdd from '@/Components/OrganizationCategories/OrganizationCategoryAdd';
 import OrganizationCategoryEdit from '@/Components/OrganizationCategories/OrganizationCategoryEdit';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { useToast } from '@/Providers/ToastProvider';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
@@ -12,6 +13,7 @@ export default function OrganizationCategoriesEdit({
 }: PageProps<{
   organizationCategories: OrganizationCategory[];
 }>) {
+  const { showToast: setToast } = useToast();
   const [categories, setCategories] = useState([...organizationCategories]);
 
   useEffect(
@@ -24,13 +26,17 @@ export default function OrganizationCategoriesEdit({
     [organizationCategories]
   );
 
-  const addCategorySorted = (newCategory: OrganizationCategory | undefined) => {
-    if (newCategory)
-      setCategories(
-        [...categories, newCategory].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        )
-      );
+  const addCategorySorted = (newCategory: OrganizationCategory) => {
+    setCategories(
+      [...categories, newCategory].sort((a, b) => a.name.localeCompare(b.name))
+    );
+  };
+
+  const showToastCategoryCreated = (newCategory: OrganizationCategory) => {
+    setToast(
+      `Organisationskategorie '${newCategory.name}' erstellt.`,
+      'success'
+    );
   };
 
   return (
@@ -47,9 +53,12 @@ export default function OrganizationCategoriesEdit({
       <div className="py-12 overflow-auto h-screen">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <OrganizationCategoryAdd
-            onOrganizationCategoryAdd={newCategory =>
-              addCategorySorted(newCategory)
-            }
+            onOrganizationCategoryAdd={newCategory => {
+              if (newCategory) {
+                addCategorySorted(newCategory);
+                showToastCategoryCreated(newCategory);
+              }
+            }}
           />
           {categories.map(category => (
             <OrganizationCategoryEdit

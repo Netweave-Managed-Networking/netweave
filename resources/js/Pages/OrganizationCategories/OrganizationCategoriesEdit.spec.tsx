@@ -1,9 +1,11 @@
 /* eslint-disable react/display-name */
+import { ToastProvider } from '@/Providers/ToastProvider';
 import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { mockUser } from '@/testing/mock-users.mock';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoriesEdit from './OrganizationCategoriesEdit';
 
+// Mock the Head component from Inertia.js
 jest.mock('@inertiajs/react', () => ({
   ...jest.requireActual('@inertiajs/react'),
   Head: ({ title }: { title: string }) => <title>{title}</title>,
@@ -22,13 +24,34 @@ jest.mock(
   () => () => <div>OrganizationCategoryEdit</div>
 );
 
+// Mock the OrganizationCategoryAdd component
+jest.mock(
+  '@/Components/OrganizationCategories/OrganizationCategoryAdd',
+  () =>
+    ({
+      onOrganizationCategoryAdd,
+    }: {
+      onOrganizationCategoryAdd: (newCategory: any) => void;
+    }) => (
+      <button
+        onClick={() =>
+          onOrganizationCategoryAdd({ id: 1, name: 'New Category' })
+        }
+      >
+        Add Category
+      </button>
+    )
+);
+
 describe('OrganizationCategoriesEdit', () => {
   it('renders the page with organization categories', () => {
     render(
-      <OrganizationCategoriesEdit
-        auth={{ user: mockUser }}
-        organizationCategories={mockOrganizationCategories}
-      />
+      <ToastProvider>
+        <OrganizationCategoriesEdit
+          auth={{ user: mockUser }}
+          organizationCategories={mockOrganizationCategories}
+        />
+      </ToastProvider>
     );
 
     // Verify the title is rendered
@@ -41,5 +64,24 @@ describe('OrganizationCategoriesEdit', () => {
     expect(organizationCategoryElements.length).toBe(
       mockOrganizationCategories.length
     );
+  });
+
+  it('shows a toast message when a new category is added', async () => {
+    render(
+      <ToastProvider>
+        <OrganizationCategoriesEdit
+          auth={{ user: mockUser }}
+          organizationCategories={mockOrganizationCategories}
+        />
+      </ToastProvider>
+    );
+
+    // Simulate adding a new category
+    fireEvent.click(screen.getByText('Add Category'));
+
+    // Verify the toast message is shown
+    expect(
+      await screen.findByText("Organisationskategorie 'New Category' erstellt.")
+    ).toBeInTheDocument();
   });
 });
