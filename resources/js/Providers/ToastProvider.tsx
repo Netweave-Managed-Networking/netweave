@@ -1,41 +1,62 @@
 import Toast, { ToastPosition } from '@/Components/Util/Toast';
-import { PageProps } from '@/types/page-props.type';
-import { usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { AlertColor } from '@mui/material';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
-export const ToastProvider = () => {
-  const { props } = usePage<PageProps>();
+type ToastContextType = {
+  showToast: (
+    message: string,
+    severity: AlertColor,
+    position?: ToastPosition
+  ) => void;
+};
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
+
+export const useToast = (): ToastContextType | never => {
+  const context: ToastContextType | undefined = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
+};
+
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [severity, setSeverity] = useState<'error' | 'success'>('error');
-  const [position] = useState<ToastPosition>('bottom-right');
+  const [severity, setSeverity] = useState<AlertColor>('error');
+  const [position, setPosition] = useState<ToastPosition>({
+    v: 'bottom',
+    h: 'right',
+  });
 
-  useEffect(() => {
-    const message: string | null | undefined =
-      props.error_message ?? props.success_message;
-
-    if (message) {
-      setMessage(message);
-      setSeverity(props.error_message ? 'error' : 'success');
-      setOpen(true);
-    }
-  }, [props.error_message, props.success_message]);
+  const showToast = (
+    message: string,
+    severity: AlertColor,
+    position: ToastPosition = { v: 'bottom', h: 'right' }
+  ) => {
+    setMessage(message);
+    setSeverity(severity);
+    setPosition(position);
+    setOpen(true);
+  };
 
   const handleClose = () => {
     setOpen(false);
-    props.success_message = null;
-    props.error_message = null;
+    setMessage(null);
   };
 
-  return message ? (
-    <Toast
-      open={open}
-      onClose={handleClose}
-      message={message}
-      position={position} // Optional, or pass a default if you don't want to customize
-      severity={severity}
-    />
-  ) : (
-    <></>
+  return (
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+      {message && (
+        <Toast
+          open={open}
+          onClose={handleClose}
+          message={message}
+          position={position}
+          severity={severity}
+        />
+      )}
+    </ToastContext.Provider>
   );
 };

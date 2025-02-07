@@ -1,8 +1,7 @@
 import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
+import { useToast } from '@/Providers/ToastProvider';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { IconButton, Tooltip } from '@mui/material';
-import { useState } from 'react';
-import Toast from '../Util/Toast';
 
 interface InvitationCodeInvitationLinkButtonProps {
   code: string;
@@ -11,7 +10,7 @@ interface InvitationCodeInvitationLinkButtonProps {
 export default function InvitationCodeInvitationLinkButton({
   code,
 }: InvitationCodeInvitationLinkButtonProps) {
-  const [toastOpen, setToastOpen] = useState(false);
+  const { showToast } = useToast();
 
   const copyLinkToClipboard = () => {
     const invitationLink = `${window.location.origin}/register?code=${code}`;
@@ -19,8 +18,11 @@ export default function InvitationCodeInvitationLinkButton({
   };
 
   const showToastMessage = () => {
-    setToastOpen(true);
-    setTimeout(() => setToastOpen(false), 2000);
+    showToast(
+      'Der Einladungslink wurde in die Zwischenablage kopiert.',
+      'info',
+      { v: 'top', h: 'center' }
+    );
   };
 
   return (
@@ -36,13 +38,6 @@ export default function InvitationCodeInvitationLinkButton({
           <ContentCopyIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-
-      <Toast
-        open={toastOpen}
-        message="Der Einladungslink wurde in die Zwischenablage kopiert."
-        position="top-center"
-        severity="info"
-      />
     </>
   );
 }

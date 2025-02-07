@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
+import { ToastProvider } from '@/Providers/ToastProvider';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ToastProps } from '../Util/Toast';
 import InvitationCodeInvitationLinkButton from './InvitationCodeInvitationLinkButton';
@@ -17,8 +18,14 @@ jest.mock('@/Components/Util/Toast', () => (props: ToastProps) => {
 describe('InvitationCodeInvitationLinkButton', () => {
   const invitationCode = 'sampleCode123';
 
+  const renderWithProviders = (ui: React.ReactElement) => {
+    return render(<ToastProvider>{ui}</ToastProvider>);
+  };
+
   it('renders the button and tooltip', async () => {
-    render(<InvitationCodeInvitationLinkButton code={invitationCode} />);
+    renderWithProviders(
+      <InvitationCodeInvitationLinkButton code={invitationCode} />
+    );
 
     // Check if the copy button is in the document
     const button = screen.getByRole('button');
@@ -32,7 +39,9 @@ describe('InvitationCodeInvitationLinkButton', () => {
   });
 
   it('copies the invitation link to the clipboard on button click', () => {
-    render(<InvitationCodeInvitationLinkButton code={invitationCode} />);
+    renderWithProviders(
+      <InvitationCodeInvitationLinkButton code={invitationCode} />
+    );
 
     const button = screen.getByRole('button');
     fireEvent.click(button);
@@ -44,7 +53,9 @@ describe('InvitationCodeInvitationLinkButton', () => {
   });
 
   it('shows the toast message after clicking the button', () => {
-    render(<InvitationCodeInvitationLinkButton code={invitationCode} />);
+    renderWithProviders(
+      <InvitationCodeInvitationLinkButton code={invitationCode} />
+    );
 
     const button = screen.getByRole('button');
     fireEvent.click(button);

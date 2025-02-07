@@ -3,7 +3,7 @@ import ApplicationLogo from '@/Components/Logo/ApplicationLogo';
 
 import NavLink from '@/Components/Util/NavLink';
 import ResponsiveNavLink from '@/Components/Util/ResponsiveNavLink';
-import { ToastProvider } from '@/Providers/ToastProvider';
+import { ServerToastProvider } from '@/Providers/ServerToastProvider';
 import { User } from '@/types/user.model';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
@@ -16,8 +16,7 @@ export default function Authenticated({
     useState(false);
 
   return (
-    <>
-      <ToastProvider />
+    <ServerToastProvider>
       <div className="min-h-screen bg-gray-100">
         {/* Top Nav */}
         <nav className="bg-white border-b border-gray-100">
@@ -179,6 +178,6 @@ export default function Authenticated({
         )}
         <main>{children}</main>
       </div>
-    </>
+    </ServerToastProvider>
   );
 }

@@ -6,8 +6,10 @@ import {
   SnackbarOrigin,
 } from '@mui/material';
 
-export type ToastPosition =
-  `${SnackbarOrigin['vertical']}-${SnackbarOrigin['horizontal']}`;
+export type ToastPosition = {
+  v: SnackbarOrigin['vertical'];
+  h: SnackbarOrigin['horizontal'];
+};
 
 export interface ToastProps {
   open: boolean;
@@ -24,7 +26,7 @@ const Toast = ({
   open,
   message,
   onClose,
-  position = 'bottom-center',
+  position = { v: 'bottom', h: 'center' },
   severity = 'info',
 }: ToastProps) => {
   return (
@@ -32,10 +34,7 @@ const Toast = ({
       open={open}
       onClose={onClose}
       autoHideDuration={4000}
-      anchorOrigin={{
-        vertical: position.split('-')[0] as SnackbarOrigin['vertical'],
-        horizontal: position.split('-')[1] as SnackbarOrigin['horizontal'],
-      }}
+      anchorOrigin={{ vertical: position.v, horizontal: position.h }}
     >
       <Alert severity={severity} variant="filled" sx={{ width: '100%' }}>
         {message}

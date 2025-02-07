@@ -52,7 +52,13 @@ describe('Toast Component', () => {
 
   describe('position', () => {
     it('renders the Snackbar at top right', () => {
-      render(<Toast open={true} message="Test message" position="top-right" />);
+      render(
+        <Toast
+          open={true}
+          message="Test message"
+          position={{ v: 'top', h: 'right' }}
+        />
+      );
 
       const snackbar =
         screen.getByText('Test message').parentElement?.parentElement;
@@ -61,7 +67,11 @@ describe('Toast Component', () => {
 
     it('renders the Snackbar at bottom center', () => {
       render(
-        <Toast open={true} message="Test message" position="bottom-center" />
+        <Toast
+          open={true}
+          message="Test message"
+          position={{ v: 'bottom', h: 'center' }}
+        />
       );
 
       const snackbar =
