@@ -13,7 +13,8 @@ Netweave is built with Laravel connected with React by Inertia.js.
 
 ## Database Schema
 
-see [entities-relations.md](./docs/db/entities-relations.md).
+![ER-Diagram of netweave database schema](./docs/db/eer-goal-v6.png)
+see [entities-relations.md](./docs/db/entities-relations.md) for more details.
 
 ## Deployment
 
