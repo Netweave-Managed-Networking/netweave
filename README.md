@@ -35,13 +35,14 @@ On the other hand, Netweave collects data on
 - the organizational culture (OCAI values)
 - possible criteria for cooperation
 - information on the organization's attitude towards the environment and
-- other custom soft data.\
+- other custom soft data.
 
 Synergy effects are sought on the basis of this data: Netweave finds organizations that can help each other so that both benefit.
 
 ### WHY does Netweave exist
 
-Netweave ist entstanden, da Probleme in der Vernetzung von Umweltakteuren aufgefallen sind. Viele, insbesondere ehrenamtliche, Organisationen leisten sehr gute Arbeit, könnten aber noch deutlich effektiver arbeiten, wenn sie einen leichteren Zugriff auf Ressourcen anderer Organisationen hätten.
+Netweave was created because problems in the networking of environmental actors were noticed.\
+Many organizations, especially voluntary ones, do very good work, but could work much more effectively if they had easier access to resources from other organizations.
 
 ## TechStack
 
