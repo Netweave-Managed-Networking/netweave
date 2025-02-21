@@ -7,7 +7,43 @@ Netweave aims to connect Organizations with scientific methods on a local level.
 This software application holds a database with information about organizations, their relations, resources and requirements.
 The Netweave platform serves two main functions: Being a custom questions survey & giving networking advice & suggestions for local organizations.
 
-## About the TechStack
+## Use case of netweave
+
+<div>
+  <img src="./docs/use-case/use-cases-v1-en.png" alt="Use cases of netweave (english)" width="49%" style="padding: 0px; margin: 0px; border: none" /> 
+  <img src="./docs/use-case/use-cases-v1-de.png" alt="Use cases von netweave (deutsch)" width="49%" style="padding: 0px; margin: 0px; border: none" />
+</div>
+
+### WHAT is netweave
+
+**Netweave is aiming to transform the complex task of networking into a simple step-by-step process.**
+
+Netweave is a tool designed to **support network consultants** in establishing **meaningful** contacts between various _associations, authorities, universities, organizations, companies, e.g. from the agricultural sector, and other institutions_ within a local network.
+
+The various network participants are called **organizations**.\
+A **network** can be for example: a **specific region**, or a group of different organizations **working together on a specific topic**.
+
+### HOW does Netweave work
+
+On the one hand, Netweave collects data on
+
+- the organizations' **resources** (What does the organization have to offer the network?)
+- as well as their **needs** (What can the organization potentially benefit from?).
+
+On the other hand, Netweave collects data on
+
+- the organizational culture (OCAI values)
+- possible criteria for cooperation
+- information on the organization's attitude towards the environment and
+- other custom soft data.\
+
+Synergy effects are sought on the basis of this data: Netweave finds organizations that can help each other so that both benefit.
+
+### WHY does Netweave exist
+
+Netweave ist entstanden, da Probleme in der Vernetzung von Umweltakteuren aufgefallen sind. Viele, insbesondere ehrenamtliche, Organisationen leisten sehr gute Arbeit, könnten aber noch deutlich effektiver arbeiten, wenn sie einen leichteren Zugriff auf Ressourcen anderer Organisationen hätten.
+
+## TechStack
 
 Netweave is built with Laravel connected with React by Inertia.js.
 
