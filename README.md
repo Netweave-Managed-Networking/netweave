@@ -1,20 +1,20 @@
 <p align="center"><a href="#" target="_blank"><img src="public/logo.png" width="400" alt="Netweave Logo"></a></p>
 <p align="center" style="margin-top: -60px; font-size: 3em">netweave</p>
 
-## About Netweave
+## about Netweave
 
 Netweave aims to connect Organizations with scientific methods on a local level.
 This software application holds a database with information about organizations, their relations, resources and requirements.
 The Netweave platform serves two main functions: Being a custom questions survey & giving networking advice & suggestions for local organizations.
 
-## Use case of netweave
+## use cases and why, how, what is Netweave
 
 <div>
-  <img src="./docs/use-case/use-cases-v1-en.png" alt="Use cases of netweave (english)" width="49%" style="padding: 0px; margin: 0px; border: none" /> 
-  <img src="./docs/use-case/use-cases-v1-de.png" alt="Use cases von netweave (deutsch)" width="49%" style="padding: 0px; margin: 0px; border: none" />
+  <img src="./docs/use-case/use-cases-v1-en.png" alt="Use cases of Netweave (english)" width="49%" style="padding: 0px; margin: 0px; border: none" /> 
+  <img src="./docs/use-case/use-cases-v1-de.png" alt="Use cases von Netweave (deutsch)" width="49%" style="padding: 0px; margin: 0px; border: none" />
 </div>
 
-### WHAT is netweave
+### WHAT is Netweave
 
 **Netweave is aiming to transform the complex task of networking into a simple step-by-step process.**
 
@@ -49,7 +49,7 @@ Netweave is built with Laravel connected with React by Inertia.js.
 
 ## Database Schema
 
-![ER-Diagram of netweave database schema](./docs/db/eer-goal-v6.png)
+![ER-Diagram of Netweave database schema](./docs/db/eer-goal-v6.png)
 see [entities-relations.md](./docs/db/entities-relations.md) for more details.
 
 ## Deployment
