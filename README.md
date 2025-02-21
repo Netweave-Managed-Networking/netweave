@@ -18,7 +18,7 @@ The Netweave platform serves two main functions: Being a custom questions survey
 
 **Netweave is aiming to transform the complex task of networking into a simple step-by-step process.**
 
-Netweave is a tool designed to **support network consultants** in establishing **meaningful** contacts between various _associations, authorities, universities, organizations, companies, e.g. from the agricultural sector, and other institutions_ within a local network.
+Netweave is a tool designed to **support network consultants** in establishing **meaningful** contacts between various _associations, authorities, universities, organizations, companies, and other institutions_ within a local network.
 
 The various network participants are called **organizations**.\
 A **network** can be for example: a **specific region**, or a group of different organizations **working together on a specific topic**.
