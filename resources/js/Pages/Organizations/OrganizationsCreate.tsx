@@ -9,7 +9,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, SyntheticEvent, useState } from 'react';
 
 export default function OrganizationsCreate({
   auth,
@@ -28,11 +28,16 @@ export default function OrganizationsCreate({
     organization_categories: [] as number[],
   });
 
-  const handleSubmit: FormEventHandler = e => {
+  const handleSubmit: FormEventHandler = (
+    e: SyntheticEvent<HTMLFormElement, SubmitEvent>
+  ) => {
     e.preventDefault();
+    const name = (e.nativeEvent.submitter as HTMLButtonElement).name;
+    const redirectMatch = name.match(/^redirect_to:(\/[\w-\/\{\}]+)$/);
+    const redirectTo = redirectMatch && redirectMatch[1];
 
     data.organization_categories = selectedCategories;
-    post(route('organizations.store')); // posts data
+    post(route('organizations.store', { redirect_to: redirectTo }));
   };
 
   return (
@@ -88,10 +93,9 @@ export default function OrganizationsCreate({
                     />
                   </span>
                 </div>
-                <InputError
-                  message={errors.organization_categories}
-                  className="mt-2"
-                />
+                {errors.organization_categories && (
+                  <InputError message="Wähle mindestens eine Organisations-Kategorie aus." />
+                )}
                 {/* Email */}
                 <div>
                   <InputLabel htmlFor="email" value="Email der Organisation" />
@@ -157,16 +161,19 @@ export default function OrganizationsCreate({
                   </SecondaryButton>
                   <span>
                     <PrimaryButton
-                      type="submit"
                       className="ml-4"
                       disabled={processing}
+                      name="redirect_to:/home"
+                      type="submit"
                     >
                       Fertig
                     </PrimaryButton>
+
                     <PrimaryButton
                       className="ml-4"
-                      disabled={true /*processing*/}
-                      type="button" /*submit*/
+                      disabled={processing}
+                      name="redirect_to:/organizations/{id}/resources/create"
+                      type="submit"
                     >
                       Ressourcen hinzufügen
                     </PrimaryButton>

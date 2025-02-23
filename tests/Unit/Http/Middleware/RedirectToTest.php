@@ -94,6 +94,8 @@ it('replaces {id} placeholder in redirect_to URL with modelId from session', fun
 });
 
 it('aborts with 400 if modelId is not found in session', function () {
+    session()->put('modelId', null);
+
     $response = $this->get('/test?redirect_to=/redirected/{id}');
 
     $response->assertStatus(400);

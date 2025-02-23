@@ -3,6 +3,7 @@ import {
   StoreOrganizationCategoryErrors,
   storeOrganizationCategory,
 } from '@/axios/storeOrganizationCategory.axios';
+import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
 import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useState } from 'react';
@@ -58,7 +59,7 @@ export function OrganizationCategoryCreateModal({
     <Modal show={show} onClose={() => onClose(undefined)}>
       <div className="p-6">
         <h2 className="text-lg font-medium text-gray-900">
-          Neue Kategorie erstellen
+          Neue Organisations-Kategorie erstellen
         </h2>
 
         <div className="space-y-6">
@@ -113,6 +114,3 @@ export function OrganizationCategoryCreateModal({
     </Modal>
   );
 }
-
-const capitalizeWords = (sentence: string) =>
-  sentence.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
