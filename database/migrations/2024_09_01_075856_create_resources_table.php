@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('summary', length: 256)->nullable()->fullText();
             $table->string('description', length: 8192)->fullText();
-            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'");
+            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'")->index();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });

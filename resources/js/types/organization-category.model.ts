@@ -1,5 +1,5 @@
-export interface OrganizationCategory {
-  id: number;
-  name: string;
+import { IdName } from './id-name.model';
+
+export interface OrganizationCategory extends IdName {
   description?: string;
 }

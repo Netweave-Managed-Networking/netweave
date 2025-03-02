@@ -28,6 +28,8 @@ return [
         'description' => 'Beschreibung',
         'organization_categories' => 'Organisations-Kategorien',
         'organization_categories.*' => 'Organisations-Kategorie',
+        'resource_categories' => 'Ressourcen-Kategorien',
+        'resource_categories.*' => 'Ressourcen-Kategorie',
         // Add more mappings here
     ],
 ];

@@ -1,6 +1,6 @@
-export interface OrganizationMin {
-  id: number;
-  name: string;
+import { IdName } from './id-name.model';
+
+export interface OrganizationMin extends IdName {
   email: string;
   phone: string;
   postcode_city: string;

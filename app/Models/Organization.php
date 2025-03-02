@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Organization extends Model
 {
@@ -49,16 +51,40 @@ class Organization extends Model
     ];
 
     /**
-     * Get the organizations that this organization stated. (That this organization knows, not knows, ….)
+     * Get the categories that belong to the organization.
      */
     public function organizationCategories(): BelongsToMany
     {
-        return $this->belongsToMany(OrganizationCategory::class,
-            'organization_to_category',
-            'organization_id',
-            'organization_category_id',
-        );
+        return $this->belongsToMany(OrganizationCategory::class, 'organization_to_category');
     }
+
+    ////////////////////////////////////
+    /// ↓ RESOURCES & REQUIREMENTS ↓ ///
+    ////////////////////////////////////
+
+    public function resources(): HasMany
+    {
+        return $this->hasMany(Resource::class)->where('type', 'resource');
+    }
+
+    public function requirements(): HasMany
+    {
+        return $this->hasMany(Resource::class)->where('type', 'requirement');
+    }
+
+    public function getResourceCategories(): Collection
+    {
+        return $this->getCategoriesOfResources($this->resources());
+    }
+
+    public function getRequirementCategories(): Collection
+    {
+        return $this->getCategoriesOfResources($this->requirements());
+    }
+
+    ////////////////////////////////////
+    /// ↑ RESOURCES & REQUIREMENTS ↑ ///
+    ////////////////////////////////////
 
     //////////////////////////
     // ↓ NETWORK ANALYSIS ↓ //
@@ -93,4 +119,17 @@ class Organization extends Model
     //////////////////////////
     // ↑ NETWORK ANALYSIS ↑ //
     //////////////////////////
+
+    /**
+     * get all distinct resource categories of the resources of this organization
+     *
+     * @return Collection<ResourceCategory>
+     */
+    private function getCategoriesOfResources(HasMany $resources): Collection
+    {
+        return $resources->select('resource_categories.*')
+            ->join('resource_to_category', 'resources.id', '=', 'resource_to_category.resource_id')
+            ->join('resource_categories', 'resource_to_category.resource_category_id', '=', 'resource_categories.id')
+            ->distinct()->get();
+    }
 }

@@ -2,10 +2,8 @@ import { OrganizationCategoryCreate } from '@/types/organization-category-create
 import { OrganizationCategory } from '@/types/organization-category.model';
 import axios, { AxiosError } from 'axios';
 
-export type StoreOrganizationCategoryErrors = {
-  name?: string;
-  description?: string;
-};
+export type StoreOrganizationCategoryErrors =
+  Partial<OrganizationCategoryCreate>;
 
 export type StoreOrganizationCategoryError = AxiosError<{
   message: string;

@@ -6,8 +6,10 @@ use App\Enums\UserRole;
 use App\Models\InvitationCode;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
+use App\Models\ResourceCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->usersAndInvitationCodes();
         $this->organizationsAndCategories();
-
+        $this->resourcesAndCategories();
     }
 
     private function usersAndInvitationCodes(): void
@@ -29,22 +31,28 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::ADMIN,
         ]);
 
-        /** @var \Illuminate\Support\Collection<InvitationCode> */
+        /** @var Collection<InvitationCode> */
         $codes = InvitationCode::factory(9)->create(); // Create 9 InvitationCodes + 9 Editors
         $codes->push(InvitationCode::factory()->state([
-            'editor_id' => random_int(0, 1) ? User::factory() : null,
+            'editor_id' => (bool) random_int(0, 1) ? User::factory() : null,
         ])->create());
     }
 
     private function organizationsAndCategories(): void
     {
-        /** @var \Illuminate\Support\Collection<OrganizationCategory> */
+        /** @var Collection<OrganizationCategory> */
         $organization_categories = OrganizationCategory::factory(20)->create();
 
-        /** @var \Illuminate\Support\Collection<Organization> */
-        $organizations = Organization::factory(120)->create()->each(function (Organization $organization) use ($organization_categories): void {
+        /** @var Collection<Organization> */
+        $organizations = Organization::factory(12)->create()->each(function (Organization $organization) use ($organization_categories): void {
             $some_categories = $organization_categories->random(fake()->numberBetween(1, 3));
             $organization->organizationCategories()->saveMany($some_categories);
         });
+    }
+
+    private function resourcesAndCategories(): void
+    {
+        ResourceCategory::factory(40)->create();
+        $this->callWith(ResourceSeeder::class, ['count' => 150]);
     }
 }
