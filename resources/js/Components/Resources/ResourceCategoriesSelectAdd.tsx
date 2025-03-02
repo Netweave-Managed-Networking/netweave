@@ -4,19 +4,19 @@ import { IdTitle } from '@/types/id-title.model';
 import { useState } from 'react';
 import BadgeSelect from '../Input/BadgeSelect';
 
-export interface ResourceCategoriesSelectProps {
+export interface ResourceCategoriesSelectAddProps {
   resourceCategories: IdTitle[];
   resourceCategoriesSelected: IdTitle['id'][];
   onChange: (selectedCategoryIds: number[]) => void;
   className?: string;
 }
 
-export default function ResourceCategoriesSelect({
+export default function ResourceCategoriesSelectAdd({
   resourceCategories,
   resourceCategoriesSelected,
   onChange,
   className = '',
-}: ResourceCategoriesSelectProps) {
+}: ResourceCategoriesSelectAddProps) {
   const [resourceCategoryBadges] = useState<IdLabel[]>(
     resourceCategories.map(idTitleToIdLabel)
   );
