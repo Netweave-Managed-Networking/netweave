@@ -1,20 +1,37 @@
+import { IdLabel } from '@/types/id-label.model';
 import { fireEvent, render, screen } from '@testing-library/react';
 import BadgeSelect, { BadgeSelectProps } from './BadgeSelect';
 
 describe('BadgeSelect component', () => {
-  const mockElements = [
-    { id: 1, label: 'Badge 1', isActivated: false },
-    { id: 2, label: 'Badge 2', isActivated: true },
-    { id: 3, label: 'Badge 3', isActivated: false },
+  const onChangeMock = jest.fn();
+
+  let mockElements: IdLabel[] = [
+    { id: 1, label: 'Badge 1' },
+    { id: 2, label: 'Badge 2' },
+    { id: 3, label: 'Badge 3' },
   ];
 
-  const onChangeMock = jest.fn();
+  let mockSelected: IdLabel['id'][] = [2];
 
   const renderComponent = (props: Partial<BadgeSelectProps> = {}) => {
     return render(
-      <BadgeSelect elements={mockElements} onChange={onChangeMock} {...props} />
+      <BadgeSelect
+        elements={mockElements}
+        value={mockSelected}
+        onChange={onChangeMock}
+        {...props}
+      />
     );
   };
+
+  beforeEach(() => {
+    mockElements = [
+      { id: 1, label: 'Badge 1' },
+      { id: 2, label: 'Badge 2' },
+      { id: 3, label: 'Badge 3' },
+    ];
+    mockSelected = [2];
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -29,13 +46,6 @@ describe('BadgeSelect component', () => {
     });
   });
 
-  it('calls onChange with initially activated elements', () => {
-    renderComponent();
-
-    // Initial onChange call with only activated element(s)
-    expect(onChangeMock).toHaveBeenCalledWith([2]);
-  });
-
   it('toggles an element and calls onChange', () => {
     renderComponent();
 
@@ -43,7 +53,7 @@ describe('BadgeSelect component', () => {
 
     // Toggle Badge 1
     fireEvent.click(badge1);
-    expect(onChangeMock).toHaveBeenCalledWith([1, 2]);
+    expect(onChangeMock).toHaveBeenCalledWith([2, 1]);
 
     // Toggle Badge 2 off
     const badge2 = screen.getByText('Badge 2');
@@ -51,30 +61,20 @@ describe('BadgeSelect component', () => {
     expect(onChangeMock).toHaveBeenCalledWith([1]);
   });
 
-  it('renders an add button if add prop is provided', () => {
-    const addMock = { onAdd: jest.fn(), label: 'Add Badge' };
+  it('renders an appended element if provided', () => {
+    const appendedElement = <button>Add Badge</button>;
 
-    renderComponent({ add: addMock });
+    renderComponent({ elemAppended: appendedElement });
 
-    const addButton = screen.getByText(addMock.label);
+    const addButton = screen.getByText('Add Badge');
     expect(addButton).toBeInTheDocument();
-  });
-
-  it('calls add onAdd function when add button is clicked', () => {
-    const addMock = { onAdd: jest.fn(), label: 'Add Badge' };
-
-    renderComponent({ add: addMock });
-
-    const addButton = screen.getByText(addMock.label);
-    fireEvent.click(addButton);
-    expect(addMock.onAdd).toHaveBeenCalled();
   });
 
   it('sorts badges alphabetically', () => {
     const unsortedElements = [
-      { id: 1, label: 'Charlie', isActivated: false },
-      { id: 2, label: 'Bravo', isActivated: false },
-      { id: 3, label: 'Alpha', isActivated: false },
+      { id: 1, label: 'Charlie' },
+      { id: 2, label: 'Bravo' },
+      { id: 3, label: 'Alpha' },
     ];
 
     renderComponent({ elements: unsortedElements });
@@ -84,4 +84,53 @@ describe('BadgeSelect component', () => {
       .map(el => el.textContent);
     expect(badges).toEqual(['Alpha', 'Bravo', 'Charlie']);
   });
+
+  it('does not call onChange with initially activated elements', () => {
+    renderComponent();
+
+    // Initial onChange call with only activated element(s)
+    expect(onChangeMock).not.toHaveBeenCalled();
+  });
+
+  it('does not call onChange when value is changed from outside', () => {
+    const { rerender } = renderComponent();
+
+    // Update mockSelected and re-render
+    mockSelected = [1, 3];
+    rerender(
+      <BadgeSelect
+        elements={mockElements}
+        value={mockSelected}
+        onChange={onChangeMock}
+      />
+    );
+
+    expect(onChangeMock).not.toHaveBeenCalled();
+  });
+
+  it('reflects changes in selection when value is changed from outside', () => {
+    const { rerender } = renderComponent();
+
+    // Initial render with mockSelected = [2]
+    expect(getParent('Badge 1')).not.toHaveClass('BadgeChipActivated');
+    expect(getParent('Badge 2')).toHaveClass('BadgeChipActivated');
+    expect(getParent('Badge 3')).not.toHaveClass('BadgeChipActivated');
+
+    // Update mockSelected and re-render
+    mockSelected = [1, 3];
+    rerender(
+      <BadgeSelect
+        elements={mockElements}
+        value={mockSelected}
+        onChange={onChangeMock}
+      />
+    );
+
+    // Verify the badges are updated
+    expect(getParent('Badge 1')).toHaveClass('BadgeChipActivated');
+    expect(getParent('Badge 2')).not.toHaveClass('BadgeChipActivated');
+    expect(getParent('Badge 3')).toHaveClass('BadgeChipActivated');
+  });
 });
+
+const getParent = (badge: string) => screen.getByText(badge).parentElement;

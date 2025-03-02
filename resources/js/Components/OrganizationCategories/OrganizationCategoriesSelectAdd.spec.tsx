@@ -45,6 +45,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
         onChange={mockOnChange}
       />
     );
@@ -59,6 +60,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
         onChange={mockOnChange}
       />
     );
@@ -81,6 +83,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
         onChange={mockOnChange}
       />
     );
@@ -93,6 +96,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
         onChange={mockOnChange}
       />
     );
@@ -112,6 +116,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     render(
       <OrganizationCategoriesSelectAdd
         organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
         onChange={mockOnChange}
       />
     );
@@ -133,5 +138,18 @@ describe('OrganizationCategoriesSelectAdd', () => {
     // Check that the new badge is rendered
     expect(screen.getByText('Category 3')).toBeInTheDocument();
     expect(screen.getByText('Category 4')).toBeInTheDocument();
+  });
+
+  it('renders the AddButton', () => {
+    render(
+      <OrganizationCategoriesSelectAdd
+        organizationCategories={mockCategories}
+        organizationCategoriesSelected={[]}
+        onChange={mockOnChange}
+      />
+    );
+
+    const addButton = screen.getByText('Neue Kategorie');
+    expect(addButton).toBeInTheDocument();
   });
 });

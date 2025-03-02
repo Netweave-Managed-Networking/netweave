@@ -18,6 +18,7 @@ describe('ResourceCategoriesSelect', () => {
     return render(
       <ResourceCategoriesSelect
         resourceCategories={resourceCategories}
+        resourceCategoriesSelected={[]}
         onChange={onChange}
         {...props}
       />

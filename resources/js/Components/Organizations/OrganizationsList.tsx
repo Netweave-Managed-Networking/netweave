@@ -1,4 +1,3 @@
-import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
 import { useOrganizations } from '@/hooks/useOrganizations.hook';
 import Badge from '../Util/Badge';
 import { LoadingDots } from '../Util/LoadingDots';
@@ -37,7 +36,12 @@ export default function OrganizationsList() {
             <div className="flex items-center gap-2">
               <strong>{organization.name}</strong>
               {organization.organization_categories.map(category => (
-                <Badge key={category.id} element={idNameToIdLabel(category)} />
+                <Badge
+                  key={category.id}
+                  label={category.name}
+                  isActivated={false}
+                  clickable={false}
+                />
               ))}
             </div>
           </Tile>

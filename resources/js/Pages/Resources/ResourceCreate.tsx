@@ -11,9 +11,19 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Organization } from '@/types/organization.model';
 import { PageProps } from '@/types/page-props.type';
 import { ResourceCategory } from '@/types/resource-category.model';
-import { Resource } from '@/types/resource.model';
+import { ResourceCreate as ResourceCreateModel } from '@/types/resource-create.model';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
+
+const emptyResource: (
+  organization_id: number
+) => ResourceCreateModel = organization_id => ({
+  type: null,
+  description: '',
+  summary: '',
+  organization_id: organization_id,
+  resource_categories: [],
+});
 
 export default function ResourceCreate({
   auth,
@@ -25,13 +35,8 @@ export default function ResourceCreate({
 }>) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-  const { data, setData, post, errors, processing } = useForm({
-    type: undefined as undefined | Resource['type'],
-    description: '',
-    summary: '', // optional
-    organization_id: organization.id,
-    resource_categories: [] as number[],
-  });
+  const { data, setData, post, errors, processing } =
+    useForm<ResourceCreateModel>(emptyResource(organization.id));
 
   const handleSubmit: FormEventHandler = (
     e: SyntheticEvent<HTMLFormElement, SubmitEvent>
@@ -47,7 +52,13 @@ export default function ResourceCreate({
       route('resources.store', {
         organization: organization.id,
         redirect_to: redirectTo,
-      })
+      }),
+      {
+        onSuccess: () => {
+          setData(emptyResource(organization.id));
+          setSelectedCategories([]);
+        },
+      }
     );
   };
 
@@ -144,6 +155,7 @@ export default function ResourceCreate({
                         border: `1px solid ${errors.type ? '#f00' : '#ccc'}`,
                         borderLeft: 'none',
                       }}
+                      value={data['type']}
                       onChange={selected => setData('type', selected)}
                     />
                   </div>
@@ -175,6 +187,7 @@ export default function ResourceCreate({
                   <span className="overflow-x-hidden overflow-y-auto">
                     <ResourceCategoriesSelect
                       resourceCategories={resourceCategories}
+                      resourceCategoriesSelected={selectedCategories}
                       onChange={selected => setSelectedCategories(selected)}
                     />
                   </span>

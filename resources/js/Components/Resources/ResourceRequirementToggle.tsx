@@ -1,16 +1,22 @@
 import { Resource } from '@/types/resource.model';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type ResourceRequirementToggleProps = {
+  value?: Resource['type'] | null;
   onChange: (selected: Resource['type']) => void;
   style?: React.CSSProperties | undefined;
 };
 
 export default function ResourceRequirementToggle({
+  value,
   onChange,
   style,
 }: ResourceRequirementToggleProps) {
   const [selected, setSelected] = useState<Resource['type'] | null>(null);
+
+  useEffect(() => {
+    if (value !== selected) setSelected(value ?? null);
+  }, [value]);
 
   const handleClick = (option: Resource['type']) => {
     setSelected(option);

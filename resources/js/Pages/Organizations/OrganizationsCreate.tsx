@@ -79,6 +79,7 @@ export default function OrganizationsCreate({
                   <span>
                     <OrganizationCategoriesSelectAdd
                       organizationCategories={organizationCategories}
+                      organizationCategoriesSelected={selectedCategories}
                       onChange={selected => setSelectedCategories(selected)}
                     />
                   </span>
