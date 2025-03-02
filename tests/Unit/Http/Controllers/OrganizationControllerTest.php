@@ -13,13 +13,23 @@ use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
+beforeEach(function () {
+    $this->categories = OrganizationCategory::factory()->count(3)->create();
+    $this->dummyOrganization = [
+        'name' => 'New Organization',
+        'email' => 'organization@example.com',
+        'phone' => '123-456-7890',
+        'postcode_city' => '12345 City',
+        'street_hnr' => '123 Main St',
+        'organization_categories' => $this->categories->pluck('id')->toArray(),
+    ];
+});
+
 // This trait will reset the database for each test
 uses(TestCase::class, RefreshDatabase::class);
 
 // Test the create method
 it('renders the create page with organization categories', function () {
-    // Arrange: create some organization categories
-    $categories = OrganizationCategory::factory()->count(3)->create();
 
     // Act: send a GET request to the create route
     $response = actingAs(User::factory()->create())->get(route('organizations.create'));
@@ -27,8 +37,8 @@ it('renders the create page with organization categories', function () {
     // Assert: check if the response contains the correct Inertia data
     $response->assertInertia(fn (Assert $page): Assert => $page->component('Organizations/OrganizationsCreate')
         ->has('organizationCategories', 3)
-        ->where('organizationCategories', fn ($categoriesArray) => collect($categoriesArray)->contains(fn ($category) => $category['id'] === $categories->first()->id &&
-                $category['name'] === $categories->first()->name
+        ->where('organizationCategories', fn ($categoriesArray) => collect($categoriesArray)->contains(fn ($category) => $category['id'] === $this->categories->first()->id &&
+                $category['name'] === $this->categories->first()->name
         )
         )
     );
@@ -36,23 +46,10 @@ it('renders the create page with organization categories', function () {
 
 // Test the store method for successful creation
 it('can store a new organization', function () {
-    // Arrange: create some organization categories
-    $categories = OrganizationCategory::factory()->count(2)->create();
-
-    // Act: send a POST request to store the organization
-    $data = [
-        'name' => 'New Organization',
-        'email' => 'organization@example.com',
-        'phone' => '123-456-7890',
-        'postcode_city' => '12345 City',
-        'street_hnr' => '123 Main St',
-        'organization_categories' => $categories->pluck('id')->toArray(),
-    ];
-
-    $response = actingAs(User::factory()->create())->post(route('organizations.store'), $data);
+    $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
 
     // Assert: check if the organization organization is in the database
-    $response->assertRedirect(route('home'))
+    $response
         ->assertSessionHas('success', "Neue Organisation 'New Organization' erfolgreich erstellt.");
     assertDatabaseHas('organizations', [
         'name' => 'New Organization',
@@ -61,7 +58,16 @@ it('can store a new organization', function () {
 
     // Check if the relationship is correctly saved
     $organization = Organization::where('name', 'New Organization')->first();
-    expect($organization->OrganizationCategories->pluck('id')->toArray())->toMatchArray($categories->pluck('id')->toArray());
+    expect($organization->OrganizationCategories->pluck('id')->toArray())->toMatchArray($this->categories->pluck('id')->toArray());
+});
+
+// Test that modelId is included in the session when an organization is successfully created
+it('includes modelId in the session when an organization is created', function () {
+    $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
+
+    // Assert: check if the modelId is in the session
+    $organization = Organization::where('name', 'New Organization')->first();
+    $response->assertSessionHas('modelId', $organization->id);
 });
 
 // Test validation errors for required fields

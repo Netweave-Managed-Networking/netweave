@@ -41,6 +41,8 @@ class OrganizationController extends Controller
         $organization = Organization::create($validated);
         $organization->organizationCategories()->sync($validated['organization_categories']);
 
-        return redirect()->route('home')->with('success', "Neue Organisation '$organization->name' erfolgreich erstellt.");
+        return back()
+            ->with('modelId', $organization->id) // needed in RedirectTo middleware
+            ->with('success', "Neue Organisation '$organization->name' erfolgreich erstellt.");
     }
 }
