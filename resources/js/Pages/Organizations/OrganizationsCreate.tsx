@@ -86,7 +86,7 @@ export default function OrganizationsCreate({
                   <span>
                     <HPItemsInfoModalButton
                       infoButtonTooltip="Infos zu den Kategorien"
-                      modalTitle="Beschreibungen der Organisations-Kategorien"
+                      modalTitle="Beschreibungen der Organisationskategorien"
                       items={organizationCategories.map(cat => ({
                         header: cat.name,
                         paragraph: cat.description ?? '',
@@ -95,7 +95,7 @@ export default function OrganizationsCreate({
                   </span>
                 </div>
                 {errors.organization_categories && (
-                  <InputError message="Wähle mindestens eine Organisations-Kategorie aus." />
+                  <InputError message="Wähle mindestens eine Organisationskategorie aus." />
                 )}
                 {/* Email */}
                 <div>
