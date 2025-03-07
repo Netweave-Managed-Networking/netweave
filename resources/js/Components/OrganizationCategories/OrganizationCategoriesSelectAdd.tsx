@@ -25,23 +25,24 @@ export default function OrganizationCategoriesSelectAdd({
   const showModal = () => setModalIsActive(true);
   const hideModal = () => setModalIsActive(false);
 
-  const [organizationCategoryBadges, setOrganizationCategoryBadges] = useState<
-    IdLabel[]
-  >(organizationCategories.map(idNameToIdLabel));
+  const [catsSelected, setCatsSelected] = useState<IdLabel['id'][]>(
+    organizationCategoriesSelected
+  );
+  const [cats, setCats] = useState<IdLabel[]>(
+    organizationCategories.map(idNameToIdLabel)
+  );
 
   const addCategoryToBadges = useCallback(
     (newCategory: OrganizationCategory | undefined) => {
       if (newCategory) {
         organizationCategories.push(newCategory);
         const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
-        setOrganizationCategoryBadges([
-          ...organizationCategoryBadges,
-          newBadge,
-        ]);
+        setCats([...cats, newBadge]);
+        setCatsSelected([...catsSelected, newBadge.id]);
       }
       hideModal();
     },
-    [organizationCategories, organizationCategoryBadges]
+    [organizationCategories, cats]
   );
 
   const addButton: JSX.Element = (
@@ -59,8 +60,8 @@ export default function OrganizationCategoriesSelectAdd({
   return (
     <div className={className} style={{ marginTop: '4px' }}>
       <BadgeSelect
-        elements={organizationCategoryBadges}
-        value={organizationCategoriesSelected}
+        elements={cats}
+        value={catsSelected}
         onChange={onChange}
         elemAppended={addButton}
       />
