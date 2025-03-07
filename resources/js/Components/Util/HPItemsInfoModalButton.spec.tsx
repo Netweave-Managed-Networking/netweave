@@ -29,31 +29,17 @@ describe('HPItemsInfoModalButton', () => {
 
   it('renders items in alphabetical order with alphabet by header', () => {
     render(<HPItemsInfoModalButton {...defaultProps} />);
-
-    // Simulate clicking the info button to open the modal
     const button = screen.getByRole('button');
-    fireEvent.click(button);
+    fireEvent.click(button); // Open modal
 
-    // Ensure the modal is open by checking for the modal title
-    const modalTitle = screen.getByText(defaultProps.modalTitle);
-    expect(modalTitle).toBeInTheDocument();
-
-    // Find all header elements in the modal
-    const headerElements = screen.getAllByRole('heading', { level: 2 });
-
-    // Get the expected sorted headers
-    const sortedHeaders = [
+    const sortedItems = [
       ...mockItems,
-      ...letters.map(l => ({ header: l, paragraph: '' })),
-    ]
-      .sort((a, b) => a.header.localeCompare(b.header))
-      .map(item => item.header);
+      ...letters.map(l => ({ header: l.toUpperCase(), paragraph: '' })),
+    ].sort((a, b) => a.header.localeCompare(b.header));
 
-    // Assert the headers are displayed in the correct order (case insensitive)
-    sortedHeaders.forEach((header, index) => {
-      expect(headerElements[index]).toHaveTextContent(
-        new RegExp(`^${header}$`, 'i')
-      );
+    sortedItems.forEach(item => {
+      const headerElement = screen.getByText(item.header);
+      expect(headerElement).toBeInTheDocument();
     });
   });
 

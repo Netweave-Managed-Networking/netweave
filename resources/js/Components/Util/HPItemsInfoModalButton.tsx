@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Modal from './Modal';
 
 export interface HPItemsInfoModalButtonProps {
-  items: { header: string; paragraph: string }[];
+  items: { header: string; paragraph?: string }[];
   modalTitle: string;
   infoButtonTooltip: string;
 }
@@ -15,10 +15,12 @@ export default function HPItemsInfoModalButton({
   modalTitle,
   infoButtonTooltip,
 }: HPItemsInfoModalButtonProps) {
-  items = [
-    ...items,
-    ...letters.map(l => ({ header: l.toUpperCase(), paragraph: '' })),
-  ].sort((a, b) => a.header.localeCompare(b.header));
+  const itemsWithLetters: ({ header: string; paragraph?: string } | string)[] =
+    [...items, ...letters.map(l => l.toUpperCase())].sort((a, b) => {
+      const aStr = typeof a === 'string' ? a : a.header;
+      const bStr = typeof b === 'string' ? b : b.header;
+      return aStr.localeCompare(bStr);
+    });
 
   const [modalIsActive, setModalIsActive] = useState<boolean>(false);
   const showModal = () => setModalIsActive(true);
@@ -39,10 +41,17 @@ export default function HPItemsInfoModalButton({
           </h1>
 
           <div className="space-y-6">
-            {items.map(item => (
-              <div key={item.header}>
-                <h2 className="text-xl">{item.header}</h2>
-                <p className="text-gray-800">{item.paragraph}</p>
+            {itemsWithLetters.map(item => (
+              <div key={typeof item === 'string' ? item : item.header}>
+                {typeof item === 'string' && (
+                  <span className="text-purple-900">{item}</span>
+                )}
+                {!(typeof item === 'string') && (
+                  <div style={{ paddingLeft: '1em' }}>
+                    <h2 className="text-xl text-green-950">{item.header}</h2>
+                    <p className="text-gray-800">{item.paragraph}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
