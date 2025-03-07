@@ -59,7 +59,7 @@ export function OrganizationCategoryCreateModal({
     <Modal show={show} onClose={() => onClose(undefined)}>
       <div className="p-6">
         <h2 className="text-lg font-medium text-gray-900">
-          Neue Organisations-Kategorie erstellen
+          Neue Organisationskategorie erstellen
         </h2>
 
         <div className="space-y-6">

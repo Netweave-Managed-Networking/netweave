@@ -194,7 +194,7 @@ export default function ResourceCreate({
                   <span>
                     <HPItemsInfoModalButton
                       infoButtonTooltip="Infos zu den Kategorien"
-                      modalTitle="Beschreibungen der Ressourcen-Kategorien"
+                      modalTitle="Beschreibungen der Ressourcenkategorien"
                       items={resourceCategories.map(cat => ({
                         header: cat.title,
                         paragraph: cat.definition ?? '',
@@ -203,7 +203,7 @@ export default function ResourceCreate({
                   </span>
                 </div>
                 {errors.resource_categories && (
-                  <InputError message="Wähle mindestens eine Ressourcen-Kategorie aus." />
+                  <InputError message="Wähle mindestens eine Ressourcenkategorie aus." />
                 )}
 
                 <div className="flex justify-between mt-4 w-full">
