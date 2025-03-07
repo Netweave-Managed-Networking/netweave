@@ -26,10 +26,10 @@ return [
     'attributes' => [
         'name' => 'Name',
         'description' => 'Beschreibung',
-        'organization_categories' => 'Organisations-Kategorien',
-        'organization_categories.*' => 'Organisations-Kategorie',
-        'resource_categories' => 'Ressourcen-Kategorien',
-        'resource_categories.*' => 'Ressourcen-Kategorie',
+        'organization_categories' => 'Organisationskategorien',
+        'organization_categories.*' => 'Organisationskategorie',
+        'resource_categories' => 'Ressourcenkategorien',
+        'resource_categories.*' => 'Ressourcenkategorie',
         // Add more mappings here
     ],
 ];
