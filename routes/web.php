@@ -4,6 +4,7 @@ use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\OrganizationCategoryController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResourceCategoryController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -11,9 +12,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
-/////////
-// ALL //
-/////////
+// /////// //
+// NO AUTH //
+// /////// //
 
 Route::get('/', function (): Response {
     return Inertia::render('Welcome', [
@@ -28,9 +29,9 @@ Route::get('/home', function (): Response {
     return Inertia::render('HomePage');
 })->middleware(['auth', 'verified'])->name('home');
 
-///////////
+// ///// //
 // ADMIN //
-///////////
+// ///// //
 
 Route::middleware(['auth', 'admin'])->group(function (): void {
     Route::prefix('invitation-codes')->group(function (): void {
@@ -44,9 +45,9 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
     });
 });
 
-///////////////
+// ///////// //
 // LOGGED IN //
-///////////////
+// ///////// //
 
 Route::middleware('auth')->group(function (): void {
     Route::prefix('profile')->group(function (): void {
@@ -72,6 +73,10 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/edit', [OrganizationCategoryController::class, 'edit'])->name('organization-categories.edit');
         Route::put('/{category}', [OrganizationCategoryController::class, 'update'])->name('organization-categories.update');
         Route::delete('/{category}', [OrganizationCategoryController::class, 'destroy'])->name('organization-categories.destroy');
+    });
+
+    Route::prefix('resource-categories')->group(function (): void {
+        Route::post('api', [ResourceCategoryController::class, 'storeJson'])->name('resource-categories.api.store');
     });
 });
 

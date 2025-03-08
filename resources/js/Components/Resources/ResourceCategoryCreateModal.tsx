@@ -1,11 +1,11 @@
 import {
-  StoreOrganizationCategoryError,
-  StoreOrganizationCategoryErrors,
-  storeOrganizationCategory,
-} from '@/axios/storeOrganizationCategory.axios';
+  StoreResourceCategoryError,
+  StoreResourceCategoryErrors,
+  storeResourceCategory,
+} from '@/axios/storeResourceCategory.axios';
 import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
-import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
-import { OrganizationCategory } from '@/types/organization-category.model';
+import { ResourceCategoryCreate } from '@/types/resource-category-create.model';
+import { ResourceCategory } from '@/types/resource-category.model';
 import { useCallback, useState } from 'react';
 import InputError from '../Input/InputError';
 import InputLabel from '../Input/InputLabel';
@@ -15,35 +15,35 @@ import TextArea from '../Input/TextArea';
 import TextInput from '../Input/TextInput';
 import Modal from '../Util/Modal';
 
-export type OrganizationCategoryCreateModalProps = {
+export type ResourceCategoryCreateModalProps = {
   show: boolean;
-  onClose: (newCategory: OrganizationCategory | undefined) => void;
+  onClose: (newCategory: ResourceCategory | undefined) => void;
 };
 
-export function OrganizationCategoryCreateModal({
+export function ResourceCategoryCreateModal({
   show,
   onClose,
-}: OrganizationCategoryCreateModalProps) {
+}: ResourceCategoryCreateModalProps) {
   const [categoryToCreate, setCategoryToCreate] =
-    useState<OrganizationCategoryCreate>({ name: '' });
+    useState<ResourceCategoryCreate>({ title: '' });
   const [processing, setProcessing] = useState<boolean>(false);
-  const [errors, setErrors] = useState<StoreOrganizationCategoryErrors>({});
+  const [errors, setErrors] = useState<StoreResourceCategoryErrors>({});
 
-  const hasName = () => !!categoryToCreate.name.trim();
+  const hasTitle = () => !!categoryToCreate.title.trim();
 
   const postCategory = useCallback(async (): Promise<
-    OrganizationCategory | 'error'
+    ResourceCategory | 'error'
   > => {
     setProcessing(true);
-    if (!hasName()) {
-      setErrors({ name: '"Name" darf nicht leer sein.' });
-      console.error({ name: '"Name" darf nicht leer sein.' });
+    if (!hasTitle()) {
+      setErrors({ title: '"Titel" darf nicht leer sein.' });
+      console.error({ name: '"Titel" darf nicht leer sein.' });
       return 'error';
     }
     try {
-      return await storeOrganizationCategory(categoryToCreate);
+      return await storeResourceCategory(categoryToCreate);
     } catch (error: unknown) {
-      const e = error as StoreOrganizationCategoryError;
+      const e = error as StoreResourceCategoryError;
       setErrors(e.response?.data.errors ?? {});
       console.error(e);
       return 'error';
@@ -61,42 +61,42 @@ export function OrganizationCategoryCreateModal({
     <Modal show={show} onClose={() => onClose(undefined)}>
       <div className="p-6">
         <h2 className="text-lg font-medium text-gray-900">
-          Neue Organisationskategorie erstellen
+          Neue Ressourcenkategorie erstellen
         </h2>
 
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <InputLabel htmlFor="name" value="Name" required />
+            <InputLabel htmlFor="title" value="Titel" required />
             <TextInput
-              id="name"
+              id="title"
               required
               isFocused={true}
               onChange={e => {
                 setErrors({});
-                const name = capitalizeWords(e.target.value);
-                e.target.value = name;
-                setCategoryToCreate({ ...categoryToCreate, name });
+                const title = capitalizeWords(e.target.value);
+                e.target.value = title;
+                setCategoryToCreate({ ...categoryToCreate, title });
               }}
               className="mt-1 block w-full"
             />
-            <InputError message={errors.name} className="mt-2" />
+            <InputError message={errors.title} className="mt-2" />
           </div>
 
-          {/* Category Description */}
+          {/* Category Definition */}
           <div>
-            <InputLabel htmlFor="description" value="Beschreibung" />
+            <InputLabel htmlFor="definition" value="Definition" />
             <TextArea
-              id="description"
+              id="definition"
               onChange={e =>
                 setCategoryToCreate({
                   ...categoryToCreate,
-                  description: e.target.value,
+                  definition: e.target.value,
                 })
               }
               className="mt-1 block w-full"
             />
-            <InputError message={errors.description} className="mt-2" />
+            <InputError message={errors.definition} className="mt-2" />
           </div>
 
           <div className="mt-6 flex justify-end">
@@ -106,7 +106,7 @@ export function OrganizationCategoryCreateModal({
             <PrimaryButton
               className="ms-3"
               onClick={submit}
-              disabled={!hasName() || processing}
+              disabled={!hasTitle() || processing}
             >
               Erstellen
             </PrimaryButton>

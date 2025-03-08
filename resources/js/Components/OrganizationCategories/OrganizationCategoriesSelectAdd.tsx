@@ -44,7 +44,7 @@ export default function OrganizationCategoriesSelectAdd({
       organizationCategories.push(newCategory);
       const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
       setCats([...cats, newBadge]);
-      setCatsSelected([...catsSelected, newBadge.id]);
+      updateAndOutput([...catsSelected, newBadge.id]);
     }
     hideModal();
   };
