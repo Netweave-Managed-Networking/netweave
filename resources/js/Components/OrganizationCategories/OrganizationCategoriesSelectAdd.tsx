@@ -4,7 +4,7 @@ import { IdName } from '@/types/id-name.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import AddIcon from '@mui/icons-material/Add';
 import { Chip } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import BadgeSelect from '../Input/BadgeSelect';
 import { OrganizationCategoryCreateModal } from './OrganizationCategoryCreateModal';
 
@@ -32,18 +32,22 @@ export default function OrganizationCategoriesSelectAdd({
     organizationCategories.map(idNameToIdLabel)
   );
 
-  const addCategoryToBadges = useCallback(
-    (newCategory: OrganizationCategory | undefined) => {
-      if (newCategory) {
-        organizationCategories.push(newCategory);
-        const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
-        setCats([...cats, newBadge]);
-        setCatsSelected([...catsSelected, newBadge.id]);
-      }
-      hideModal();
-    },
-    [organizationCategories, cats]
-  );
+  const updateAndOutput = (newSelected: IdLabel['id'][]) => {
+    setCatsSelected(newSelected);
+    onChange(newSelected);
+  };
+
+  const addCategoryToBadges = (
+    newCategory: OrganizationCategory | undefined
+  ) => {
+    if (newCategory) {
+      organizationCategories.push(newCategory);
+      const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
+      setCats([...cats, newBadge]);
+      setCatsSelected([...catsSelected, newBadge.id]);
+    }
+    hideModal();
+  };
 
   const addButton: JSX.Element = (
     <Chip
@@ -62,7 +66,7 @@ export default function OrganizationCategoriesSelectAdd({
       <BadgeSelect
         elements={cats}
         value={catsSelected}
-        onChange={onChange}
+        onChange={updateAndOutput}
         elemAppended={addButton}
       />
 
