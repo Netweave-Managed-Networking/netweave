@@ -1,48 +1,55 @@
-import { idNameToIdLabel } from '@/helpers/idNameToIdLabel.helper';
+import { idTitleToIdLabel } from '@/helpers/idTitleToIdLabel.helper';
+import { isEqual } from '@/helpers/isEqual.array.helper';
 import { IdLabel } from '@/types/id-label.model';
-import { IdName } from '@/types/id-name.model';
-import { OrganizationCategory } from '@/types/organization-category.model';
+import { IdTitle } from '@/types/id-title.model';
+import { ResourceCategory } from '@/types/resource-category.model';
 import AddIcon from '@mui/icons-material/Add';
 import { Chip } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BadgeSelect from '../Input/BadgeSelect';
-import { OrganizationCategoryCreateModal } from './OrganizationCategoryCreateModal';
+import { ResourceCategoryCreateModal } from './ResourceCategoryCreateModal';
 
-export interface OrganizationCategoriesSelectAddProps {
-  organizationCategories: IdName[];
-  organizationCategoriesSelected: IdName['id'][];
+export interface ResourceCategoriesSelectAddProps {
+  resourceCategories: IdTitle[];
+  resourceCategoriesSelected: IdTitle['id'][];
   onChange: (selectedCategoryIds: number[]) => void;
   className?: string;
 }
 
-export default function OrganizationCategoriesSelectAdd({
-  organizationCategories,
-  organizationCategoriesSelected,
+export default function ResourceCategoriesSelectAdd({
+  resourceCategories,
+  resourceCategoriesSelected,
   onChange,
   className = '',
-}: OrganizationCategoriesSelectAddProps) {
+}: ResourceCategoriesSelectAddProps) {
   const [modalIsActive, setModalIsActive] = useState<boolean>(false);
   const showModal = () => setModalIsActive(true);
   const hideModal = () => setModalIsActive(false);
 
   const [catsSelected, setCatsSelected] = useState<IdLabel['id'][]>(
-    organizationCategoriesSelected
+    resourceCategoriesSelected
   );
   const [cats, setCats] = useState<IdLabel[]>(
-    organizationCategories.map(idNameToIdLabel)
+    resourceCategories.map(idTitleToIdLabel)
   );
+
+  useEffect(() => {
+    if (!isEqual(resourceCategoriesSelected, catsSelected))
+      setCatsSelected(resourceCategoriesSelected);
+  }, [resourceCategoriesSelected]);
 
   const updateAndOutput = (newSelected: IdLabel['id'][]) => {
     setCatsSelected(newSelected);
     onChange(newSelected);
   };
 
-  const addCategoryToBadges = (
-    newCategory: OrganizationCategory | undefined
-  ) => {
+  const addCategoryToBadges = (newCategory: ResourceCategory | undefined) => {
     if (newCategory) {
-      organizationCategories.push(newCategory);
-      const newBadge = { ...idNameToIdLabel(newCategory), isActivated: true };
+      resourceCategories.push(newCategory);
+      const newBadge = {
+        ...idTitleToIdLabel(newCategory),
+        isActivated: true,
+      };
       setCats([...cats, newBadge]);
       updateAndOutput([...catsSelected, newBadge.id]);
     }
@@ -70,7 +77,7 @@ export default function OrganizationCategoriesSelectAdd({
         elemAppended={addButton}
       />
 
-      <OrganizationCategoryCreateModal
+      <ResourceCategoryCreateModal
         show={modalIsActive}
         onClose={addCategoryToBadges}
       />

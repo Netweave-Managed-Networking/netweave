@@ -4,7 +4,7 @@ import PrimaryButton from '@/Components/Input/PrimaryButton';
 import SecondaryButton from '@/Components/Input/SecondaryButton';
 import TextArea from '@/Components/Input/TextArea';
 import TextInput from '@/Components/Input/TextInput';
-import ResourceCategoriesSelect from '@/Components/Resources/ResourceCategoriesSelect';
+import ResourceCategoriesSelectAdd from '@/Components/Resources/ResourceCategoriesSelectAdd';
 import ResourceRequirementToggle from '@/Components/Resources/ResourceRequirementToggle';
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -185,7 +185,7 @@ export default function ResourceCreate({
                 <InputLabel value="Kategorien" required />
                 <div className="flex">
                   <span className="overflow-x-hidden overflow-y-auto">
-                    <ResourceCategoriesSelect
+                    <ResourceCategoriesSelectAdd
                       resourceCategories={resourceCategories}
                       resourceCategoriesSelected={selectedCategories}
                       onChange={selected => setSelectedCategories(selected)}
