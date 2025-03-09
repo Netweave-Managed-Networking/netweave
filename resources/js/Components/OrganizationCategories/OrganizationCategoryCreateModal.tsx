@@ -6,7 +6,7 @@ import {
 import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
 import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
 import InputLabel from '../Input/InputLabel';
 import PrimaryButton from '../Input/PrimaryButton';
@@ -28,6 +28,8 @@ export function OrganizationCategoryCreateModal({
     useState<OrganizationCategoryCreate>({ name: '' });
   const [processing, setProcessing] = useState<boolean>(false);
   const [errors, setErrors] = useState<StoreOrganizationCategoryErrors>({});
+
+  useEffect(() => setCategoryToCreate({ name: '' }), [show]); // reset on modal reopen
 
   const hasName = () => !!categoryToCreate.name.trim();
 
@@ -72,6 +74,7 @@ export function OrganizationCategoryCreateModal({
               id="name"
               required
               isFocused={true}
+              value={categoryToCreate.name}
               onChange={e => {
                 setErrors({});
                 const name = capitalizeWords(e.target.value);
@@ -88,6 +91,7 @@ export function OrganizationCategoryCreateModal({
             <InputLabel htmlFor="description" value="Beschreibung" />
             <TextArea
               id="description"
+              value={categoryToCreate.description}
               onChange={e =>
                 setCategoryToCreate({
                   ...categoryToCreate,
