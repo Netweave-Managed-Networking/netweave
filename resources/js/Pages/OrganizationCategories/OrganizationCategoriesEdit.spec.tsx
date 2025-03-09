@@ -24,9 +24,9 @@ jest.mock(
   () => () => <div>OrganizationCategoryEdit</div>
 );
 
-// Mock the OrganizationCategoryAdd component
+// Mock the OrganizationCategorySelectAdd component
 jest.mock(
-  '@/Components/OrganizationCategories/OrganizationCategoryAdd',
+  '@/Components/OrganizationCategories/OrganizationCategorySelectAdd',
   () =>
     ({
       onOrganizationCategoryAdd,
