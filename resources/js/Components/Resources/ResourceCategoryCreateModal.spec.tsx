@@ -118,4 +118,22 @@ describe('ResourceCategoryCreateModal', () => {
     fireEvent.change(titleInput, { target: { value: 'category titel' } });
     expect(titleInput.value).toBe('Category Titel');
   });
+
+  test('resets the form when modal is reopened', () => {
+    const { rerender } = render(
+      <ResourceCategoryCreateModal {...defaultProps} />
+    );
+    const titleInput = screen.getByLabelText(/Titel/i) as HTMLInputElement;
+
+    // Change the input value
+    fireEvent.change(titleInput, { target: { value: 'Some Title' } });
+    expect(titleInput.value).toBe('Some Title');
+
+    // Close and reopen the modal
+    rerender(<ResourceCategoryCreateModal {...defaultProps} show={false} />);
+    rerender(<ResourceCategoryCreateModal {...defaultProps} show={true} />);
+
+    // Check if the input value is reset
+    expect(titleInput.value).toBe('');
+  });
 });

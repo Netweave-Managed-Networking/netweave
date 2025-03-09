@@ -118,4 +118,24 @@ describe('OrganizationCategoryCreateModal', () => {
     fireEvent.change(nameInput, { target: { value: 'category name' } });
     expect(nameInput.value).toBe('Category Name');
   });
+
+  test('resets the form when modal is reopened', () => {
+    const { rerender } = render(
+      <OrganizationCategoryCreateModal {...defaultProps} />
+    );
+    const nameInput = screen.getByLabelText(/Name/i) as HTMLInputElement;
+
+    // Change the input value
+    fireEvent.change(nameInput, { target: { value: 'Some Name' } });
+    expect(nameInput.value).toBe('Some Name');
+
+    // Close and reopen the modal
+    rerender(
+      <OrganizationCategoryCreateModal {...defaultProps} show={false} />
+    );
+    rerender(<OrganizationCategoryCreateModal {...defaultProps} show={true} />);
+
+    // Check if the input value is reset
+    expect(nameInput.value).toBe('');
+  });
 });

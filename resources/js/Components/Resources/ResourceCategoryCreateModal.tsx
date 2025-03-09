@@ -6,7 +6,7 @@ import {
 import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
 import { ResourceCategoryCreate } from '@/types/resource-category-create.model';
 import { ResourceCategory } from '@/types/resource-category.model';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
 import InputLabel from '../Input/InputLabel';
 import PrimaryButton from '../Input/PrimaryButton';
@@ -28,6 +28,8 @@ export function ResourceCategoryCreateModal({
     useState<ResourceCategoryCreate>({ title: '' });
   const [processing, setProcessing] = useState<boolean>(false);
   const [errors, setErrors] = useState<StoreResourceCategoryErrors>({});
+
+  useEffect(() => setCategoryToCreate({ title: '' }), [show]); // reset on modal reopen
 
   const hasTitle = () => !!categoryToCreate.title.trim();
 
@@ -72,6 +74,7 @@ export function ResourceCategoryCreateModal({
               id="title"
               required
               isFocused={true}
+              value={categoryToCreate.title}
               onChange={e => {
                 setErrors({});
                 const title = capitalizeWords(e.target.value);
@@ -88,6 +91,7 @@ export function ResourceCategoryCreateModal({
             <InputLabel htmlFor="definition" value="Definition" />
             <TextArea
               id="definition"
+              value={categoryToCreate.definition}
               onChange={e =>
                 setCategoryToCreate({
                   ...categoryToCreate,
