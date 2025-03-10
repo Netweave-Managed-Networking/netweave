@@ -165,7 +165,6 @@ export default function ResourceCreate({
                     )}
                   </div>
                 </div>
-
                 {/* Resource summary */}
                 <div>
                   <InputLabel
@@ -180,9 +179,11 @@ export default function ResourceCreate({
                   />
                   <InputError message={errors.summary} className="mt-2" />
                 </div>
-
                 {/* Categories */}
-                <InputLabel value="Kategorien" required />
+                <InputLabel value="Kategorien" required />{' '}
+                {errors.resource_categories && (
+                  <InputError message="Wähle mindestens eine Ressourcenkategorie aus." />
+                )}
                 <div className="flex">
                   <span className="overflow-x-hidden overflow-y-auto">
                     <ResourceCategoriesSelectAdd
@@ -202,10 +203,6 @@ export default function ResourceCreate({
                     />
                   </span>
                 </div>
-                {errors.resource_categories && (
-                  <InputError message="Wähle mindestens eine Ressourcenkategorie aus." />
-                )}
-
                 <div className="flex justify-between mt-4 w-full">
                   <SecondaryButton
                     className="float-start"
