@@ -3,7 +3,7 @@ import {
   StoreOrganizationCategoryErrors,
   storeOrganizationCategory,
 } from '@/axios/storeOrganizationCategory.axios';
-import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
+import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
 import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useEffect, useState } from 'react';
@@ -80,8 +80,7 @@ export function OrganizationCategoryCreateModal({
               value={categoryToCreate.name}
               onChange={e => {
                 setErrors({});
-                const name = capitalizeWords(e.target.value);
-                e.target.value = name;
+                const name = capitalizeInputWords(e);
                 setCategoryToCreate({ ...categoryToCreate, name });
               }}
               className="mt-1 block w-full"
