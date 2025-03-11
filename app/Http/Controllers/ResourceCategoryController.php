@@ -11,7 +11,7 @@ class ResourceCategoryController extends Controller
     public function storeJson(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:256|unique:resource_categories',
+            'title' => 'required|string|max:64|unique:resource_categories',
             'definition' => 'nullable|string|max:1024|unique:resource_categories',
         ]);
 
