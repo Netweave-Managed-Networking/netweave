@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('organization_restrictions', function (Blueprint $table) {
             $table->id();
-            $table->string('type', length: 16)->comment("type: regional' | 'thematic'");
-            $table->string('description', 1024)->fullText();
+            $table->string('type', length: 15)->comment("type: regional' | 'thematic'");
+            $table->string('description', 1023)->fullText();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });

@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('organization_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 64)->unique();
-            $table->string('description', length: 256)->nullable();
+            $table->string('name', length: 63)->unique();
+            $table->tinyText('description')->nullable(); // 255
             $table->timestamps();
         });
     }

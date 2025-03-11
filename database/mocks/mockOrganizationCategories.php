@@ -52,7 +52,7 @@ $mockOrganizationCategories = [
     49 => ['name' => 'Wassersportclub', 'description' => 'Ein Club, der sportliche Aktivitäten auf oder im Wasser fördert.'],
     50 => ['name' => 'Seniorenvereinigung', 'description' => 'Eine Vereinigung, die Aktivitäten und Unterstützung für ältere Menschen anbietet.'],
     51 => [
-        'name' => 'Kategorie mit Namenslängen von 64 Zeichen für Validierungstests.',
-        'description' => 'Diese Kategorie wurde erstellt, um die maximale Länge von 256 Zeichen für Beschreibungen in der Datenbank zu testen. Sie enthält eine vollständige Beschreibung, genau 256 Zeichen umfasst, um sicherzustellen, dass solche Einträge korrekt gespeichert werden.',
+        'name' => 'Kategorie mit Namenslängen von 63 Zeichen für Validierungstests',
+        'description' => 'Diese Kategorie wurde erstellt, um die maximale Länge von 255 Zeichen für Beschreibungen in der Datenbank zu testen. Sie enthält eine vollständige Beschreibung, genau 255 Zeichen umfasst, um sicherzustellen, dass solche Einträge korrekt gespeichert werden',
     ],
 ];

@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('survey_topics', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 128)->unique();
-            $table->string('description', length: 512)->nullable();
+            $table->string('title', 127)->unique();
+            $table->string('description', length: 511)->nullable();
             $table->boolean('is_active')->default(true);
-            $table->string('tooltip', length: 1024)->nullable();
+            $table->string('tooltip', length: 1023)->nullable();
             $table->json('question_positions');
             $table->timestamps();
         });

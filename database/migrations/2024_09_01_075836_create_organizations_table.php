@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 128)->unique();
-            $table->string('email', length: 64)->nullable()->unique();
-            $table->string('phone', length: 64)->nullable()->unique();
-            $table->string('postcode_city', length: 64)->nullable();
-            $table->string('street_hnr', length: 128)->nullable();
+            $table->string('name', length: 127)->unique();
+            $table->string('email', length: 63)->nullable()->unique();
+            $table->string('phone', length: 63)->nullable()->unique();
+            $table->string('postcode_city', length: 63)->nullable();
+            $table->string('street_hnr', length: 127)->nullable();
             $table->foreignId('organization_parent_id')->nullable()->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });

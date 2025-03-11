@@ -11,12 +11,12 @@ return new class extends Migration
         Schema::create('survey_org_culture_questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('survey_question_id')->constrained('survey_questions')->cascadeOnDelete();
-            $table->string('clan', length: 512);
-            $table->string('adhocracy', length: 512);
-            $table->string('market_orientated', length: 512);
-            $table->string('hierarchy', length: 512);
+            $table->string('clan', length: 511);
+            $table->string('adhocracy', length: 511);
+            $table->string('market_orientated', length: 511);
+            $table->string('hierarchy', length: 511);
             $table->unsignedInteger('budget_points');
-            $table->string('dimension', 256)->nullable();
+            $table->tinyText('dimension')->nullable(); // 255
         });
     }
 

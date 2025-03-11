@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('resource_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 64)->unique();
-            $table->string('definition', 1024)->nullable();
+            $table->string('title', 63)->unique();
+            $table->string('definition', 1023)->nullable();
             $table->timestamps();
         });
     }

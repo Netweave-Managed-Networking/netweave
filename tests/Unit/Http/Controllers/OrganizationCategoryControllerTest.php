@@ -37,7 +37,7 @@ describe('storeJson', function () {
         assertDatabaseHas('organization_categories', $payload);
     });
 
-    // Test for name validation (required, string, max:64, unique)
+    // Test for name validation (required, string, max:63, unique)
     it('validates the name field', function ($name, $expectedStatus) {
         $user = User::factory()->create();
         actingAs($user);
@@ -55,11 +55,11 @@ describe('storeJson', function () {
         }
     })->with([
         ['', 302],           // required validation
-        [str_repeat('a', 65), 302], // max:64 validation
+        [str_repeat('a', 64), 302], // max:63 validation
         ['Unique Name', Response::HTTP_CREATED],             // valid name
     ]);
 
-    // Test for description validation (nullable, string, max:256, unique)
+    // Test for description validation (nullable, string, max:255, unique)
     it('validates the description field', function ($description, $expectedStatus) {
         $user = User::factory()->create();
         actingAs($user);
@@ -79,7 +79,7 @@ describe('storeJson', function () {
             assertEmpty(OrganizationCategory::where('description', $description)->get()->toArray());
         }
     })->with([
-        [str_repeat('a', 257), 302], // max:256 validation
+        [str_repeat('a', 256), 302], // max:255 validation
         [null, Response::HTTP_CREATED],                             // nullable field
         ['Another Unique Description', Response::HTTP_CREATED],     // valid description
     ]);
@@ -177,8 +177,8 @@ describe('update', function () {
         assertDatabaseMissing('organization_categories', ['name' => $name, 'description' => $description]);
     })->with([
         ['', 'Valid Description'], // name required fails
-        [str_repeat('a', 65), 'Valid Description'], // name max:64 fails
-        ['Valid Name', str_repeat('a', 257)], // description max:256 fails
+        [str_repeat('a', 64), 'Valid Description'], // name max:63 fails
+        ['Valid Name', str_repeat('a', 256)], // description max:255 fails
     ]);
 });
 
