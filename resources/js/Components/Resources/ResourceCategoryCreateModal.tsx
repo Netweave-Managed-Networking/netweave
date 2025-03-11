@@ -32,6 +32,7 @@ export function ResourceCategoryCreateModal({
   useEffect(() => setCategoryToCreate({ title: '' }), [show]); // reset on modal reopen
 
   const hasTitle = () => !!categoryToCreate.title.trim();
+  const hasDefinition = () => !!categoryToCreate.definition?.trim();
 
   const postCategory = useCallback(async (): Promise<
     ResourceCategory | 'error'
@@ -58,7 +59,11 @@ export function ResourceCategoryCreateModal({
   }, [postCategory]);
 
   return (
-    <Modal show={show} onClose={() => onClose(undefined)}>
+    <Modal
+      show={show}
+      onClose={() => onClose(undefined)}
+      closeable={!hasTitle() && !hasDefinition()}
+    >
       <div className="p-6">
         <h2 className="text-lg font-medium text-gray-900">
           Neue Ressourcenkategorie erstellen

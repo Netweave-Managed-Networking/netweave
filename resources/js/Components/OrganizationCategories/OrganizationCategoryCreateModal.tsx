@@ -32,6 +32,7 @@ export function OrganizationCategoryCreateModal({
   useEffect(() => setCategoryToCreate({ name: '' }), [show]); // reset on modal reopen
 
   const hasName = () => !!categoryToCreate.name.trim();
+  const hasDescription = () => !!categoryToCreate.description?.trim();
 
   const postCategory = useCallback(async (): Promise<
     OrganizationCategory | 'error'
@@ -58,7 +59,11 @@ export function OrganizationCategoryCreateModal({
   }, [postCategory]);
 
   return (
-    <Modal show={show} onClose={() => onClose(undefined)}>
+    <Modal
+      show={show}
+      onClose={() => onClose(undefined)}
+      closeable={!hasName() && !hasDescription()}
+    >
       <div className="p-6">
         <h2 className="text-lg font-medium text-gray-900">
           Neue Organisationskategorie erstellen
