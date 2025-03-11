@@ -3,7 +3,7 @@ import {
   StoreResourceCategoryErrors,
   storeResourceCategory,
 } from '@/axios/storeResourceCategory.axios';
-import { capitalizeWords } from '@/helpers/capitalizeWords.helper';
+import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
 import { ResourceCategoryCreate } from '@/types/resource-category-create.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import { useCallback, useEffect, useState } from 'react';
@@ -80,8 +80,7 @@ export function ResourceCategoryCreateModal({
               value={categoryToCreate.title}
               onChange={e => {
                 setErrors({});
-                const title = capitalizeWords(e.target.value);
-                e.target.value = title;
+                const title = capitalizeInputWords(e);
                 setCategoryToCreate({ ...categoryToCreate, title });
               }}
               className="mt-1 block w-full"
