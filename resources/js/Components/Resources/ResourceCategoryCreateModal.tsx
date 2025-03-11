@@ -39,7 +39,6 @@ export function ResourceCategoryCreateModal({
     setProcessing(true);
     if (!hasTitle()) {
       setErrors({ title: '"Titel" darf nicht leer sein.' });
-      console.error({ name: '"Titel" darf nicht leer sein.' });
       return 'error';
     }
     try {
@@ -47,7 +46,6 @@ export function ResourceCategoryCreateModal({
     } catch (error: unknown) {
       const e = error as StoreResourceCategoryError;
       setErrors(e.response?.data.errors ?? {});
-      console.error(e);
       return 'error';
     } finally {
       setProcessing(false);

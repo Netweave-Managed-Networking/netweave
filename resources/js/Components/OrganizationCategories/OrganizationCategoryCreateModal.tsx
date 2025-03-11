@@ -39,7 +39,6 @@ export function OrganizationCategoryCreateModal({
     setProcessing(true);
     if (!hasName()) {
       setErrors({ name: '"Name" darf nicht leer sein.' });
-      console.error({ name: '"Name" darf nicht leer sein.' });
       return 'error';
     }
     try {
@@ -47,7 +46,6 @@ export function OrganizationCategoryCreateModal({
     } catch (error: unknown) {
       const e = error as StoreOrganizationCategoryError;
       setErrors(e.response?.data.errors ?? {});
-      console.error(e);
       return 'error';
     } finally {
       setProcessing(false);
