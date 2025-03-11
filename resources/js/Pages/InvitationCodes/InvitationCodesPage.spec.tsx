@@ -1,39 +1,25 @@
-/* eslint-disable react/display-name */
+import InvitationCodesPage from '@/Pages/InvitationCodes/InvitationCodesPage';
 import { mockInvitationCodes } from '@/testing/mock-invitation-codes.mock';
 import { mockUser } from '@/testing/mock-users.mock';
 import { InvitationCode } from '@/types/invitation-code.model';
-import { UserMin } from '@/types/user-min.model';
 import { render, screen } from '@testing-library/react';
-import InvitationCodesPage from './InvitationCodesPage';
 
 // Mocking child components used in InvitationCodesPage
-jest.mock('@/Components/Icon/CheckMark', () => () => <div>CheckMark</div>);
-
-jest.mock('@/Components/Icon/CrossMark', () => () => <div>CrossMark</div>);
-
-jest.mock(
-  '@/Components/InvitationCodes/InvitationCodeInvitationLinkButton',
-  () => () => <div>InvitationCodeInvitationLinkButton</div>
-);
-
-jest.mock('@/Components/InvitationCodes/InvitationCodeAddButton', () => ({
-  InvitationCodeAddButton: () => <button>Add Code</button>,
-}));
-
-jest.mock('@/Components/InvitationCodes/InvitationCodeDeleteButton', () => ({
-  InvitationCodeDeleteButton: ({ id }: { id: number }) => (
-    <button>Delete {id}</button>
-  ),
-}));
-
-jest.mock('@/Components/Users/UserDeleteButton', () => ({
-  UserDeleteButton: ({ user }: { user: UserMin }) => (
-    <button>Delete {user.name}</button>
-  ),
-}));
-
 jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
+}));
+
+jest.mock('@/Components/InvitationCodes/InvitationCodesTable', () => ({
+  InvitationCodesTable: ({
+    showAddCodeButton,
+  }: {
+    showAddCodeButton: boolean;
+  }) => (
+    <>
+      <div>InvitationCodesTable</div>
+      {showAddCodeButton ? <div>AddCodeButton</div> : ''}
+    </>
+  ),
 }));
 
 // Mock the AuthenticatedLayout
@@ -44,7 +30,7 @@ jest.mock(
 );
 
 describe('InvitationCodesPage', () => {
-  it('renders the table with invitation codes', () => {
+  it('renders page title', () => {
     render(
       <InvitationCodesPage
         auth={{ user: mockUser }}
@@ -53,10 +39,17 @@ describe('InvitationCodesPage', () => {
     );
 
     expect(screen.getByText('User & Einladungen')).toBeInTheDocument();
-    expect(screen.getByText('CODE123')).toBeInTheDocument();
-    expect(screen.getByText('CODE456')).toBeInTheDocument();
-    expect(screen.getByText('CheckMark')).toBeInTheDocument(); // For unused code
-    expect(screen.getByText('CrossMark')).toBeInTheDocument(); // For used code
+  });
+
+  it('renders InvitationCodesTable component', () => {
+    render(
+      <InvitationCodesPage
+        auth={{ user: mockUser }}
+        invitationCodes={mockInvitationCodes}
+      />
+    );
+
+    expect(screen.getByText('InvitationCodesTable')).toBeInTheDocument();
   });
 
   it('shows the Add Code button if no unused code is available for the admin', () => {
@@ -79,10 +72,10 @@ describe('InvitationCodesPage', () => {
       />
     );
 
-    expect(screen.getByText('Add Code')).toBeInTheDocument();
+    expect(screen.getByText('AddCodeButton')).toBeInTheDocument();
   });
 
-  it('does not show the Add Code button if an unused code is available for the admin', () => {
+  it('does not show the Add Code button if showAddCodeButton is false', () => {
     render(
       <InvitationCodesPage
         auth={{ user: mockUser }}
@@ -90,32 +83,6 @@ describe('InvitationCodesPage', () => {
       />
     );
 
-    expect(screen.queryByText('Add Code')).toBeNull();
-  });
-
-  it('renders delete buttons for unused codes', () => {
-    render(
-      <InvitationCodesPage
-        auth={{ user: mockUser }}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
-
-    expect(screen.getByText('Delete 1')).toBeInTheDocument(); // Unused code
-    expect(screen.queryByText('Delete 2')).toBeNull(); // Used code
-  });
-
-  it('renders InvitationCodeInvitationLinkButton buttons for unused codes', () => {
-    render(
-      <InvitationCodesPage
-        auth={{ user: mockUser }}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
-
-    expect(
-      screen.getByText('InvitationCodeInvitationLinkButton')
-    ).toBeInTheDocument(); // Unused code
-    expect(screen.queryByText('-')).toBeNull(); // Used code
+    expect(screen.queryByText('AddCodeButton')).toBeNull();
   });
 });
