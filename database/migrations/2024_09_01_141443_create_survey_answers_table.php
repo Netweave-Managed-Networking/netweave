@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('survey_answers', function (Blueprint $table) {
             $table->id();
-            $table->string('answer', 4096);
+            $table->string('answer', 4095);
             $table->foreignId('survey_question_id')->constrained('survey_questions')->noActionOnDelete();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();

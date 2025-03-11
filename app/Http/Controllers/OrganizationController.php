@@ -29,11 +29,11 @@ class OrganizationController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:128|unique:organizations',
-            'email' => 'nullable|string|max:64|unique:organizations',
-            'phone' => 'nullable|string|max:64|unique:organizations',
-            'postcode_city' => 'nullable|string|max:64',
-            'street_hnr' => 'nullable|string|max:128',
+            'name' => 'required|string|max:127|unique:organizations',
+            'email' => 'nullable|string|max:63|unique:organizations',
+            'phone' => 'nullable|string|max:63|unique:organizations',
+            'postcode_city' => 'nullable|string|max:63',
+            'street_hnr' => 'nullable|string|max:127',
             'organization_categories' => 'required|array',
             'organization_categories.*' => 'exists:organization_categories,id',
         ]);

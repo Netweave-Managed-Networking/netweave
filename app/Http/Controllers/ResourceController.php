@@ -28,7 +28,7 @@ class ResourceController extends Controller
             'summary' => [
                 'nullable',
                 'string',
-                'max:256',
+                'max:255',
                 Rule::unique('resources')->where(function ($query) use ($organization) {
                     return $query->where('organization_id', $organization->id);
                 }),
@@ -36,7 +36,7 @@ class ResourceController extends Controller
             'description' => [
                 'required',
                 'string',
-                'max:8192',
+                'max:8191',
                 Rule::unique('resources')->where(function ($query) use ($organization) {
                     return $query->where('organization_id', $organization->id);
                 }),

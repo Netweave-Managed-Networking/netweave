@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
-            $table->string('summary', length: 256)->nullable()->fullText();
-            $table->string('description', length: 8192)->fullText();
-            $table->string('type', length: 16)->comment("type: 'resource' | 'requirement'")->index();
+            $table->tinyText('summary')->nullable()->fullText(); // 255
+            $table->string('description', length: 8191)->fullText();
+            $table->string('type', length: 15)->comment("type: 'resource' | 'requirement'")->index();
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });

@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('survey_question_id')->constrained('survey_questions')->cascadeOnDelete();
             $table->boolean('is_multiline');
-            $table->string('placeholder', length: 1024);
+            $table->string('placeholder', length: 1023);
         });
     }
 

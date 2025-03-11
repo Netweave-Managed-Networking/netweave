@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role', length: 64)->after('email')->default('editor')->comment("type 'admin'|'editor'");
+            $table->string('role', length: 63)->after('email')->default('editor')->comment("type 'admin'|'editor'");
         });
     }
 

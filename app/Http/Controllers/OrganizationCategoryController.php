@@ -23,8 +23,8 @@ class OrganizationCategoryController extends Controller
     public function storeJson(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:64|unique:organization_categories',
-            'description' => 'nullable|string|max:256|unique:organization_categories',
+            'name' => 'required|string|max:63|unique:organization_categories',
+            'description' => 'nullable|string|max:255|unique:organization_categories',
         ]);
 
         $organizations_category = OrganizationCategory::create($validated);
@@ -42,8 +42,8 @@ class OrganizationCategoryController extends Controller
     public function update(Request $request, OrganizationCategory $category): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => "required|string|max:64|unique:organization_categories,name,$category->id",
-            'description' => "nullable|string|max:256|unique:organization_categories,description,$category->id",
+            'name' => "required|string|max:63|unique:organization_categories,name,$category->id",
+            'description' => "nullable|string|max:255|unique:organization_categories,description,$category->id",
         ]);
 
         $category->update($validated);
