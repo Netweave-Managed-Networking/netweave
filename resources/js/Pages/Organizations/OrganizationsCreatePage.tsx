@@ -11,7 +11,7 @@ import { PageProps } from '@/types/page-props.type';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
 
-export default function OrganizationsCreate({
+export default function OrganizationsCreatePage({
   auth,
   organizationCategories,
 }: PageProps<{
