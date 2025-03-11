@@ -7,7 +7,7 @@ import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-export default function OrganizationCategoriesEdit({
+export default function OrganizationCategoriesEditPage({
   auth,
   organizationCategories,
 }: PageProps<{
