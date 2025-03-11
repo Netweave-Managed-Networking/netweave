@@ -39,7 +39,7 @@ class ResourceSeeder extends Seeder
 
     private function getMockResourceByDescription(string $description): ?array
     {
-        include __DIR__.'/../factories/mockResourcesRequirements.php';
+        include __DIR__.'/../mocks/mockResourcesRequirements.php';
 
         $array = array_filter(array_merge($mockResources, $mockRequirements), fn ($entry) => $entry['description'] === $description);
 
