@@ -35,7 +35,7 @@ it('renders the create page with organization categories', function () {
     $response = actingAs(User::factory()->create())->get(route('organizations.create'));
 
     // Assert: check if the response contains the correct Inertia data
-    $response->assertInertia(fn (Assert $page): Assert => $page->component('Organizations/OrganizationsCreate')
+    $response->assertInertia(fn (Assert $page): Assert => $page->component('Organizations/OrganizationsCreatePage')
         ->has('organizationCategories', 3)
         ->where('organizationCategories', fn ($categoriesArray) => collect($categoriesArray)->contains(fn ($category) => $category['id'] === $this->categories->first()->id &&
                 $category['name'] === $this->categories->first()->name

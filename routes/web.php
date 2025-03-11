@@ -17,7 +17,7 @@ use Inertia\Response;
 // /////// //
 
 Route::get('/', function (): Response {
-    return Inertia::render('Welcome', [
+    return Inertia::render('WelcomePage', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,

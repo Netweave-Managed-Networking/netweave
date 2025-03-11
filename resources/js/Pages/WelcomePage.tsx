@@ -1,7 +1,7 @@
 import { PageProps } from '@/types/page-props.type';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Welcome({
+export default function WelcomePage({
   auth,
   laravelVersion,
   phpVersion,

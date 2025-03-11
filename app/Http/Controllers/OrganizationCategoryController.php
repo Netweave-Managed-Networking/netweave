@@ -36,7 +36,7 @@ class OrganizationCategoryController extends Controller
     {
         $organization_categories = OrganizationCategory::orderBy('name')->get();
 
-        return Inertia::render('OrganizationCategories/OrganizationCategoriesEdit')->with('organizationCategories', $organization_categories);
+        return Inertia::render('OrganizationCategories/OrganizationCategoriesEditPage')->with('organizationCategories', $organization_categories);
     }
 
     public function update(Request $request, OrganizationCategory $category): RedirectResponse

@@ -44,7 +44,7 @@ test('it can render the invitation codes page and properly orders the codes', fu
     // Assert Inertia renders the correct view with the expected data
     $response->assertInertia(
         fn (Assert $page) => $page
-            ->component('InvitationCodes/InvitationCodesTable')
+            ->component('InvitationCodes/InvitationCodesPage')
             ->has('invitationCodes', 3)
             // Ensure the ordering by editor_id (null editor comes first)
             ->where('invitationCodes.0.id', $regCodeWithNullEditor->id)

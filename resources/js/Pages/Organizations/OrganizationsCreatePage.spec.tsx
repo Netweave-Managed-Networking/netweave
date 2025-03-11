@@ -2,7 +2,7 @@
 import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { mockUser } from '@/testing/mock-users.mock';
 import { render } from '@testing-library/react';
-import OrganizationsCreate from './OrganizationsCreate';
+import OrganizationsCreatePage from './OrganizationsCreatePage';
 
 jest.mock('@inertiajs/react', () => ({
   ...jest.requireActual('@inertiajs/react'),
@@ -24,11 +24,11 @@ jest.mock('@/Components/Input/PrimaryButton', () => () => (
   <div>PrimaryButton</div>
 ));
 
-describe('OrganizationsCreate', () => {
+describe('OrganizationsCreatePage', () => {
   describe('complete form', () => {
     it('should render text input for organization name', () => {
       render(
-        <OrganizationsCreate
+        <OrganizationsCreatePage
           auth={{ user: mockUser }}
           organizationCategories={mockOrganizationCategories}
         />

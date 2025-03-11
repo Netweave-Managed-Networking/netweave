@@ -14,7 +14,7 @@ import { User } from '@/types/user.model';
 import { Head } from '@inertiajs/react';
 import { ReactNode } from 'react';
 
-export default function InvitationCodesTable({
+export default function InvitationCodesPage({
   auth,
   invitationCodes,
 }: PageProps<{ invitationCodes: InvitationCode[] }>) {

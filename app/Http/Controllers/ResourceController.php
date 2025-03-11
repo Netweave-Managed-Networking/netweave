@@ -17,7 +17,7 @@ class ResourceController extends Controller
     {
         $resource_categories = ResourceCategory::all();
 
-        return Inertia::render('Resources/ResourceCreate')
+        return Inertia::render('Resources/ResourceCreatePage')
             ->with('resourceCategories', $resource_categories)
             ->with('organization', $organization);
     }

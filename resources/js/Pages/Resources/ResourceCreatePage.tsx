@@ -11,13 +11,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Organization } from '@/types/organization.model';
 import { PageProps } from '@/types/page-props.type';
 import { ResourceCategory } from '@/types/resource-category.model';
-import { ResourceCreate as ResourceCreateModel } from '@/types/resource-create.model';
+import { ResourceCreate } from '@/types/resource-create.model';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
 
 const emptyResource: (
   organization_id: number
-) => ResourceCreateModel = organization_id => ({
+) => ResourceCreate = organization_id => ({
   type: null,
   description: '',
   summary: '',
@@ -25,7 +25,7 @@ const emptyResource: (
   resource_categories: [],
 });
 
-export default function ResourceCreate({
+export default function ResourceCreatePage({
   auth,
   organization,
   resourceCategories,
@@ -35,8 +35,9 @@ export default function ResourceCreate({
 }>) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-  const { data, setData, post, errors, processing } =
-    useForm<ResourceCreateModel>(emptyResource(organization.id));
+  const { data, setData, post, errors, processing } = useForm<ResourceCreate>(
+    emptyResource(organization.id)
+  );
 
   const handleSubmit: FormEventHandler = (
     e: SyntheticEvent<HTMLFormElement, SubmitEvent>
