@@ -6,7 +6,7 @@ import DisplayUserRole from './Partials/DisplayUserRole';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-export default function Edit({
+export default function EditPage({
   auth,
   mustVerifyEmail,
   status,
