@@ -22,8 +22,8 @@ jest.mock(
     }: {
       organizationCategories: any[];
     }) => {
-      return organizationCategories.map((category: any) => (
-        <div>One Category</div>
+      return organizationCategories.map((category: any, index: number) => (
+        <div key={index}>One Category</div>
       ));
     },
   })
