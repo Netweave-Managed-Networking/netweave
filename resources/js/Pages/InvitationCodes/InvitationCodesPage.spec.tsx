@@ -4,9 +4,9 @@ import { mockUser } from '@/testing/mock-users.mock';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
 import { render, screen } from '@testing-library/react';
-import InvitationCodesTable from './InvitationCodesTable';
+import InvitationCodesPage from './InvitationCodesPage';
 
-// Mocking child components used in InvitationCodesTable
+// Mocking child components used in InvitationCodesPage
 jest.mock('@/Components/Icon/CheckMark', () => () => <div>CheckMark</div>);
 
 jest.mock('@/Components/Icon/CrossMark', () => () => <div>CrossMark</div>);
@@ -43,10 +43,10 @@ jest.mock(
     ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 );
 
-describe('InvitationCodesTable', () => {
+describe('InvitationCodesPage', () => {
   it('renders the table with invitation codes', () => {
     render(
-      <InvitationCodesTable
+      <InvitationCodesPage
         auth={{ user: mockUser }}
         invitationCodes={mockInvitationCodes}
       />
@@ -73,7 +73,7 @@ describe('InvitationCodesTable', () => {
     ] as InvitationCode[];
 
     render(
-      <InvitationCodesTable
+      <InvitationCodesPage
         auth={{ user: mockUser }}
         invitationCodes={noUnusedCodes}
       />
@@ -84,7 +84,7 @@ describe('InvitationCodesTable', () => {
 
   it('does not show the Add Code button if an unused code is available for the admin', () => {
     render(
-      <InvitationCodesTable
+      <InvitationCodesPage
         auth={{ user: mockUser }}
         invitationCodes={mockInvitationCodes}
       />
@@ -95,7 +95,7 @@ describe('InvitationCodesTable', () => {
 
   it('renders delete buttons for unused codes', () => {
     render(
-      <InvitationCodesTable
+      <InvitationCodesPage
         auth={{ user: mockUser }}
         invitationCodes={mockInvitationCodes}
       />
@@ -107,7 +107,7 @@ describe('InvitationCodesTable', () => {
 
   it('renders InvitationCodeInvitationLinkButton buttons for unused codes', () => {
     render(
-      <InvitationCodesTable
+      <InvitationCodesPage
         auth={{ user: mockUser }}
         invitationCodes={mockInvitationCodes}
       />
