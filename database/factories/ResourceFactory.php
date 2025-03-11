@@ -43,7 +43,7 @@ class ResourceFactory extends PreferMocksFactory
 
     protected function getMockEntries(): array
     {
-        include __DIR__.'/mockResourcesRequirements.php';
+        include __DIR__.'/../mocks/mockResourcesRequirements.php';
 
         return array_map(function ($entry) {
             return ['description' => $entry['description'], 'type' => $entry['type'], 'organization_id' => $this->getRandomOrganization()->id, 'summary' => null];
