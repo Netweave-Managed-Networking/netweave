@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
+use App\Rules\MaxBytes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,13 +30,13 @@ class OrganizationController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:127|unique:organizations',
-            'email' => 'nullable|string|max:63|unique:organizations',
-            'phone' => 'nullable|string|max:63|unique:organizations',
-            'postcode_city' => 'nullable|string|max:63',
-            'street_hnr' => 'nullable|string|max:127',
-            'organization_categories' => 'required|array',
-            'organization_categories.*' => 'exists:organization_categories,id',
+            'name' => ['required', 'string', new MaxBytes(127), 'unique:organizations'],
+            'email' => ['nullable', 'string', new MaxBytes(63), 'unique:organizations'],
+            'phone' => ['nullable', 'string', new MaxBytes(63), 'unique:organizations'],
+            'postcode_city' => ['nullable', 'string', new MaxBytes(63)],
+            'street_hnr' => ['nullable', 'string', new MaxBytes(127)],
+            'organization_categories' => ['required', 'array'],
+            'organization_categories.*' => ['exists:organization_categories,id'],
         ]);
 
         $organization = Organization::create($validated);

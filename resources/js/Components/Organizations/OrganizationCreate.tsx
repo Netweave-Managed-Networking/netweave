@@ -6,8 +6,14 @@ import TextInput from '@/Components/Input/TextInput';
 import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategories/OrganizationCategoriesSelectAdd';
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
 import { OrganizationCategory } from '@/types/organization-category.model';
+import {
+  emptyOrganization,
+  OrganizationCreate as OrganizationCreateModel,
+  orgMax,
+} from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 export function OrganizationCreate({
   organizationCategories,
@@ -16,14 +22,8 @@ export function OrganizationCreate({
 }) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-  const { data, setData, post, errors, processing } = useForm({
-    name: '',
-    email: '',
-    phone: '',
-    postcode_city: '',
-    street_hnr: '',
-    organization_categories: [] as number[],
-  });
+  const { data, setData, post, errors, processing } =
+    useForm<OrganizationCreateModel>(emptyOrganization);
 
   const handleSubmit: FormEventHandler = (
     e: SyntheticEvent<HTMLFormElement, SubmitEvent>
@@ -47,7 +47,14 @@ export function OrganizationCreate({
         >
           {/* Organization Name */}
           <div>
-            <InputLabel htmlFor="name" value="Name der Organisation" required />
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="name"
+                value="Name der Organisation"
+                required
+              />
+              <MaxTextSize value={data.name} max={orgMax.name} />
+            </div>
             <TextInput
               id="name"
               autoFocus
@@ -84,7 +91,10 @@ export function OrganizationCreate({
           )}
           {/* Email */}
           <div>
-            <InputLabel htmlFor="email" value="Email der Organisation" />
+            <div className="flex justify-between">
+              <InputLabel htmlFor="email" value="Email der Organisation" />
+              <MaxTextSize value={data.email} max={orgMax.email} />
+            </div>
             <TextInput
               id="email"
               pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
@@ -96,10 +106,13 @@ export function OrganizationCreate({
           </div>
           {/* Phone */}
           <div>
-            <InputLabel
-              htmlFor="phone"
-              value="Telefonnummer der Organisation"
-            />
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="phone"
+                value="Telefonnummer der Organisation"
+              />
+              <MaxTextSize value={data.phone} max={orgMax.phone} />
+            </div>
             <TextInput
               id="phone"
               value={data.phone}
@@ -110,10 +123,16 @@ export function OrganizationCreate({
           </div>
           {/* Postcode and City */}
           <div>
-            <InputLabel
-              htmlFor="postcode_city"
-              value="PLZ und Stadt der Organisation"
-            />
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="postcode_city"
+                value="PLZ und Stadt der Organisation"
+              />
+              <MaxTextSize
+                value={data.postcode_city}
+                max={orgMax.postcode_city}
+              />
+            </div>
             <TextInput
               id="postcode_city"
               value={data.postcode_city}
@@ -124,10 +143,13 @@ export function OrganizationCreate({
           </div>
           {/* Street and House Number */}
           <div>
-            <InputLabel
-              htmlFor="street_hnr"
-              value="Straße und Hausnummer der Organisation"
-            />
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="street_hnr"
+                value="Straße und Hausnummer der Organisation"
+              />
+              <MaxTextSize value={data.street_hnr} max={orgMax.street_hnr} />
+            </div>
             <TextInput
               id="street_hnr"
               value={data.street_hnr}

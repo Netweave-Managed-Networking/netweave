@@ -1,10 +1,14 @@
 import {
+  storeOrganizationCategory,
   StoreOrganizationCategoryError,
   StoreOrganizationCategoryErrors,
-  storeOrganizationCategory,
 } from '@/axios/storeOrganizationCategory.axios';
 import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
-import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
+import {
+  emptyOrganizationCategory,
+  OrganizationCategoryCreate,
+  orgCatMax,
+} from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
@@ -13,6 +17,7 @@ import PrimaryButton from '../Input/PrimaryButton';
 import SecondaryButton from '../Input/SecondaryButton';
 import TextArea from '../Input/TextArea';
 import TextInput from '../Input/TextInput';
+import { MaxTextSize } from '../Util/MaxTextSize';
 import Modal from '../Util/Modal';
 
 export type OrganizationCategoryCreateModalProps = {
@@ -25,11 +30,11 @@ export function OrganizationCategoryCreateModal({
   onClose,
 }: OrganizationCategoryCreateModalProps) {
   const [categoryToCreate, setCategoryToCreate] =
-    useState<OrganizationCategoryCreate>({ name: '' });
+    useState<OrganizationCategoryCreate>(emptyOrganizationCategory);
   const [processing, setProcessing] = useState<boolean>(false);
   const [errors, setErrors] = useState<StoreOrganizationCategoryErrors>({});
 
-  useEffect(() => setCategoryToCreate({ name: '' }), [show]); // reset on modal reopen
+  useEffect(() => setCategoryToCreate(emptyOrganizationCategory), [show]); // reset on modal reopen
 
   const hasName = () => !!categoryToCreate.name.trim();
   const hasDescription = () => !!categoryToCreate.description?.trim();
@@ -72,7 +77,10 @@ export function OrganizationCategoryCreateModal({
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <InputLabel htmlFor="name" value="Name" required />
+            <div className="flex justify-between">
+              <InputLabel htmlFor="name" value="Name" required />
+              <MaxTextSize value={categoryToCreate.name} max={orgCatMax.name} />
+            </div>
             <TextInput
               id="name"
               required
@@ -90,7 +98,13 @@ export function OrganizationCategoryCreateModal({
 
           {/* Category Description */}
           <div>
-            <InputLabel htmlFor="description" value="Beschreibung" />
+            <div className="flex justify-between">
+              <InputLabel htmlFor="description" value="Beschreibung" />
+              <MaxTextSize
+                value={categoryToCreate.description}
+                max={orgCatMax.description}
+              />
+            </div>
             <TextArea
               id="description"
               value={categoryToCreate.description}

@@ -9,19 +9,14 @@ import ResourceRequirementToggle from '@/Components/Resources/ResourceRequiremen
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
 import { Organization } from '@/types/organization.model';
 import { ResourceCategory } from '@/types/resource-category.model';
-import { ResourceCreate as ResourceCreateModel } from '@/types/resource-create.model';
+import {
+  emptyResource,
+  resMax,
+  ResourceCreate as ResourceCreateModel,
+} from '@/types/resource-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
-
-const emptyResource: (
-  organization_id: number
-) => ResourceCreateModel = organization_id => ({
-  type: null,
-  description: '',
-  summary: '',
-  organization_id: organization_id,
-  resource_categories: [],
-});
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 export interface ResourceCreateProps {
   organization: Organization;
@@ -100,11 +95,17 @@ export function ResourceCreate({
           >
             {/* Resource description */}
             <div style={{ gridArea: 'desc-label' }}>
-              <InputLabel
-                required
-                htmlFor="description"
-                value={`Ausführliche Beschreibung ${getLabel2()} (wird für analytische Auswertung verwendet)`}
-              />
+              <div className="flex justify-between">
+                <InputLabel
+                  required
+                  htmlFor="description"
+                  value={`Ausführliche Beschreibung ${getLabel2()} (wird für analytische Auswertung verwendet)`}
+                />
+                <MaxTextSize
+                  value={data.description}
+                  max={resMax.description}
+                />
+              </div>
             </div>
             <div style={{ gridArea: 'desc-text' }}>
               <TextArea
@@ -127,7 +128,10 @@ export function ResourceCreate({
             </div>
 
             {/* Resource type */}
-            <div style={{ gridArea: 'type-label' }}>
+            <div
+              style={{ gridArea: 'type-label' }}
+              className="flex justify-end"
+            >
               <InputLabel htmlFor="Typ" required />
             </div>
             <div style={{ gridArea: 'type-toggler' }}>
@@ -147,10 +151,13 @@ export function ResourceCreate({
           </div>
           {/* Resource summary */}
           <div>
-            <InputLabel
-              htmlFor="summary"
-              value={`Kurze, stichpunktartige Kurzbeschreibung ${getLabel3()}`}
-            />
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="summary"
+                value={`Kurze, stichpunktartige Kurzbeschreibung ${getLabel3()}`}
+              />
+              <MaxTextSize value={data.summary} max={resMax.summary} />
+            </div>
             <TextInput
               id="summary"
               value={data.summary}

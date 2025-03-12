@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrganizationCategory;
+use App\Rules\MaxBytes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,8 +24,8 @@ class OrganizationCategoryController extends Controller
     public function storeJson(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:63|unique:organization_categories',
-            'description' => 'nullable|string|max:255|unique:organization_categories',
+            'name' => ['required', 'string', new MaxBytes(63), 'unique:organization_categories'],
+            'description' => ['nullable', 'string', new MaxBytes(255), 'unique:organization_categories'],
         ]);
 
         $organizations_category = OrganizationCategory::create($validated);
@@ -42,8 +43,8 @@ class OrganizationCategoryController extends Controller
     public function update(Request $request, OrganizationCategory $category): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => "required|string|max:63|unique:organization_categories,name,$category->id",
-            'description' => "nullable|string|max:255|unique:organization_categories,description,$category->id",
+            'name' => ['required', 'string', new MaxBytes(63), 'unique:organization_categories,name,$category->id'],
+            'description' => ['nullable', 'string', new MaxBytes(255), 'unique:organization_categories,description,$category->id'],
         ]);
 
         $category->update($validated);

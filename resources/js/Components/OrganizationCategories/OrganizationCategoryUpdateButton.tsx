@@ -4,12 +4,14 @@ import PrimaryButton from '@/Components/Input/PrimaryButton';
 import SecondaryButton from '@/Components/Input/SecondaryButton';
 import TextInput from '@/Components/Input/TextInput';
 import Modal from '@/Components/Util/Modal';
+import { orgCatMax } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useForm } from '@inertiajs/react';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import { Button, Tooltip } from '@mui/material';
 import { CSSProperties, FormEventHandler, useState } from 'react';
 import TextArea from '../Input/TextArea';
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 interface OrganizationCategoryUpdateButtonProps {
   category: OrganizationCategory;
@@ -22,10 +24,7 @@ export function OrganizationCategoryUpdateButton({
   className,
   style,
 }: OrganizationCategoryUpdateButtonProps) {
-  const { data, setData, put, errors, processing } = useForm({
-    name: category.name,
-    description: category.description ?? '',
-  });
+  const { data, setData, put, errors, processing } = useForm({ ...category });
   const [showModal, setShowModal] = useState(false);
 
   const handleSubmit: FormEventHandler = e => {
@@ -58,7 +57,10 @@ export function OrganizationCategoryUpdateButton({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <InputLabel htmlFor="name" value="Name" required />
+              <div className="flex justify-between">
+                <InputLabel htmlFor="name" value="Name" required />
+                <MaxTextSize value={data.name} max={orgCatMax.name} />
+              </div>
               <TextInput
                 id="name"
                 value={data.name}
@@ -70,7 +72,13 @@ export function OrganizationCategoryUpdateButton({
             </div>
 
             <div>
-              <InputLabel htmlFor="description" value="Beschreibung" />
+              <div className="flex justify-between">
+                <InputLabel htmlFor="description" value="Beschreibung" />
+                <MaxTextSize
+                  value={data.description}
+                  max={orgCatMax.description}
+                />
+              </div>
               <TextArea
                 id="description"
                 value={data.description}
