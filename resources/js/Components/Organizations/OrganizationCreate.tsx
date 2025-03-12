@@ -13,7 +13,7 @@ import {
 } from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
-import { MaxTextLength } from '../Util/MaxTextLength';
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 export function OrganizationCreate({
   organizationCategories,
@@ -53,7 +53,7 @@ export function OrganizationCreate({
                 value="Name der Organisation"
                 required
               />
-              <MaxTextLength value={data.name} max={orgMax.name} />
+              <MaxTextSize value={data.name} max={orgMax.name} />
             </div>
             <TextInput
               id="name"
@@ -93,7 +93,7 @@ export function OrganizationCreate({
           <div>
             <div className="flex justify-between">
               <InputLabel htmlFor="email" value="Email der Organisation" />
-              <MaxTextLength value={data.email} max={orgMax.email} />
+              <MaxTextSize value={data.email} max={orgMax.email} />
             </div>
             <TextInput
               id="email"
@@ -111,7 +111,7 @@ export function OrganizationCreate({
                 htmlFor="phone"
                 value="Telefonnummer der Organisation"
               />
-              <MaxTextLength value={data.phone} max={orgMax.phone} />
+              <MaxTextSize value={data.phone} max={orgMax.phone} />
             </div>
             <TextInput
               id="phone"
@@ -128,7 +128,7 @@ export function OrganizationCreate({
                 htmlFor="postcode_city"
                 value="PLZ und Stadt der Organisation"
               />
-              <MaxTextLength
+              <MaxTextSize
                 value={data.postcode_city}
                 max={orgMax.postcode_city}
               />
@@ -148,7 +148,7 @@ export function OrganizationCreate({
                 htmlFor="street_hnr"
                 value="Straße und Hausnummer der Organisation"
               />
-              <MaxTextLength value={data.street_hnr} max={orgMax.street_hnr} />
+              <MaxTextSize value={data.street_hnr} max={orgMax.street_hnr} />
             </div>
             <TextInput
               id="street_hnr"

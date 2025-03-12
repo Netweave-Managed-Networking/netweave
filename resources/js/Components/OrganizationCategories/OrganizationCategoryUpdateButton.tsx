@@ -11,7 +11,7 @@ import EditOutlined from '@mui/icons-material/EditOutlined';
 import { Button, Tooltip } from '@mui/material';
 import { CSSProperties, FormEventHandler, useState } from 'react';
 import TextArea from '../Input/TextArea';
-import { MaxTextLength } from '../Util/MaxTextLength';
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 interface OrganizationCategoryUpdateButtonProps {
   category: OrganizationCategory;
@@ -59,7 +59,7 @@ export function OrganizationCategoryUpdateButton({
             <div>
               <div className="flex justify-between">
                 <InputLabel htmlFor="name" value="Name" required />
-                <MaxTextLength value={data.name} max={orgCatMax.name} />
+                <MaxTextSize value={data.name} max={orgCatMax.name} />
               </div>
               <TextInput
                 id="name"
@@ -74,7 +74,7 @@ export function OrganizationCategoryUpdateButton({
             <div>
               <div className="flex justify-between">
                 <InputLabel htmlFor="description" value="Beschreibung" />
-                <MaxTextLength
+                <MaxTextSize
                   value={data.description}
                   max={orgCatMax.description}
                 />

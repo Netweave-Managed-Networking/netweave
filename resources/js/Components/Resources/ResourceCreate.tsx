@@ -16,7 +16,7 @@ import {
 } from '@/types/resource-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
-import { MaxTextLength } from '../Util/MaxTextLength';
+import { MaxTextSize } from '../Util/MaxTextSize';
 
 export interface ResourceCreateProps {
   organization: Organization;
@@ -101,7 +101,7 @@ export function ResourceCreate({
                   htmlFor="description"
                   value={`Ausführliche Beschreibung ${getLabel2()} (wird für analytische Auswertung verwendet)`}
                 />
-                <MaxTextLength
+                <MaxTextSize
                   value={data.description}
                   max={resMax.description}
                 />
@@ -156,7 +156,7 @@ export function ResourceCreate({
                 htmlFor="summary"
                 value={`Kurze, stichpunktartige Kurzbeschreibung ${getLabel3()}`}
               />
-              <MaxTextLength value={data.summary} max={resMax.summary} />
+              <MaxTextSize value={data.summary} max={resMax.summary} />
             </div>
             <TextInput
               id="summary"

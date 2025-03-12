@@ -16,7 +16,7 @@ import PrimaryButton from '../Input/PrimaryButton';
 import SecondaryButton from '../Input/SecondaryButton';
 import TextArea from '../Input/TextArea';
 import TextInput from '../Input/TextInput';
-import { MaxTextLength } from '../Util/MaxTextLength';
+import { MaxTextSize } from '../Util/MaxTextSize';
 import Modal from '../Util/Modal';
 
 export type ResourceCategoryCreateModalProps = {
@@ -78,7 +78,7 @@ export function ResourceCategoryCreateModal({
           <div>
             <div className="flex justify-between">
               <InputLabel htmlFor="title" value="Titel" required />
-              <MaxTextLength
+              <MaxTextSize
                 value={categoryToCreate.title}
                 max={resCatMax.title}
               />
@@ -102,7 +102,7 @@ export function ResourceCategoryCreateModal({
           <div>
             <div className="flex justify-between">
               <InputLabel htmlFor="definition" value="Definition" />
-              <MaxTextLength
+              <MaxTextSize
                 value={categoryToCreate.definition}
                 max={resCatMax.definition}
               />

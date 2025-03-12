@@ -17,7 +17,7 @@ import PrimaryButton from '../Input/PrimaryButton';
 import SecondaryButton from '../Input/SecondaryButton';
 import TextArea from '../Input/TextArea';
 import TextInput from '../Input/TextInput';
-import { MaxTextLength } from '../Util/MaxTextLength';
+import { MaxTextSize } from '../Util/MaxTextSize';
 import Modal from '../Util/Modal';
 
 export type OrganizationCategoryCreateModalProps = {
@@ -79,10 +79,7 @@ export function OrganizationCategoryCreateModal({
           <div>
             <div className="flex justify-between">
               <InputLabel htmlFor="name" value="Name" required />
-              <MaxTextLength
-                value={categoryToCreate.name}
-                max={orgCatMax.name}
-              />
+              <MaxTextSize value={categoryToCreate.name} max={orgCatMax.name} />
             </div>
             <TextInput
               id="name"
@@ -103,7 +100,7 @@ export function OrganizationCategoryCreateModal({
           <div>
             <div className="flex justify-between">
               <InputLabel htmlFor="description" value="Beschreibung" />
-              <MaxTextLength
+              <MaxTextSize
                 value={categoryToCreate.description}
                 max={orgCatMax.description}
               />

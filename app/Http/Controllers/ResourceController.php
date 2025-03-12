@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Models\Resource;
 use App\Models\ResourceCategory;
+use App\Rules\MaxBytes;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -28,7 +29,7 @@ class ResourceController extends Controller
             'summary' => [
                 'nullable',
                 'string',
-                'max:255',
+                new MaxBytes(255),
                 Rule::unique('resources')->where(function ($query) use ($organization) {
                     return $query->where('organization_id', $organization->id);
                 }),
@@ -36,15 +37,15 @@ class ResourceController extends Controller
             'description' => [
                 'required',
                 'string',
-                'max:8191',
+                new MaxBytes(8191),
                 Rule::unique('resources')->where(function ($query) use ($organization) {
                     return $query->where('organization_id', $organization->id);
                 }),
             ],
             'type' => ['required', Rule::in(['resource', 'requirement'])],
-            'organization_id' => 'exists:organizations,id',
-            'resource_categories' => 'required|array',
-            'resource_categories.*' => 'exists:resource_categories,id',
+            'organization_id' => ['exists:organizations,id'],
+            'resource_categories' => ['required', 'array'],
+            'resource_categories.*' => ['exists:resource_categories,id'],
         ]);
 
         $resource = Resource::create($validated);
