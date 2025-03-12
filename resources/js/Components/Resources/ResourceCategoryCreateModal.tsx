@@ -1,10 +1,13 @@
 import {
+  storeResourceCategory,
   StoreResourceCategoryError,
   StoreResourceCategoryErrors,
-  storeResourceCategory,
 } from '@/axios/storeResourceCategory.axios';
 import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
-import { ResourceCategoryCreate } from '@/types/resource-category-create.model';
+import {
+  resCatMax,
+  ResourceCategoryCreate,
+} from '@/types/resource-category-create.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
@@ -13,6 +16,7 @@ import PrimaryButton from '../Input/PrimaryButton';
 import SecondaryButton from '../Input/SecondaryButton';
 import TextArea from '../Input/TextArea';
 import TextInput from '../Input/TextInput';
+import { MaxTextLength } from '../Util/MaxTextLength';
 import Modal from '../Util/Modal';
 
 export type ResourceCategoryCreateModalProps = {
@@ -72,7 +76,13 @@ export function ResourceCategoryCreateModal({
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <InputLabel htmlFor="title" value="Titel" required />
+            <div className="flex justify-between">
+              <InputLabel htmlFor="title" value="Titel" required />
+              <MaxTextLength
+                value={categoryToCreate.title}
+                max={resCatMax.title}
+              />
+            </div>
             <TextInput
               id="title"
               required
@@ -90,7 +100,13 @@ export function ResourceCategoryCreateModal({
 
           {/* Category Definition */}
           <div>
-            <InputLabel htmlFor="definition" value="Definition" />
+            <div className="flex justify-between">
+              <InputLabel htmlFor="definition" value="Definition" />
+              <MaxTextLength
+                value={categoryToCreate.definition}
+                max={resCatMax.definition}
+              />
+            </div>
             <TextArea
               id="definition"
               value={categoryToCreate.definition}
