@@ -10,8 +10,8 @@ The Netweave platform serves two main functions: Being a custom questions survey
 ## use cases and why, how, what is Netweave
 
 <div>
-  <img src="./docs/use-case/use-cases-v1-en.png" alt="Use cases of Netweave (english)" width="49%" style="padding: 0px; margin: 0px; border: none" /> 
-  <img src="./docs/use-case/use-cases-v1-de.png" alt="Use cases von Netweave (deutsch)" width="49%" style="padding: 0px; margin: 0px; border: none" />
+  <img src="./docs/use-case/use-cases-v2-en.png" alt="Use cases of Netweave (english)" width="49%" style="padding: 0px; margin: 0px; border: none" /> 
+  <img src="./docs/use-case/use-cases-v2-de.png" alt="Use cases von Netweave (deutsch)" width="49%" style="padding: 0px; margin: 0px; border: none" />
 </div>
 
 ### WHAT is Netweave
