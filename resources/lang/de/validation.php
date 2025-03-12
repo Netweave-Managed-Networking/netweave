@@ -18,9 +18,10 @@ return [
     'date' => 'Das Feld ":attribute" ist kein gültiges Datum.',
     'email' => 'Das Feld ":attribute" muss eine gültige E-Mail-Adresse sein.',
     'exists' => 'Das ausgewählte ":attribute" ist ungültig.',
-    'required' => 'Das Feld ":attribute" ist erforderlich.',
-    'unique' => 'Das Feld ":attribute" muss einzigartig sein. Der angegebene Wert wird aber bereits verwendet. Bitte wähle etwas anderes.',
     'max_bytes' => 'Das Feld ":attribute" darf nicht größer als :max Bytes sein.',
+    'required' => 'Das Feld ":attribute" ist erforderlich.',
+    'string' => 'Das Feld ":attribute" muss eine Zeichenkette sein.',
+    'unique' => 'Das Feld ":attribute" muss einzigartig sein. Der angegebene Wert wird aber bereits verwendet. Bitte wähle etwas anderes.',
     // Add more custom translations as needed
 
     // Custom attribute names
