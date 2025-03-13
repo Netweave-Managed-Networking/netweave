@@ -32,6 +32,7 @@ return [
         'organization_categories.*' => 'Organisationskategorie',
         'resource_categories' => 'Ressourcenkategorien',
         'resource_categories.*' => 'Ressourcenkategorie',
+        'notes' => 'Notizen',
         // Add more mappings here
     ],
 ];
