@@ -47,14 +47,23 @@
 <pre>postcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
 
-### OrganizationNote
+### OrganizationNotes
 
 <small>Each organization can have additional notes which would be often queried if they exist.</small>
 <small>Each organization can at most one OrganizationNote. Organization 1:1 OrganizationNote.</small>
 
 <pre>notes?: text, index: fulltext</pre>
-<pre>criteria_for_coop?: text, index: fulltext</pre>
-<pre>criteria_knockout_for_coop?: text, index: fulltext</pre>
+<pre>🗝️organization_id: Organization, onDelete: cascade</pre>
+
+### OrganizationCoopCriteria
+
+<small>Each organization can have additional criteria for cooperation which would be often queried if they exist.</small>
+<small>For coop: What is necessary for this organization so that a cooperation with another organization can happen.</small>
+<small>K.O. no coop: What would be something that makes a organization be not able / not willing to cooperate with another organization.</small>
+<small>Each organization can at most one OrganizationCoopCriteria. Organization 1:1 OrganizationCoopCriteria.</small>
+
+<pre>for_coop?: text, index: fulltext</pre>
+<pre>ko_no_coop?: text, index: fulltext</pre>
 <pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
 ### organization_to_organization (pivot table)

@@ -6,6 +6,8 @@ use App\Enums\UserRole;
 use App\Models\InvitationCode;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
+use App\Models\OrganizationCoopCriteria;
+use App\Models\OrganizationNotes;
 use App\Models\ResourceCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -45,6 +47,12 @@ class DatabaseSeeder extends Seeder
 
         /** @var Collection<Organization> */
         $organizations = Organization::factory(12)->create()->each(function (Organization $organization) use ($organization_categories): void {
+            if (fake()->boolean(80)) {
+                OrganizationNotes::factory(1)->create(['organization_id' => $organization->id]);
+            }
+            if (fake()->boolean(80)) {
+                OrganizationCoopCriteria::factory(1)->create(['organization_id' => $organization->id]);
+            }
             $some_categories = $organization_categories->random(fake()->numberBetween(1, 3));
             $organization->organizationCategories()->saveMany($some_categories);
         });
