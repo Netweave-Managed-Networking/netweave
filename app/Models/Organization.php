@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 class Organization extends Model
@@ -58,9 +59,30 @@ class Organization extends Model
         return $this->belongsToMany(OrganizationCategory::class, 'organization_to_category');
     }
 
-    ////////////////////////////////////
-    /// ↓ RESOURCES & REQUIREMENTS ↓ ///
-    ////////////////////////////////////
+    // //////////////////////// //
+    // / ↓ NOTES & CRITERIA ↓ / //
+    // //////////////////////// //
+
+    /**
+     * @example use as $organization->notes?->notes;
+     */
+    public function notes(): HasOne
+    {
+        return $this->hasOne(OrganizationNotes::class);
+    }
+
+    /**
+     * @example use as $organization->coopCriteria?->for_coop;
+     * @example use as $organization->coopCriteria?->ko_no_coop;
+     */
+    public function coopCriteria(): HasOne
+    {
+        return $this->hasOne(OrganizationCoopCriteria::class);
+    }
+
+    // //////////////////////////////// //
+    // / ↓ RESOURCES & REQUIREMENTS ↓ / //
+    // //////////////////////////////// //
 
     public function resources(): HasMany
     {
@@ -82,13 +104,13 @@ class Organization extends Model
         return $this->getCategoriesOfResources($this->requirements());
     }
 
-    ////////////////////////////////////
-    /// ↑ RESOURCES & REQUIREMENTS ↑ ///
-    ////////////////////////////////////
+    // //////////////////////////////// //
+    // / ↑ RESOURCES & REQUIREMENTS ↑ / //
+    // //////////////////////////////// //
 
-    //////////////////////////
-    // ↓ NETWORK ANALYSIS ↓ //
-    //////////////////////////
+    // //////////////////////// //
+    // / ↓ NETWORK ANALYSIS ↓ / //
+    // //////////////////////// //
 
     /**
      * Get the organizations that this organization stated. (That this organization knows, not knows, ….)
@@ -116,9 +138,9 @@ class Organization extends Model
         )->withPivot('type', 'conflict')->withTimestamps();
     }
 
-    //////////////////////////
-    // ↑ NETWORK ANALYSIS ↑ //
-    //////////////////////////
+    // //////////////////////// //
+    // / ↑ NETWORK ANALYSIS ↑ / //
+    // //////////////////////// //
 
     /**
      * get all distinct resource categories of the resources of this organization

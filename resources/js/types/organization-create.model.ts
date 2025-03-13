@@ -1,12 +1,16 @@
 import { PickStringAsNumber } from './max-string-lengths.type';
 import { OrganizationCategory } from './organization-category.model';
+import { OrganizationNotes } from './organization-notes.model';
 import { Organization } from './organization.model';
 
 export type OrganizationCreate = Partial<
   Pick<
     Organization,
     'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'
-  > & { organization_categories: OrganizationCategory['id'][] }
+  > & {
+    notes: OrganizationNotes['notes'];
+    organization_categories: OrganizationCategory['id'][];
+  }
 >;
 
 export const emptyOrganization: OrganizationCreate = {
@@ -15,6 +19,9 @@ export const emptyOrganization: OrganizationCreate = {
   phone: '',
   postcode_city: '',
   street_hnr: '',
+
+  notes: '',
+
   organization_categories: [],
 };
 
@@ -25,4 +32,5 @@ export const orgMax: PickStringAsNumber<OrganizationCreate> = {
   phone: 63,
   postcode_city: 63,
   street_hnr: 127,
+  notes: 4095,
 };

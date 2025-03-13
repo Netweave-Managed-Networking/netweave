@@ -13,6 +13,7 @@ import {
 } from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
+import TextArea from '../Input/TextArea';
 import { MaxTextSize } from '../Util/MaxTextSize';
 
 export function OrganizationCreate({
@@ -65,6 +66,7 @@ export function OrganizationCreate({
             />
             <InputError message={errors.name} className="mt-2" />
           </div>
+
           {/* Categories */}
           <InputLabel value="Kategorien" required />
           <div className="flex">
@@ -89,6 +91,7 @@ export function OrganizationCreate({
           {errors.organization_categories && (
             <InputError message="Wähle mindestens eine Organisationskategorie aus." />
           )}
+
           {/* Email */}
           <div>
             <div className="flex justify-between">
@@ -104,6 +107,7 @@ export function OrganizationCreate({
             />
             <InputError message={errors.email} className="mt-2" />
           </div>
+
           {/* Phone */}
           <div>
             <div className="flex justify-between">
@@ -121,6 +125,7 @@ export function OrganizationCreate({
             />
             <InputError message={errors.phone} className="mt-2" />
           </div>
+
           {/* Postcode and City */}
           <div>
             <div className="flex justify-between">
@@ -141,6 +146,7 @@ export function OrganizationCreate({
             />
             <InputError message={errors.postcode_city} className="mt-2" />
           </div>
+
           {/* Street and House Number */}
           <div>
             <div className="flex justify-between">
@@ -158,6 +164,26 @@ export function OrganizationCreate({
             />
             <InputError message={errors.street_hnr} className="mt-2" />
           </div>
+
+          {/* Notes */}
+          <div>
+            <div className="flex justify-between">
+              <InputLabel
+                htmlFor="notes"
+                value="Notizen zum Wesen / Charakter der Organisation"
+              />
+              <MaxTextSize value={data.notes} max={orgMax.notes} />
+            </div>
+            <TextArea
+              id="notes"
+              value={data.notes}
+              onChange={e => setData('notes', e.target.value)}
+              rows={8}
+              className="mt-1 block w-full"
+            />
+            <InputError message={errors.notes} className="mt-2" />
+          </div>
+
           <div className="flex justify-between mt-4 w-full">
             <SecondaryButton
               className="float-start"

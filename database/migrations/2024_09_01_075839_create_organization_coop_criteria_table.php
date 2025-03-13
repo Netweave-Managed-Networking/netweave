@@ -8,9 +8,10 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('organization_notes', function (Blueprint $table) {
+        Schema::create('organization_coop_criteria', function (Blueprint $table) {
             $table->id();
-            $table->string('notes', 4095)->nullable()->fullText()->language('german');
+            $table->string('for_coop', 4095)->nullable()->fullText()->language('german');
+            $table->string('ko_no_coop', 4095)->nullable()->fullText()->language('german');
             $table->foreignId('organization_id')->unique()->constrained('organizations')->cascadeOnDelete(); // unique because Note 1:1 Organization
             $table->timestamps();
         });
@@ -18,6 +19,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('organization_notes');
+        Schema::dropIfExists('organization_coop_criteria');
     }
 };

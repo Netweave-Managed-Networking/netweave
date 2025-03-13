@@ -2,6 +2,7 @@
 
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
+use App\Models\OrganizationNotes;
 use App\Models\Resource;
 use App\Models\ResourceCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -73,6 +74,18 @@ describe('Organization', function (): void {
                 ->and($statingOrgs->first()->id)->toBe($statingOrganization->id)
                 ->and($statingOrgs->first()->pivot->type)->toBe('another_type')
                 ->and($statingOrgs->first()->pivot->conflict)->toBeTruthy();
+        });
+    });
+
+    describe('notes', function (): void {
+        it('can retrieve notes', function (): void {
+            $organization = Organization::factory()->create();
+            OrganizationNotes::factory()->create(['organization_id' => $organization->id, 'notes' => 'Test notes']);
+
+            $retrievedNotes = $organization->notes;
+
+            expect($retrievedNotes)->not->toBeNull()
+                ->and($retrievedNotes->notes)->toBe('Test notes');
         });
     });
 
