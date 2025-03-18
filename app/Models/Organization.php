@@ -80,6 +80,15 @@ class Organization extends Model
         return $this->hasOne(OrganizationCoopCriteria::class);
     }
 
+    // ///////////////////////// //
+    // / ↓ CONTACT PERSONS   ↓ / //
+    // ///////////////////////// //
+
+    public function contactPersons(): HasMany
+    {
+        return $this->hasMany(ContactPerson::class);
+    }
+
     // //////////////////////////////// //
     // / ↓ RESOURCES & REQUIREMENTS ↓ / //
     // //////////////////////////////// //

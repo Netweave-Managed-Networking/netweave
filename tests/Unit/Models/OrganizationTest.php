@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ContactPerson;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
 use App\Models\OrganizationNotes;
@@ -177,6 +178,38 @@ describe('Organization', function (): void {
                 ->toContain($requirementCategories[2]->id)
                 ->toContain($requirementCategories[3]->id)
                 ->not->toContain($requirementCategories[1]->id);
+        });
+    });
+
+    describe('notes', function (): void {
+        it('can associate notes', function () {
+            $organization = Organization::factory()->create();
+            $note = OrganizationNotes::factory()->create(['organization_id' => $organization->id]);
+
+            expect($organization->notes)->toBeInstanceOf(OrganizationNotes::class)
+                ->and($organization->notes->id)->toBe($note->id);
+        });
+    });
+
+    describe('contact person', function (): void {
+        it('can associate a contact person', function () {
+            $organization = Organization::factory()->create();
+            $contactPerson = ContactPerson::factory()->create(['organization_id' => $organization->id]);
+
+            expect($organization->contactPersons[0])->toBeInstanceOf(ContactPerson::class)
+                ->and($organization->contactPersons[0]->id)->toBe($contactPerson->id);
+        });
+
+        it('can associate 3 contact persons', function () {
+            $organization = Organization::factory()->create();
+            $contactPersons = ContactPerson::factory(3)->create(['organization_id' => $organization->id]);
+
+            expect($organization->contactPersons[0])->toBeInstanceOf(ContactPerson::class)
+                ->and($organization->contactPersons[0]->id)->toBe($contactPersons[0]->id);
+            expect($organization->contactPersons[1])->toBeInstanceOf(ContactPerson::class)
+                ->and($organization->contactPersons[1]->id)->toBe($contactPersons[1]->id);
+            expect($organization->contactPersons[2])->toBeInstanceOf(ContactPerson::class)
+                ->and($organization->contactPersons[2]->id)->toBe($contactPersons[2]->id);
         });
     });
 });
