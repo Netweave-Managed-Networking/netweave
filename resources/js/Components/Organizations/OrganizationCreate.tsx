@@ -5,6 +5,7 @@ import SecondaryButton from '@/Components/Input/SecondaryButton';
 import TextInput from '@/Components/Input/TextInput';
 import OrganizationCategoriesSelectAdd from '@/Components/OrganizationCategories/OrganizationCategoriesSelectAdd';
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
+import { readRedirectToFromHTMLButtonName } from '@/helpers/readRedirectToFromHTMLButtonName.helper';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import {
   emptyOrganization,
@@ -30,10 +31,9 @@ export function OrganizationCreate({
     e: SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
-    const name = (e.nativeEvent.submitter as HTMLButtonElement).name;
-    const redirectMatch = name.match(/^redirect_to:(\/[\w-\/\{\}]+)$/);
-    const redirectTo = redirectMatch && redirectMatch[1];
-
+    const redirectTo = readRedirectToFromHTMLButtonName(
+      e.nativeEvent.submitter as HTMLButtonElement
+    );
     data.organization_categories = selectedCategories;
     post(route('organizations.store', { redirect_to: redirectTo }));
   };
