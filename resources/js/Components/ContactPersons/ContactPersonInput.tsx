@@ -12,7 +12,7 @@ import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { MaxTextSize } from '../Util/MaxTextSize';
 
-export function ContactPersonForm({
+export function ContactPersonInput({
   onChange,
   autoFocus,
   errors,

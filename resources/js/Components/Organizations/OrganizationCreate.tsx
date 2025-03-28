@@ -20,7 +20,7 @@ import {
 } from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useEffect, useState } from 'react';
-import { ContactPersonForm } from '../ContactPersons/ContactPersonForm';
+import { ContactPersonInput } from '../ContactPersons/ContactPersonInput';
 import TextArea from '../Input/TextArea';
 import HoverInfoButton from '../Util/HoverInfoButton';
 import { MaxTextSize } from '../Util/MaxTextSize';
@@ -215,7 +215,7 @@ export function OrganizationCreate({
                   }
                 />
               </span>
-              <ContactPersonForm
+              <ContactPersonInput
                 isNameRequired={!contactPersonIsPristine}
                 onChange={(data, isPristine) => (
                   setContactPerson(data), setContactPersonPristine(isPristine)
