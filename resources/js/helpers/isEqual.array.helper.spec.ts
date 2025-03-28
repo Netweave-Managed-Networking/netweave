@@ -1,6 +1,6 @@
 import { isEqual } from './isEqual.array.helper';
 
-describe('isEqual', () => {
+describe('isEqual array', () => {
   it('should return true for arrays with the same elements in the same order', () => {
     expect(isEqual([1, 2, 3], [1, 2, 3])).toBe(true);
   });
