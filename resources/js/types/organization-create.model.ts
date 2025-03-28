@@ -5,18 +5,13 @@ import {
 import { PickStringAsNumber } from './max-string-lengths.type';
 import { OrganizationCategory } from './organization-category.model';
 import { OrganizationNotes } from './organization-notes.model';
-import { Organization } from './organization.model';
+import { OrganizationUpdate } from './organization-update.model';
 
-export type OrganizationCreate = Partial<
-  Pick<
-    Organization,
-    'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'
-  > & {
-    notes: OrganizationNotes['notes'];
-    organization_categories: OrganizationCategory['id'][];
-    organization_first_contact_person: ContactPersonCreate;
-  }
->;
+export type OrganizationCreate = OrganizationUpdate & {
+  notes?: OrganizationNotes['notes'];
+  organization_categories?: OrganizationCategory['id'][];
+  organization_first_contact_person?: ContactPersonCreate;
+};
 
 export const emptyOrganization: OrganizationCreate = {
   name: '',

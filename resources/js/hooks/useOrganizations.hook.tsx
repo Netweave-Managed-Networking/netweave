@@ -1,14 +1,14 @@
-import { Organization } from '@/types/organization.model';
+import { OrganizationLi } from '@/types/organization-li.model';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { fetchOrganizations } from '../axios/fetchOrganizations.axios';
 
 type UseOrganizationsResult = Pick<
-  UseQueryResult<Organization[], Error>,
+  UseQueryResult<OrganizationLi[], Error>,
   'isError' | 'isLoading'
-> & { organizations: Organization[] };
+> & { organizations: OrganizationLi[] };
 
 export function useOrganizations(): UseOrganizationsResult {
-  const organizations = useQuery<Organization[]>({
+  const organizations = useQuery<OrganizationLi[]>({
     queryKey: ['organizations'],
     queryFn: () => fetchOrganizations(),
     staleTime: 20000,
