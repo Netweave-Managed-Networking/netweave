@@ -1,6 +1,6 @@
 import { ResourceCreate } from '@/Components/Resources/ResourceCreate';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Organization } from '@/types/organization.model';
+import { OrganizationMin } from '@/types/organization-min.model';
 import { PageProps } from '@/types/page-props.type';
 import { ResourceCategory } from '@/types/resource-category.model';
 import { Head } from '@inertiajs/react';
@@ -10,7 +10,7 @@ export default function ResourceCreatePage({
   organization,
   resourceCategories,
 }: PageProps<{
-  organization: Organization;
+  organization: OrganizationMin;
   resourceCategories: ResourceCategory[];
 }>) {
   return (

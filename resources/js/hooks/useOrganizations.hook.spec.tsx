@@ -1,4 +1,4 @@
-import { Organization } from '@/types/organization.model';
+import { OrganizationLi } from '@/types/organization-li.model';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { fetchOrganizations } from '../axios/fetchOrganizations.axios';
@@ -44,7 +44,7 @@ describe('useOrganizations', () => {
     const organizationData = [
       { id: 1, name: 'Organization 1' },
       { id: 2, name: 'Organization 2' },
-    ] as Organization[];
+    ] as OrganizationLi[];
     mockedFetchOrganizations.mockResolvedValue(organizationData);
 
     // Act
