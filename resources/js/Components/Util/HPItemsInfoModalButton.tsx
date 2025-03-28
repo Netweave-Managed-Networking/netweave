@@ -1,7 +1,6 @@
 import { letters } from '@/constants/alphabet';
-import InfoIcon from '@mui/icons-material/Info';
-import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
+import HoverInfoButton from './HoverInfoButton';
 import Modal from './Modal';
 
 export interface HPItemsInfoModalButtonProps {
@@ -28,11 +27,7 @@ export default function HPItemsInfoModalButton({
 
   return (
     <>
-      <Tooltip title={infoButtonTooltip} placement="top">
-        <IconButton onClick={showModal} sx={{ padding: 0 }}>
-          <InfoIcon className="text-gray-800" />
-        </IconButton>
-      </Tooltip>
+      <HoverInfoButton message={infoButtonTooltip} onClick={showModal} />
 
       <Modal show={modalIsActive} onClose={hideModal}>
         <div className="px-6 pb-6 overflow-y-auto" style={{ height: '90vh' }}>
