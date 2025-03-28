@@ -7,6 +7,7 @@ import TextInput from '@/Components/Input/TextInput';
 import ResourceCategoriesSelectAdd from '@/Components/Resources/ResourceCategoriesSelectAdd';
 import ResourceRequirementToggle from '@/Components/Resources/ResourceRequirementToggle';
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
+import { readRedirectToFromHTMLButtonName } from '@/helpers/readRedirectToFromHTMLButtonName.helper';
 import { Organization } from '@/types/organization.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import {
@@ -36,11 +37,9 @@ export function ResourceCreate({
     e: SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
-
-    const name = (e.nativeEvent.submitter as HTMLButtonElement).name;
-    const redirectMatch = name.match(/^redirect_to:(\/[\w-\/\{\}]+)$/);
-    const redirectTo = redirectMatch && redirectMatch[1];
-
+    const redirectTo = readRedirectToFromHTMLButtonName(
+      e.nativeEvent.submitter as HTMLButtonElement
+    );
     data.resource_categories = selectedCategories;
     post(
       route('resources.store', {

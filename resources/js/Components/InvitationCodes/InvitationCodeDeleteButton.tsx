@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import BackspaceIcon from '@mui/icons-material/Backspace';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 
 interface InvitationCodeDeleteButtonProps {
   id: number;
@@ -20,7 +20,7 @@ export function InvitationCodeDeleteButton({
   };
 
   return (
-    <Tooltip title="Löschen" placement="right">
+    <Tooltip title={<Typography>Löschen</Typography>} placement="right">
       <IconButton onClick={handleDelete} sx={{ padding: 0 }}>
         <BackspaceIcon fontSize="small" className="text-red-700" />
       </IconButton>

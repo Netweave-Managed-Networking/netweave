@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('organization_id')->constrained('organizations')->cascadeOnDelete();
             $table->timestamps();
         });
+        // nothing, not even email, is unique here in case the same contact person is contact for different organizations
     }
 
     public function down()

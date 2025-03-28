@@ -27,12 +27,31 @@ return [
     // Custom attribute names
     'attributes' => [
         'name' => 'Name',
+        'organization_first_contact_person.name' => 'Name der Ansprechpartnerin / des Ansprechpartners',
+        '*.name' => 'Name',
+
+        'email' => 'Email',
+        '*.email' => 'Email',
+
+        'phone' => 'Telefonnummer',
+        '*.phone' => 'Telefonnummer',
+
+        'postcode_city' => 'PLZ und Stadt',
+        '*.postcode_city' => 'PLZ und Stadt',
+
+        'street_hnr' => 'Straße und Hausnummer',
+        '*.street_hnr' => 'Straße und Hausnummer',
+
         'description' => 'Beschreibung',
+        '*.description' => 'Beschreibung',
+
         'organization_categories' => 'Organisationskategorien',
         'organization_categories.*' => 'Organisationskategorie',
+
         'resource_categories' => 'Ressourcenkategorien',
         'resource_categories.*' => 'Ressourcenkategorie',
+
         'notes' => 'Notizen',
-        // Add more mappings here
+        '*.notes' => 'Notizen',
     ],
 ];

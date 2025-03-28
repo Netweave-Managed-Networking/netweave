@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 
 export function InvitationCodeAddButton() {
   const { post } = useForm({});
@@ -12,9 +12,9 @@ export function InvitationCodeAddButton() {
   return (
     <Tooltip
       title={
-        <>
+        <Typography>
           Einen neuen Einladungscode hinzufügen, um einen neuen User einzuladen.
-        </>
+        </Typography>
       }
       placement="right"
       arrow

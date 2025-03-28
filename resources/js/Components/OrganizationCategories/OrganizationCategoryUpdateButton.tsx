@@ -8,7 +8,7 @@ import { orgCatMax } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useForm } from '@inertiajs/react';
 import EditOutlined from '@mui/icons-material/EditOutlined';
-import { Button, Tooltip } from '@mui/material';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { CSSProperties, FormEventHandler, useState } from 'react';
 import TextArea from '../Input/TextArea';
 import { MaxTextSize } from '../Util/MaxTextSize';
@@ -39,7 +39,10 @@ export function OrganizationCategoryUpdateButton({
 
   return (
     <>
-      <Tooltip title="Organisationskategorie bearbeiten" placement="top">
+      <Tooltip
+        title={<Typography>Organisationskategorie bearbeiten</Typography>}
+        placement="top"
+      >
         <Button
           className={className}
           style={{ ...style, borderRadius: '0px' }}

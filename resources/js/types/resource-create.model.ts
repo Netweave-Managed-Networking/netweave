@@ -12,7 +12,7 @@ export type ResourceCreate = Partial<
 >;
 
 export const emptyResource: (
-  organization_id: number
+  organization_id: Organization['id']
 ) => ResourceCreate = organization_id => ({
   type: null,
   description: '',
