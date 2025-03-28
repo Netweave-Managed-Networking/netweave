@@ -5,7 +5,7 @@ import { IdName } from '@/types/id-name.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useForm } from '@inertiajs/react';
 import { DeleteOutline } from '@mui/icons-material';
-import { Button, Tooltip } from '@mui/material';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { CSSProperties, useState } from 'react';
 import DangerButton from '../Input/DangerButton';
 
@@ -52,7 +52,11 @@ export function OrganizationCategoryDeleteButton({
   return (
     <>
       <Tooltip
-        title="Dialog öffnen, um Organisationskategorie zu löschen"
+        title={
+          <Typography>
+            Dialog öffnen, um Organisationskategorie zu löschen
+          </Typography>
+        }
         placement="bottom"
       >
         <Button

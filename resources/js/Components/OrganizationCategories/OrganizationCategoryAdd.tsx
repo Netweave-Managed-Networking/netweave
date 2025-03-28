@@ -1,6 +1,6 @@
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { AddOutlined } from '@mui/icons-material';
-import { Button, Tooltip } from '@mui/material';
+import { Button, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import { OrganizationCategoryCreateModal } from './OrganizationCategoryCreateModal';
 
@@ -23,7 +23,10 @@ export default function OrganizationCategoryAdd({
         <code className="italic">Kategorie hinzufügen</code>
       </div>
       <div className="grid" style={{ borderLeft: '1px solid #e5e5e5' }}>
-        <Tooltip title="Organisationskategorie hinzufügen" placement="bottom">
+        <Tooltip
+          title={<Typography>Organisationskategorie hinzufügen</Typography>}
+          placement="bottom"
+        >
           <Button
             className={'text-green-800'}
             style={{ borderRadius: '0px' }}

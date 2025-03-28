@@ -3,7 +3,7 @@ import Modal from '@/Components/Util/Modal';
 import { UserMin } from '@/types/user-min.model';
 import { useForm } from '@inertiajs/react';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import DangerButton from '../Input/DangerButton';
 
@@ -32,7 +32,10 @@ export function UserDeleteButton({ user }: UserDeleteButtonProps) {
 
   return (
     <>
-      <Tooltip title="Dialog öffnen, um User zu löschen" placement="top">
+      <Tooltip
+        title={<Typography>Dialog öffnen, um User zu löschen</Typography>}
+        placement="top"
+      >
         <IconButton
           onClick={() => setConfirmingUserDeletion(true)}
           sx={{ padding: 0 }}
