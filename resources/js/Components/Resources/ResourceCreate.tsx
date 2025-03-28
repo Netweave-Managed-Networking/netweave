@@ -8,7 +8,7 @@ import ResourceCategoriesSelectAdd from '@/Components/Resources/ResourceCategori
 import ResourceRequirementToggle from '@/Components/Resources/ResourceRequirementToggle';
 import HPItemsInfoModalButton from '@/Components/Util/HPItemsInfoModalButton';
 import { readRedirectToFromHTMLButtonName } from '@/helpers/readRedirectToFromHTMLButtonName.helper';
-import { Organization } from '@/types/organization.model';
+import { OrganizationMin } from '@/types/organization-min.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import {
   emptyResource,
@@ -20,7 +20,7 @@ import { FormEventHandler, SyntheticEvent, useState } from 'react';
 import { MaxTextSize } from '../Util/MaxTextSize';
 
 export interface ResourceCreateProps {
-  organization: Organization;
+  organization: OrganizationMin;
   resourceCategories: ResourceCategory[];
 }
 
