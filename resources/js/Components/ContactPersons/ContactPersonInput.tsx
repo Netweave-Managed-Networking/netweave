@@ -32,7 +32,7 @@ export function ContactPersonInput({
   useEffect(() => onChange(data, isEqual(data, emptyContactPerson)), [data]);
 
   return (
-    <div>
+    <>
       {/* Contact Person Name */}
       <div className="mt-5">
         <div className="flex justify-between">
@@ -113,6 +113,6 @@ export function ContactPersonInput({
         />
         <InputError message={errors.street_hnr} className="mt-2" />
       </div>
-    </div>
+    </>
   );
 }
