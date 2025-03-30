@@ -12,7 +12,7 @@ import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { MaxTextSize } from '../Util/MaxTextSize';
 
-export function ContactPersonForm({
+export function ContactPersonInput({
   onChange,
   autoFocus,
   errors,
@@ -32,7 +32,7 @@ export function ContactPersonForm({
   useEffect(() => onChange(data, isEqual(data, emptyContactPerson)), [data]);
 
   return (
-    <div>
+    <>
       {/* Contact Person Name */}
       <div className="mt-5">
         <div className="flex justify-between">
@@ -113,6 +113,6 @@ export function ContactPersonForm({
         />
         <InputError message={errors.street_hnr} className="mt-2" />
       </div>
-    </div>
+    </>
   );
 }
