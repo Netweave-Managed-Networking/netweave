@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->usersAndInvitationCodes();
         $this->organizationsAndCategories();
         $this->notesAndCriteria();
-        $this->organizationContactPersons();
+        $this->contactPersons();
         $this->resourcesAndCategories();
     }
 
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
         });
     }
 
-    private function organizationContactPersons(): void
+    private function contactPersons(): void
     {
         $organizations = Organization::all()->each(function (Organization $organization): void {
             if (fake()->boolean(80)) {

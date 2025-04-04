@@ -93,11 +93,11 @@
 <pre>🗝️organization_category_id: OrganizationCategory, onDelete: cascade</pre>
 <pre>organization_id: Organization, onDelete: cascade</pre>
 
-### OrganizationContactPerson
+### ContactPerson
 
 <small>A contact person of a organization. Organizations in most cases have one sometimes more contact persons.</small>
 <small>Both email and phone are optional. But one of the two must be given.</small>
-<small>As each OrganizationContactPerson belongs to exactly one Organization, in the exceptional case that one person is the contact person of several Organizations, this person must be created several times, once for each organization.</small>
+<small>As each ContactPerson belongs to exactly one Organization, in the exceptional case that one person is the contact person of several Organizations, this person must be created several times, once for each organization.</small>
 
 <pre>name: short</pre>
 <pre>email?: email</pre>
