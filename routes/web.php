@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\OrganizationCategoryController;
+use App\Http\Controllers\OrganizationContactPersonNotesCreateController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResourceCategoryController;
@@ -57,8 +58,8 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::prefix('organizations')->group(function (): void {
-        Route::get('/create', [OrganizationController::class, 'create'])->name('organizations.create');
-        Route::post('', [OrganizationController::class, 'store'])->name('organizations.store');
+        Route::get('/create', [OrganizationContactPersonNotesCreateController::class, 'create'])->name('organizations.create');
+        Route::post('', [OrganizationContactPersonNotesCreateController::class, 'store'])->name('organizations.store');
         Route::get('api', [OrganizationController::class, 'indexJson'])->name('organizations.api.index');
 
         Route::prefix('{organization}/resources')->group(function (): void {
