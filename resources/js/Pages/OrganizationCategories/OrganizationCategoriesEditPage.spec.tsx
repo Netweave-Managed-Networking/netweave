@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { mockUser } from '@/testing/mock-users.mock';
 import { render, screen } from '@testing-library/react';

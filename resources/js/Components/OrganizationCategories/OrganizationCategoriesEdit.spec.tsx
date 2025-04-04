@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { ToastProvider } from '@/Providers/ToastProvider';
 import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { fireEvent, render, screen } from '@testing-library/react';
