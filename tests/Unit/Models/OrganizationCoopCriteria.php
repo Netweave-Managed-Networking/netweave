@@ -10,7 +10,7 @@ uses(TestCase::class, RefreshDatabase::class);
 describe('OrganizationCoopCriteria', function (): void {
 
     describe('creation', function (): void {
-        it('can create an organization notes and criteria', function () {
+        it('can create an notes and criteria', function () {
             $organizationCoopCriteria = OrganizationCoopCriteria::factory()->create([
                 'criteria_for_coop' => 'Test Criteria for Coop',
                 'criteria_ko_no_coop' => 'Test Criteria KO No Coop',

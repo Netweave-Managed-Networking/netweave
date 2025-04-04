@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactPerson;
+use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
-use App\Models\OrganizationNotes;
 use App\Rules\MaxBytes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -65,7 +65,7 @@ class OrganizationController extends Controller
         DB::transaction(function () use ($validated, $isContactPersonFilled, $contactPersonValidated, &$organization) {
             $organization = Organization::create($validated);
             $organization->organizationCategories()->sync($validated['organization_categories']);
-            OrganizationNotes::create(['notes' => $validated['notes'] ?? null, 'organization_id' => $organization->id]);
+            Notes::create(['notes' => $validated['notes'] ?? null, 'organization_id' => $organization->id]);
 
             if ($isContactPersonFilled) {
                 ContactPerson::create(array_merge($contactPersonValidated, ['organization_id' => $organization->id]));

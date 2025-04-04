@@ -3,16 +3,16 @@ import {
   emptyContactPerson,
 } from './contact-person-create.model';
 import { PickStringAsNumber } from './max-string-lengths.type';
+import { Notes } from './notes.model';
 import { OrganizationCategory } from './organization-category.model';
 import {
   emptyOrganizationMin,
   OrganizationCreateMin,
   orgMinMax,
 } from './organization-create-min.model';
-import { OrganizationNotes } from './organization-notes.model';
 
 export type OrganizationCreate = OrganizationCreateMin & {
-  notes?: OrganizationNotes['notes'];
+  notes?: Notes['notes'];
   organization_categories?: OrganizationCategory['id'][];
   organization_first_contact_person?: ContactPersonCreate;
 };

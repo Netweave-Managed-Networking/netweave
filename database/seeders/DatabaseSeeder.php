@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use App\Enums\UserRole;
 use App\Models\ContactPerson;
 use App\Models\InvitationCode;
+use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
 use App\Models\OrganizationCoopCriteria;
-use App\Models\OrganizationNotes;
 use App\Models\ResourceCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->usersAndInvitationCodes();
         $this->organizationsAndCategories();
-        $this->organizationNotesAndCriteria();
+        $this->notesAndCriteria();
         $this->organizationContactPersons();
         $this->resourcesAndCategories();
     }
@@ -55,11 +55,11 @@ class DatabaseSeeder extends Seeder
         });
     }
 
-    private function organizationNotesAndCriteria(): void
+    private function notesAndCriteria(): void
     {
         $organizations = Organization::all()->each(function (Organization $organization): void {
             if (fake()->boolean(80)) {
-                OrganizationNotes::factory(1)->create(['organization_id' => $organization->id]);
+                Notes::factory(1)->create(['organization_id' => $organization->id]);
             }
             if (fake()->boolean(80)) {
                 OrganizationCoopCriteria::factory(1)->create(['organization_id' => $organization->id]);

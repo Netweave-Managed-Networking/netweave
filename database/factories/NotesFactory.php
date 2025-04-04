@@ -2,21 +2,21 @@
 
 namespace Database\Factories;
 
+use App\Models\Notes;
 use App\Models\Organization;
-use App\Models\OrganizationNotes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * creates resources or requirements (randomly) with old/new organizations, but without resource categories
  */
-class OrganizationNotesFactory extends Factory
+class NotesFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = OrganizationNotes::class;
+    protected $model = Notes::class;
 
     /**
      * Define the model's default state.

@@ -125,14 +125,14 @@ describe('store', function () {
         });
     });
 
-    describe('organization notes', function () {
+    describe('notes', function () {
         it('can store notes for a new organization', function () {
             $this->dummyOrganization['notes'] = 'These are some notes for the organization.';
 
             $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
 
             $response->assertSessionHas('success', "Neue Organisation 'New Organization' erfolgreich erstellt.");
-            assertDatabaseHas('organization_notes', [
+            assertDatabaseHas('notes', [
                 'notes' => 'These are some notes for the organization.',
                 'organization_id' => Organization::where('name', 'New Organization')->first()->id,
             ]);
@@ -144,7 +144,7 @@ describe('store', function () {
             $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
 
             $response->assertSessionHas('success', "Neue Organisation 'New Organization' erfolgreich erstellt.");
-            assertDatabaseHas('organization_notes', [
+            assertDatabaseHas('notes', [
                 'notes' => null,
                 'organization_id' => Organization::where('name', 'New Organization')->first()->id,
             ]);

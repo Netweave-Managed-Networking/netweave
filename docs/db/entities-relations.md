@@ -47,10 +47,10 @@
 <pre>postcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
 
-### OrganizationNotes
+### Notes
 
 <small>Each organization can have additional notes which would be often queried if they exist.</small>
-<small>Each organization can at most one OrganizationNote. Organization 1:1 OrganizationNote.</small>
+<small>Each organization can at most one Note. Organization 1:1 Notes.</small>
 
 <pre>notes?: text, index: fulltext</pre>
 <pre>🗝️organization_id: Organization, onDelete: cascade</pre>

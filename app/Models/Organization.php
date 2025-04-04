@@ -68,7 +68,7 @@ class Organization extends Model
      */
     public function notes(): HasOne
     {
-        return $this->hasOne(OrganizationNotes::class);
+        return $this->hasOne(Notes::class);
     }
 
     /**
