@@ -44,10 +44,10 @@ export function OrganizationCreate({
 
   // transform strangely nested errors to ContactPersonError object
   useEffect(() => {
-    const contactPersonErrors = transformNestedStringifiedPropertiesToObject<{
+    const newErrorObj = transformNestedStringifiedPropertiesToObject<{
       organization_first_contact_person?: ContactPersonCreateErrors;
     }>(errors).organization_first_contact_person;
-    if (contactPersonErrors) setContactPersonErrors(contactPersonErrors);
+    setContactPersonErrors(newErrorObj ?? {});
   }, [errors]);
 
   const handleSubmit: FormEventHandler = (
