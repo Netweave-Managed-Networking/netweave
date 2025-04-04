@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('organization_coop_criteria', function (Blueprint $table) {
+        Schema::create('coop_criteria', function (Blueprint $table) {
             $table->id();
             $table->string('for_coop', 4095)->nullable()->fullText()->language('german');
             $table->string('ko_no_coop', 4095)->nullable()->fullText()->language('german');
@@ -19,6 +19,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('organization_coop_criteria');
+        Schema::dropIfExists('coop_criteria');
     }
 };

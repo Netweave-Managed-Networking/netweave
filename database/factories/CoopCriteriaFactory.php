@@ -2,21 +2,21 @@
 
 namespace Database\Factories;
 
+use App\Models\CoopCriteria;
 use App\Models\Organization;
-use App\Models\OrganizationCoopCriteria;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * creates resources or requirements (randomly) with old/new organizations, but without resource categories
  */
-class OrganizationCoopCriteriaFactory extends Factory
+class CoopCriteriaFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = OrganizationCoopCriteria::class;
+    protected $model = CoopCriteria::class;
 
     /**
      * Define the model's default state.

@@ -77,7 +77,7 @@ class Organization extends Model
      */
     public function coopCriteria(): HasOne
     {
-        return $this->hasOne(OrganizationCoopCriteria::class);
+        return $this->hasOne(CoopCriteria::class);
     }
 
     // ///////////////////////// //

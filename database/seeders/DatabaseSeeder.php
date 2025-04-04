@@ -4,11 +4,11 @@ namespace Database\Seeders;
 
 use App\Enums\UserRole;
 use App\Models\ContactPerson;
+use App\Models\CoopCriteria;
 use App\Models\InvitationCode;
 use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
-use App\Models\OrganizationCoopCriteria;
 use App\Models\ResourceCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
                 Notes::factory(1)->create(['organization_id' => $organization->id]);
             }
             if (fake()->boolean(80)) {
-                OrganizationCoopCriteria::factory(1)->create(['organization_id' => $organization->id]);
+                CoopCriteria::factory(1)->create(['organization_id' => $organization->id]);
             }
         });
     }
