@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { ToastProps } from '@/Components/Util/Toast';
 import { PageProps } from '@/types/page-props.type';
 import { usePage } from '@inertiajs/react';

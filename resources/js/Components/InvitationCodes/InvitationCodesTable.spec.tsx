@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { mockInvitationCodes } from '@/testing/mock-invitation-codes.mock';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { UserMin } from '@/types/user-min.model';
