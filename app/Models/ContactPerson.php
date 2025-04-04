@@ -16,7 +16,7 @@ class ContactPerson extends Model
      *
      * @var string
      */
-    protected $table = 'organization_contact_persons';
+    protected $table = 'contact_persons';
 
     /**
      * The attributes that are mass assignable.

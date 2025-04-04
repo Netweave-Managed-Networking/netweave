@@ -68,7 +68,7 @@ class Organization extends Model
      */
     public function notes(): HasOne
     {
-        return $this->hasOne(OrganizationNotes::class);
+        return $this->hasOne(Notes::class);
     }
 
     /**
@@ -77,7 +77,7 @@ class Organization extends Model
      */
     public function coopCriteria(): HasOne
     {
-        return $this->hasOne(OrganizationCoopCriteria::class);
+        return $this->hasOne(CoopCriteria::class);
     }
 
     // ///////////////////////// //

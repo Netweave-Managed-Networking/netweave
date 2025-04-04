@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrganizationNotes extends Model
+class Notes extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class OrganizationNotes extends Model
      *
      * @var string
      */
-    protected $table = 'organization_notes';
+    protected $table = 'notes';
 
     /**
      * The attributes that are mass assignable.

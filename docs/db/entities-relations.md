@@ -47,20 +47,20 @@
 <pre>postcode_city?: short</pre>
 <pre>street_hnr?: short</pre>
 
-### OrganizationNotes
+### Notes
 
 <small>Each organization can have additional notes which would be often queried if they exist.</small>
-<small>Each organization can at most one OrganizationNote. Organization 1:1 OrganizationNote.</small>
+<small>Each organization can at most one Note. Organization 1:1 Notes.</small>
 
 <pre>notes?: text, index: fulltext</pre>
 <pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
-### OrganizationCoopCriteria
+### CoopCriteria
 
 <small>Each organization can have additional criteria for cooperation which would be often queried if they exist.</small>
 <small>For coop: What is necessary for this organization so that a cooperation with another organization can happen.</small>
 <small>K.O. no coop: What would be something that makes a organization be not able / not willing to cooperate with another organization.</small>
-<small>Each organization can at most one OrganizationCoopCriteria. Organization 1:1 OrganizationCoopCriteria.</small>
+<small>Each organization can at most one CoopCriteria. Organization 1:1 CoopCriteria.</small>
 
 <pre>for_coop?: text, index: fulltext</pre>
 <pre>ko_no_coop?: text, index: fulltext</pre>
@@ -93,11 +93,11 @@
 <pre>🗝️organization_category_id: OrganizationCategory, onDelete: cascade</pre>
 <pre>organization_id: Organization, onDelete: cascade</pre>
 
-### OrganizationContactPerson
+### ContactPerson
 
 <small>A contact person of a organization. Organizations in most cases have one sometimes more contact persons.</small>
 <small>Both email and phone are optional. But one of the two must be given.</small>
-<small>As each OrganizationContactPerson belongs to exactly one Organization, in the exceptional case that one person is the contact person of several Organizations, this person must be created several times, once for each organization.</small>
+<small>As each ContactPerson belongs to exactly one Organization, in the exceptional case that one person is the contact person of several Organizations, this person must be created several times, once for each organization.</small>
 
 <pre>name: short</pre>
 <pre>email?: email</pre>
@@ -106,7 +106,7 @@
 <pre>postcode_city?: short</pre>
 <pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
-### OrganizationRestriction
+### Restriction
 
 <small>A restriction of a organization.</small>
 <small>Organizations may have restrictions in their area of work. These can be…</small>

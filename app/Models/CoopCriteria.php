@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrganizationCoopCriteria extends Model
+class CoopCriteria extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class OrganizationCoopCriteria extends Model
      *
      * @var string
      */
-    protected $table = 'organization_coop_criteria';
+    protected $table = 'coop_criteria';
 
     /**
      * The attributes that are mass assignable.

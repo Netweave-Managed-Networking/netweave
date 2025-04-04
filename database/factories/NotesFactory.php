@@ -2,21 +2,21 @@
 
 namespace Database\Factories;
 
+use App\Models\Notes;
 use App\Models\Organization;
-use App\Models\OrganizationCoopCriteria;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * creates resources or requirements (randomly) with old/new organizations, but without resource categories
  */
-class OrganizationCoopCriteriaFactory extends Factory
+class NotesFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = OrganizationCoopCriteria::class;
+    protected $model = Notes::class;
 
     /**
      * Define the model's default state.
@@ -32,12 +32,10 @@ class OrganizationCoopCriteriaFactory extends Factory
     {
         return fake()->boolean(90) ?
             [
-                'for_coop' => fake()->boolean(80) ? fake()->paragraph() : null,
-                'ko_no_coop' => fake()->boolean(80) ? fake()->paragraph() : null,
+                'notes' => fake()->boolean(80) ? fake()->paragraph() : null,
                 'organization_id' => $this->getRandomOrganization()->id,
             ] : [
-                'for_coop' => null,
-                'ko_no_coop' => null,
+                'notes' => null,
                 'organization_id' => $this->getRandomOrganization()->id,
             ];
     }

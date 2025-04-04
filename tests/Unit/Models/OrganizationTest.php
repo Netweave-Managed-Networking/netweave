@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\ContactPerson;
+use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
-use App\Models\OrganizationNotes;
 use App\Models\Resource;
 use App\Models\ResourceCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -81,7 +81,7 @@ describe('Organization', function (): void {
     describe('notes', function (): void {
         it('can retrieve notes', function (): void {
             $organization = Organization::factory()->create();
-            OrganizationNotes::factory()->create(['organization_id' => $organization->id, 'notes' => 'Test notes']);
+            Notes::factory()->create(['organization_id' => $organization->id, 'notes' => 'Test notes']);
 
             $retrievedNotes = $organization->notes;
 
@@ -184,9 +184,9 @@ describe('Organization', function (): void {
     describe('notes', function (): void {
         it('can associate notes', function () {
             $organization = Organization::factory()->create();
-            $note = OrganizationNotes::factory()->create(['organization_id' => $organization->id]);
+            $note = Notes::factory()->create(['organization_id' => $organization->id]);
 
-            expect($organization->notes)->toBeInstanceOf(OrganizationNotes::class)
+            expect($organization->notes)->toBeInstanceOf(Notes::class)
                 ->and($organization->notes->id)->toBe($note->id);
         });
     });
