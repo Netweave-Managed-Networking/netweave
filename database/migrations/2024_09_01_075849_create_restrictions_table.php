@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('organization_restrictions', function (Blueprint $table) {
+        Schema::create('restrictions', function (Blueprint $table) {
             $table->id();
             $table->string('type', length: 15)->comment("type: regional' | 'thematic'");
             $table->string('description', 1023)->fullText();
@@ -19,6 +19,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('organization_restrictions');
+        Schema::dropIfExists('restrictions');
     }
 };

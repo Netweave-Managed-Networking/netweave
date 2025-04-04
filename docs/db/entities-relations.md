@@ -106,7 +106,7 @@
 <pre>postcode_city?: short</pre>
 <pre>🗝️organization_id: Organization, onDelete: cascade</pre>
 
-### OrganizationRestriction
+### Restriction
 
 <small>A restriction of a organization.</small>
 <small>Organizations may have restrictions in their area of work. These can be…</small>
