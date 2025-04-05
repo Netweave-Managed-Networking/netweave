@@ -10,6 +10,7 @@ use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
 use App\Models\ResourceCategory;
+use App\Models\Restriction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->organizationsAndCategories();
         $this->notesAndCriteria();
         $this->contactPersons();
+        $this->restrictions();
         $this->resourcesAndCategories();
     }
 
@@ -72,6 +74,18 @@ class DatabaseSeeder extends Seeder
         $organizations = Organization::all()->each(function (Organization $organization): void {
             if (fake()->boolean(80)) {
                 ContactPerson::factory(fake()->numberBetween(1, 5))->create(['organization_id' => $organization->id]);
+            }
+        });
+    }
+
+    private function restrictions(): void
+    {
+        $organizations = Organization::all()->each(function (Organization $organization): void {
+            if (fake()->boolean(80)) {
+                Restriction::factory(1)->create(['organization_id' => $organization->id, 'type' => 'thematic']);
+            }
+            if (fake()->boolean(80)) {
+                Restriction::factory(1)->create(['organization_id' => $organization->id, 'type' => 'regional']);
             }
         });
     }
