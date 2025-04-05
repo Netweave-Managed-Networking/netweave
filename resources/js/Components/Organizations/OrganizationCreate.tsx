@@ -182,7 +182,7 @@ export function OrganizationCreate({
                 name="redirect_to:/organizations/{id}/resources/create"
                 type="submit"
               >
-                Ressourcen hinzufügen
+                Weiter mit Ressourcen & Bedarfen
               </PrimaryButton>
             </span>
           </div>
