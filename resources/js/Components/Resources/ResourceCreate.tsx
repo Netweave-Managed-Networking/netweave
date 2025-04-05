@@ -196,24 +196,24 @@ export function ResourceCreate({
               type="button"
               onClick={() => history.back()}
             >
-              Abbrechen
+              Weiter ohne Ressource oder Bedarf
             </SecondaryButton>
             <span>
-              <PrimaryButton
-                className="ml-4"
-                disabled={processing}
-                name="redirect_to:/home" // TODO redirect_to stakeholder detail page (not yet implemented)
-                type="submit"
-              >
-                Fertig
-              </PrimaryButton>
               <PrimaryButton
                 className="ml-4"
                 disabled={processing}
                 name={`redirect_to:/organizations/${organization.id}/resources/create`}
                 type="submit"
               >
-                Weitere Ressource oder weiteren Bedarf hinzufügen
+                Speichern & Weitere Ressource / Bedarf hinzufügen
+              </PrimaryButton>
+              <PrimaryButton
+                className="ml-4"
+                disabled={processing}
+                name="redirect_to:/home" // TODO redirect_to stakeholder detail page (not yet implemented)
+                type="submit"
+              >
+                Speichern & Weiter
               </PrimaryButton>
             </span>
           </div>
