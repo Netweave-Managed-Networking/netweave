@@ -11,7 +11,6 @@ import { OrganizationCategory } from '@/types/organization-category.model';
 import {
   emptyOrganization,
   OrganizationCreate as OrganizationCreateModel,
-  orgMax,
 } from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useEffect, useState } from 'react';
@@ -21,10 +20,9 @@ import { OrganizationInput } from './OrganizationInput';
 
 import InputError from '../Input/InputError';
 import InputLabel from '../Input/InputLabel';
-import TextArea from '../Input/TextArea';
+import { NotesInput } from '../Notes/NotesInput';
 import OrganizationCategoriesSelectAdd from '../OrganizationCategories/OrganizationCategoriesSelectAdd';
 import HPItemsInfoModalButton from '../Util/HPItemsInfoModalButton';
-import { MaxTextSize } from '../Util/MaxTextSize';
 
 export function OrganizationCreate({
   organizationCategories,
@@ -135,24 +133,10 @@ export function OrganizationCreate({
               </>
             }
             slotBottom={
-              <>
-                {/* Notes */}
-                <div className="flex justify-between">
-                  <InputLabel
-                    htmlFor="notes"
-                    value="Notizen zum Wesen / Charakter der Organisation"
-                  />
-                  <MaxTextSize value={data.notes} max={orgMax.notes} />
-                </div>
-                <TextArea
-                  id="notes"
-                  value={data.notes}
-                  onChange={e => setData('notes', e.target.value)}
-                  rows={8}
-                  className="mt-1 block w-full"
-                />
-                <InputError message={errors.notes} className="mt-2" />
-              </>
+              <NotesInput
+                errors={errors}
+                onChange={e => setData('notes', e.notes)}
+              />
             }
           />
 
