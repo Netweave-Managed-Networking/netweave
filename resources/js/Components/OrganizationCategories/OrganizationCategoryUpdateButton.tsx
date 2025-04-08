@@ -60,7 +60,7 @@ export function OrganizationCategoryUpdateButton({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <div className="flex justify-between">
+              <div className="flex justify-between align-end">
                 <InputLabel htmlFor="name" value="Name" required />
                 <MaxTextSize value={data.name} max={orgCatMax.name} />
               </div>
@@ -75,7 +75,7 @@ export function OrganizationCategoryUpdateButton({
             </div>
 
             <div>
-              <div className="flex justify-between">
+              <div className="flex justify-between align-end">
                 <InputLabel htmlFor="description" value="Beschreibung" />
                 <MaxTextSize
                   value={data.description}

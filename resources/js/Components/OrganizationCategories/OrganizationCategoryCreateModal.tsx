@@ -77,7 +77,7 @@ export function OrganizationCategoryCreateModal({
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel htmlFor="name" value="Name" required />
               <MaxTextSize value={categoryToCreate.name} max={orgCatMax.name} />
             </div>
@@ -98,7 +98,7 @@ export function OrganizationCategoryCreateModal({
 
           {/* Category Description */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel htmlFor="description" value="Beschreibung" />
               <MaxTextSize
                 value={categoryToCreate.description}
