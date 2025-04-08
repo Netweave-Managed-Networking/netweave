@@ -94,7 +94,7 @@ export function ResourceCreate({
           >
             {/* Resource description */}
             <div style={{ gridArea: 'desc-label' }}>
-              <div className="flex justify-between">
+              <div className="flex justify-between align-end">
                 <InputLabel
                   required
                   htmlFor="description"
@@ -150,7 +150,7 @@ export function ResourceCreate({
           </div>
           {/* Resource summary */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel
                 htmlFor="summary"
                 value={`Kurze, stichpunktartige Kurzbeschreibung ${getLabel3()}`}

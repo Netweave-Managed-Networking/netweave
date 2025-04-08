@@ -43,7 +43,7 @@ export function OrganizationInput({
     <>
       {/* Organization Name */}
       <div>
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="name" value="Name der Organisation" required />
           <MaxTextSize value={data.name} max={orgMinMax.name} />
         </div>
@@ -66,7 +66,7 @@ export function OrganizationInput({
         <div className="w-1/2 p-5">
           {/* Email */}
           <div className="mt-5">
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel htmlFor="email" value="Email der Organisation" />
               <MaxTextSize value={data.email} max={orgMinMax.email} />
             </div>
@@ -82,7 +82,7 @@ export function OrganizationInput({
 
           {/* Phone */}
           <div className="mt-5">
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel
                 htmlFor="phone"
                 value="Telefonnummer der Organisation"
@@ -100,7 +100,7 @@ export function OrganizationInput({
 
           {/* Postcode and City */}
           <div className="mt-5">
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel
                 htmlFor="postcode_city"
                 value="PLZ und Stadt der Organisation"
@@ -121,7 +121,7 @@ export function OrganizationInput({
 
           {/* Street and House Number */}
           <div className="mt-5">
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel
                 htmlFor="street_hnr"
                 value="Straße und Hausnummer der Organisation"

@@ -31,7 +31,7 @@ export function NotesInput({
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between align-end">
         <InputLabel
           htmlFor="notes"
           value="Notizen zum Wesen / Charakter der Organisation"

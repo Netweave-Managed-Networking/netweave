@@ -35,7 +35,7 @@ export function ContactPersonInput({
     <>
       {/* Contact Person Name */}
       <div className="mt-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="name" value="Name" required={isNameRequired} />
           <MaxTextSize value={data.name} max={personMax.name} />
         </div>
@@ -52,7 +52,7 @@ export function ContactPersonInput({
 
       {/* Email */}
       <div className="mt-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="email" value="Email" />
           <MaxTextSize value={data.email} max={personMax.email} />
         </div>
@@ -68,7 +68,7 @@ export function ContactPersonInput({
 
       {/* Phone */}
       <div className="mt-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="phone" value="Telefonnummer" />
           <MaxTextSize value={data.phone} max={personMax.phone} />
         </div>
@@ -83,7 +83,7 @@ export function ContactPersonInput({
 
       {/* Postcode and City */}
       <div className="mt-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="postcode_city" value="PLZ und Stadt" />
           <MaxTextSize
             value={data.postcode_city}
@@ -101,7 +101,7 @@ export function ContactPersonInput({
 
       {/* Street and House Number */}
       <div className="mt-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between align-end">
           <InputLabel htmlFor="street_hnr" value="Straße und Hausnummer" />
           <MaxTextSize value={data.street_hnr} max={personMax.street_hnr} />
         </div>
