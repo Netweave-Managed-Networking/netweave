@@ -76,7 +76,7 @@ export function ResourceCategoryCreateModal({
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel htmlFor="title" value="Titel" required />
               <MaxTextSize
                 value={categoryToCreate.title}
@@ -100,7 +100,7 @@ export function ResourceCategoryCreateModal({
 
           {/* Category Definition */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel htmlFor="definition" value="Definition" />
               <MaxTextSize
                 value={categoryToCreate.definition}

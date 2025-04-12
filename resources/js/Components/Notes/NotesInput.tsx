@@ -13,10 +13,12 @@ import TextArea from '../Input/TextArea';
 import { MaxTextSize } from '../Util/MaxTextSize';
 
 export function NotesInput({
+  value,
   onChange,
   autoFocus,
   errors,
 }: {
+  value?: NotesCreate;
   /**
    * @param notes the current NotesCreate object after each input change
    * @param isPristine `true`: all fields are empty, `false`: at least one field is not
@@ -25,12 +27,12 @@ export function NotesInput({
   errors: NotesCreateErrors;
   autoFocus?: boolean;
 }) {
-  const { data, setData } = useForm<NotesCreate>(emptyNotes);
+  const { data, setData } = useForm<NotesCreate>(value ?? emptyNotes);
 
   useEffect(() => onChange(data, isEqual(data, emptyNotes)), [data]);
 
   return (
-    <>
+    <div className="mt-5">
       <div className="flex justify-between align-end">
         <InputLabel
           htmlFor="notes"
@@ -41,12 +43,12 @@ export function NotesInput({
       <TextArea
         id="notes"
         autoFocus={!!autoFocus}
-        value={data.notes}
+        value={data.notes ?? ''}
         onChange={e => setData('notes', e.target.value)}
-        rows={8}
         className="mt-1 block w-full"
+        rows={8}
       />
       <InputError message={errors.notes} className="mt-2" />
-    </>
+    </div>
   );
 }
