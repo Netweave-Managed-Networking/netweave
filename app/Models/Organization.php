@@ -133,10 +133,6 @@ class Organization extends Model
         return $this->getCategoriesOfResources($this->requirements());
     }
 
-    // //////////////////////////////// //
-    // / ↑ RESOURCES & REQUIREMENTS ↑ / //
-    // //////////////////////////////// //
-
     // //////////////////////// //
     // / ↓ NETWORK ANALYSIS ↓ / //
     // //////////////////////// //

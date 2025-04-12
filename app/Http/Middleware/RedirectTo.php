@@ -8,6 +8,17 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * this class allows the frontend to specify a redirect target for any request
+ * When the frontend adds a query parameter with a redirect path, a redirect will be tried
+ * e.g. redirect_to:/organizations/13/resources/create will redirect to that url
+ *
+ * the frontend even has the possibility to redirect to a page of a modal that was only just created.
+ * when the frontend makes a redirect to string with "{id}" in it.
+ * In that case the middleware will replace the "{id}" with the id of the model that was just created
+ * when the controller does its task: add modelId to the session.
+ * e.g. redirect_to:/organizations/{id}/resources/create/ will redirect to the just created organization
+ */
 class RedirectTo
 {
     /**

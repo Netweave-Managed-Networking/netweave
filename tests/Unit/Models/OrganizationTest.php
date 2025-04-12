@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ContactPerson;
+use App\Models\CoopCriteria;
 use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
@@ -211,6 +212,16 @@ describe('Organization', function (): void {
                 ->and($organization->contactPersons[1]->id)->toBe($contactPersons[1]->id);
             expect($organization->contactPersons[2])->toBeInstanceOf(ContactPerson::class)
                 ->and($organization->contactPersons[2]->id)->toBe($contactPersons[2]->id);
+        });
+    });
+
+    describe('coop criteria', function (): void {
+        it('can associate coop criteria', function () {
+            $organization = Organization::factory()->create();
+            $coopCriteria = CoopCriteria::factory()->create(['organization_id' => $organization->id]);
+
+            expect($organization->coopCriteria)->toBeInstanceOf(CoopCriteria::class)
+                ->and($organization->coopCriteria->id)->toBe($coopCriteria->id);
         });
     });
 
