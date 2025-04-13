@@ -59,9 +59,9 @@ class Organization extends Model
         return $this->belongsToMany(OrganizationCategory::class, 'organization_to_category');
     }
 
-    // //////////////////////// //
-    // / ↓ NOTES & CRITERIA ↓ / //
-    // //////////////////////// //
+    // /////////////////////////////////////// //
+    // / ↓ NOTES & CRITERIA & RESTRICTIONS ↓ / //
+    // /////////////////////////////////////// //
 
     /**
      * @example use as $organization->notes?->notes;
@@ -78,6 +78,26 @@ class Organization extends Model
     public function coopCriteria(): HasOne
     {
         return $this->hasOne(CoopCriteria::class);
+    }
+
+    /**
+     * @example use as $organization->restrictionRegional?->description;
+     *
+     * @internal this is developed as HasOne but it is actually a HasMany, it is just only used as a HasOne right now because there is only oen textfield for each organization
+     */
+    public function restrictionRegional(): HasOne
+    {
+        return $this->hasOne(Restriction::class)->where('type', 'regional');
+    }
+
+    /**
+     * @example use as $organization->restrictionThematic?->description;
+     *
+     * @internal this is developed as HasOne but it is actually a HasMany, it is just only used as a HasOne right now because there is only oen textfield for each organization
+     */
+    public function restrictionThematic(): HasOne
+    {
+        return $this->hasOne(Restriction::class)->where('type', 'thematic');
     }
 
     // ///////////////////////// //
@@ -112,10 +132,6 @@ class Organization extends Model
     {
         return $this->getCategoriesOfResources($this->requirements());
     }
-
-    // //////////////////////////////// //
-    // / ↑ RESOURCES & REQUIREMENTS ↑ / //
-    // //////////////////////////////// //
 
     // //////////////////////// //
     // / ↓ NETWORK ANALYSIS ↓ / //

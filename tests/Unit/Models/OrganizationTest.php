@@ -1,11 +1,13 @@
 <?php
 
 use App\Models\ContactPerson;
+use App\Models\CoopCriteria;
 use App\Models\Notes;
 use App\Models\Organization;
 use App\Models\OrganizationCategory;
 use App\Models\Resource;
 use App\Models\ResourceCategory;
+use App\Models\Restriction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -210,6 +212,34 @@ describe('Organization', function (): void {
                 ->and($organization->contactPersons[1]->id)->toBe($contactPersons[1]->id);
             expect($organization->contactPersons[2])->toBeInstanceOf(ContactPerson::class)
                 ->and($organization->contactPersons[2]->id)->toBe($contactPersons[2]->id);
+        });
+    });
+
+    describe('coop criteria', function (): void {
+        it('can associate coop criteria', function () {
+            $organization = Organization::factory()->create();
+            $coopCriteria = CoopCriteria::factory()->create(['organization_id' => $organization->id]);
+
+            expect($organization->coopCriteria)->toBeInstanceOf(CoopCriteria::class)
+                ->and($organization->coopCriteria->id)->toBe($coopCriteria->id);
+        });
+    });
+
+    describe('restrictions', function (): void {
+        it('can associate thematic restrictions', function () {
+            $organization = Organization::factory()->create();
+            $restriction = Restriction::factory()->create(['organization_id' => $organization->id, 'type' => 'thematic']);
+
+            expect($organization->restrictionThematic)->toBeInstanceOf(Restriction::class)
+                ->and($organization->restrictionThematic->id)->toBe($restriction->id);
+        });
+
+        it('can associate regional restrictions', function () {
+            $organization = Organization::factory()->create();
+            $restriction = Restriction::factory()->create(['organization_id' => $organization->id, 'type' => 'regional']);
+
+            expect($organization->restrictionRegional)->toBeInstanceOf(Restriction::class)
+                ->and($organization->restrictionRegional->id)->toBe($restriction->id);
         });
     });
 });

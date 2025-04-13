@@ -22,7 +22,7 @@ export const emptyResource: (
 });
 
 /** these numbers are derived from the database limits */
-export const resMax: PickStringAsNumber<ResourceCreate> = {
+export const resourceMax: PickStringAsNumber<ResourceCreate> = {
   summary: 255,
   description: 8191,
 };

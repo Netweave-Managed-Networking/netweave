@@ -12,8 +12,8 @@ import { OrganizationMin } from '@/types/organization-min.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import {
   emptyResource,
-  resMax,
   ResourceCreate as ResourceCreateModel,
+  resourceMax,
 } from '@/types/resource-create.model';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, SyntheticEvent, useState } from 'react';
@@ -94,7 +94,7 @@ export function ResourceCreate({
           >
             {/* Resource description */}
             <div style={{ gridArea: 'desc-label' }}>
-              <div className="flex justify-between">
+              <div className="flex justify-between align-end">
                 <InputLabel
                   required
                   htmlFor="description"
@@ -102,7 +102,7 @@ export function ResourceCreate({
                 />
                 <MaxTextSize
                   value={data.description}
-                  max={resMax.description}
+                  max={resourceMax.description}
                 />
               </div>
             </div>
@@ -150,12 +150,12 @@ export function ResourceCreate({
           </div>
           {/* Resource summary */}
           <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between align-end">
               <InputLabel
                 htmlFor="summary"
                 value={`Kurze, stichpunktartige Kurzbeschreibung ${getLabel3()}`}
               />
-              <MaxTextSize value={data.summary} max={resMax.summary} />
+              <MaxTextSize value={data.summary} max={resourceMax.summary} />
             </div>
             <TextInput
               id="summary"
@@ -190,14 +190,18 @@ export function ResourceCreate({
             </span>
           </div>
           <div className="flex justify-between mt-4 w-full">
-            <SecondaryButton
-              className="float-start"
-              disabled={processing}
-              type="button"
-              onClick={() => history.back()}
-            >
-              Weiter ohne Ressource oder Bedarf
-            </SecondaryButton>
+            <span>
+              <SecondaryButton
+                className="mr-4"
+                disabled={processing}
+                type="button"
+                onClick={() =>
+                  (window.location.href = `/organizations/${organization.id}/restrictions,coop_criteria,notes/create`)
+                }
+              >
+                Weiter ohne Ressource oder Bedarf
+              </SecondaryButton>
+            </span>
             <span>
               <PrimaryButton
                 className="ml-4"
@@ -210,7 +214,7 @@ export function ResourceCreate({
               <PrimaryButton
                 className="ml-4"
                 disabled={processing}
-                name="redirect_to:/home" // TODO redirect_to stakeholder detail page (not yet implemented)
+                name={`redirect_to:/organizations/${organization.id}/restrictions,coop_criteria,notes/create`}
                 type="submit"
               >
                 Speichern & Weiter

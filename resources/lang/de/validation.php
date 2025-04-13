@@ -27,8 +27,9 @@ return [
     // Custom attribute names
     'attributes' => [
         'name' => 'Name',
-        'organization_first_contact_person.name' => 'Name der Ansprechpartnerin / des Ansprechpartners',
         '*.name' => 'Name',
+
+        'organization_first_contact_person' => ['name' => 'Name der Ansprechpartnerin / des Ansprechpartners'],
 
         'email' => 'Email',
         '*.email' => 'Email',
@@ -53,5 +54,13 @@ return [
 
         'notes' => 'Notizen',
         '*.notes' => 'Notizen',
+
+        'coop_criteria' => [
+            'for_coop' => 'Kooperationskriterien',
+            'ko_no_coop' => 'Ausschlusskriterien',
+        ],
+
+        'restriction_thematic' => ['description' => 'Thematische Einschränkungen'],
+        'restriction_regional' => ['description' => 'Regionale Einschränkungen'],
     ],
 ];

@@ -7,6 +7,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResourceCategoryController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\RestrictionNotesCoopCriteriaCreateController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,11 @@ Route::middleware('auth')->group(function (): void {
         Route::prefix('{organization}/resources')->group(function (): void {
             Route::get('/create', [ResourceController::class, 'create'])->name('resources.create');
             Route::post('', [ResourceController::class, 'store'])->name('resources.store');
+        });
+
+        Route::prefix('{organization}/restrictions,coop_criteria,notes')->group(function (): void {
+            Route::get('/create', [RestrictionNotesCoopCriteriaCreateController::class, 'create'])->name('restrictions-coop_criteria-notes.create');
+            Route::post('', [RestrictionNotesCoopCriteriaCreateController::class, 'store'])->name('restrictions-coop_criteria-notes.store');
         });
     });
 
