@@ -5,7 +5,7 @@ import { OrganizationLi } from './organization-li.model';
 
 /** organization detailed which is given by OrganizationController @ edit */
 export interface Organization extends OrganizationLi {
-  notes: Notes;
+  notes: Notes | null;
   organization_categories: OrganizationCategory[];
   contact_persons: ContactPerson[];
 }

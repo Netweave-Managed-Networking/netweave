@@ -30,12 +30,9 @@ class NotesFactory extends Factory
 
     private function generateRandomModel(): array
     {
-        return fake()->boolean(90) ?
+        return
             [
-                'notes' => fake()->boolean(80) ? fake()->paragraph() : null,
-                'organization_id' => $this->getRandomOrganization()->id,
-            ] : [
-                'notes' => null,
+                'notes' => fake()->paragraph(),
                 'organization_id' => $this->getRandomOrganization()->id,
             ];
     }

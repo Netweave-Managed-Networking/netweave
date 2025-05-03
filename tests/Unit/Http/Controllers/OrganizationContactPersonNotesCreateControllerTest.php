@@ -144,7 +144,7 @@ describe('store', function () {
             $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
 
             $response->assertSessionHas('success', "Neue Organisation 'New Organization' erfolgreich erstellt.");
-            assertDatabaseHas('notes', [
+            assertDatabaseMissing('notes', [
                 'notes' => null,
                 'organization_id' => Organization::where('name', 'New Organization')->first()->id,
             ]);

@@ -37,7 +37,10 @@ class OrganizationContactPersonNotesCreateController extends Controller
         DB::transaction(function () use ($validated, $isContactPersonFilled, &$organization) {
             $organization = Organization::create($validated);
             $organization->organizationCategories()->sync($validated['organization_categories']);
-            Notes::create(['notes' => $validated['notes'] ?? null, 'organization_id' => $organization->id]);
+
+            if (isset($validated['notes']) && $validated['notes']) {
+                Notes::create(['notes' => $validated['notes'] ?? null, 'organization_id' => $organization->id]);
+            }
 
             if ($isContactPersonFilled) {
                 $contactPersonValidated = $validated['organization_first_contact_person'] ?? [];

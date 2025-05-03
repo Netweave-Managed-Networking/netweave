@@ -9,7 +9,11 @@ import {
 import { OrganizationNo } from '@/types/organization-no.model';
 
 import { transformNestedStringifiedPropertiesToObject } from '@/helpers/transformNestedStringifiedPropertiesToObject';
-import { NotesCreate, NotesCreateErrors } from '@/types/notes-create.model';
+import {
+  emptyNotes,
+  NotesCreate,
+  NotesCreateErrors,
+} from '@/types/notes-create.model';
 import {
   emptyRestriction,
   RestrictionCreate,
@@ -42,7 +46,9 @@ export function RestrictionNotesCoopCriteriaCreate({
   const [coopCriteria, setCoopCriteria] =
     useState<CoopCriteriaCreate>(emptyCoopCriteria);
 
-  const [notes, setNotes] = useState<NotesCreate>(organization.notes);
+  const [notes, setNotes] = useState<NotesCreate>(
+    organization.notes ?? emptyNotes
+  );
 
   const { data, setData, post, errors, processing } =
     useForm<RestrictionNotesCoopCriteriaCreateModel>(
@@ -61,7 +67,7 @@ export function RestrictionNotesCoopCriteriaCreate({
     setRestrictionThematic(emptyRestriction('thematic'));
     setRestrictionRegional(emptyRestriction('regional'));
     setCoopCriteria(emptyCoopCriteria);
-    setNotes(organization.notes);
+    setNotes(organization.notes ?? emptyNotes);
     setCoopCriteriaErrors({});
     setRestrictionThematicErrors({});
     setRestrictionRegionalErrors({});

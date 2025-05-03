@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->string('notes', 4095)->nullable()->fullText()->language('german'); // TODO make them required
+            $table->string('notes', 4095)->fullText()->language('german');
             $table->foreignId('organization_id')->unique()->constrained('organizations')->cascadeOnDelete(); // unique because Note 1:1 Organization
             $table->timestamps();
         });
