@@ -1,6 +1,7 @@
 import { IdName } from '@/types/id-name.model';
+import { OrganizationCategory } from '@/types/organization-category.model';
 
-export const mockOrganizationCategories: IdName[] = [
+const idNames: IdName[] = [
   { id: 1, name: 'Behörde' },
   { id: 2, name: 'Stiftung' },
   { id: 3, name: 'Gemeinde/Stadt' },
@@ -52,3 +53,14 @@ export const mockOrganizationCategories: IdName[] = [
   { id: 49, name: 'Wassersportclub' },
   { id: 50, name: 'Seniorenvereinigung' },
 ];
+
+export const mockOrganizationCategories: OrganizationCategory[] = idNames.map(
+  category => ({
+    ...category,
+    created_at: '',
+    updated_at: '',
+    description: category.name.includes('e')
+      ? `description of category ${category.name}`
+      : null,
+  })
+);

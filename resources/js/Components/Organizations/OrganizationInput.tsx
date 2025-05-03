@@ -73,7 +73,7 @@ export function OrganizationInput({
             <TextInput
               id="email"
               pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-              value={data.email}
+              value={data.email ?? undefined}
               onChange={e => setData('email', e.target.value)}
               className="mt-1 block w-full"
             />
@@ -91,7 +91,7 @@ export function OrganizationInput({
             </div>
             <TextInput
               id="phone"
-              value={data.phone}
+              value={data.phone ?? undefined}
               onChange={e => setData('phone', e.target.value)}
               className="mt-1 block w-full"
             />
@@ -112,7 +112,7 @@ export function OrganizationInput({
             </div>
             <TextInput
               id="postcode_city"
-              value={data.postcode_city}
+              value={data.postcode_city ?? undefined}
               onChange={e => setData('postcode_city', e.target.value)}
               className="mt-1 block w-full"
             />
@@ -130,7 +130,7 @@ export function OrganizationInput({
             </div>
             <TextInput
               id="street_hnr"
-              value={data.street_hnr}
+              value={data.street_hnr ?? undefined}
               onChange={e => setData('street_hnr', e.target.value)}
               className="mt-1 block w-full"
             />

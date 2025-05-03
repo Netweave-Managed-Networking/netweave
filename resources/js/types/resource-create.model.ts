@@ -25,4 +25,5 @@ export const emptyResource: (
 export const resourceMax: PickStringAsNumber<ResourceCreate> = {
   summary: 255,
   description: 8191,
+  type: 15,
 };

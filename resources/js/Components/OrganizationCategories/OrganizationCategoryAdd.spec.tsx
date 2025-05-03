@@ -1,3 +1,4 @@
+import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoryAdd from './OrganizationCategoryAdd';
 import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCreateModal';
@@ -11,7 +12,15 @@ jest.mock('./OrganizationCategoryCreateModal', () => ({
     if (!show) return null;
     return (
       <div role="dialog">
-        <button onClick={() => onClose({ id: 3, name: 'Category 3' })}>
+        <button
+          onClick={() =>
+            onClose({
+              ...mockOrganizationCategories[0],
+              id: 3,
+              name: 'Category 3',
+            })
+          }
+        >
           Submit inside Modal
         </button>
         <button onClick={() => onClose(undefined)}>Close inside Modal</button>
@@ -80,6 +89,7 @@ describe('OrganizationCategoryAdd', () => {
 
     // Check that the onOrganizationCategoryAdd function is called
     expect(mockOnOrganizationCategoryAdd).toHaveBeenCalledWith({
+      ...mockOrganizationCategories[0],
       id: 3,
       name: 'Category 3',
     });

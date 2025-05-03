@@ -84,7 +84,7 @@ export function OrganizationCategoryUpdateButton({
               </div>
               <TextArea
                 id="description"
-                value={data.description}
+                value={data.description ?? undefined}
                 rows={10}
                 onChange={e => setData('description', e.target.value)}
                 className="mt-1 block w-full"

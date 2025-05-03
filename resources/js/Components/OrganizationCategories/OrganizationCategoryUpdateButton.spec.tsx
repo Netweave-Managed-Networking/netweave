@@ -1,3 +1,4 @@
+import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { useForm } from '@inertiajs/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { OrganizationCategoryUpdateButton } from './OrganizationCategoryUpdateButton';
@@ -34,11 +35,7 @@ jest.mock('@/Components/Util/Modal', () => (props: any) => (
 ));
 
 describe('OrganizationCategoryUpdateButton', () => {
-  const mockCategory = {
-    id: 1,
-    name: 'Category Name',
-    description: 'Category Description',
-  };
+  const mockCategory = mockOrganizationCategories[0];
   const mockPut = jest.fn();
 
   beforeEach(() => {

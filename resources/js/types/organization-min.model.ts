@@ -1,11 +1,10 @@
 import { IdName } from './id-name.model';
+import { Timestamps } from './timestamps.type';
 
 /** organization min without related models */
-export interface OrganizationMin extends IdName {
-  email: string;
-  phone: string;
-  postcode_city: string;
-  street_hnr: string;
-  created_at: string;
-  updated_at: string;
+export interface OrganizationMin extends IdName, Timestamps {
+  email: string | null;
+  phone: string | null;
+  postcode_city: string | null;
+  street_hnr: string | null;
 }
