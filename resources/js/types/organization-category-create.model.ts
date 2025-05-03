@@ -8,6 +8,7 @@ export type OrganizationCategoryCreate = Pick<
 
 export const emptyOrganizationCategory: OrganizationCategoryCreate = {
   name: '',
+  description: null,
 };
 
 /** these numbers are derived from the database limits */

@@ -58,7 +58,13 @@ describe('OrganizationCategoryCreateModal', () => {
   });
 
   test('submits the form successfully', async () => {
-    const newCategory: OrganizationCategory = { id: 1, name: 'New Category' };
+    const newCategory: OrganizationCategory = {
+      id: 1,
+      name: 'New Category',
+      description: null,
+      created_at: '',
+      updated_at: '',
+    };
     (storeOrganizationCategory as jest.Mock).mockResolvedValue(newCategory);
 
     render(<OrganizationCategoryCreateModal {...defaultProps} />);
@@ -71,6 +77,7 @@ describe('OrganizationCategoryCreateModal', () => {
     await waitFor(() => {
       expect(storeOrganizationCategory).toHaveBeenCalledWith({
         name: 'New Category',
+        description: null,
       });
       expect(mockOnClose).toHaveBeenCalledWith(newCategory);
     });

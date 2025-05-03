@@ -45,7 +45,7 @@ export function CoopCriteriaInput({
         <TextArea
           id="for_coop"
           autoFocus={!!autoFocus}
-          value={data.for_coop}
+          value={data.for_coop ?? undefined}
           onChange={e => setData('for_coop', e.target.value)}
           className="mt-1 block w-full"
           rows={5}
@@ -62,7 +62,7 @@ export function CoopCriteriaInput({
         </div>
         <TextArea
           id="ko_no_coop"
-          value={data.ko_no_coop}
+          value={data.ko_no_coop ?? undefined}
           onChange={e => setData('ko_no_coop', e.target.value)}
           className="mt-1 block w-full"
           rows={5}

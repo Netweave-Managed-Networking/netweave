@@ -1,3 +1,4 @@
+import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { render, screen } from '@testing-library/react';
 import OrganizationCategoryEdit from './OrganizationCategoryEdit';
 
@@ -11,6 +12,7 @@ jest.mock('./OrganizationCategoryDeleteButton', () => ({
 describe('OrganizationCategoryEdit', () => {
   it('renders organization category details and delete button', () => {
     const mockCategory = {
+      ...mockOrganizationCategories[0],
       id: 1,
       name: 'Category Name',
       description: 'Category Description',

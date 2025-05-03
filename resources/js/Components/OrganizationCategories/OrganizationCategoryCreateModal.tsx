@@ -101,13 +101,13 @@ export function OrganizationCategoryCreateModal({
             <div className="flex justify-between align-end">
               <InputLabel htmlFor="description" value="Beschreibung" />
               <MaxTextSize
-                value={categoryToCreate.description}
+                value={categoryToCreate.description ?? undefined}
                 max={orgCatMax.description}
               />
             </div>
             <TextArea
               id="description"
-              value={categoryToCreate.description}
+              value={categoryToCreate.description ?? undefined}
               onChange={e =>
                 setCategoryToCreate({
                   ...categoryToCreate,

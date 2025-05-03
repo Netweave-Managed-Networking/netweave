@@ -7,7 +7,7 @@ export function MaxTextSize({
   value,
   max,
 }: {
-  value: string | undefined;
+  value: string | null | undefined;
   max: number;
 }) {
   const size = new Blob([value ?? '']).size;

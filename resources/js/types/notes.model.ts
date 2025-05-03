@@ -1,6 +1,7 @@
 import { Organization } from './organization.model';
 
 export interface Notes {
-  notes: string;
+  id: string;
+  notes: string | null; // TODO make them required
   organization_id: Organization['id'];
 }

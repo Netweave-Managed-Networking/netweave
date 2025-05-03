@@ -1,4 +1,4 @@
-import { IdName } from '@/types/id-name.model';
+import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoriesSelectAdd from './OrganizationCategoriesSelectAdd';
 import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCreateModal';
@@ -18,7 +18,11 @@ jest.mock('./OrganizationCategoryCreateModal', () => ({
         <button
           onClick={() => {
             id++;
-            return onClose({ id, name: name(id) });
+            return onClose({
+              ...mockOrganizationCategories[0],
+              id,
+              name: name(id),
+            });
           }}
         >
           Submit inside Modal
@@ -30,10 +34,7 @@ jest.mock('./OrganizationCategoryCreateModal', () => ({
 }));
 
 describe('OrganizationCategoriesSelectAdd', () => {
-  const mockCategories = [
-    { id: 1, name: 'Category 1' },
-    { id: 2, name: 'Category 2' },
-  ] as IdName[];
+  const mockCategories = mockOrganizationCategories;
 
   const mockOnChange = jest.fn();
 
@@ -50,8 +51,8 @@ describe('OrganizationCategoriesSelectAdd', () => {
       />
     );
 
-    expect(screen.getByText('Category 1')).toBeInTheDocument();
-    expect(screen.getByText('Category 2')).toBeInTheDocument();
+    expect(screen.getByText(mockCategories[0].name)).toBeInTheDocument();
+    expect(screen.getByText(mockCategories[1].name)).toBeInTheDocument();
   });
 
   it('opens and closes the modal when "Neue Kategorie" is clicked and closed', () => {
@@ -88,8 +89,8 @@ describe('OrganizationCategoriesSelectAdd', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Category 1'));
-    expect(mockOnChange).toHaveBeenCalledWith([1]);
+    fireEvent.click(screen.getByText(mockCategories[0].name));
+    expect(mockOnChange).toHaveBeenCalledWith([mockCategories[0].id]);
   });
 
   it('adds a new category when the modal is submitted', () => {
@@ -109,7 +110,7 @@ describe('OrganizationCategoriesSelectAdd', () => {
     fireEvent.click(screen.getByText('Submit inside Modal'));
 
     // Check that the new badge is rendered
-    expect(screen.getByText('Category 3')).toBeInTheDocument();
+    expect(screen.getByText(mockCategories[0].name)).toBeInTheDocument();
   });
 
   it('adds two new categories when the modal is submitted twice', () => {
