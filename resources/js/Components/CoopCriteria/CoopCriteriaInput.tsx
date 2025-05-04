@@ -29,9 +29,6 @@ export function CoopCriteriaInput({
 
   useEffect(() => onChange(data, isEqual(data, emptyCoopCriteria)), [data]);
 
-  // TODO remove
-  useEffect(() => console.log(errors), [errors]);
-
   return (
     <div className="mt-5 flex justify-between gap-4">
       <div className="w-1/2">
