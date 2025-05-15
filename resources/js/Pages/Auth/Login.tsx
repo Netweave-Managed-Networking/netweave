@@ -54,7 +54,7 @@ export default function Login({
             name="email"
             value={data.email}
             className="mt-1 block w-full"
-            autoComplete="username"
+            autoComplete="email"
             isFocused={true}
             onChange={e => setData('email', e.target.value)}
           />
@@ -63,7 +63,7 @@ export default function Login({
         </div>
 
         <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
+          <InputLabel htmlFor="password" value="Passwort" />
 
           <TextInput
             id="password"
@@ -85,7 +85,9 @@ export default function Login({
               checked={data.remember}
               onChange={e => setData('remember', e.target.checked)}
             />
-            <span className="ms-2 text-sm text-gray-600">Remember me</span>
+            <span className="ms-2 text-sm text-gray-600">
+              Angemeldet bleiben
+            </span>
           </label>
         </div>
 
@@ -95,12 +97,12 @@ export default function Login({
               href={route('password.request')}
               className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Forgot your password?
+              Passwort vergessen?
             </Link>
           )}
 
           <PrimaryButton className="ms-4" disabled={processing}>
-            Log in
+            Anmelden
           </PrimaryButton>
         </div>
       </form>
