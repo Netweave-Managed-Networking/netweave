@@ -20,7 +20,7 @@ jest.mock(
     }) => (
       <button
         onClick={() =>
-          onOrganizationCategoryAdd({ id: 1, name: 'New Category' })
+          onOrganizationCategoryAdd({ id: 200, name: 'New Category' })
         }
       >
         Add Category
