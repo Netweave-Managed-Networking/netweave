@@ -7,22 +7,22 @@ export function InvitationCodeTooltipButton() {
     <Tooltip
       title={
         <Typography>
-          <p>
+          <span>
             Ein <strong>Einladungscode</strong> wird benötigt, um sich bei
             Netweave zu registrieren.
             <br />
             <br />
-          </p>
-          <p>
-            Für weitere Informationen schreibe einfach eine kurze E-Mail an{' '}
+          </span>
+          <span>
+            Für weitere Informationen, schreib' einfach eine kurze E-Mail an{' '}
             <a className="text-blue-100" href={`mailto:${infoMail}`}>
               {infoMail}
             </a>
             .
             <br />
             <br />
-          </p>
-          <p>Wir helfen gerne weiter!</p>
+          </span>
+          <span>Wir helfen gerne weiter!</span>
         </Typography>
       }
       placement="right-end"
