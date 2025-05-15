@@ -58,7 +58,7 @@ export function ContactPersonInput({
         </div>
         <TextInput
           id="email"
-          pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+          type="email"
           value={data.email ?? undefined}
           onChange={e => setData('email', e.target.value)}
           className="mt-1 block w-full"
