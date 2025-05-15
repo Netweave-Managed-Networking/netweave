@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import OrganizationCategoriesSelectAdd from './OrganizationCategoriesSelectAdd';
 import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCreateModal';
 
-let id = 2;
+let id = 200;
 const name = (id: number) => `Category ${id}`;
 
 jest.mock('./OrganizationCategoryCreateModal', () => ({
@@ -137,8 +137,8 @@ describe('OrganizationCategoriesSelectAdd', () => {
     fireEvent.click(screen.getByText('Submit inside Modal'));
 
     // Check that the new badge is rendered
-    expect(screen.getByText('Category 3')).toBeInTheDocument();
-    expect(screen.getByText('Category 4')).toBeInTheDocument();
+    expect(screen.getByText('Category 201')).toBeInTheDocument();
+    expect(screen.getByText('Category 202')).toBeInTheDocument();
   });
 
   it('renders the AddButton', () => {
