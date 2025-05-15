@@ -38,8 +38,8 @@ class OrganizationContactPersonNotesCreateController extends Controller
             $organization = Organization::create($validated);
             $organization->organizationCategories()->sync($validated['organization_categories']);
 
-            if (isset($validated['notes']) && $validated['notes']) {
-                Notes::create(['notes' => $validated['notes'] ?? null, 'organization_id' => $organization->id]);
+            if (isset($validated['notes']) && $validated['notes'] && isset($validated['notes']['notes']) && $validated['notes']['notes']) {
+                Notes::create(['notes' => $validated['notes']['notes'] ?? null, 'organization_id' => $organization->id]);
             }
 
             if ($isContactPersonFilled) {
@@ -79,6 +79,7 @@ class OrganizationContactPersonNotesCreateController extends Controller
             'postcode_city' => ['nullable', 'string', new MaxBytes(63)],
             'street_hnr' => ['nullable', 'string', new MaxBytes(127)],
 
+            'notes' => ['nullable'],
             'organization_first_contact_person' => ['nullable'],
 
         ];
@@ -94,7 +95,7 @@ class OrganizationContactPersonNotesCreateController extends Controller
 
     private function getNotesValidationRules(): array
     {
-        return ['notes' => ['nullable', 'string', new MaxBytes(4095)]];
+        return ['notes.notes' => ['nullable', 'string', new MaxBytes(4095)]];
     }
 
     private function getContactPersonValidationRules(): array
