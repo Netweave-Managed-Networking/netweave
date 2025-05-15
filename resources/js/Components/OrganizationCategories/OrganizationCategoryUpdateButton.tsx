@@ -30,11 +30,14 @@ export function OrganizationCategoryUpdateButton({
   const handleSubmit: FormEventHandler = e => {
     e.preventDefault();
     put(route('organization-categories.update', category.id), {
-      onSuccess: () => setShowModal(false),
+      onSuccess: () => closeModal(),
     });
   };
 
-  const openModal = () => setShowModal(true);
+  const openModal = () => {
+    setData({ ...category });
+    setShowModal(true);
+  };
   const closeModal = () => setShowModal(false);
 
   return (
