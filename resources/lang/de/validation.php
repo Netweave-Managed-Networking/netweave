@@ -29,7 +29,13 @@ return [
         'name' => 'Name',
         '*.name' => 'Name',
 
-        'organization_first_contact_person' => ['name' => 'Name der Ansprechpartnerin / des Ansprechpartners'],
+        'organization_first_contact_person' => [
+            'name' => 'Name der / des Ansprechpa...',
+            'email' => 'Email der / des Ansprechpa...',
+            'phone' => 'Telefonnummer der / des Ansprechpa...',
+            'postcode_city' => 'PLZ und Stadt der / des Ansprechpa...',
+            'street_hnr' => 'Straße und Hausnummer der / des Ansprechpa...',
+        ],
 
         'email' => 'Email',
         '*.email' => 'Email',
@@ -52,8 +58,12 @@ return [
         'resource_categories' => 'Ressourcenkategorien',
         'resource_categories.*' => 'Ressourcenkategorie',
 
-        'notes' => 'Notizen',
-        '*.notes' => 'Notizen',
+        'summary' => 'Kurzbeschreibung',
+        'summary.*' => 'Kurzbeschreibung',
+
+        'notes' => [
+            'notes' => 'Notizen',
+        ],
 
         'coop_criteria' => [
             'for_coop' => 'Kooperationskriterien',

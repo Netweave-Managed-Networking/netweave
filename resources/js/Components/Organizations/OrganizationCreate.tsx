@@ -18,6 +18,11 @@ import { ContactPersonInput } from '../ContactPersons/ContactPersonInput';
 import HoverInfoButton from '../Util/HoverInfoButton';
 import { OrganizationInput } from './OrganizationInput';
 
+import {
+  emptyNotes,
+  NotesCreate,
+  NotesCreateErrors,
+} from '@/types/notes-create.model';
 import InputError from '../Input/InputError';
 import InputLabel from '../Input/InputLabel';
 import { NotesInput } from '../Notes/NotesInput';
@@ -30,6 +35,7 @@ export function OrganizationCreate({
   organizationCategories: OrganizationCategory[];
 }) {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [notes, setNotes] = useState<NotesCreate>(emptyNotes);
   const [contactPerson, setContactPerson] =
     useState<ContactPersonCreate>(emptyContactPerson);
   const [contactPersonIsPristine, setContactPersonPristine] =
@@ -37,15 +43,20 @@ export function OrganizationCreate({
 
   const { data, setData, post, errors, processing } =
     useForm<OrganizationCreateModel>(emptyOrganization);
+  const [notesErrors, setNotesErrors] = useState<NotesCreateErrors>({});
   const [contactPersonErrors, setContactPersonErrors] =
     useState<ContactPersonCreateErrors>({});
 
   // transform strangely nested errors to ContactPersonError object
   useEffect(() => {
     const newErrorObj = transformNestedStringifiedPropertiesToObject<{
+      notes?: NotesCreateErrors;
       organization_first_contact_person?: ContactPersonCreateErrors;
-    }>(errors).organization_first_contact_person;
-    setContactPersonErrors(newErrorObj ?? {});
+    }>(errors);
+    setNotesErrors(newErrorObj?.notes ?? {});
+    setContactPersonErrors(
+      newErrorObj?.organization_first_contact_person ?? {}
+    );
   }, [errors]);
 
   const handleSubmit: FormEventHandler = (
@@ -55,8 +66,9 @@ export function OrganizationCreate({
     const redirectTo = readRedirectToFromHTMLButtonName(
       e.nativeEvent.submitter as HTMLButtonElement
     );
-    data.organization_categories = selectedCategories;
+    data.notes = notes;
     data.organization_first_contact_person = contactPerson;
+    data.organization_categories = selectedCategories;
     post(route('organizations.store', { redirect_to: redirectTo }));
   };
 
@@ -133,10 +145,7 @@ export function OrganizationCreate({
               </>
             }
             slotBottom={
-              <NotesInput
-                errors={errors}
-                onChange={e => setData('notes', e.notes)}
-              />
+              <NotesInput errors={notesErrors} onChange={e => setNotes(e)} />
             }
           />
 

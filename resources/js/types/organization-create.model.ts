@@ -9,15 +9,15 @@ import {
   OrganizationCreateMin,
 } from './organization-create-min.model';
 
-export type OrganizationCreate = OrganizationCreateMin &
-  NotesCreate & {
-    organization_categories?: OrganizationCategory['id'][];
-    organization_first_contact_person?: ContactPersonCreate;
-  };
+export type OrganizationCreate = OrganizationCreateMin & {
+  organization_categories?: OrganizationCategory['id'][];
+  organization_first_contact_person?: ContactPersonCreate;
+  notes?: NotesCreate;
+};
 
 export const emptyOrganization: OrganizationCreate = {
   ...emptyOrganizationMin,
-  ...emptyNotes,
   organization_categories: [],
+  notes: emptyNotes,
   organization_first_contact_person: emptyContactPerson,
 };

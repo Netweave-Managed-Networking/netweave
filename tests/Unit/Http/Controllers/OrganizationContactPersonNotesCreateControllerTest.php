@@ -127,7 +127,7 @@ describe('store', function () {
 
     describe('notes', function () {
         it('can store notes for a new organization', function () {
-            $this->dummyOrganization['notes'] = 'These are some notes for the organization.';
+            $this->dummyOrganization['notes']['notes'] = 'These are some notes for the organization.';
 
             $response = actingAs(User::factory()->create())->post(route('organizations.store'), $this->dummyOrganization);
 
