@@ -4,10 +4,10 @@ use App\Http\Controllers\InvitationCodeController;
 use App\Http\Controllers\OrganizationCategoryController;
 use App\Http\Controllers\OrganizationContactPersonNotesCreateController;
 use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResourceCategoryController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\RestrictionNotesCoopCriteriaCreateController;
+use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +19,7 @@ use Inertia\Response;
 // /////// //
 
 Route::get('/', function (): Response {
-    return Inertia::render('WelcomePage', [
+    return Inertia::render('welcome-page', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -28,7 +28,7 @@ Route::get('/', function (): Response {
 });
 
 Route::get('/home', function (): Response {
-    return Inertia::render('HomePage');
+    return Inertia::render('home-page');
 })->middleware(['auth', 'verified'])->name('home');
 
 // ///// //

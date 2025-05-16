@@ -144,7 +144,7 @@ describe('edit', function () {
 
     it('should return correct page with correct number of categories', function (): void {
         $this->get('/organization-categories/edit')
-            ->assertInertia(fn (Assert $page) => $page->component('OrganizationCategories/OrganizationCategoriesEditPage')
+            ->assertInertia(fn (Assert $page) => $page->component('organization-categories/organization-categories-edit-page')
                 ->has('organizationCategories', 10) // Adjust the count if needed
             );
     });
