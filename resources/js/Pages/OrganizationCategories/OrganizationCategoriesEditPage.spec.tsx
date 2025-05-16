@@ -10,8 +10,8 @@ jest.mock('@inertiajs/react', () => ({
 jest.mock('@/Layouts/AuthenticatedLayout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
 
 jest.mock('@/Components/OrganizationCategories/OrganizationCategoriesEdit', () => ({
-  OrganizationCategoriesEdit: ({ organizationCategories }: { organizationCategories: any[] }) => {
-    return organizationCategories.map((category: any, index: number) => <div key={index}>One Category</div>);
+  OrganizationCategoriesEdit: ({ organizationCategories }: { organizationCategories: unknown[] }) => {
+    return organizationCategories.map((category: unknown, index: number) => <div key={index}>One Category</div>);
   },
 }));
 

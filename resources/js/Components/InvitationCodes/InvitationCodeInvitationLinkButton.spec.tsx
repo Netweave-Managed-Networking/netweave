@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { copyToClipboard } from '@/helpers/copyToClipboard.helper';
 import { ToastProvider } from '@/Providers/ToastProvider';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

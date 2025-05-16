@@ -10,7 +10,7 @@ jest.mock('@/Components/OrganizationCategories/OrganizationCategoryEdit', () => 
 jest.mock(
   '@/Components/OrganizationCategories/OrganizationCategoryAdd',
   () =>
-    ({ onOrganizationCategoryAdd }: { onOrganizationCategoryAdd: (newCategory: any) => void }) => (
+    ({ onOrganizationCategoryAdd }: { onOrganizationCategoryAdd: (newCategory: unknown) => void }) => (
       <button onClick={() => onOrganizationCategoryAdd({ id: 200, name: 'New Category' })}>Add Category</button>
     ),
 );

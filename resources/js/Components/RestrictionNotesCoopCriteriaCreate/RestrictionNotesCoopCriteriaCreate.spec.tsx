@@ -9,19 +9,19 @@ jest.mock('@inertiajs/react', () => ({
 }));
 
 jest.mock('../CoopCriteria/CoopCriteriaInput', () => ({
-  CoopCriteriaInput: ({ onChange }: { onChange: (data: any) => void }) => (
+  CoopCriteriaInput: ({ onChange }: { onChange: (data: unknown) => void }) => (
     <input aria-label="Coop Criteria Input" onChange={(e) => onChange({ for_coop: e.target.value })} />
   ),
 }));
 
 jest.mock('../Restrictions/RestrictionInput', () => ({
-  RestrictionInput: ({ type, onChange }: { type: string; onChange: (data: any) => void }) => (
+  RestrictionInput: ({ type, onChange }: { type: string; onChange: (data: unknown) => void }) => (
     <input aria-label={`${type} Restriction Input`} onChange={(e) => onChange({ description: e.target.value })} />
   ),
 }));
 
 jest.mock('../Notes/NotesInput', () => ({
-  NotesInput: ({ onChange }: { onChange: (data: any) => void }) => (
+  NotesInput: ({ onChange }: { onChange: (data: unknown) => void }) => (
     <input aria-label="Notes Input" onChange={(e) => onChange({ notes: e.target.value })} />
   ),
 }));

@@ -1,6 +1,7 @@
 import { mockOrganizationCategories } from '@/testing/mock-organization-categories.mock';
 import { useForm } from '@inertiajs/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { ReactNode } from 'react';
 import { OrganizationCategoryUpdateButton } from './OrganizationCategoryUpdateButton';
 
 // Mocking dependencies
@@ -14,13 +15,13 @@ const route = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = route;
 
-jest.mock('@/Components/Input/PrimaryButton', () => (props: any) => (
+jest.mock('@/Components/Input/PrimaryButton', () => (props: { children: ReactNode }) => (
   <button {...props} data-testid="primary-button">
     {props.children}
   </button>
 ));
 
-jest.mock('@/Components/Input/SecondaryButton', () => (props: any) => (
+jest.mock('@/Components/Input/SecondaryButton', () => (props: { children: ReactNode }) => (
   <button {...props} data-testid="secondary-button">
     {props.children}
   </button>
@@ -28,7 +29,9 @@ jest.mock('@/Components/Input/SecondaryButton', () => (props: any) => (
 
 jest.mock('@mui/icons-material/EditOutlined', () => () => <div data-testid="edit-icon"></div>);
 
-jest.mock('@/Components/Util/Modal', () => (props: any) => <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>);
+jest.mock('@/Components/Util/Modal', () => (props: { show: boolean; children: ReactNode }) => (
+  <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
+));
 
 describe('OrganizationCategoryUpdateButton', () => {
   const mockCategory = mockOrganizationCategories[0];

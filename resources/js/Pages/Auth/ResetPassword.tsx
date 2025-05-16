@@ -15,10 +15,8 @@ export default function ResetPassword({ token, email }: { token: string; email: 
   });
 
   useEffect(() => {
-    return () => {
-      reset('password', 'password_confirmation');
-    };
-  }, []);
+    return () => reset('password', 'password_confirmation');
+  }, [reset]);
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();

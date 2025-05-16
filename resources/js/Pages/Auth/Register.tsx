@@ -19,7 +19,7 @@ export default function Register() {
     password_confirmation: '',
   });
 
-  useEffect(() => () => reset('password', 'password_confirmation'), []); // reset when unmount
+  useEffect(() => () => reset('password', 'password_confirmation'), [reset]); // reset when unmount
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();

@@ -33,7 +33,7 @@ export default function SelectAdd<Item extends { id: number }>({
 
   useEffect(() => {
     if (!isEqual(itemsSelected, selectablesSelected)) setSelectablesSelected(itemsSelected);
-  }, [itemsSelected]);
+  }, [itemsSelected, selectablesSelected]);
 
   const updateAndOutput = (newSelectable: IdLabel['id'][]) => {
     setSelectablesSelected(newSelectable);
