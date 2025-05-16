@@ -42,7 +42,7 @@ it('renders the create page with resource categories', function () {
     $response = actingAs(User::factory()->create())->get(route('resources.create', $this->organization));
 
     // Assert: check if the response contains the correct Inertia data
-    $response->assertInertia(fn (Assert $page): Assert => $page->component('Resources/ResourceCreatePage')
+    $response->assertInertia(fn (Assert $page): Assert => $page->component('resources/resource-create-page')
         ->has('resourceCategories', 3)
         ->where('resourceCategories', fn ($categoriesArray) => collect($categoriesArray)->contains(fn ($category) => $category['id'] === $this->categories->first()->id &&
                 $category['title'] === $this->categories->first()->title
