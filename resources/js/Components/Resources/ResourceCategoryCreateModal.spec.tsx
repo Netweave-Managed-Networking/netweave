@@ -2,10 +2,7 @@ import { storeResourceCategory } from '@/axios/storeResourceCategory.axios';
 import { ResourceCategory } from '@/types/resource-category.model';
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import {
-  ResourceCategoryCreateModal,
-  ResourceCategoryCreateModalProps,
-} from './ResourceCategoryCreateModal';
+import { ResourceCategoryCreateModal, ResourceCategoryCreateModalProps } from './ResourceCategoryCreateModal';
 
 jest.mock('@/axios/storeResourceCategory.axios');
 
@@ -26,12 +23,8 @@ describe('ResourceCategoryCreateModal', () => {
 
     expect(screen.getByLabelText(/Titel/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Definition/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Erstellen/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Abbrechen/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Erstellen/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Abbrechen/i })).toBeInTheDocument();
   });
 
   test('disables submit button when title is empty', () => {
@@ -120,9 +113,7 @@ describe('ResourceCategoryCreateModal', () => {
   });
 
   test('resets the form when modal is reopened', () => {
-    const { rerender } = render(
-      <ResourceCategoryCreateModal {...defaultProps} />
-    );
+    const { rerender } = render(<ResourceCategoryCreateModal {...defaultProps} />);
     const titleInput = screen.getByLabelText(/Titel/i) as HTMLInputElement;
 
     // Change the input value

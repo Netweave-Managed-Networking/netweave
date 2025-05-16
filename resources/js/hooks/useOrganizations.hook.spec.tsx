@@ -6,9 +6,7 @@ import { useOrganizations } from './useOrganizations.hook';
 
 jest.mock('../axios/fetchOrganizations.axios');
 
-const mockedFetchOrganizations = fetchOrganizations as jest.MockedFunction<
-  typeof fetchOrganizations
->;
+const mockedFetchOrganizations = fetchOrganizations as jest.MockedFunction<typeof fetchOrganizations>;
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -18,9 +16,7 @@ const createWrapper = () => {
       },
     },
   });
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  return ({ children }: { children: React.ReactNode }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
 describe('useOrganizations', () => {

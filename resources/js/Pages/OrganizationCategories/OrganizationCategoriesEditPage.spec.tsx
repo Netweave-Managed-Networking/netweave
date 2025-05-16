@@ -7,43 +7,23 @@ jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
 }));
 
-jest.mock(
-  '@/Layouts/AuthenticatedLayout',
-  () =>
-    ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-);
+jest.mock('@/Layouts/AuthenticatedLayout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
 
-jest.mock(
-  '@/Components/OrganizationCategories/OrganizationCategoriesEdit',
-  () => ({
-    OrganizationCategoriesEdit: ({
-      organizationCategories,
-    }: {
-      organizationCategories: any[];
-    }) => {
-      return organizationCategories.map((category: any, index: number) => (
-        <div key={index}>One Category</div>
-      ));
-    },
-  })
-);
+jest.mock('@/Components/OrganizationCategories/OrganizationCategoriesEdit', () => ({
+  OrganizationCategoriesEdit: ({ organizationCategories }: { organizationCategories: any[] }) => {
+    return organizationCategories.map((category: any, index: number) => <div key={index}>One Category</div>);
+  },
+}));
 
 describe('OrganizationCategoriesEditPage', () => {
   it('renders the page with OrganizationCategoriesEdit component', () => {
-    render(
-      <OrganizationCategoriesEditPage
-        auth={{ user: mockUser }}
-        organizationCategories={mockOrganizationCategories}
-      />
-    );
+    render(<OrganizationCategoriesEditPage auth={{ user: mockUser }} organizationCategories={mockOrganizationCategories} />);
 
     // Verify the title is rendered
     expect(document.title).toBe('Organisationskategorien verwalten');
 
     // Verify that the organization categories are rendered
     const organizationCategoryElements = screen.getAllByText('One Category');
-    expect(organizationCategoryElements.length).toBe(
-      mockOrganizationCategories.length
-    );
+    expect(organizationCategoryElements.length).toBe(mockOrganizationCategories.length);
   });
 });

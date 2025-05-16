@@ -10,34 +10,19 @@ jest.mock('@inertiajs/react', () => ({
 
 jest.mock('../CoopCriteria/CoopCriteriaInput', () => ({
   CoopCriteriaInput: ({ onChange }: { onChange: (data: any) => void }) => (
-    <input
-      aria-label="Coop Criteria Input"
-      onChange={e => onChange({ for_coop: e.target.value })}
-    />
+    <input aria-label="Coop Criteria Input" onChange={(e) => onChange({ for_coop: e.target.value })} />
   ),
 }));
 
 jest.mock('../Restrictions/RestrictionInput', () => ({
-  RestrictionInput: ({
-    type,
-    onChange,
-  }: {
-    type: string;
-    onChange: (data: any) => void;
-  }) => (
-    <input
-      aria-label={`${type} Restriction Input`}
-      onChange={e => onChange({ description: e.target.value })}
-    />
+  RestrictionInput: ({ type, onChange }: { type: string; onChange: (data: any) => void }) => (
+    <input aria-label={`${type} Restriction Input`} onChange={(e) => onChange({ description: e.target.value })} />
   ),
 }));
 
 jest.mock('../Notes/NotesInput', () => ({
   NotesInput: ({ onChange }: { onChange: (data: any) => void }) => (
-    <input
-      aria-label="Notes Input"
-      onChange={e => onChange({ notes: e.target.value })}
-    />
+    <input aria-label="Notes Input" onChange={(e) => onChange({ notes: e.target.value })} />
   ),
 }));
 
@@ -60,17 +45,11 @@ describe('RestrictionNotesCoopCriteriaCreate', () => {
   });
 
   it('renders all input fields and buttons', () => {
-    render(
-      <RestrictionNotesCoopCriteriaCreate organization={mockOrganization} />
-    );
+    render(<RestrictionNotesCoopCriteriaCreate organization={mockOrganization} />);
 
     expect(screen.getByLabelText('Coop Criteria Input')).toBeInTheDocument();
-    expect(
-      screen.getByLabelText('thematic Restriction Input')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText('regional Restriction Input')
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('thematic Restriction Input')).toBeInTheDocument();
+    expect(screen.getByLabelText('regional Restriction Input')).toBeInTheDocument();
     expect(screen.getByLabelText('Notes Input')).toBeInTheDocument();
     expect(screen.getByText('Fertig')).toBeInTheDocument();
     expect(screen.getByText('Zurück')).toBeInTheDocument();

@@ -13,19 +13,13 @@ export default function OrganizationCategoriesEditPage({
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-          Organisationskategorien verwalten
-        </h2>
-      }
+      header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Organisationskategorien verwalten</h2>}
     >
       <Head title="Organisationskategorien verwalten" />
 
-      <div className="py-12 overflow-auto h-screen">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <OrganizationCategoriesEdit
-            organizationCategories={organizationCategories}
-          />
+      <div className="h-screen overflow-auto py-12">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <OrganizationCategoriesEdit organizationCategories={organizationCategories} />
         </div>
       </div>
     </AuthenticatedLayout>

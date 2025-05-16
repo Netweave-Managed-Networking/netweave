@@ -1,8 +1,6 @@
 import { letters } from '@/constants/alphabet';
 import { fireEvent, render, screen } from '@testing-library/react';
-import HPItemsInfoModalButton, {
-  HPItemsInfoModalButtonProps,
-} from './HPItemsInfoModalButton';
+import HPItemsInfoModalButton, { HPItemsInfoModalButtonProps } from './HPItemsInfoModalButton';
 
 const mockItems = [
   { header: 'Bananas', paragraph: 'Info about bananas.' },
@@ -32,12 +30,11 @@ describe('HPItemsInfoModalButton', () => {
     const button = screen.getByRole('button');
     fireEvent.click(button); // Open modal
 
-    const sortedItems = [
-      ...mockItems,
-      ...letters.map(l => ({ header: l.toUpperCase(), paragraph: '' })),
-    ].sort((a, b) => a.header.localeCompare(b.header));
+    const sortedItems = [...mockItems, ...letters.map((l) => ({ header: l.toUpperCase(), paragraph: '' }))].sort((a, b) =>
+      a.header.localeCompare(b.header),
+    );
 
-    sortedItems.forEach(item => {
+    sortedItems.forEach((item) => {
       const headerElement = screen.getByText(item.header);
       expect(headerElement).toBeInTheDocument();
     });
@@ -50,7 +47,7 @@ describe('HPItemsInfoModalButton', () => {
 
     mockItems
       .sort((a, b) => a.header.localeCompare(b.header))
-      .forEach(item => {
+      .forEach((item) => {
         const headerElement = screen.getByText(item.header);
         const paragraphElement = screen.getByText(item.paragraph);
         expect(headerElement).toBeInTheDocument();

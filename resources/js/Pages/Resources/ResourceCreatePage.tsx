@@ -17,7 +17,7 @@ export default function ResourceCreatePage({
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 className="text-xl leading-tight font-semibold text-gray-800">
           <strong>{organization.name}</strong>: Ressource oder Bedarf zuordnen
         </h2>
       }
@@ -25,11 +25,8 @@ export default function ResourceCreatePage({
       <Head title="Ressource oder Bedarf zuordnen" />
 
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <ResourceCreate
-            organization={organization}
-            resourceCategories={resourceCategories}
-          />
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <ResourceCreate organization={organization} resourceCategories={resourceCategories} />
         </div>
       </div>
     </AuthenticatedLayout>

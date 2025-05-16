@@ -10,13 +10,7 @@ export interface SelectAddProps<Item extends { id: number }> {
   itemsSelected: Item['id'][];
   itemToIdLabel: (item: Item) => IdLabel;
   addSelectableButtonLabel: string;
-  CreateItemModalComponent: ({
-    show,
-    onClose,
-  }: {
-    show: boolean;
-    onClose: (newSelectable: Item | undefined) => void;
-  }) => ReactNode;
+  CreateItemModalComponent: ({ show, onClose }: { show: boolean; onClose: (newSelectable: Item | undefined) => void }) => ReactNode;
   onChange: (selectablesSelected: Item['id'][]) => void;
   className?: string;
 }
@@ -34,15 +28,11 @@ export default function SelectAdd<Item extends { id: number }>({
   const showModal = () => setModalIsActive(true);
   const hideModal = () => setModalIsActive(false);
 
-  const [selectablesSelected, setSelectablesSelected] =
-    useState<IdLabel['id'][]>(itemsSelected);
-  const [selectables, setSelectables] = useState<IdLabel[]>(
-    items.map(itemToIdLabel)
-  );
+  const [selectablesSelected, setSelectablesSelected] = useState<IdLabel['id'][]>(itemsSelected);
+  const [selectables, setSelectables] = useState<IdLabel[]>(items.map(itemToIdLabel));
 
   useEffect(() => {
-    if (!isEqual(itemsSelected, selectablesSelected))
-      setSelectablesSelected(itemsSelected);
+    if (!isEqual(itemsSelected, selectablesSelected)) setSelectablesSelected(itemsSelected);
   }, [itemsSelected]);
 
   const updateAndOutput = (newSelectable: IdLabel['id'][]) => {
@@ -74,12 +64,7 @@ export default function SelectAdd<Item extends { id: number }>({
 
   return (
     <div className={className} style={{ marginTop: '4px' }}>
-      <BadgeSelect
-        elements={selectables}
-        value={selectablesSelected}
-        onChange={updateAndOutput}
-        elemAppended={addSelectableButton}
-      />
+      <BadgeSelect elements={selectables} value={selectablesSelected} onChange={updateAndOutput} elemAppended={addSelectableButton} />
 
       {createItemModalComponent({
         show: modalIsActive,

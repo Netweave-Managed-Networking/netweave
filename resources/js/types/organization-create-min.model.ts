@@ -1,12 +1,7 @@
 import { PickStringAsNumber } from './max-string-lengths.type';
 import { Organization } from './organization.model';
 
-export type OrganizationCreateMin = Partial<
-  Pick<
-    Organization,
-    'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'
-  >
->;
+export type OrganizationCreateMin = Partial<Pick<Organization, 'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'>>;
 
 export const emptyOrganizationMin: OrganizationCreateMin = {
   name: '',
@@ -25,6 +20,4 @@ export const orgMinMax: PickStringAsNumber<OrganizationCreateMin> = {
   street_hnr: 127,
 };
 
-export type OrganizationCreateMinErrors = Partial<
-  Record<keyof OrganizationCreateMin, string>
->;
+export type OrganizationCreateMinErrors = Partial<Record<keyof OrganizationCreateMin, string>>;

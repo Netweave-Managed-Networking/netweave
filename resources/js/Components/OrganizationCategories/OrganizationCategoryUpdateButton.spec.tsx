@@ -26,13 +26,9 @@ jest.mock('@/Components/Input/SecondaryButton', () => (props: any) => (
   </button>
 ));
 
-jest.mock('@mui/icons-material/EditOutlined', () => () => (
-  <div data-testid="edit-icon"></div>
-));
+jest.mock('@mui/icons-material/EditOutlined', () => () => <div data-testid="edit-icon"></div>);
 
-jest.mock('@/Components/Util/Modal', () => (props: any) => (
-  <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
-));
+jest.mock('@/Components/Util/Modal', () => (props: any) => <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>);
 
 describe('OrganizationCategoryUpdateButton', () => {
   const mockCategory = mockOrganizationCategories[0];
@@ -77,11 +73,7 @@ describe('OrganizationCategoryUpdateButton', () => {
     const cancelButton = screen.getByTestId('secondary-button');
     fireEvent.click(cancelButton);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('modal')).not.toHaveTextContent(
-        'Kategorie bearbeiten'
-      )
-    );
+    await waitFor(() => expect(screen.queryByTestId('modal')).not.toHaveTextContent('Kategorie bearbeiten'));
   });
 
   it('calls the put function when the save button is clicked', async () => {

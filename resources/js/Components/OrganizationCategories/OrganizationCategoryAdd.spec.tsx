@@ -5,10 +5,7 @@ import { OrganizationCategoryCreateModalProps } from './OrganizationCategoryCrea
 
 jest.mock('./OrganizationCategoryCreateModal', () => ({
   __esModule: true,
-  OrganizationCategoryCreateModal: ({
-    show,
-    onClose,
-  }: OrganizationCategoryCreateModalProps) => {
+  OrganizationCategoryCreateModal: ({ show, onClose }: OrganizationCategoryCreateModalProps) => {
     if (!show) return null;
     return (
       <div role="dialog">
@@ -37,11 +34,7 @@ describe('OrganizationCategoryAdd', () => {
   });
 
   it('renders the add button with the AddOutlined icon', () => {
-    render(
-      <OrganizationCategoryAdd
-        onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd}
-      />
-    );
+    render(<OrganizationCategoryAdd onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd} />);
 
     const addButton = screen.getByRole('button');
     expect(addButton).toBeInTheDocument();
@@ -53,11 +46,7 @@ describe('OrganizationCategoryAdd', () => {
   it('opens and closes the modal when the add button is clicked and closed', () => {
     const textInsideModal = 'Submit inside Modal';
 
-    render(
-      <OrganizationCategoryAdd
-        onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd}
-      />
-    );
+    render(<OrganizationCategoryAdd onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd} />);
 
     // confirm modal not yet opened
     expect(screen.queryByText(textInsideModal)).not.toBeInTheDocument();
@@ -67,18 +56,12 @@ describe('OrganizationCategoryAdd', () => {
     expect(screen.getByText(textInsideModal)).toBeInTheDocument();
 
     // Close the modal
-    fireEvent.click(
-      screen.getByRole('button', { name: /close inside Modal/i })
-    );
+    fireEvent.click(screen.getByRole('button', { name: /close inside Modal/i }));
     expect(screen.queryByText(textInsideModal)).not.toBeInTheDocument();
   });
 
   it('calls onOrganizationCategoryAdd when the modal is submitted', () => {
-    render(
-      <OrganizationCategoryAdd
-        onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd}
-      />
-    );
+    render(<OrganizationCategoryAdd onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd} />);
 
     // Open the modal
     fireEvent.click(screen.getByRole('button'));
@@ -96,11 +79,7 @@ describe('OrganizationCategoryAdd', () => {
   });
 
   it('does not call onOrganizationCategoryAdd when the modal is closed without submitting', () => {
-    render(
-      <OrganizationCategoryAdd
-        onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd}
-      />
-    );
+    render(<OrganizationCategoryAdd onOrganizationCategoryAdd={mockOnOrganizationCategoryAdd} />);
 
     // Open the modal
     fireEvent.click(screen.getByRole('button'));

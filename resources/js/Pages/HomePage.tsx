@@ -8,31 +8,16 @@ import BuildCircleOutlined from '@mui/icons-material/BuildCircleOutlined';
 
 export default function HomePage({ auth }: PageProps) {
   return (
-    <AuthenticatedLayout
-      user={auth.user}
-      header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-          Home
-        </h2>
-      }
-    >
+    <AuthenticatedLayout user={auth.user} header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Home</h2>}>
       <Head title="Home" />
 
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="pt-12 pb-3">
-          <NavTile
-            title="Kategorien verwalten"
-            href="/organization-categories/edit"
-            icon={<BuildCircleOutlined fontSize="medium" />}
-          />
+          <NavTile title="Kategorien verwalten" href="/organization-categories/edit" icon={<BuildCircleOutlined fontSize="medium" />} />
         </div>
 
         <div className="py-3">
-          <NavTile
-            title="Neue Organisation anlegen"
-            href="/organizations/create"
-            icon={<AddCircleOutline fontSize="medium" />}
-          />
+          <NavTile title="Neue Organisation anlegen" href="/organizations/create" icon={<AddCircleOutline fontSize="medium" />} />
         </div>
 
         <div className="py-3" style={{ height: '60vh', overflow: 'auto' }}>

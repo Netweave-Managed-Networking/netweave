@@ -31,9 +31,7 @@ describe('HoverInfoButton', () => {
 
   it('calls the onClick handler when clickable and clicked', async () => {
     const handleClick = jest.fn();
-    render(
-      <HoverInfoButton message="Clickable message" onClick={handleClick} />
-    );
+    render(<HoverInfoButton message="Clickable message" onClick={handleClick} />);
     const button = screen.getByRole('button');
     await userEvent.click(button);
     expect(handleClick).toHaveBeenCalledTimes(1);

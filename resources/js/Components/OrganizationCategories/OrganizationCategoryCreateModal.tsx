@@ -1,14 +1,6 @@
-import {
-  storeOrganizationCategory,
-  StoreOrganizationCategoryError,
-  StoreOrganizationCategoryErrors,
-} from '@/axios/storeOrganizationCategory.axios';
+import { storeOrganizationCategory, StoreOrganizationCategoryError, StoreOrganizationCategoryErrors } from '@/axios/storeOrganizationCategory.axios';
 import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
-import {
-  emptyOrganizationCategory,
-  OrganizationCategoryCreate,
-  orgCatMax,
-} from '@/types/organization-category-create.model';
+import { emptyOrganizationCategory, OrganizationCategoryCreate, orgCatMax } from '@/types/organization-category-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
@@ -25,12 +17,8 @@ export type OrganizationCategoryCreateModalProps = {
   onClose: (newCategory: OrganizationCategory | undefined) => void;
 };
 
-export function OrganizationCategoryCreateModal({
-  show,
-  onClose,
-}: OrganizationCategoryCreateModalProps) {
-  const [categoryToCreate, setCategoryToCreate] =
-    useState<OrganizationCategoryCreate>(emptyOrganizationCategory);
+export function OrganizationCategoryCreateModal({ show, onClose }: OrganizationCategoryCreateModalProps) {
+  const [categoryToCreate, setCategoryToCreate] = useState<OrganizationCategoryCreate>(emptyOrganizationCategory);
   const [processing, setProcessing] = useState<boolean>(false);
   const [errors, setErrors] = useState<StoreOrganizationCategoryErrors>({});
 
@@ -39,9 +27,7 @@ export function OrganizationCategoryCreateModal({
   const hasName = () => !!categoryToCreate.name.trim();
   const hasDescription = () => !!categoryToCreate.description?.trim();
 
-  const postCategory = useCallback(async (): Promise<
-    OrganizationCategory | 'error'
-  > => {
+  const postCategory = useCallback(async (): Promise<OrganizationCategory | 'error'> => {
     setProcessing(true);
     if (!hasName()) {
       setErrors({ name: '"Name" darf nicht leer sein.' });
@@ -64,20 +50,14 @@ export function OrganizationCategoryCreateModal({
   }, [postCategory]);
 
   return (
-    <Modal
-      show={show}
-      onClose={() => onClose(undefined)}
-      closeable={!hasName() && !hasDescription()}
-    >
+    <Modal show={show} onClose={() => onClose(undefined)} closeable={!hasName() && !hasDescription()}>
       <div className="p-6">
-        <h2 className="text-lg font-medium text-gray-900">
-          Neue Organisationskategorie erstellen
-        </h2>
+        <h2 className="text-lg font-medium text-gray-900">Neue Organisationskategorie erstellen</h2>
 
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <div className="flex justify-between align-end">
+            <div className="align-end flex justify-between">
               <InputLabel htmlFor="name" value="Name" required />
               <MaxTextSize value={categoryToCreate.name} max={orgCatMax.name} />
             </div>
@@ -86,7 +66,7 @@ export function OrganizationCategoryCreateModal({
               required
               isFocused={true}
               value={categoryToCreate.name}
-              onChange={e => {
+              onChange={(e) => {
                 setErrors({});
                 const name = capitalizeInputWords(e);
                 setCategoryToCreate({ ...categoryToCreate, name });
@@ -98,17 +78,14 @@ export function OrganizationCategoryCreateModal({
 
           {/* Category Description */}
           <div>
-            <div className="flex justify-between align-end">
+            <div className="align-end flex justify-between">
               <InputLabel htmlFor="description" value="Beschreibung" />
-              <MaxTextSize
-                value={categoryToCreate.description ?? undefined}
-                max={orgCatMax.description}
-              />
+              <MaxTextSize value={categoryToCreate.description ?? undefined} max={orgCatMax.description} />
             </div>
             <TextArea
               id="description"
               value={categoryToCreate.description ?? undefined}
-              onChange={e =>
+              onChange={(e) =>
                 setCategoryToCreate({
                   ...categoryToCreate,
                   description: e.target.value,
@@ -120,14 +97,8 @@ export function OrganizationCategoryCreateModal({
           </div>
 
           <div className="mt-6 flex justify-end">
-            <SecondaryButton onClick={() => onClose(undefined)}>
-              Abbrechen
-            </SecondaryButton>
-            <PrimaryButton
-              className="ms-3"
-              onClick={submit}
-              disabled={!hasName() || processing}
-            >
+            <SecondaryButton onClick={() => onClose(undefined)}>Abbrechen</SecondaryButton>
+            <PrimaryButton className="ms-3" onClick={submit} disabled={!hasName() || processing}>
               Erstellen
             </PrimaryButton>
           </div>

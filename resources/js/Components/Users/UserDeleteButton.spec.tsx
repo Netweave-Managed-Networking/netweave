@@ -25,13 +25,9 @@ jest.mock('@/Components/Input/SecondaryButton', () => (props: any) => (
   </button>
 ));
 
-jest.mock('@mui/icons-material/PersonRemove', () => () => (
-  <div data-testid="person-remove-icon"></div>
-));
+jest.mock('@mui/icons-material/PersonRemove', () => () => <div data-testid="person-remove-icon"></div>);
 
-jest.mock('@/Components/Util/Modal', () => (props: any) => (
-  <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
-));
+jest.mock('@/Components/Util/Modal', () => (props: any) => <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>);
 
 describe('UserDeleteButton', () => {
   const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com' };
@@ -72,11 +68,7 @@ describe('UserDeleteButton', () => {
     const cancelButton = screen.getByTestId('secondary-button');
     fireEvent.click(cancelButton);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('modal')).not.toHaveTextContent(
-        'Bist du sicher?'
-      )
-    );
+    await waitFor(() => expect(screen.queryByTestId('modal')).not.toHaveTextContent('Bist du sicher?'));
   });
 
   it('calls the delete function when the confirm button is clicked', async () => {
@@ -96,8 +88,6 @@ describe('UserDeleteButton', () => {
 
     fireEvent.click(screen.getByTestId('danger-button')); // Confirm delete
 
-    await waitFor(() =>
-      expect(screen.getByTestId('danger-button')).toBeDisabled()
-    );
+    await waitFor(() => expect(screen.getByTestId('danger-button')).toBeDisabled());
   });
 });

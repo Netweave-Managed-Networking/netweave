@@ -1,12 +1,7 @@
 import { ContactPerson } from './contact-person.model';
 import { PickStringAsNumber } from './max-string-lengths.type';
 
-export type ContactPersonCreate = Partial<
-  Pick<
-    ContactPerson,
-    'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'
-  >
->;
+export type ContactPersonCreate = Partial<Pick<ContactPerson, 'name' | 'email' | 'phone' | 'postcode_city' | 'street_hnr'>>;
 
 export const emptyContactPerson = {
   name: '',
@@ -25,6 +20,4 @@ export const personMax: PickStringAsNumber<ContactPersonCreate> = {
   street_hnr: 127,
 };
 
-export type ContactPersonCreateErrors = Partial<
-  Record<keyof ContactPersonCreate, string>
->;
+export type ContactPersonCreateErrors = Partial<Record<keyof ContactPersonCreate, string>>;

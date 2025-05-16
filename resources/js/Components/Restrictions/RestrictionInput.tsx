@@ -1,12 +1,7 @@
 import InputError from '@/Components/Input/InputError';
 import InputLabel from '@/Components/Input/InputLabel';
 import { isEqual } from '@/helpers/isEqual.object.helper';
-import {
-  emptyRestriction,
-  RestrictionCreate,
-  RestrictionCreateErrors,
-  restrictionMax,
-} from '@/types/restriction-create.model';
+import { emptyRestriction, RestrictionCreate, RestrictionCreateErrors, restrictionMax } from '@/types/restriction-create.model';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import TextArea from '../Input/TextArea';
@@ -29,28 +24,19 @@ export function RestrictionInput({
 }) {
   const { data, setData } = useForm<RestrictionCreate>(emptyRestriction(type));
 
-  useEffect(
-    () => onChange(data, isEqual(data, emptyRestriction(type))),
-    [data]
-  );
+  useEffect(() => onChange(data, isEqual(data, emptyRestriction(type))), [data]);
 
   return (
     <div className="mt-5">
-      <div className="flex justify-between align-end">
-        <InputLabel
-          htmlFor={`restriction_${type}`}
-          value={`${type === 'regional' ? 'Regionale' : 'Thematische'} Einschränkungen`}
-        />
-        <MaxTextSize
-          value={data.description}
-          max={restrictionMax.description}
-        />
+      <div className="align-end flex justify-between">
+        <InputLabel htmlFor={`restriction_${type}`} value={`${type === 'regional' ? 'Regionale' : 'Thematische'} Einschränkungen`} />
+        <MaxTextSize value={data.description} max={restrictionMax.description} />
       </div>
       <TextArea
         id={`restriction_${type}`}
         autoFocus={!!autoFocus}
         value={data.description}
-        onChange={e => setData('description', e.target.value)}
+        onChange={(e) => setData('description', e.target.value)}
         className="mt-1 block w-full"
         rows={3}
       />

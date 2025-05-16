@@ -8,8 +8,7 @@ export function InvitationCodeTooltipButton() {
       title={
         <Typography>
           <span>
-            Ein <strong>Einladungscode</strong> wird benötigt, um sich bei
-            Netweave zu registrieren.
+            Ein <strong>Einladungscode</strong> wird benötigt, um sich bei Netweave zu registrieren.
             <br />
             <br />
           </span>

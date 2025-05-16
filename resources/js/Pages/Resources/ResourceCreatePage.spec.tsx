@@ -8,11 +8,7 @@ jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
 }));
 
-jest.mock(
-  '@/Layouts/AuthenticatedLayout',
-  () =>
-    ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-);
+jest.mock('@/Layouts/AuthenticatedLayout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
 
 describe('ResourceCreatePage', () => {
   const mockProps = {
@@ -27,9 +23,7 @@ describe('ResourceCreatePage', () => {
   });
 
   it('handles missing resourceCategories gracefully', () => {
-    const { queryByText } = render(
-      <ResourceCreatePage {...mockProps} resourceCategories={[]} />
-    );
+    const { queryByText } = render(<ResourceCreatePage {...mockProps} resourceCategories={[]} />);
     expect(queryByText('Category 1')).not.toBeInTheDocument();
   });
 });

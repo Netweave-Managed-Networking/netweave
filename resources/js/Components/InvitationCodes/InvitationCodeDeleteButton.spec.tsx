@@ -33,8 +33,6 @@ describe('InvitationCodeDeleteButton', () => {
     expect(route).toHaveBeenCalledWith('invitation-codes.destroy', id);
 
     // Verify `httpDelete` was called with the correct route URL
-    expect(mockDelete).toHaveBeenCalledWith(
-      route('invitation-codes.destroy', id)
-    );
+    expect(mockDelete).toHaveBeenCalledWith(route('invitation-codes.destroy', id));
   });
 });

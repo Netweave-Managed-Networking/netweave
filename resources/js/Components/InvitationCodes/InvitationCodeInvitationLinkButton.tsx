@@ -7,9 +7,7 @@ interface InvitationCodeInvitationLinkButtonProps {
   code: string;
 }
 
-export default function InvitationCodeInvitationLinkButton({
-  code,
-}: InvitationCodeInvitationLinkButtonProps) {
+export default function InvitationCodeInvitationLinkButton({ code }: InvitationCodeInvitationLinkButtonProps) {
   const { showToast } = useToast();
 
   const copyLinkToClipboard = () => {
@@ -18,20 +16,12 @@ export default function InvitationCodeInvitationLinkButton({
   };
 
   const showToastMessage = () => {
-    showToast(
-      'Der Einladungslink wurde in die Zwischenablage kopiert.',
-      'info',
-      { v: 'top', h: 'center' }
-    );
+    showToast('Der Einladungslink wurde in die Zwischenablage kopiert.', 'info', { v: 'top', h: 'center' });
   };
 
   return (
     <>
-      <Tooltip
-        title={<Typography>Einladungslink kopieren</Typography>}
-        placement="right"
-        arrow
-      >
+      <Tooltip title={<Typography>Einladungslink kopieren</Typography>} placement="right" arrow>
         <IconButton
           onClick={() => {
             copyLinkToClipboard();

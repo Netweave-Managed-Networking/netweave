@@ -1,13 +1,6 @@
-import {
-  storeResourceCategory,
-  StoreResourceCategoryError,
-  StoreResourceCategoryErrors,
-} from '@/axios/storeResourceCategory.axios';
+import { storeResourceCategory, StoreResourceCategoryError, StoreResourceCategoryErrors } from '@/axios/storeResourceCategory.axios';
 import { capitalizeInputWords } from '@/helpers/capitalizeInputWords.helper';
-import {
-  resCatMax,
-  ResourceCategoryCreate,
-} from '@/types/resource-category-create.model';
+import { resCatMax, ResourceCategoryCreate } from '@/types/resource-category-create.model';
 import { ResourceCategory } from '@/types/resource-category.model';
 import { useCallback, useEffect, useState } from 'react';
 import InputError from '../Input/InputError';
@@ -24,12 +17,8 @@ export type ResourceCategoryCreateModalProps = {
   onClose: (newCategory: ResourceCategory | undefined) => void;
 };
 
-export function ResourceCategoryCreateModal({
-  show,
-  onClose,
-}: ResourceCategoryCreateModalProps) {
-  const [categoryToCreate, setCategoryToCreate] =
-    useState<ResourceCategoryCreate>({ title: '' });
+export function ResourceCategoryCreateModal({ show, onClose }: ResourceCategoryCreateModalProps) {
+  const [categoryToCreate, setCategoryToCreate] = useState<ResourceCategoryCreate>({ title: '' });
   const [processing, setProcessing] = useState<boolean>(false);
   const [errors, setErrors] = useState<StoreResourceCategoryErrors>({});
 
@@ -38,9 +27,7 @@ export function ResourceCategoryCreateModal({
   const hasTitle = () => !!categoryToCreate.title.trim();
   const hasDefinition = () => !!categoryToCreate.definition?.trim();
 
-  const postCategory = useCallback(async (): Promise<
-    ResourceCategory | 'error'
-  > => {
+  const postCategory = useCallback(async (): Promise<ResourceCategory | 'error'> => {
     setProcessing(true);
     if (!hasTitle()) {
       setErrors({ title: '"Titel" darf nicht leer sein.' });
@@ -63,32 +50,23 @@ export function ResourceCategoryCreateModal({
   }, [postCategory]);
 
   return (
-    <Modal
-      show={show}
-      onClose={() => onClose(undefined)}
-      closeable={!hasTitle() && !hasDefinition()}
-    >
+    <Modal show={show} onClose={() => onClose(undefined)} closeable={!hasTitle() && !hasDefinition()}>
       <div className="p-6">
-        <h2 className="text-lg font-medium text-gray-900">
-          Neue Ressourcenkategorie erstellen
-        </h2>
+        <h2 className="text-lg font-medium text-gray-900">Neue Ressourcenkategorie erstellen</h2>
 
         <div className="space-y-6">
           {/* Category Name */}
           <div>
-            <div className="flex justify-between align-end">
+            <div className="align-end flex justify-between">
               <InputLabel htmlFor="title" value="Titel" required />
-              <MaxTextSize
-                value={categoryToCreate.title}
-                max={resCatMax.title}
-              />
+              <MaxTextSize value={categoryToCreate.title} max={resCatMax.title} />
             </div>
             <TextInput
               id="title"
               required
               isFocused={true}
               value={categoryToCreate.title}
-              onChange={e => {
+              onChange={(e) => {
                 setErrors({});
                 const title = capitalizeInputWords(e);
                 setCategoryToCreate({ ...categoryToCreate, title });
@@ -100,17 +78,14 @@ export function ResourceCategoryCreateModal({
 
           {/* Category Definition */}
           <div>
-            <div className="flex justify-between align-end">
+            <div className="align-end flex justify-between">
               <InputLabel htmlFor="definition" value="Definition" />
-              <MaxTextSize
-                value={categoryToCreate.definition}
-                max={resCatMax.definition}
-              />
+              <MaxTextSize value={categoryToCreate.definition} max={resCatMax.definition} />
             </div>
             <TextArea
               id="definition"
               value={categoryToCreate.definition}
-              onChange={e =>
+              onChange={(e) =>
                 setCategoryToCreate({
                   ...categoryToCreate,
                   definition: e.target.value,
@@ -122,14 +97,8 @@ export function ResourceCategoryCreateModal({
           </div>
 
           <div className="mt-6 flex justify-end">
-            <SecondaryButton onClick={() => onClose(undefined)}>
-              Abbrechen
-            </SecondaryButton>
-            <PrimaryButton
-              className="ms-3"
-              onClick={submit}
-              disabled={!hasTitle() || processing}
-            >
+            <SecondaryButton onClick={() => onClose(undefined)}>Abbrechen</SecondaryButton>
+            <PrimaryButton className="ms-3" onClick={submit} disabled={!hasTitle() || processing}>
               Erstellen
             </PrimaryButton>
           </div>
