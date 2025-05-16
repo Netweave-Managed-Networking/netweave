@@ -24,8 +24,8 @@ export function ResourceCategoryCreateModal({ show, onClose }: ResourceCategoryC
 
   useEffect(() => setCategoryToCreate({ title: '' }), [show]); // reset on modal reopen
 
-  const hasTitle = () => !!categoryToCreate.title.trim();
-  const hasDefinition = () => !!categoryToCreate.definition?.trim();
+  const hasTitle = useCallback(() => !!categoryToCreate.title.trim(), [categoryToCreate]);
+  const hasDefinition = useCallback(() => !!categoryToCreate.definition?.trim(), [categoryToCreate]);
 
   const postCategory = useCallback(async (): Promise<ResourceCategory | 'error'> => {
     setProcessing(true);
@@ -42,12 +42,12 @@ export function ResourceCategoryCreateModal({ show, onClose }: ResourceCategoryC
     } finally {
       setProcessing(false);
     }
-  }, [categoryToCreate]);
+  }, [categoryToCreate, hasTitle]);
 
   const submit = useCallback(async () => {
     const newCategory = await postCategory();
     if (newCategory !== 'error') onClose(newCategory);
-  }, [postCategory]);
+  }, [onClose, postCategory]);
 
   return (
     <Modal show={show} onClose={() => onClose(undefined)} closeable={!hasTitle() && !hasDefinition()}>

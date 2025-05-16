@@ -19,7 +19,7 @@ export default function BadgeSelect({ onChange, elements, value, elemAppended, c
 
   useEffect(() => {
     if (!isEqual(value, elementsActivated)) setElementsActivated(value);
-  }, [value]);
+  }, [elementsActivated, value]);
 
   const isActivated = (id: IdLabel['id']): boolean => elementsActivated.includes(id);
 

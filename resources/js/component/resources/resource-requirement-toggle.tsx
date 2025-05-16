@@ -12,7 +12,7 @@ export default function ResourceRequirementToggle({ value, onChange, style }: Re
 
   useEffect(() => {
     if (value !== selected) setSelected(value ?? null);
-  }, [value]);
+  }, [selected, value]);
 
   const handleClick = (option: Resource['type']) => {
     setSelected(option);

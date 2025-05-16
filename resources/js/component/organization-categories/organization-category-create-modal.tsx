@@ -28,8 +28,8 @@ export function OrganizationCategoryCreateModal({ show, onClose }: OrganizationC
 
   useEffect(() => setCategoryToCreate(emptyOrganizationCategory), [show]); // reset on modal reopen
 
-  const hasName = () => !!categoryToCreate.name.trim();
-  const hasDescription = () => !!categoryToCreate.description?.trim();
+  const hasName = useCallback(() => !!categoryToCreate.name.trim(), [categoryToCreate]);
+  const hasDescription = useCallback(() => !!categoryToCreate.description?.trim(), [categoryToCreate]);
 
   const postCategory = useCallback(async (): Promise<OrganizationCategory | 'error'> => {
     setProcessing(true);
@@ -46,12 +46,12 @@ export function OrganizationCategoryCreateModal({ show, onClose }: OrganizationC
     } finally {
       setProcessing(false);
     }
-  }, [categoryToCreate]);
+  }, [categoryToCreate, hasName]);
 
   const submit = useCallback(async () => {
     const newCategory = await postCategory();
     if (newCategory !== 'error') onClose(newCategory);
-  }, [postCategory]);
+  }, [onClose, postCategory]);
 
   return (
     <Modal show={show} onClose={() => onClose(undefined)} closeable={!hasName() && !hasDescription()}>

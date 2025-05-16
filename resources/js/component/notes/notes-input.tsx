@@ -24,7 +24,7 @@ export function NotesInput({
 }) {
   const { data, setData } = useForm<NotesCreate>(value ?? emptyNotes);
 
-  useEffect(() => onChange(data, isEqual(data, emptyNotes)), [data]);
+  useEffect(() => onChange(data, isEqual(data, emptyNotes)), [onChange, data]);
 
   return (
     <div className="mt-5">

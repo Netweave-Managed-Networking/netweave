@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * transforms `{ "a.b": 'a str' }` to `{ a: { b: 'a str' } }`
  * @param object
  */
-export const transformNestedStringifiedPropertiesToObject = <ReturnType = Object>(object: Object): ReturnType => {
+export const transformNestedStringifiedPropertiesToObject = <ReturnType = object>(object: object): ReturnType => {
   return Object.entries(object).reduce(
     (acc: Record<string, any>, [key, value]) => {
       const keys = key.split('.'); // Split the key by dots

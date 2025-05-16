@@ -22,7 +22,7 @@ export function CoopCriteriaInput({
 }) {
   const { data, setData } = useForm<CoopCriteriaCreate>(emptyCoopCriteria);
 
-  useEffect(() => onChange(data, isEqual(data, emptyCoopCriteria)), [data]);
+  useEffect(() => onChange(data, isEqual(data, emptyCoopCriteria)), [onChange, data]);
 
   return (
     <div className="mt-5 flex justify-between gap-4">

@@ -24,7 +24,7 @@ export function RestrictionInput({
 }) {
   const { data, setData } = useForm<RestrictionCreate>(emptyRestriction(type));
 
-  useEffect(() => onChange(data, isEqual(data, emptyRestriction(type))), [data]);
+  useEffect(() => onChange(data, isEqual(data, emptyRestriction(type))), [onChange, data, type]);
 
   return (
     <div className="mt-5">

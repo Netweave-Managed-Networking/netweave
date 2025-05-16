@@ -31,9 +31,7 @@ export function RestrictionNotesCoopCriteriaCreate({ organization }: Restriction
 
   const [notes, setNotes] = useState<NotesCreate>(organization.notes ?? emptyNotes);
 
-  const { data, setData, post, errors, processing } = useForm<RestrictionNotesCoopCriteriaCreateModel>(
-    emptyRestrictionNotesCoopCriteriaCreate(organization.id),
-  );
+  const { data, setData, post, errors, processing } = useForm<RestrictionNotesCoopCriteriaCreateModel>(emptyRestrictionNotesCoopCriteriaCreate);
 
   const [coopCriteriaErrors, setCoopCriteriaErrors] = useState<CoopCriteriaCreateErrors>({});
   const [restrictionThematicErrors, setRestrictionThematicErrors] = useState<RestrictionCreateErrors>({});
@@ -49,7 +47,7 @@ export function RestrictionNotesCoopCriteriaCreate({ organization }: Restriction
     setRestrictionThematicErrors({});
     setRestrictionRegionalErrors({});
     setNotesErrors({});
-    setData(emptyRestrictionNotesCoopCriteriaCreate(organization.id));
+    setData(emptyRestrictionNotesCoopCriteriaCreate);
   };
 
   // transform strangely nested errors to RestrictionNotesCoopCriteriaCreateErrors object

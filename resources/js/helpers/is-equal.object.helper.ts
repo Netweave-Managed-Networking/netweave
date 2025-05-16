@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isEqual = (obj1: Record<string, any>, obj2: Record<string, any>): boolean => {
   if (obj1 === obj2) return true; // Same reference
 
@@ -10,5 +11,5 @@ export const isEqual = (obj1: Record<string, any>, obj2: Record<string, any>): b
 
   if (keys1.length !== keys2.length) return false;
 
-  return keys1.every((key) => obj2.hasOwnProperty(key) && isEqual(obj1[key], obj2[key]));
+  return keys1.every((key) => Object.prototype.hasOwnProperty.call(obj2, key) && isEqual(obj1[key], obj2[key]));
 };

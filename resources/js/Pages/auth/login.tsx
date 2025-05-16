@@ -18,11 +18,7 @@ export default function Login({ status, canResetPassword }: { status?: string; c
     remember: false,
   });
 
-  useEffect(() => {
-    return () => {
-      reset('password');
-    };
-  }, []);
+  useEffect(() => () => reset('password'), [reset]);
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();

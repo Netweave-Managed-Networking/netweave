@@ -24,7 +24,7 @@ export function ContactPersonInput({
 }) {
   const { data, setData } = useForm<ContactPersonCreate>(emptyContactPerson);
 
-  useEffect(() => onChange(data, isEqual(data, emptyContactPerson)), [data]);
+  useEffect(() => onChange(data, isEqual(data, emptyContactPerson)), [onChange, data]);
 
   return (
     <>

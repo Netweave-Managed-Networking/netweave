@@ -37,7 +37,7 @@ describe('NotesInput', () => {
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: 'Test note' } });
 
-    expect(screen.getByText(new RegExp(`${'Test note'.length}(\s|\n)*/(\s|\n)*${notesMax.notes}`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${'Test note'.length}(\n)*/(\n)*${notesMax.notes}`))).toBeInTheDocument();
   });
 
   it('handles edge case: empty input', () => {
@@ -58,6 +58,6 @@ describe('NotesInput', () => {
     fireEvent.change(textarea, { target: { value: longText } });
 
     expect(mockOnChange).toHaveBeenCalledWith({ ...emptyNotes, notes: longText }, false);
-    expect(screen.getByText(new RegExp(`${longText.length}(\s|\n)*/(\s|\n)*${notesMax.notes}`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${longText.length}(\n)*/(\n)*${notesMax.notes}`))).toBeInTheDocument();
   });
 });

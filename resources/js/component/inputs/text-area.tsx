@@ -14,7 +14,7 @@ export default forwardRef(function TextArea(
     if (isFocused) {
       localRef.current?.focus();
     }
-  }, []);
+  }, [isFocused]);
 
   return (
     <textarea

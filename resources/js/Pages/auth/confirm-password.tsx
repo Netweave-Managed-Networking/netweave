@@ -11,11 +11,7 @@ export default function ConfirmPassword() {
     password: '',
   });
 
-  useEffect(() => {
-    return () => {
-      reset('password');
-    };
-  }, []);
+  useEffect(() => () => reset('password'), [reset]);
 
   const submit: FormEventHandler = (e) => {
     e.preventDefault();

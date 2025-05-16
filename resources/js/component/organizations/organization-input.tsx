@@ -31,7 +31,7 @@ export function OrganizationInput({
 }) {
   const { data, setData } = useForm<OrganizationCreateMin>(emptyOrganizationMin);
 
-  useEffect(() => onChange(data, isEqual(data, emptyOrganizationMin)), [data]);
+  useEffect(() => onChange(data, isEqual(data, emptyOrganizationMin)), [onChange, data]);
 
   return (
     <>
