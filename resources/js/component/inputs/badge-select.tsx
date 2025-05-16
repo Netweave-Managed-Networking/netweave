@@ -1,4 +1,3 @@
-import { isEqual } from '@/helpers/is-equal.array.helper';
 import { IdLabel } from '@/types/id-label.model';
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -17,9 +16,7 @@ export type BadgeSelectProps = {
 export default function BadgeSelect({ onChange, elements, value, elemAppended, className }: BadgeSelectProps) {
   const [elementsActivated, setElementsActivated] = useState<IdLabel['id'][]>(value);
 
-  useEffect(() => {
-    if (!isEqual(value, elementsActivated)) setElementsActivated(value);
-  }, [value]);
+  useEffect(() => setElementsActivated(value), [value]);
 
   const isActivated = (id: IdLabel['id']): boolean => elementsActivated.includes(id);
 

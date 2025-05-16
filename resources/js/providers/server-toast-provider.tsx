@@ -16,7 +16,7 @@ export const ServerToastProvider = ({ children }: { children: ReactNode }) => {
       props.success_message = null;
       props.error_message = null;
     }
-  }, [props.error_message, props.success_message]);
+  }, [showToast, props]);
 
   return children;
 };

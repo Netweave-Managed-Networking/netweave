@@ -3,10 +3,7 @@ import { useForm } from '@inertiajs/react';
 import { render, screen } from '@testing-library/react';
 import { RestrictionNotesCoopCriteriaCreate } from './restriction-notes-coop-criteria-create';
 
-jest.mock('@inertiajs/react', () => ({
-  useForm: jest.fn(),
-  route: jest.fn(() => '/mocked-route'),
-}));
+jest.mock('@inertiajs/react', () => ({ useForm: jest.fn(), route: jest.fn(() => '/mocked-route') }));
 
 jest.mock('../coop-criteria/coop-criteria-input', () => ({
   CoopCriteriaInput: ({ onChange }: { onChange: (data: unknown) => void }) => (
@@ -27,18 +24,9 @@ jest.mock('../notes/notes-input', () => ({
 }));
 
 describe('RestrictionNotesCoopCriteriaCreate', () => {
-  const mockOrganization = {
-    id: 1,
-    notes: { notes: '' },
-  } as OrganizationNo;
+  const mockOrganization = { id: 1, notes: { notes: '' } } as OrganizationNo;
 
-  const mockUseForm = {
-    data: {},
-    setData: jest.fn(),
-    post: jest.fn(),
-    errors: {},
-    processing: false,
-  };
+  const mockUseForm = { data: {}, setData: jest.fn(), post: jest.fn(), errors: {}, processing: false };
 
   beforeEach(() => {
     (useForm as jest.Mock).mockReturnValue(mockUseForm);

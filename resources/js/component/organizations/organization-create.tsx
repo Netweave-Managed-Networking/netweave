@@ -3,9 +3,10 @@ import { transformNestedStringifiedPropertiesToObject } from '@/helpers/transfor
 import { ContactPersonCreate, ContactPersonCreateErrors, emptyContactPerson } from '@/types/contact-person-create.model';
 import { emptyNotes, NotesCreate, NotesCreateErrors } from '@/types/notes-create.model';
 import { OrganizationCategory } from '@/types/organization-category.model';
+import { OrganizationCreateMin } from '@/types/organization-create-min.model';
 import { emptyOrganization, OrganizationCreate as OrganizationCreateModel } from '@/types/organization-create.model';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler, SyntheticEvent, useEffect, useState } from 'react';
+import { FormEventHandler, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { ContactPersonInput } from '../contact-persons/contact-person-input';
 import InputError from '../inputs/input-error';
 import InputLabel from '../inputs/input-label';
@@ -46,13 +47,21 @@ export function OrganizationCreate({ organizationCategories }: { organizationCat
     post(route('organizations.store', { redirect_to: redirectTo }));
   };
 
+  const setOrganizationCreate = useCallback((newData: OrganizationCreateMin) => setData((prev) => ({ ...prev, ...newData })), [setData]);
+  const setCategoriesSelected = useCallback((newData: number[]) => setSelectedCategories(newData), [setSelectedCategories]);
+  const setNotesCreate = useCallback((newData: NotesCreate) => setNotes(newData), [setNotes]);
+  const setContactPersonCreate = useCallback(
+    (newData: ContactPersonCreate, isPristine: boolean) => (setContactPerson(newData), setContactPersonPristine(isPristine)),
+    [setContactPerson, setContactPersonPristine],
+  );
+
   return (
     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
       <div className="border-b border-gray-200 bg-white p-6">
         <form onSubmit={handleSubmit} onKeyDown={(e) => (e.key === 'Enter' ? e.preventDefault() : void 0)} className="space-y-6">
           <OrganizationInput
             isNameRequired={true}
-            onChange={(newData) => setData({ ...data, ...newData })}
+            onChange={setOrganizationCreate}
             errors={errors}
             slotTop={
               <>
@@ -64,7 +73,7 @@ export function OrganizationCreate({ organizationCategories }: { organizationCat
                       <OrganizationCategoriesSelectAdd
                         organizationCategories={organizationCategories}
                         organizationCategoriesSelected={selectedCategories}
-                        onChange={(selected) => setSelectedCategories(selected)}
+                        onChange={setCategoriesSelected}
                       />
                     </span>
                     <span>
@@ -98,15 +107,11 @@ export function OrganizationCreate({ organizationCategories }: { organizationCat
                       }
                     />
                   </span>
-                  <ContactPersonInput
-                    isNameRequired={!contactPersonIsPristine}
-                    onChange={(data, isPristine) => (setContactPerson(data), setContactPersonPristine(isPristine))}
-                    errors={contactPersonErrors}
-                  />
+                  <ContactPersonInput isNameRequired={!contactPersonIsPristine} onChange={setContactPersonCreate} errors={contactPersonErrors} />
                 </div>
               </>
             }
-            slotBottom={<NotesInput errors={notesErrors} onChange={(e) => setNotes(e)} />}
+            slotBottom={<NotesInput errors={notesErrors} onChange={setNotesCreate} />}
           />
 
           {/* Buttons */}

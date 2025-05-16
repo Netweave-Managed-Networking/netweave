@@ -5,9 +5,7 @@ import { ToastProps } from '../utils/toasts';
 import InvitationCodeInvitationLinkButton from './invitation-code-invitation-link-button';
 
 // Mock the copyToClipboard helper function
-jest.mock('@/helpers/copy-to-clipboard.helper', () => ({
-  copyToClipboard: jest.fn(),
-}));
+jest.mock('@/helpers/copy-to-clipboard.helper', () => ({ copyToClipboard: jest.fn() }));
 
 // Mock the Toast component since it's part of the UI but not essential for testing logic
 jest.mock('@/component/utils/toasts', () => (props: ToastProps) => {

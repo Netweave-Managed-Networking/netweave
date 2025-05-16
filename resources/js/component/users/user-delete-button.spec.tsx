@@ -4,9 +4,7 @@ import { ReactNode } from 'react';
 import { UserDeleteButton } from './user-delete-button';
 
 // Mocking dependencies
-jest.mock('@inertiajs/react', () => ({
-  useForm: jest.fn(),
-}));
+jest.mock('@inertiajs/react', () => ({ useForm: jest.fn() }));
 
 // Mock the `route` function
 const route = jest.fn();
@@ -37,9 +35,7 @@ describe('UserDeleteButton', () => {
   const mockDelete = jest.fn();
 
   beforeEach(() => {
-    (useForm as jest.Mock).mockReturnValue({
-      delete: mockDelete,
-    });
+    (useForm as jest.Mock).mockReturnValue({ delete: mockDelete });
   });
 
   it('renders the delete button with the PersonRemoveIcon', () => {

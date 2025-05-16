@@ -3,9 +3,7 @@ import { mockUser } from '@/testing/mock-users.mock';
 import { render, screen } from '@testing-library/react';
 import OrganizationCategoriesEditPage from './organization-categories-edit-page';
 
-jest.mock('@inertiajs/react', () => ({
-  Head: ({ title }: { title: string }) => <title>{title}</title>,
-}));
+jest.mock('@inertiajs/react', () => ({ Head: ({ title }: { title: string }) => <title>{title}</title> }));
 
 jest.mock('@/layouts/authenticated-layout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
 

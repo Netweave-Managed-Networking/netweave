@@ -10,9 +10,7 @@ export type ResourceRequirementToggleProps = {
 export default function ResourceRequirementToggle({ value, onChange, style }: ResourceRequirementToggleProps) {
   const [selected, setSelected] = useState<Resource['type'] | null>(null);
 
-  useEffect(() => {
-    if (value !== selected) setSelected(value ?? null);
-  }, [value]);
+  useEffect(() => setSelected(value ?? null), [value]);
 
   const handleClick = (option: Resource['type']) => {
     setSelected(option);

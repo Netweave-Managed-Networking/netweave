@@ -5,9 +5,7 @@ import { ReactNode } from 'react';
 import { OrganizationCategoryUpdateButton } from './organization-category-update-button';
 
 // Mocking dependencies
-jest.mock('@inertiajs/react', () => ({
-  useForm: jest.fn(),
-}));
+jest.mock('@inertiajs/react', () => ({ useForm: jest.fn() }));
 
 // Mock the `route` function
 const route = jest.fn();
