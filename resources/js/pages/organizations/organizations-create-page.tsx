@@ -12,7 +12,7 @@ export default function OrganizationsCreatePage({
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 className="text-xl font-semibold leading-tight text-gray-800">
           Neue Organisation anlegen
         </h2>
       }

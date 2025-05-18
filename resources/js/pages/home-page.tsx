@@ -11,15 +11,15 @@ export default function HomePage({ auth }: PageProps) {
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 className="text-xl font-semibold leading-tight text-gray-800">
           Home
         </h2>
       }
     >
       <Head title="Home" />
 
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="pt-12 pb-3">
+      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="pb-3 pt-12">
           <NavTile
             title="Kategorien verwalten"
             href="/organization-categories/edit"
