@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 
 export default function OrganizationsCreatePage({ auth, organizationCategories }: PageProps<{ organizationCategories: OrganizationCategory[] }>) {
   return (
-    <AuthenticatedLayout user={auth.user} header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Neue Organisation anlegen</h2>}>
+    <AuthenticatedLayout user={auth.user} header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Neue Organisation anlegen</h2>}>
       <Head title="Create Organization" />
 
       <div className="py-12">

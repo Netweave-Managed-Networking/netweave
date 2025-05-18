@@ -8,7 +8,7 @@ import UpdateProfileInformationForm from './partials/update-profile-information-
 
 export default function EditPage({ auth, mustVerifyEmail, status }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   return (
-    <AuthenticatedLayout user={auth.user} header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Profile</h2>}>
+    <AuthenticatedLayout user={auth.user} header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Profile</h2>}>
       <Head title="Profile" />
 
       <div className="py-12">

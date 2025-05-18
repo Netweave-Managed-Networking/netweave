@@ -13,7 +13,7 @@ export default function OrganizationCategoriesEditPage({
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Organisationskategorien verwalten</h2>}
+      header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Organisationskategorien verwalten</h2>}
     >
       <Head title="Organisationskategorien verwalten" />
 
