@@ -36,11 +36,11 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                       <span className="inline-flex rounded-md">
                         <button
                           type="button"
-                          className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm leading-4 font-medium text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                          className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                         >
                           {user.name}
 
-                          <svg className="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <svg className="-me-0.5 ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path
                               fillRule="evenodd"
                               d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -88,13 +88,13 @@ export default function Authenticated({ user, header, children }: PropsWithChild
             </div>
           </div>
           <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-            <div className="space-y-1 pt-2 pb-3">
+            <div className="space-y-1 pb-3 pt-2">
               <ResponsiveNavLink href={route('home')} active={route().current('home')}>
                 Home
               </ResponsiveNavLink>
             </div>
 
-            <div className="border-t border-gray-200 pt-4 pb-1">
+            <div className="border-t border-gray-200 pb-1 pt-4">
               <div className="px-4">
                 <div className="text-base font-medium text-gray-800">{user.name}</div>
                 <div className="text-sm font-medium text-gray-500">{user.email}</div>

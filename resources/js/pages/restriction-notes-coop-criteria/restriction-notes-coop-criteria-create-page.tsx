@@ -13,7 +13,7 @@ export default function RestrictionNotesCoopCriteriaCreatePage({
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Kriterien & Einschränkungen ergänzen</h2>}
+      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Kriterien & Einschränkungen ergänzen</h2>}
     >
       <Head title="Kriterien & Einschränkungen ergänzen" />
 

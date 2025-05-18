@@ -10,7 +10,7 @@ export default function InvitationCodesPage({ auth, invitationCodes }: PageProps
   const showAddCodeButton = !hasActiveAdminAlreadyCreatedOneStillUnusedInvitationCode(invitationCodes, admin);
 
   return (
-    <AuthenticatedLayout user={admin} header={<h2 className="text-xl leading-tight font-semibold text-gray-800">User & Einladungen</h2>}>
+    <AuthenticatedLayout user={admin} header={<h2 className="text-xl font-semibold leading-tight text-gray-800">User & Einladungen</h2>}>
       <Head title="User & Einladungen" />
 
       <div className="py-12">

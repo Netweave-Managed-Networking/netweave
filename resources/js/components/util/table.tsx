@@ -32,7 +32,7 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
               <thead className="bg-gray-50">
                 <tr>
                   {headerTitles.map((title) => (
-                    <th key={title} scope="col" className="px-6 py-3 text-left text-xs font-bold whitespace-nowrap text-gray-500 uppercase">
+                    <th key={title} scope="col" className="whitespace-nowrap px-6 py-3 text-left text-xs font-bold uppercase text-gray-500">
                       {title}
                     </th>
                   ))}
@@ -42,7 +42,7 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
                 {rowsKeyed.map((row) => (
                   <tr key={row.key}>
                     {row.items.map((item) => (
-                      <td key={item.key} className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-800">
+                      <td key={item.key} className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                         {item.node}
                       </td>
                     ))}

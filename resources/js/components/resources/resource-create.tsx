@@ -129,7 +129,7 @@ export function ResourceCreate({ organization, resourceCategories }: ResourceCre
           <InputLabel value="Kategorien" required />{' '}
           {errors.resource_categories && <InputError message="Wähle mindestens eine Ressourcenkategorie aus." />}
           <div className="flex">
-            <span className="overflow-x-hidden overflow-y-auto">
+            <span className="overflow-y-auto overflow-x-hidden">
               <ResourceCategoriesSelectAdd
                 resourceCategories={resourceCategories}
                 resourceCategoriesSelected={selectedCategories}
