@@ -12,17 +12,21 @@ jest.mock('@inertiajs/react', () => ({
 jest.mock('@/components/invitation-codes/invitation-codes-table', () => ({
   InvitationCodesTable: ({ showAddCodeButton }: { showAddCodeButton: boolean }) => (
     <>
-      <div>InvitationCodesTable</div>
+      <div>InvitationCodesTableeeee</div>
       {showAddCodeButton ? <div>AddCodeButton</div> : ''}
     </>
   ),
 }));
 
 // Mock the AuthenticatedLayout
-jest.mock('@/layouts/authenticated-layout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
+jest.mock('@/layouts/authenticated-layout', () => ({ children, header }: { children: React.ReactNode; header: React.ReactNode }) => (
+  <div>
+    {header} {children}
+  </div>
+));
 
 describe('InvitationCodesPage', () => {
-  it('renders page title', () => {
+  it.only('renders page title', () => {
     render(<InvitationCodesPage auth={{ user: mockUser }} invitationCodes={mockInvitationCodes} />);
 
     expect(screen.getByText('User & Einladungen')).toBeInTheDocument();

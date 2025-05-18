@@ -43,13 +43,13 @@ describe('BadgeSelect component', () => {
     renderComponent();
 
     const badge1 = screen.getByText('Badge 1');
+    const badge2 = screen.getByText('Badge 2');
 
     // Toggle Badge 1
     fireEvent.click(badge1);
     expect(onChangeMock).toHaveBeenCalledWith([2, 1]);
 
     // Toggle Badge 2 off
-    const badge2 = screen.getByText('Badge 2');
     fireEvent.click(badge2);
     expect(onChangeMock).toHaveBeenCalledWith([1]);
   });
