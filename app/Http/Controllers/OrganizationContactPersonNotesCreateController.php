@@ -23,7 +23,7 @@ class OrganizationContactPersonNotesCreateController extends Controller
     {
         $organization_categories = OrganizationCategory::all();
 
-        return Inertia::render('Organizations/OrganizationsCreatePage')->with('organizationCategories', $organization_categories);
+        return Inertia::render('organizations/organizations-create-page')->with('organizationCategories', $organization_categories);
     }
 
     public function store(Request $request): RedirectResponse

@@ -5,13 +5,11 @@ jest.mock('axios');
 
 // Mock the `route` function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).route = jest
-  .fn()
-  .mockImplementation((name: string, id: number) => {
-    if (name === 'organization-categories.api.get') {
-      return `/organization-categories/api/${id}`;
-    }
-  });
+(global as any).route = jest.fn().mockImplementation((name: string, id: number) => {
+  if (name === 'organization-categories.api.get') {
+    return `/organization-categories/api/${id}`;
+  }
+});
 
 describe('fetchOrganizationCategory', () => {
   it('should fetch the organization category successfully', async () => {
@@ -28,13 +26,8 @@ describe('fetchOrganizationCategory', () => {
 
     const result = await fetchOrganizationCategory(mockCategoryId);
 
-    expect(route).toHaveBeenCalledWith(
-      'organization-categories.api.get',
-      mockCategoryId
-    );
-    expect(axios.get).toHaveBeenCalledWith(
-      `/organization-categories/api/${mockCategoryId}`
-    );
+    expect(route).toHaveBeenCalledWith('organization-categories.api.get', mockCategoryId);
+    expect(axios.get).toHaveBeenCalledWith(`/organization-categories/api/${mockCategoryId}`);
     expect(result).toEqual(mockData);
   });
 
@@ -43,15 +36,8 @@ describe('fetchOrganizationCategory', () => {
     const mockError = new Error('Network Error');
     (axios.get as jest.Mock).mockRejectedValue(mockError);
 
-    await expect(fetchOrganizationCategory(mockCategoryId)).rejects.toThrow(
-      'Network Error'
-    );
-    expect(route).toHaveBeenCalledWith(
-      'organization-categories.api.get',
-      mockCategoryId
-    );
-    expect(axios.get).toHaveBeenCalledWith(
-      `/organization-categories/api/${mockCategoryId}`
-    );
+    await expect(fetchOrganizationCategory(mockCategoryId)).rejects.toThrow('Network Error');
+    expect(route).toHaveBeenCalledWith('organization-categories.api.get', mockCategoryId);
+    expect(axios.get).toHaveBeenCalledWith(`/organization-categories/api/${mockCategoryId}`);
   });
 });

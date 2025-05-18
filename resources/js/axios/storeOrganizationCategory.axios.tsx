@@ -2,8 +2,7 @@ import { OrganizationCategoryCreate } from '@/types/organization-category-create
 import { OrganizationCategory } from '@/types/organization-category.model';
 import axios, { AxiosError } from 'axios';
 
-export type StoreOrganizationCategoryErrors =
-  Partial<OrganizationCategoryCreate>;
+export type StoreOrganizationCategoryErrors = Partial<OrganizationCategoryCreate>;
 
 export type StoreOrganizationCategoryError = AxiosError<{
   message: string;
@@ -11,7 +10,5 @@ export type StoreOrganizationCategoryError = AxiosError<{
 }>;
 
 /** throws error when http request is 4xx or 5xx */
-export const storeOrganizationCategory = async (
-  category: OrganizationCategoryCreate
-): Promise<OrganizationCategory> | never =>
+export const storeOrganizationCategory = async (category: OrganizationCategoryCreate): Promise<OrganizationCategory> | never =>
   (await axios.post(route('organization-categories.api.store'), category)).data;

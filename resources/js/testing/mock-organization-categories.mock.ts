@@ -54,13 +54,9 @@ const idNames: IdName[] = [
   { id: 50, name: 'Seniorenvereinigung' },
 ];
 
-export const mockOrganizationCategories: OrganizationCategory[] = idNames.map(
-  category => ({
-    ...category,
-    created_at: '',
-    updated_at: '',
-    description: category.name.includes('e')
-      ? `description of category ${category.name}`
-      : null,
-  })
-);
+export const mockOrganizationCategories: OrganizationCategory[] = idNames.map((category) => ({
+  ...category,
+  created_at: '',
+  updated_at: '',
+  description: category.name.includes('e') ? `description of category ${category.name}` : null,
+}));

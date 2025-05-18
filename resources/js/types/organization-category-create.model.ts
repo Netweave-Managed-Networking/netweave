@@ -1,10 +1,7 @@
 import { PickStringAsNumber } from './max-string-lengths.type';
 import { OrganizationCategory } from './organization-category.model';
 
-export type OrganizationCategoryCreate = Pick<
-  OrganizationCategory,
-  'name' | 'description'
->;
+export type OrganizationCategoryCreate = Pick<OrganizationCategory, 'name' | 'description'>;
 
 export const emptyOrganizationCategory: OrganizationCategoryCreate = {
   name: '',

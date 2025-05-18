@@ -1,9 +1,6 @@
 import { OrganizationCategoryCreate } from '@/types/organization-category-create.model';
 import axios from 'axios';
-import {
-  storeOrganizationCategory,
-  StoreOrganizationCategoryError,
-} from './storeOrganizationCategory.axios';
+import { storeOrganizationCategory, StoreOrganizationCategoryError } from './storeOrganizationCategory.axios';
 
 jest.mock('axios');
 
@@ -34,24 +31,14 @@ describe('storeOrganizationCategory', () => {
     const result = await storeOrganizationCategory(mockCategory);
 
     expect(result).toEqual(mockResponse);
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('organization-categories.api.store'),
-      mockCategory
-    );
+    expect(mockedAxios.post).toHaveBeenCalledWith(route('organization-categories.api.store'), mockCategory);
   });
 
   it('should throw an error when the request fails', async () => {
-    const mockError = new Error(
-      'Request failed with status code 500'
-    ) as StoreOrganizationCategoryError;
+    const mockError = new Error('Request failed with status code 500') as StoreOrganizationCategoryError;
     mockedAxios.post.mockRejectedValue(mockError);
 
-    await expect(storeOrganizationCategory(mockCategory)).rejects.toThrow(
-      'Request failed with status code 500'
-    );
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('organization-categories.api.store'),
-      mockCategory
-    );
+    await expect(storeOrganizationCategory(mockCategory)).rejects.toThrow('Request failed with status code 500');
+    expect(mockedAxios.post).toHaveBeenCalledWith(route('organization-categories.api.store'), mockCategory);
   });
 });

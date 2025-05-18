@@ -20,7 +20,7 @@ class RestrictionNotesCoopCriteriaCreateController extends Controller
     {
         $organization->load('notes');
 
-        return Inertia::render('RestrictionNotesCoopCriteria/RestrictionNotesCoopCriteriaCreatePage')
+        return Inertia::render('restriction-notes-coop-criteria/restriction-notes-coop-criteria-create-page')
             ->with('organization', $organization);
     }
 
