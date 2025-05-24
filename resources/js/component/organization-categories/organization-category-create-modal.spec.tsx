@@ -1,4 +1,4 @@
-import { storeOrganizationCategory } from '@/axios/storeOrganizationCategory.axios';
+import { storeOrganizationCategory } from '@/axios/store-organization-category.axios';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -7,7 +7,7 @@ import {
   OrganizationCategoryCreateModalProps,
 } from './organization-category-create-modal';
 
-jest.mock('@/axios/storeOrganizationCategory.axios');
+jest.mock('@/axios/store-organization-category.axios');
 
 const mockOnClose = jest.fn();
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchOrganizations } from './fetchOrganizations.axios';
+import { fetchOrganizations } from './fetch-organizations.axios';
 
 jest.mock('axios');
 

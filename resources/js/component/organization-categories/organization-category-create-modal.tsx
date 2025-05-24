@@ -2,7 +2,7 @@ import {
   storeOrganizationCategory,
   StoreOrganizationCategoryError,
   StoreOrganizationCategoryErrors,
-} from '@/axios/storeOrganizationCategory.axios';
+} from '@/axios/store-organization-category.axios';
 import { capitalizeInputWords } from '@/helpers/capitalize-input-words.helper';
 import {
   emptyOrganizationCategory,

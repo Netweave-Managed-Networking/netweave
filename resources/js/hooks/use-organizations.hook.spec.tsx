@@ -1,10 +1,10 @@
 import { OrganizationLi } from '@/types/organization-li.model';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { fetchOrganizations } from '../axios/fetchOrganizations.axios';
+import { fetchOrganizations } from '../axios/fetch-organizations.axios';
 import { useOrganizations } from './use-organizations.hook';
 
-jest.mock('../axios/fetchOrganizations.axios');
+jest.mock('../axios/fetch-organizations.axios');
 
 const mockedFetchOrganizations = fetchOrganizations as jest.MockedFunction<
   typeof fetchOrganizations

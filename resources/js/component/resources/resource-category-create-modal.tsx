@@ -2,7 +2,7 @@ import {
   storeResourceCategory,
   StoreResourceCategoryError,
   StoreResourceCategoryErrors,
-} from '@/axios/storeResourceCategory.axios';
+} from '@/axios/store-resource-category.axios';
 import { capitalizeInputWords } from '@/helpers/capitalize-input-words.helper';
 import {
   resCatMax,

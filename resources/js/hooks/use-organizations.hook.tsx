@@ -1,6 +1,6 @@
 import { OrganizationLi } from '@/types/organization-li.model';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { fetchOrganizations } from '../axios/fetchOrganizations.axios';
+import { fetchOrganizations } from '../axios/fetch-organizations.axios';
 
 type UseOrganizationsResult = Pick<
   UseQueryResult<OrganizationLi[], Error>,
