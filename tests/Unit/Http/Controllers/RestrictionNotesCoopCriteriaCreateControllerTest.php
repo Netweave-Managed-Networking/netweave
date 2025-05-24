@@ -21,7 +21,7 @@ describe('RestrictionNotesCoopCriteriaCreateController', function () {
             $response = actingAs(User::factory()->create())->get(route('restrictions-coop_criteria-notes.create', $this->dummyOrganization));
 
             $response->assertInertia(fn (Assert $page) => $page
-                ->component('RestrictionNotesCoopCriteria/RestrictionNotesCoopCriteriaCreatePage')
+                ->component('restriction-notes-coop-criteria/restriction-notes-coop-criteria-create-page')
                 ->has('organization', fn (Assert $org) => $org
                     ->where('id', $this->dummyOrganization->id)
                     ->etc()
