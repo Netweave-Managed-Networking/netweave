@@ -22,7 +22,7 @@ class InvitationCodeController extends Controller
             ->orderBy('editor_id', 'desc')
             ->get();
 
-        return Inertia::render('InvitationCodes/InvitationCodesPage', [
+        return Inertia::render('invitation-codes/invitation-codes-page', [
             'invitationCodes' => $invitationCodes,
         ]);
     }
