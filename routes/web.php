@@ -19,7 +19,7 @@ use Inertia\Response;
 // /////// //
 
 Route::get('/', function (): Response {
-    return Inertia::render('WelcomePage', [
+    return Inertia::render('welcome-page', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -28,7 +28,7 @@ Route::get('/', function (): Response {
 });
 
 Route::get('/home', function (): Response {
-    return Inertia::render('HomePage');
+    return Inertia::render('home-page');
 })->middleware(['auth', 'verified'])->name('home');
 
 // ///// //

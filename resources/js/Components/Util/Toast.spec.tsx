@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import Toast from './Toast';
+import Toast from './toast';
 
 describe('Toast Component', () => {
   describe('message', () => {

@@ -1,9 +1,9 @@
-import InputError from '@/Components/Input/InputError';
-import InputLabel from '@/Components/Input/InputLabel';
-import PrimaryButton from '@/Components/Input/PrimaryButton';
-import TextInput from '@/Components/Input/TextInput';
-import { InvitationCodeTooltipButton } from '@/Components/InvitationCodes/InvitationCodeTooltipButton';
-import GuestLayout from '@/Layouts/GuestLayout';
+import InputError from '@/components/input/input-error';
+import InputLabel from '@/components/input/input-label';
+import PrimaryButton from '@/components/input/primary-button';
+import TextInput from '@/components/input/text-input';
+import { InvitationCodeTooltipButton } from '@/components/invitation-codes/invitation-code-tooltip-button';
+import GuestLayout from '@/layouts/guest-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 import { FormEventHandler, useEffect } from 'react';

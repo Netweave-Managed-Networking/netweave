@@ -1,7 +1,7 @@
 import '../css/app.css';
 import './bootstrap';
 
-import { ToastProvider } from '@/Providers/ToastProvider';
+import { ToastProvider } from '@/providers/toast-provider';
 import { createInertiaApp } from '@inertiajs/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
