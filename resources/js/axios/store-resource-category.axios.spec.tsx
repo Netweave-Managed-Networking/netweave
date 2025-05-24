@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
   storeResourceCategory,
   StoreResourceCategoryError,
-} from './storeResourceCategory.axios';
+} from './store-resource-category.axios';
 
 jest.mock('axios');
 

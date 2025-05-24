@@ -1,4 +1,4 @@
-import { storeResourceCategory } from '@/axios/storeResourceCategory.axios';
+import { storeResourceCategory } from '@/axios/store-resource-category.axios';
 import { ResourceCategory } from '@/types/resource-category.model';
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -7,7 +7,7 @@ import {
   ResourceCategoryCreateModalProps,
 } from './resource-category-create-modal';
 
-jest.mock('@/axios/storeResourceCategory.axios');
+jest.mock('@/axios/store-resource-category.axios');
 
 const mockOnClose = jest.fn();
 
