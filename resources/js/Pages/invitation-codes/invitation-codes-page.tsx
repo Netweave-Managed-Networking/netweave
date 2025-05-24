@@ -1,4 +1,4 @@
-import { InvitationCodesTable } from '@/components/invitation-codes/invitation-codes-table';
+import { InvitationCodesTable } from '@/component/invitation-codes/invitation-codes-table';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { InvitationCode } from '@/types/invitation-code.model';
 import { PageProps } from '@/types/page-props.type';

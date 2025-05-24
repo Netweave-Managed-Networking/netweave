@@ -1,5 +1,5 @@
-import OrganizationsList from '@/components/organizations/organizations-list';
-import { NavTile } from '@/components/util/nav-tile';
+import OrganizationsList from '@/component/organizations/organizations-list';
+import { NavTile } from '@/component/utils/nav-tile';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { PageProps } from '@/types/page-props.type';
 import { Head } from '@inertiajs/react';

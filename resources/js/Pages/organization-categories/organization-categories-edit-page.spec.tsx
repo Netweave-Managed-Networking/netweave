@@ -14,7 +14,7 @@ jest.mock(
 );
 
 jest.mock(
-  '@/components/organization-categories/organization-categories-edit',
+  '@/component/organization-categories/organization-categories-edit',
   () => ({
     OrganizationCategoriesEdit: ({
       organizationCategories,

@@ -1,4 +1,4 @@
-import { ToastProps } from '@/components/util/toast';
+import { ToastProps } from '@/component/utils/toasts';
 import { PageProps } from '@/types/page-props.type';
 import { usePage } from '@inertiajs/react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -12,7 +12,7 @@ jest.mock('@inertiajs/react', () => ({
 
 // Mocking the Toast component
 jest.mock(
-  '@/components/util/toast',
+  '@/component/utils/toasts',
   () =>
     ({ open, message, onClose, severity, position }: ToastProps) => {
       return (

@@ -1,4 +1,4 @@
-import ApplicationLogo from '@/components/logo/application-logo';
+import ApplicationLogo from '@/component/logo/application-logo';
 import { PropsWithChildren } from 'react';
 
 export default function Guest({ children }: PropsWithChildren) {

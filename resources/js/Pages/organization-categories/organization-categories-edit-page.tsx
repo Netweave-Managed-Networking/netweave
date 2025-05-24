@@ -1,4 +1,4 @@
-import { OrganizationCategoriesEdit } from '@/components/organization-categories/organization-categories-edit';
+import { OrganizationCategoriesEdit } from '@/component/organization-categories/organization-categories-edit';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';

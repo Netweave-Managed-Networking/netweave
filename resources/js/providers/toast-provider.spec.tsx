@@ -1,4 +1,4 @@
-import { ToastProps } from '@/components/util/toast';
+import { ToastProps } from '@/component/utils/toasts';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReactNode } from 'react';
@@ -6,7 +6,7 @@ import { ToastProvider, useToast } from './toast-provider';
 
 // Mocking the Toast component
 jest.mock(
-  '@/components/util/toast',
+  '@/component/utils/toasts',
   () =>
     ({ open, message, onClose, severity, position }: ToastProps) => {
       return (

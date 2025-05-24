@@ -1,4 +1,4 @@
-import { RestrictionNotesCoopCriteriaCreate } from '@/components/restriction-notes-coop-criteria-create/restriction-notes-coop-criteria-create';
+import { RestrictionNotesCoopCriteriaCreate } from '@/component/restriction-notes-coop-criteria-create/restriction-notes-coop-criteria-create';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { OrganizationNo } from '@/types/organization-no.model';
 import { PageProps } from '@/types/page-props.type';

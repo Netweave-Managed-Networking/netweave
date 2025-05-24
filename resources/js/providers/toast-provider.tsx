@@ -1,4 +1,4 @@
-import Toast, { ToastPosition } from '@/components/util/toast';
+import Toast, { ToastPosition } from '@/component/utils/toasts';
 import { AlertColor } from '@mui/material';
 import { createContext, ReactNode, useContext, useState } from 'react';
 

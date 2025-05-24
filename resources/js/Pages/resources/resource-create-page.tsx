@@ -1,4 +1,4 @@
-import { ResourceCreate } from '@/components/resources/resource-create';
+import { ResourceCreate } from '@/component/resources/resource-create';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { OrganizationMin } from '@/types/organization-min.model';
 import { PageProps } from '@/types/page-props.type';

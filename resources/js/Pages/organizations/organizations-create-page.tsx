@@ -1,4 +1,4 @@
-import { OrganizationCreate } from '@/components/organizations/organization-create';
+import { OrganizationCreate } from '@/component/organizations/organization-create';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { OrganizationCategory } from '@/types/organization-category.model';
 import { PageProps } from '@/types/page-props.type';

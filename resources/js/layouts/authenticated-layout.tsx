@@ -1,8 +1,8 @@
-import Dropdown from '@/components/input/dropdown';
-import ApplicationLogo from '@/components/logo/application-logo';
+import Dropdown from '@/component/inputs/dropdown';
+import ApplicationLogo from '@/component/logo/application-logo';
 
-import NavLink from '@/components/util/nav-link';
-import ResponsiveNavLink from '@/components/util/responsive-nav-link';
+import NavLink from '@/component/utils/nav-link';
+import ResponsiveNavLink from '@/component/utils/responsive-nav-link';
 import { ServerToastProvider } from '@/providers/server-toast-provider';
 import { User } from '@/types/user.model';
 import { PropsWithChildren, ReactNode, useState } from 'react';

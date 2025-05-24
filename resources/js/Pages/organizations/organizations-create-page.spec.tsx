@@ -14,7 +14,7 @@ jest.mock(
     ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 );
 
-jest.mock('@/components/organizations/organization-create', () => ({
+jest.mock('@/component/organizations/organization-create', () => ({
   OrganizationCreate: () => <div>OrganizationCreate</div>,
 }));
 

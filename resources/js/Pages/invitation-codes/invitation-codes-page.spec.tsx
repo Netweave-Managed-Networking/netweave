@@ -9,7 +9,7 @@ jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
 }));
 
-jest.mock('@/components/invitation-codes/invitation-codes-table', () => ({
+jest.mock('@/component/invitation-codes/invitation-codes-table', () => ({
   InvitationCodesTable: ({
     showAddCodeButton,
   }: {
