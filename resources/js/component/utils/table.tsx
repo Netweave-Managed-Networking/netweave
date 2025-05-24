@@ -35,7 +35,7 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
                     <th
                       key={title}
                       scope="col"
-                      className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase whitespace-nowrap"
+                      className="whitespace-nowrap px-6 py-3 text-left text-xs font-bold uppercase text-gray-500"
                     >
                       {title}
                     </th>
@@ -48,7 +48,7 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
                     {row.items.map(item => (
                       <td
                         key={item.key}
-                        className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap"
+                        className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800"
                       >
                         {item.node}
                       </td>

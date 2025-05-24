@@ -17,7 +17,7 @@ export default function ResourceCreatePage({
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 className="text-xl font-semibold leading-tight text-gray-800">
           <strong>{organization.name}</strong>: Ressource oder Bedarf zuordnen
         </h2>
       }
