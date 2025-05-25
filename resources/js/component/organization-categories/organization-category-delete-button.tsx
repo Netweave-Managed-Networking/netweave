@@ -1,4 +1,4 @@
-import { fetchOrganizationCategory } from '@/axios/fetchOrganizationCategory.axios';
+import { fetchOrganizationCategory } from '@/axios/fetch-organization-category.axios';
 import SecondaryButton from '@/component/inputs/secondary-button';
 import Modal from '@/component/utils/modals';
 import { IdName } from '@/types/id-name.model';
