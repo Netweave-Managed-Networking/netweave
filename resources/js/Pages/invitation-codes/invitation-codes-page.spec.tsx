@@ -26,7 +26,7 @@ jest.mock('@/component/invitation-codes/invitation-codes-table', () => ({
 jest.mock(
   '@/layouts/authenticated-layout',
   () =>
-    ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+    ({ children, header }: { children: React.ReactNode, header: React.ReactNode }) => <div>{header} {children}</div>
 );
 
 describe('InvitationCodesPage', () => {
