@@ -1,18 +1,8 @@
-import {
-  forwardRef,
-  TextareaHTMLAttributes,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import { forwardRef, TextareaHTMLAttributes, useEffect, useImperativeHandle, useRef } from 'react';
 
 export default forwardRef(function TextArea(
-  {
-    className = '',
-    isFocused = false,
-    ...props
-  }: TextareaHTMLAttributes<HTMLTextAreaElement> & { isFocused?: boolean },
-  ref
+  { className = '', isFocused = false, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement> & { isFocused?: boolean },
+  ref,
 ) {
   const localRef = useRef<HTMLTextAreaElement>(null);
 
@@ -29,10 +19,7 @@ export default forwardRef(function TextArea(
   return (
     <textarea
       {...props}
-      className={
-        'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
-        className
-      }
+      className={'rounded-md border border-gray-300 bg-white p-2 focus:border-indigo-500 focus:ring-indigo-500 ' + className}
       ref={localRef}
     />
   );

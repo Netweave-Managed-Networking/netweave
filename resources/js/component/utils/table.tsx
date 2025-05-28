@@ -27,29 +27,22 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
     <div className="flex flex-col">
       <div className="overflow-x-auto">
         <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden border rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200 table-auto">
+          <div className="overflow-hidden rounded-lg border border-gray-300">
+            <table className="min-w-full table-auto divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {headerTitles.map(title => (
-                    <th
-                      key={title}
-                      scope="col"
-                      className="whitespace-nowrap px-6 py-3 text-left text-xs font-bold uppercase text-gray-500"
-                    >
+                  {headerTitles.map((title) => (
+                    <th key={title} scope="col" className="px-6 py-3 text-left text-xs font-bold whitespace-nowrap text-gray-500 uppercase">
                       {title}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {rowsKeyed.map(row => (
+                {rowsKeyed.map((row) => (
                   <tr key={row.key}>
-                    {row.items.map(item => (
-                      <td
-                        key={item.key}
-                        className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800"
-                      >
+                    {row.items.map((item) => (
+                      <td key={item.key} className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-800">
                         {item.node}
                       </td>
                     ))}
@@ -64,11 +57,8 @@ export default function Table({ headerTitles, rowItems }: TableProps) {
   );
 }
 
-const addKeysToTableColumns = (
-  rowItems: Row[],
-  headerTitles: string[]
-): RowWithKeys[] =>
-  rowItems.map(row => ({
+const addKeysToTableColumns = (rowItems: Row[], headerTitles: string[]): RowWithKeys[] =>
+  rowItems.map((row) => ({
     key: row.key,
     items: row.nodes.map((node, index) => ({
       key: `${row.key}_${headerTitles.at(index)?.replaceAll(' ', '_')}`,
