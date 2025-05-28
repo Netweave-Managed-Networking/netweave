@@ -20,9 +20,7 @@ describe('Toast Component', () => {
     });
 
     it('renders with severity warning', () => {
-      render(
-        <Toast open={true} message="Test warning message" severity="warning" />
-      );
+      render(<Toast open={true} message="Test warning message" severity="warning" />);
 
       const alertElement = screen.getByRole('alert');
       expect(alertElement).toHaveClass('MuiAlert-filledWarning');
@@ -40,9 +38,7 @@ describe('Toast Component', () => {
 
     it('calls onClose when the Snackbar is closed', () => {
       const handleClose = jest.fn();
-      render(
-        <Toast open={true} message="Test message" onClose={handleClose} />
-      );
+      render(<Toast open={true} message="Test message" onClose={handleClose} />);
 
       // Trigger the onClose event (this simulates the Snackbar auto-closing)
       fireEvent.keyDown(document, { key: 'Escape' }); // Simulate closing event
@@ -52,30 +48,16 @@ describe('Toast Component', () => {
 
   describe('position', () => {
     it('renders the Snackbar at top right', () => {
-      render(
-        <Toast
-          open={true}
-          message="Test message"
-          position={{ v: 'top', h: 'right' }}
-        />
-      );
+      render(<Toast open={true} message="Test message" position={{ v: 'top', h: 'right' }} />);
 
-      const snackbar =
-        screen.getByText('Test message').parentElement?.parentElement;
+      const snackbar = screen.getByText('Test message').parentElement?.parentElement;
       expect(snackbar).toHaveClass('MuiSnackbar-anchorOriginTopRight');
     });
 
     it('renders the Snackbar at bottom center', () => {
-      render(
-        <Toast
-          open={true}
-          message="Test message"
-          position={{ v: 'bottom', h: 'center' }}
-        />
-      );
+      render(<Toast open={true} message="Test message" position={{ v: 'bottom', h: 'center' }} />);
 
-      const snackbar =
-        screen.getByText('Test message').parentElement?.parentElement;
+      const snackbar = screen.getByText('Test message').parentElement?.parentElement;
       expect(snackbar).toHaveClass('MuiSnackbar-anchorOriginBottomCenter');
     });
   });

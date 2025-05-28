@@ -3,11 +3,7 @@ import { AlertColor } from '@mui/material';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 type ToastContextType = {
-  showToast: (
-    message: string,
-    severity: AlertColor,
-    position?: ToastPosition
-  ) => void;
+  showToast: (message: string, severity: AlertColor, position?: ToastPosition) => void;
 };
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -29,11 +25,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     h: 'right',
   });
 
-  const showToast = (
-    message: string,
-    severity: AlertColor,
-    position: ToastPosition = { v: 'bottom', h: 'right' }
-  ) => {
+  const showToast = (message: string, severity: AlertColor, position: ToastPosition = { v: 'bottom', h: 'right' }) => {
     setMessage(message);
     setSeverity(severity);
     setPosition(position);
@@ -48,15 +40,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {message && (
-        <Toast
-          open={open}
-          onClose={handleClose}
-          message={message}
-          position={position}
-          severity={severity}
-        />
-      )}
+      {message && <Toast open={open} onClose={handleClose} message={message} position={position} severity={severity} />}
     </ToastContext.Provider>
   );
 };

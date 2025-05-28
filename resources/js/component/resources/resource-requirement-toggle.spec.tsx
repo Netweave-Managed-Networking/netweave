@@ -40,23 +40,17 @@ describe('ResourceRequirementToggle', () => {
   });
 
   it('sets the initial value based on the "value" prop', () => {
-    const { getByText } = render(
-      <ResourceRequirementToggle value="resource" onChange={onChange} />
-    );
+    const { getByText } = render(<ResourceRequirementToggle value="resource" onChange={onChange} />);
     expect(getByText('Ressource')).toHaveStyle('color: #fff');
     expect(getByText('Bedarf')).toHaveStyle('color: #000');
   });
 
   it('updates the selected option when the "value" prop changes', () => {
-    const { getByText, rerender } = render(
-      <ResourceRequirementToggle value="resource" onChange={onChange} />
-    );
+    const { getByText, rerender } = render(<ResourceRequirementToggle value="resource" onChange={onChange} />);
     expect(getByText('Ressource')).toHaveStyle('color: #fff');
     expect(getByText('Bedarf')).toHaveStyle('color: #000');
 
-    rerender(
-      <ResourceRequirementToggle value="requirement" onChange={onChange} />
-    );
+    rerender(<ResourceRequirementToggle value="requirement" onChange={onChange} />);
     expect(getByText('Ressource')).toHaveStyle('color: #000');
     expect(getByText('Bedarf')).toHaveStyle('color: #fff');
   });

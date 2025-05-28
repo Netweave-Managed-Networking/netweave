@@ -1,10 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Snackbar,
-  SnackbarCloseReason,
-  SnackbarOrigin,
-} from '@mui/material';
+import { Alert, AlertColor, Snackbar, SnackbarCloseReason, SnackbarOrigin } from '@mui/material';
 
 export type ToastPosition = {
   v: SnackbarOrigin['vertical'];
@@ -16,26 +10,12 @@ export interface ToastProps {
   message: string;
   position?: ToastPosition;
   severity?: AlertColor;
-  onClose?: (
-    event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => void;
+  onClose?: (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => void;
 }
 
-const Toast = ({
-  open,
-  message,
-  onClose,
-  position = { v: 'bottom', h: 'center' },
-  severity = 'info',
-}: ToastProps) => {
+const Toast = ({ open, message, onClose, position = { v: 'bottom', h: 'center' }, severity = 'info' }: ToastProps) => {
   return (
-    <Snackbar
-      open={open}
-      onClose={onClose}
-      autoHideDuration={4000}
-      anchorOrigin={{ vertical: position.v, horizontal: position.h }}
-    >
+    <Snackbar open={open} onClose={onClose} autoHideDuration={4000} anchorOrigin={{ vertical: position.v, horizontal: position.h }}>
       <Alert severity={severity} variant="filled" sx={{ width: '100%' }}>
         {message}
       </Alert>

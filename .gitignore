@@ -1,10 +1,12 @@
 /.phpunit.cache
+/bootstrap/ssr
 /coverage
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
+/storage/pail
 /vendor
 _ide_helper.php
 _ide_helper_models.php
@@ -19,8 +21,10 @@ Homestead.yaml
 auth.json
 npm-debug.log
 yarn-error.log
+/auth.json
 /.fleet
 /.idea
+/.nova
 /.vscode
 
 .DS_Store

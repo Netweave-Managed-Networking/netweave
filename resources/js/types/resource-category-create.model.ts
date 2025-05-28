@@ -1,10 +1,7 @@
 import { PickStringAsNumber } from './max-string-lengths.type';
 import { ResourceCategory } from './resource-category.model';
 
-export type ResourceCategoryCreate = Pick<
-  ResourceCategory,
-  'title' | 'definition'
->;
+export type ResourceCategoryCreate = Pick<ResourceCategory, 'title' | 'definition'>;
 
 export const emptyOrganizationCategory: ResourceCategoryCreate = {
   title: '',

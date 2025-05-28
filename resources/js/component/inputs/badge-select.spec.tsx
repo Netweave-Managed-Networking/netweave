@@ -14,14 +14,7 @@ describe('BadgeSelect component', () => {
   let mockSelected: IdLabel['id'][] = [2];
 
   const renderComponent = (props: Partial<BadgeSelectProps> = {}) => {
-    return render(
-      <BadgeSelect
-        elements={mockElements}
-        value={mockSelected}
-        onChange={onChangeMock}
-        {...props}
-      />
-    );
+    return render(<BadgeSelect elements={mockElements} value={mockSelected} onChange={onChangeMock} {...props} />);
   };
 
   beforeEach(() => {
@@ -41,7 +34,7 @@ describe('BadgeSelect component', () => {
     renderComponent();
 
     // Verify each badge by label
-    mockElements.forEach(element => {
+    mockElements.forEach((element) => {
       expect(screen.getByText(element.label)).toBeInTheDocument();
     });
   });
@@ -79,9 +72,7 @@ describe('BadgeSelect component', () => {
 
     renderComponent({ elements: unsortedElements });
 
-    const badges = screen
-      .getAllByText(/Alpha|Bravo|Charlie/)
-      .map(el => el.textContent);
+    const badges = screen.getAllByText(/Alpha|Bravo|Charlie/).map((el) => el.textContent);
     expect(badges).toEqual(['Alpha', 'Bravo', 'Charlie']);
   });
 
@@ -97,13 +88,7 @@ describe('BadgeSelect component', () => {
 
     // Update mockSelected and re-render
     mockSelected = [1, 3];
-    rerender(
-      <BadgeSelect
-        elements={mockElements}
-        value={mockSelected}
-        onChange={onChangeMock}
-      />
-    );
+    rerender(<BadgeSelect elements={mockElements} value={mockSelected} onChange={onChangeMock} />);
 
     expect(onChangeMock).not.toHaveBeenCalled();
   });
@@ -118,13 +103,7 @@ describe('BadgeSelect component', () => {
 
     // Update mockSelected and re-render
     mockSelected = [1, 3];
-    rerender(
-      <BadgeSelect
-        elements={mockElements}
-        value={mockSelected}
-        onChange={onChangeMock}
-      />
-    );
+    rerender(<BadgeSelect elements={mockElements} value={mockSelected} onChange={onChangeMock} />);
 
     // Verify the badges are updated
     expect(getParent('Badge 1')).toHaveClass('BadgeChipActivated');

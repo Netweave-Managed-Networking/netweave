@@ -6,9 +6,7 @@ interface InvitationCodeDeleteButtonProps {
   id: number;
 }
 
-export function InvitationCodeDeleteButton({
-  id,
-}: InvitationCodeDeleteButtonProps) {
+export function InvitationCodeDeleteButton({ id }: InvitationCodeDeleteButtonProps) {
   const { delete: destroy } = useForm({});
 
   const handleDelete = async () => {

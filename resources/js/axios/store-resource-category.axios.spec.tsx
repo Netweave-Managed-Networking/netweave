@@ -1,9 +1,6 @@
 import { ResourceCategoryCreate } from '@/types/resource-category-create.model';
 import axios from 'axios';
-import {
-  storeResourceCategory,
-  StoreResourceCategoryError,
-} from './store-resource-category.axios';
+import { storeResourceCategory, StoreResourceCategoryError } from './store-resource-category.axios';
 
 jest.mock('axios');
 
@@ -34,24 +31,14 @@ describe('storeResourceCategory', () => {
     const result = await storeResourceCategory(mockCategory);
 
     expect(result).toEqual(mockResponse);
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('resource-categories.api.store'),
-      mockCategory
-    );
+    expect(mockedAxios.post).toHaveBeenCalledWith(route('resource-categories.api.store'), mockCategory);
   });
 
   it('should throw an error when the request fails', async () => {
-    const mockError = new Error(
-      'Request failed with status code 500'
-    ) as StoreResourceCategoryError;
+    const mockError = new Error('Request failed with status code 500') as StoreResourceCategoryError;
     mockedAxios.post.mockRejectedValue(mockError);
 
-    await expect(storeResourceCategory(mockCategory)).rejects.toThrow(
-      'Request failed with status code 500'
-    );
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      route('resource-categories.api.store'),
-      mockCategory
-    );
+    await expect(storeResourceCategory(mockCategory)).rejects.toThrow('Request failed with status code 500');
+    expect(mockedAxios.post).toHaveBeenCalledWith(route('resource-categories.api.store'), mockCategory);
   });
 });

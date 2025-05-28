@@ -17,19 +17,11 @@ const itemToIdLabel = (item: TestItem): IdLabel => ({
   label: item.label,
 });
 
-const createItemModalComponent = ({
-  show,
-  onClose,
-}: {
-  show: boolean;
-  onClose: (newSelectable: TestItem | undefined) => void;
-}) => {
+const createItemModalComponent = ({ show, onClose }: { show: boolean; onClose: (newSelectable: TestItem | undefined) => void }) => {
   if (!show) return null;
   return (
     <div>
-      <button onClick={() => onClose({ id: 3, label: 'Item 3' })}>
-        Add Item 3
-      </button>
+      <button onClick={() => onClose({ id: 3, label: 'Item 3' })}>Add Item 3</button>
       <button onClick={() => onClose(undefined)}>Cancel</button>
     </div>
   );
