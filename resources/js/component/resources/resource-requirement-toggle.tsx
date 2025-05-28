@@ -7,11 +7,7 @@ export type ResourceRequirementToggleProps = {
   style?: React.CSSProperties | undefined;
 };
 
-export default function ResourceRequirementToggle({
-  value,
-  onChange,
-  style,
-}: ResourceRequirementToggleProps) {
+export default function ResourceRequirementToggle({ value, onChange, style }: ResourceRequirementToggleProps) {
   const [selected, setSelected] = useState<Resource['type'] | null>(null);
 
   useEffect(() => {
@@ -38,12 +34,7 @@ export default function ResourceRequirementToggle({
       <div
         style={{
           position: 'absolute',
-          top:
-            selected === 'resource'
-              ? '0%'
-              : selected === 'requirement'
-                ? '50%'
-                : '25%',
+          top: selected === 'resource' ? '0%' : selected === 'requirement' ? '50%' : '25%',
           height: '50%',
           width: '100%',
           background: selected === null ? '#ffffff00' : '#000',

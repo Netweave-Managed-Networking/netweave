@@ -11,22 +11,18 @@ jest.mock('@inertiajs/react', () => ({
 }));
 
 // Mocking the Toast component
-jest.mock(
-  '@/component/utils/toasts',
-  () =>
-    ({ open, message, onClose, severity, position }: ToastProps) => {
-      return (
-        open && (
-          <div data-testid="toast" role="alert">
-            <p>{message}</p>
-            <span>{severity}</span>
-            <span>{position?.toString()}</span>
-            <button onClick={onClose}>Close</button>
-          </div>
-        )
-      );
-    }
-);
+jest.mock('@/component/utils/toasts', () => ({ open, message, onClose, severity, position }: ToastProps) => {
+  return (
+    open && (
+      <div data-testid="toast" role="alert">
+        <p>{message}</p>
+        <span>{severity}</span>
+        <span>{position?.toString()}</span>
+        <button onClick={onClose}>Close</button>
+      </div>
+    )
+  );
+});
 
 const TestComponent = () => {
   return (
@@ -58,13 +54,9 @@ describe('ServerToastProvider', () => {
     mockProps.success_message = 'Operation successful!';
     render(<TestComponent />);
 
-    expect(
-      await screen.findByText('Operation successful!')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Operation successful!')).toBeInTheDocument();
     expect(screen.getByText('success')).toBeInTheDocument();
-    expect(
-      screen.getByText({ v: 'bottom', h: 'right' }.toString())
-    ).toBeInTheDocument();
+    expect(screen.getByText({ v: 'bottom', h: 'right' }.toString())).toBeInTheDocument();
   });
 
   it('should render an error toast when there is an error message', async () => {
@@ -73,9 +65,7 @@ describe('ServerToastProvider', () => {
 
     expect(await screen.findByText('An error occurred!')).toBeInTheDocument();
     expect(screen.getByText('error')).toBeInTheDocument();
-    expect(
-      screen.getByText({ v: 'bottom', h: 'right' }.toString())
-    ).toBeInTheDocument();
+    expect(screen.getByText({ v: 'bottom', h: 'right' }.toString())).toBeInTheDocument();
   });
 
   it('should close the toast when the close button is clicked', async () => {
@@ -97,9 +87,7 @@ describe('ServerToastProvider', () => {
     mockProps.success_message = 'Operation successful!';
     render(<TestComponent />);
 
-    expect(
-      await screen.findByText('Operation successful!')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Operation successful!')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Close'));
 

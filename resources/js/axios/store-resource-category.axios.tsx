@@ -10,7 +10,5 @@ export type StoreResourceCategoryError = AxiosError<{
 }>;
 
 /** throws error when http request is 4xx or 5xx */
-export const storeResourceCategory = async (
-  category: ResourceCategoryCreate
-): Promise<ResourceCategory> | never =>
+export const storeResourceCategory = async (category: ResourceCategoryCreate): Promise<ResourceCategory> | never =>
   (await axios.post(route('resource-categories.api.store'), category)).data;

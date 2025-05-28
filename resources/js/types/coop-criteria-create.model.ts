@@ -1,9 +1,7 @@
 import { CoopCriteria } from './coop-criteria.model';
 import { PickStringAsNumber } from './max-string-lengths.type';
 
-export type CoopCriteriaCreate = Partial<
-  Pick<CoopCriteria, 'for_coop' | 'ko_no_coop'>
->;
+export type CoopCriteriaCreate = Partial<Pick<CoopCriteria, 'for_coop' | 'ko_no_coop'>>;
 
 export const emptyCoopCriteria: CoopCriteriaCreate = {
   for_coop: '',
@@ -16,6 +14,4 @@ export const coopMax: PickStringAsNumber<CoopCriteriaCreate> = {
   ko_no_coop: 4095,
 };
 
-export type CoopCriteriaCreateErrors = Partial<
-  Record<keyof CoopCriteriaCreate, string>
->;
+export type CoopCriteriaCreateErrors = Partial<Record<keyof CoopCriteriaCreate, string>>;

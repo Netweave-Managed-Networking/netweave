@@ -9,16 +9,9 @@ export interface HoverInfoButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const HoverInfoButton = ({
-  message,
-  placement,
-  onClick,
-}: HoverInfoButtonProps) => {
+const HoverInfoButton = ({ message, placement, onClick }: HoverInfoButtonProps) => {
   return (
-    <Tooltip
-      title={<Typography>{message}</Typography>}
-      placement={placement ?? 'top'}
-    >
+    <Tooltip title={<Typography>{message}</Typography>} placement={placement ?? 'top'}>
       <IconButton
         onClick={onClick}
         sx={{
@@ -26,14 +19,7 @@ const HoverInfoButton = ({
           ...(onClick ? { cursor: 'pointer' } : {}),
         }}
       >
-        {onClick ? (
-          <InfoIcon className="text-gray-800" />
-        ) : (
-          <HelpOutlineIcon
-            className="text-gray-800"
-            sx={{ cursor: 'default' }}
-          />
-        )}
+        {onClick ? <InfoIcon className="text-gray-800" /> : <HelpOutlineIcon className="text-gray-800" sx={{ cursor: 'default' }} />}
       </IconButton>
     </Tooltip>
   );

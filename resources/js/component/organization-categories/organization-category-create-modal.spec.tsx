@@ -2,10 +2,7 @@ import { storeOrganizationCategory } from '@/axios/store-organization-category.a
 import { OrganizationCategory } from '@/types/organization-category.model';
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import {
-  OrganizationCategoryCreateModal,
-  OrganizationCategoryCreateModalProps,
-} from './organization-category-create-modal';
+import { OrganizationCategoryCreateModal, OrganizationCategoryCreateModalProps } from './organization-category-create-modal';
 
 jest.mock('@/axios/store-organization-category.axios');
 
@@ -26,12 +23,8 @@ describe('OrganizationCategoryCreateModal', () => {
 
     expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Beschreibung/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Erstellen/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Abbrechen/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Erstellen/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Abbrechen/i })).toBeInTheDocument();
   });
 
   test('disables submit button when name is empty', () => {
@@ -127,9 +120,7 @@ describe('OrganizationCategoryCreateModal', () => {
   });
 
   test('resets the form when modal is reopened', () => {
-    const { rerender } = render(
-      <OrganizationCategoryCreateModal {...defaultProps} />
-    );
+    const { rerender } = render(<OrganizationCategoryCreateModal {...defaultProps} />);
     const nameInput = screen.getByLabelText(/Name/i) as HTMLInputElement;
 
     // Change the input value
@@ -137,9 +128,7 @@ describe('OrganizationCategoryCreateModal', () => {
     expect(nameInput.value).toBe('Some Name');
 
     // Close and reopen the modal
-    rerender(
-      <OrganizationCategoryCreateModal {...defaultProps} show={false} />
-    );
+    rerender(<OrganizationCategoryCreateModal {...defaultProps} show={false} />);
     rerender(<OrganizationCategoryCreateModal {...defaultProps} show={true} />);
 
     // Check if the input value is reset

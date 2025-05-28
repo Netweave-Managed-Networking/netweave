@@ -5,9 +5,7 @@ import { InvitationCode } from '@/types/invitation-code.model';
 import { render, screen } from '@testing-library/react';
 
 // Mocking child components used in InvitationCodesPage
-jest.mock('@inertiajs/react', () => ({
-  Head: ({ title }: { title: string }) => <title>{title}</title>,
-}));
+jest.mock('@inertiajs/react', () => ({ Head: ({ title }: { title: string }) => <title>{title}</title> }));
 
 jest.mock('@/component/invitation-codes/invitation-codes-table', () => ({
   InvitationCodesTable: ({ showAddCodeButton }: { showAddCodeButton: boolean }) => (

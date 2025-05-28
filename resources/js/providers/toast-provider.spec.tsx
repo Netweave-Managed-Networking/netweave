@@ -5,22 +5,18 @@ import { ReactNode } from 'react';
 import { ToastProvider, useToast } from './toast-provider';
 
 // Mocking the Toast component
-jest.mock(
-  '@/component/utils/toasts',
-  () =>
-    ({ open, message, onClose, severity, position }: ToastProps) => {
-      return (
-        open && (
-          <div data-testid="toast" role="alert">
-            <p>{message}</p>
-            <span>{severity}</span>
-            <span>{position?.toString()}</span>
-            <button onClick={onClose}>Close</button>
-          </div>
-        )
-      );
-    }
-);
+jest.mock('@/component/utils/toasts', () => ({ open, message, onClose, severity, position }: ToastProps) => {
+  return (
+    open && (
+      <div data-testid="toast" role="alert">
+        <p>{message}</p>
+        <span>{severity}</span>
+        <span>{position?.toString()}</span>
+        <button onClick={onClose}>Close</button>
+      </div>
+    )
+  );
+});
 
 const TestComponent = ({ children }: { children: ReactNode }) => {
   return <ToastProvider>{children}</ToastProvider>;
@@ -29,15 +25,7 @@ const TestComponent = ({ children }: { children: ReactNode }) => {
 const ComponentUsingToast = () => {
   const { showToast } = useToast();
 
-  return (
-    <button
-      onClick={() =>
-        showToast('Test message', 'success', { v: 'top', h: 'left' })
-      }
-    >
-      Show Toast
-    </button>
-  );
+  return <button onClick={() => showToast('Test message', 'success', { v: 'top', h: 'left' })}>Show Toast</button>;
 };
 
 describe('ToastProvider', () => {
@@ -45,7 +33,7 @@ describe('ToastProvider', () => {
     render(
       <TestComponent>
         <ComponentUsingToast />
-      </TestComponent>
+      </TestComponent>,
     );
     expect(screen.queryByTestId('toast')).not.toBeInTheDocument();
   });
@@ -54,23 +42,21 @@ describe('ToastProvider', () => {
     render(
       <TestComponent>
         <ComponentUsingToast />
-      </TestComponent>
+      </TestComponent>,
     );
 
     userEvent.click(screen.getByText('Show Toast'));
 
     expect(await screen.findByText('Test message')).toBeInTheDocument();
     expect(screen.getByText('success')).toBeInTheDocument();
-    expect(
-      screen.getByText({ v: 'top', h: 'left' }.toString())
-    ).toBeInTheDocument();
+    expect(screen.getByText({ v: 'top', h: 'left' }.toString())).toBeInTheDocument();
   });
 
   it('should close the toast when the close button is clicked', async () => {
     render(
       <TestComponent>
         <ComponentUsingToast />
-      </TestComponent>
+      </TestComponent>,
     );
 
     userEvent.click(screen.getByText('Show Toast'));
