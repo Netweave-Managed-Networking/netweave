@@ -15,11 +15,7 @@ const queryClient = new QueryClient({
 
 createInertiaApp({
   title: (title: string) => `${title} - ${appName}`,
-  resolve: (name: string) =>
-    resolvePageComponent(
-      `./Pages/${name}.tsx`,
-      import.meta.glob('./Pages/**/*.tsx')
-    ),
+  resolve: (name: string) => resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setup({ el, App, props }: { el: any; App: any; props: any }) {
     const root = createRoot(el);
@@ -29,7 +25,7 @@ createInertiaApp({
         <ToastProvider>
           <App {...props} />
         </ToastProvider>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   },
   progress: {

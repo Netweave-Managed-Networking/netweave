@@ -15,11 +15,7 @@ interface OrganizationCategoryDeleteButtonProps {
   style?: CSSProperties;
 }
 
-export function OrganizationCategoryDeleteButton({
-  category,
-  className,
-  style,
-}: OrganizationCategoryDeleteButtonProps) {
+export function OrganizationCategoryDeleteButton({ category, className, style }: OrganizationCategoryDeleteButtonProps) {
   const { delete: destroy } = useForm({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [organizationsOfCat, setOrganizationsOfCat] = useState<IdName[]>([]);
@@ -51,19 +47,8 @@ export function OrganizationCategoryDeleteButton({
 
   return (
     <>
-      <Tooltip
-        title={
-          <Typography>
-            Dialog öffnen, um Organisationskategorie zu löschen
-          </Typography>
-        }
-        placement="bottom"
-      >
-        <Button
-          className={className}
-          style={{ ...style, borderRadius: '0px' }}
-          onClick={openModal}
-        >
+      <Tooltip title={<Typography>Dialog öffnen, um Organisationskategorie zu löschen</Typography>} placement="bottom">
+        <Button className={className} style={{ ...style, borderRadius: '0px' }} onClick={openModal}>
           <DeleteOutline className="text-red-800" />
         </Button>
       </Tooltip>
@@ -80,17 +65,12 @@ export function OrganizationCategoryDeleteButton({
             <>
               <p className="mt-1 text-sm text-gray-600">
                 Beim Löschen wird diese Kategorie somit{' '}
-                <strong>
-                  von allen {organizationsOfCat.length} Organisationen entfernt,
-                  denen diese zurzeit zugewiesen ist
-                </strong>
-                .
+                <strong>von allen {organizationsOfCat.length} Organisationen entfernt, denen diese zurzeit zugewiesen ist</strong>.
               </p>
               <div className="mt-1 text-sm text-gray-600">
-                Diese sind{' '}
-                {organizationsOfCat.length > 5 && <span>unter anderem</span>}:
-                <ul className="my-4 px-10 list-disc">
-                  {organizationsOfCat.slice(0, 5).map(organization => (
+                Diese sind {organizationsOfCat.length > 5 && <span>unter anderem</span>}:
+                <ul className="my-4 list-disc px-10">
+                  {organizationsOfCat.slice(0, 5).map((organization) => (
                     <li key={organization.id}>{organization.name}</li>
                   ))}
                   {organizationsOfCat.length > 5 && <li>...</li>}
@@ -99,19 +79,14 @@ export function OrganizationCategoryDeleteButton({
             </>
           ) : (
             <p className="mt-1 text-sm text-gray-600">
-              Es gibt keine Organisationen mit dieser Kategorie. Das Löschen
-              dieser Kategorie hat somit keine Auswirkungen auf Organisationen.
+              Es gibt keine Organisationen mit dieser Kategorie. Das Löschen dieser Kategorie hat somit keine Auswirkungen auf Organisationen.
             </p>
           )}
 
           {/* buttons */}
           <div className="mt-6 flex justify-end">
             <SecondaryButton onClick={closeModal}>Abbrechen</SecondaryButton>
-            <DangerButton
-              className="ms-3"
-              onClick={handleDelete}
-              disabled={loading}
-            >
+            <DangerButton className="ms-3" onClick={handleDelete} disabled={loading}>
               {loading ? 'Wird Gelöscht...' : 'Löschen'}
             </DangerButton>
           </div>

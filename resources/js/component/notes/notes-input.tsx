@@ -1,12 +1,7 @@
 import InputError from '@/component/inputs/input-error';
 import InputLabel from '@/component/inputs/input-label';
 import { isEqual } from '@/helpers/is-equal.object.helper';
-import {
-  emptyNotes,
-  NotesCreate,
-  NotesCreateErrors,
-  notesMax,
-} from '@/types/notes-create.model';
+import { emptyNotes, NotesCreate, NotesCreateErrors, notesMax } from '@/types/notes-create.model';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import TextArea from '../inputs/text-area';
@@ -33,18 +28,15 @@ export function NotesInput({
 
   return (
     <div className="mt-5">
-      <div className="flex justify-between align-end">
-        <InputLabel
-          htmlFor="notes"
-          value="Notizen zum Wesen / Charakter der Organisation"
-        />
+      <div className="align-end flex justify-between">
+        <InputLabel htmlFor="notes" value="Notizen zum Wesen / Charakter der Organisation" />
         <MaxTextSize value={data.notes} max={notesMax.notes} />
       </div>
       <TextArea
         id="notes"
         autoFocus={!!autoFocus}
         value={data.notes ?? ''}
-        onChange={e => setData('notes', e.target.value)}
+        onChange={(e) => setData('notes', e.target.value)}
         className="mt-1 block w-full"
         rows={8}
       />

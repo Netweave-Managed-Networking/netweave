@@ -13,16 +13,12 @@ export default function RestrictionNotesCoopCriteriaCreatePage({
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-          Kriterien & Einschränkungen ergänzen
-        </h2>
-      }
+      header={<h2 className="text-xl leading-tight font-semibold text-gray-800">Kriterien & Einschränkungen ergänzen</h2>}
     >
       <Head title="Kriterien & Einschränkungen ergänzen" />
 
-      <div className="py-12 overflow-auto h-screen">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div className="h-screen overflow-auto py-12">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <RestrictionNotesCoopCriteriaCreate organization={organization} />
         </div>
       </div>

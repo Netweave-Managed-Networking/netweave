@@ -17,9 +17,7 @@ export default function Badge({ label, isActivated, ...props }: BadgeProps) {
         backgroundColor: isActivated ? 'grey.900' : 'grey.300',
         color: isActivated ? 'white' : 'black',
         textShadow: isActivated ? '.001em .001em #fff' : 'none',
-        '&:hover': clickableExplicitlySet
-          ? {}
-          : { backgroundColor: isActivated ? 'grey.600' : 'grey.400' },
+        '&:hover': clickableExplicitlySet ? {} : { backgroundColor: isActivated ? 'grey.600' : 'grey.400' },
         // focusVisible is set in app.scss
       }}
     />

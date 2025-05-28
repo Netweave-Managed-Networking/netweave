@@ -31,15 +31,11 @@ describe('InputLabel Component', () => {
   it('applies the additional className to the label', () => {
     render(<InputLabel className="custom-class" value="Test Label" />);
     const labelElement = screen.getByText('Test Label');
-    expect(labelElement).toHaveClass(
-      'block font-medium text-sm text-gray-700 custom-class'
-    );
+    expect(labelElement).toHaveClass('block font-medium text-sm text-gray-700 custom-class');
   });
 
   it('applies other props correctly to the label', () => {
-    render(
-      <InputLabel value="Test Label" id="test-id" data-testid="custom-label" />
-    );
+    render(<InputLabel value="Test Label" id="test-id" data-testid="custom-label" />);
     const labelElement = screen.getByTestId('custom-label');
     expect(labelElement).toHaveAttribute('id', 'test-id');
   });

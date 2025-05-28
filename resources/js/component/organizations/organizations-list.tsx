@@ -21,11 +21,7 @@ export default function OrganizationsList() {
   }
 
   if (organizations.length === 0) {
-    return (
-      <Tile>
-        Es existieren keine Organisationen oder es wurden keine gefunden.
-      </Tile>
-    );
+    return <Tile>Es existieren keine Organisationen oder es wurden keine gefunden.</Tile>;
   }
 
   return (
@@ -35,13 +31,8 @@ export default function OrganizationsList() {
           <Tile>
             <div className="flex items-center gap-2">
               <strong>{organization.name}</strong>
-              {organization.organization_categories.map(category => (
-                <Badge
-                  key={category.id}
-                  label={category.name}
-                  isActivated={false}
-                  clickable={false}
-                />
+              {organization.organization_categories.map((category) => (
+                <Badge key={category.id} label={category.name} isActivated={false} clickable={false} />
               ))}
             </div>
           </Tile>

@@ -15,34 +15,23 @@ const route = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = route;
 
-jest.mock(
-  '@/component/inputs/primary-button',
-  () => (props: { children: ReactNode }) => (
-    <button {...props} data-testid="primary-button">
-      {props.children}
-    </button>
-  )
-);
-
-jest.mock(
-  '@/component/inputs/secondary-button',
-  () => (props: { children: ReactNode }) => (
-    <button {...props} data-testid="secondary-button">
-      {props.children}
-    </button>
-  )
-);
-
-jest.mock('@mui/icons-material/EditOutlined', () => () => (
-  <div data-testid="edit-icon"></div>
+jest.mock('@/component/inputs/primary-button', () => (props: { children: ReactNode }) => (
+  <button {...props} data-testid="primary-button">
+    {props.children}
+  </button>
 ));
 
-jest.mock(
-  '@/component/utils/modals',
-  () => (props: { show: boolean; children: ReactNode }) => (
-    <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
-  )
-);
+jest.mock('@/component/inputs/secondary-button', () => (props: { children: ReactNode }) => (
+  <button {...props} data-testid="secondary-button">
+    {props.children}
+  </button>
+));
+
+jest.mock('@mui/icons-material/EditOutlined', () => () => <div data-testid="edit-icon"></div>);
+
+jest.mock('@/component/utils/modals', () => (props: { show: boolean; children: ReactNode }) => (
+  <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
+));
 
 describe('OrganizationCategoryUpdateButton', () => {
   const mockCategory = mockOrganizationCategories[0];
@@ -87,11 +76,7 @@ describe('OrganizationCategoryUpdateButton', () => {
     const cancelButton = screen.getByTestId('secondary-button');
     fireEvent.click(cancelButton);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('modal')).not.toHaveTextContent(
-        'Kategorie bearbeiten'
-      )
-    );
+    await waitFor(() => expect(screen.queryByTestId('modal')).not.toHaveTextContent('Kategorie bearbeiten'));
   });
 
   it('calls the put function when the save button is clicked', async () => {

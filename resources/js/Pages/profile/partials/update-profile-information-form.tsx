@@ -18,13 +18,12 @@ export default function UpdateProfileInformation({
 }) {
   const user = usePage<PageProps>().props.auth.user;
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } =
-    useForm({
-      name: user.name,
-      email: user.email,
-    });
+  const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    name: user.name,
+    email: user.email,
+  });
 
-  const submit: FormEventHandler = e => {
+  const submit: FormEventHandler = (e) => {
     e.preventDefault();
 
     patch(route('profile.update'));
@@ -33,13 +32,9 @@ export default function UpdateProfileInformation({
   return (
     <section className={className}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900">
-          Profile Information
-        </h2>
+        <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
 
-        <p className="mt-1 text-sm text-gray-600">
-          Update your account&apos;s profile information and email address.
-        </p>
+        <p className="mt-1 text-sm text-gray-600">Update your account&apos;s profile information and email address.</p>
       </header>
 
       <form onSubmit={submit} className="mt-6 space-y-6">
@@ -50,7 +45,7 @@ export default function UpdateProfileInformation({
             id="name"
             className="mt-1 block w-full"
             value={data.name}
-            onChange={e => setData('name', e.target.value)}
+            onChange={(e) => setData('name', e.target.value)}
             required
             isFocused
             autoComplete="name"
@@ -67,7 +62,7 @@ export default function UpdateProfileInformation({
             type="email"
             className="mt-1 block w-full"
             value={data.email}
-            onChange={e => setData('email', e.target.value)}
+            onChange={(e) => setData('email', e.target.value)}
             required
             autoComplete="username"
           />
@@ -77,22 +72,20 @@ export default function UpdateProfileInformation({
 
         {mustVerifyEmail && user.email_verified_at === null && (
           <div>
-            <p className="text-sm mt-2 text-gray-800">
+            <p className="mt-2 text-sm text-gray-800">
               Your email address is unverified.
               <Link
                 href={route('verification.send')}
                 method="post"
                 as="button"
-                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
               >
                 Click here to re-send the verification email.
               </Link>
             </p>
 
             {status === 'verification-link-sent' && (
-              <div className="mt-2 font-medium text-sm text-green-600">
-                A new verification link has been sent to your email address.
-              </div>
+              <div className="mt-2 text-sm font-medium text-green-600">A new verification link has been sent to your email address.</div>
             )}
           </div>
         )}

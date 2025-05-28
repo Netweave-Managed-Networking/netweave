@@ -9,8 +9,7 @@ export const ServerToastProvider = ({ children }: { children: ReactNode }) => {
   const { showToast } = useToast();
 
   useEffect(() => {
-    const message: string | null | undefined =
-      props.error_message ?? props.success_message;
+    const message: string | null | undefined = props.error_message ?? props.success_message;
 
     if (message) {
       showToast(message, props.error_message ? 'error' : 'success');

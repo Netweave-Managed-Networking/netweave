@@ -32,14 +32,8 @@ export function UserDeleteButton({ user }: UserDeleteButtonProps) {
 
   return (
     <>
-      <Tooltip
-        title={<Typography>Dialog öffnen, um User zu löschen</Typography>}
-        placement="top"
-      >
-        <IconButton
-          onClick={() => setConfirmingUserDeletion(true)}
-          sx={{ padding: 0 }}
-        >
+      <Tooltip title={<Typography>Dialog öffnen, um User zu löschen</Typography>} placement="top">
+        <IconButton onClick={() => setConfirmingUserDeletion(true)} sx={{ padding: 0 }}>
           <PersonRemoveIcon fontSize="small" className="text-red-700" />
         </IconButton>
       </Tooltip>
@@ -48,24 +42,15 @@ export function UserDeleteButton({ user }: UserDeleteButtonProps) {
         <div className="p-6">
           <h2 className="text-lg font-medium text-gray-900">Bist du sicher?</h2>
           <p className="mt-1 text-sm text-gray-600">
-            Bist du sicher, dass du das Profil von{' '}
-            <strong> &quot;{user.name}&quot;</strong> <em>{user.email}</em>{' '}
-            löschen möchtest?
+            Bist du sicher, dass du das Profil von <strong> &quot;{user.name}&quot;</strong> <em>{user.email}</em> löschen möchtest?
           </p>
+          <p className="mt-1 text-sm text-gray-600">{user.name} wird sich nicht wieder einloggen können.</p>
           <p className="mt-1 text-sm text-gray-600">
-            {user.name} wird sich nicht wieder einloggen können.
-          </p>
-          <p className="mt-1 text-sm text-gray-600">
-            Neben den persönlichen Daten sowie den Zugangsdaten der Nutzerin /
-            des Nutzers, werden keine weiteren Daten gelöscht.
+            Neben den persönlichen Daten sowie den Zugangsdaten der Nutzerin / des Nutzers, werden keine weiteren Daten gelöscht.
           </p>
           <div className="mt-6 flex justify-end">
             <SecondaryButton onClick={closeModal}>Abbrechen</SecondaryButton>
-            <DangerButton
-              className="ms-3"
-              onClick={handleDelete}
-              disabled={loading}
-            >
+            <DangerButton className="ms-3" onClick={handleDelete} disabled={loading}>
               {loading ? 'Wird Gelöscht...' : 'Löschen'}
             </DangerButton>
           </div>

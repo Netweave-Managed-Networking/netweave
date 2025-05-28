@@ -20,16 +20,12 @@ describe('MaxTextSize', () => {
 
   it('applies the correct class when byte size is within limit', () => {
     const { container } = render(<MaxTextSize value="test" max={10} />);
-    expect(container.querySelector('span')?.className).toContain(
-      'font-medium text-gray-700'
-    );
+    expect(container.querySelector('span')?.className).toContain('font-medium text-gray-700');
   });
 
   it('applies the correct class when byte size exceeds limit', () => {
     const { container } = render(<MaxTextSize value="exceeding" max={5} />);
-    expect(container.querySelector('span')?.className).toContain(
-      'font-extrabold text-red-800'
-    );
+    expect(container.querySelector('span')?.className).toContain('font-extrabold text-red-800');
   });
 
   it('does not render anything when value is undefined', () => {

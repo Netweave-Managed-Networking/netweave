@@ -9,9 +9,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 
 export default function Register() {
-  const invitationCodeFromSearchParam: string | null = new URLSearchParams(
-    window.location.search
-  ).get('code');
+  const invitationCodeFromSearchParam: string | null = new URLSearchParams(window.location.search).get('code');
 
   const { data, setData, post, processing, errors, reset } = useForm({
     invitation_code: invitationCodeFromSearchParam ?? '',
@@ -23,7 +21,7 @@ export default function Register() {
 
   useEffect(() => () => reset('password', 'password_confirmation'), []); // reset when unmount
 
-  const submit: FormEventHandler = e => {
+  const submit: FormEventHandler = (e) => {
     e.preventDefault();
 
     post(route('register'));
@@ -48,7 +46,7 @@ export default function Register() {
             maxLength={8}
             className="mt-1 block w-full"
             style={{ textTransform: 'lowercase' }}
-            onChange={e => setData('invitation_code', e.target.value)}
+            onChange={(e) => setData('invitation_code', e.target.value)}
             required
           />
 
@@ -65,7 +63,7 @@ export default function Register() {
             className="mt-1 block w-full"
             autoComplete="name"
             isFocused={true}
-            onChange={e => setData('name', e.target.value)}
+            onChange={(e) => setData('name', e.target.value)}
             required
           />
 
@@ -82,7 +80,7 @@ export default function Register() {
             value={data.email}
             className="mt-1 block w-full"
             autoComplete="email"
-            onChange={e => setData('email', e.target.value)}
+            onChange={(e) => setData('email', e.target.value)}
             required
           />
 
@@ -99,7 +97,7 @@ export default function Register() {
             value={data.password}
             className="mt-1 block w-full"
             autoComplete="new-password"
-            onChange={e => setData('password', e.target.value)}
+            onChange={(e) => setData('password', e.target.value)}
             required
           />
 
@@ -107,10 +105,7 @@ export default function Register() {
         </div>
 
         <div className="mt-4">
-          <InputLabel
-            htmlFor="password_confirmation"
-            value="Passwort Bestätigen"
-          />
+          <InputLabel htmlFor="password_confirmation" value="Passwort Bestätigen" />
 
           <TextInput
             id="password_confirmation"
@@ -119,17 +114,17 @@ export default function Register() {
             value={data.password_confirmation}
             className="mt-1 block w-full"
             autoComplete="new-password"
-            onChange={e => setData('password_confirmation', e.target.value)}
+            onChange={(e) => setData('password_confirmation', e.target.value)}
             required
           />
 
           <InputError message={errors.password_confirmation} className="mt-2" />
         </div>
 
-        <div className="flex items-center justify-end mt-4">
+        <div className="mt-4 flex items-center justify-end">
           <Link
             href={route('login')}
-            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
           >
             Bereits registriert?
           </Link>

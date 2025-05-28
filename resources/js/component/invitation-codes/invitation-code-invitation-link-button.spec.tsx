@@ -22,9 +22,7 @@ describe('InvitationCodeInvitationLinkButton', () => {
   };
 
   it('renders the button and tooltip', async () => {
-    renderWithProviders(
-      <InvitationCodeInvitationLinkButton code={invitationCode} />
-    );
+    renderWithProviders(<InvitationCodeInvitationLinkButton code={invitationCode} />);
 
     // Check if the copy button is in the document
     const button = screen.getByRole('button');
@@ -38,31 +36,23 @@ describe('InvitationCodeInvitationLinkButton', () => {
   });
 
   it('copies the invitation link to the clipboard on button click', () => {
-    renderWithProviders(
-      <InvitationCodeInvitationLinkButton code={invitationCode} />
-    );
+    renderWithProviders(<InvitationCodeInvitationLinkButton code={invitationCode} />);
 
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
     // Verify that copyToClipboard was called with the correct link
-    expect(copyToClipboard).toHaveBeenCalledWith(
-      `${window.location.origin}/register?code=${invitationCode}`
-    );
+    expect(copyToClipboard).toHaveBeenCalledWith(`${window.location.origin}/register?code=${invitationCode}`);
   });
 
   it('shows the toast message after clicking the button', () => {
-    renderWithProviders(
-      <InvitationCodeInvitationLinkButton code={invitationCode} />
-    );
+    renderWithProviders(<InvitationCodeInvitationLinkButton code={invitationCode} />);
 
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
     // Verify that the toast message appears after the button click
     const toastMessage = screen.getByTestId('toast');
-    expect(toastMessage).toHaveTextContent(
-      'Der Einladungslink wurde in die Zwischenablage kopiert.'
-    );
+    expect(toastMessage).toHaveTextContent('Der Einladungslink wurde in die Zwischenablage kopiert.');
   });
 });
