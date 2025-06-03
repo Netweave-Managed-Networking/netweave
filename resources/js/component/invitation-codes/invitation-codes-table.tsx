@@ -15,45 +15,22 @@ export interface InvitationCodesTableProps {
   invitationCodes: InvitationCode[];
 }
 
-export function InvitationCodesTable({
-  showAddCodeButton,
-  invitationCodes,
-}: InvitationCodesTableProps) {
-  const addCodeButtonRow: Row | undefined = showAddCodeButton
-    ? createAddCodeButtonRow()
-    : undefined;
+export function InvitationCodesTable({ showAddCodeButton, invitationCodes }: InvitationCodesTableProps) {
+  const addCodeButtonRow: Row | undefined = showAddCodeButton ? createAddCodeButtonRow() : undefined;
 
   const tableRows = createRows(invitationCodes, addCodeButtonRow);
 
-  return (
-    <Table
-      headerTitles={[
-        'code',
-        'Anwendbar',
-        'Eingeladen',
-        'Angelegt Durch',
-        'Löschen',
-      ]}
-      rowItems={tableRows}
-    />
-  );
+  return <Table headerTitles={['code', 'Anwendbar', 'Eingeladen', 'Angelegt Durch', 'Löschen']} rowItems={tableRows} />;
 }
 
-const createRows = (
-  invitationCodes: InvitationCode[],
-  addCodeButtonRow: Row | undefined
-): Row[] => [
+const createRows = (invitationCodes: InvitationCode[], addCodeButtonRow: Row | undefined): Row[] => [
   ...(addCodeButtonRow ? [addCodeButtonRow] : []),
   ...invitationCodes.map(({ id, code, editor, admin }) => ({
     key: code,
     nodes: [
       code,
       editor ? <CrossMark /> : <CheckMark />,
-      editor ? (
-        userMail(editor)
-      ) : (
-        <InvitationCodeInvitationLinkButton code={code} />
-      ),
+      editor ? userMail(editor) : <InvitationCodeInvitationLinkButton code={code} />,
       userMail(admin),
       createDeleteButton(id, editor),
     ],
@@ -73,11 +50,7 @@ const createDeleteButton = (codeId: number, editor: UserMin | null) =>
   );
 
 const userMail = (user: UserMin): ReactNode => (
-  <a
-    className="text-blue-800"
-    href={`mailto:${user.email}`}
-    aria-label={`Email ${user.name}`}
-  >
+  <a className="text-blue-800" href={`mailto:${user.email}`} aria-label={`Email ${user.name}`}>
     {user.name}
   </a>
 );

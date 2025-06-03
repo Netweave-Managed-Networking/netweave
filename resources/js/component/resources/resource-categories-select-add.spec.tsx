@@ -1,6 +1,4 @@
-import ResourceCategoriesSelectAdd, {
-  ResourceCategoriesSelectAddProps,
-} from '@/component/resources/resource-categories-select-add';
+import ResourceCategoriesSelectAdd, { ResourceCategoriesSelectAddProps } from '@/component/resources/resource-categories-select-add';
 import { IdTitle } from '@/types/id-title.model';
 import { fireEvent, render } from '@testing-library/react';
 
@@ -12,16 +10,9 @@ describe('ResourceCategoriesSelect', () => {
 
   const onChange = jest.fn();
 
-  const renderComponent = (
-    props: Partial<ResourceCategoriesSelectAddProps> = {}
-  ) => {
+  const renderComponent = (props: Partial<ResourceCategoriesSelectAddProps> = {}) => {
     return render(
-      <ResourceCategoriesSelectAdd
-        resourceCategories={resourceCategories}
-        resourceCategoriesSelected={[]}
-        onChange={onChange}
-        {...props}
-      />
+      <ResourceCategoriesSelectAdd resourceCategories={resourceCategories} resourceCategoriesSelected={[]} onChange={onChange} {...props} />,
     );
   };
 

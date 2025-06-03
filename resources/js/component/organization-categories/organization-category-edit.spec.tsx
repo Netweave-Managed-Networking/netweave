@@ -4,9 +4,7 @@ import OrganizationCategoryEdit from './organization-category-edit';
 
 // Mock the OrganizationCategoryDeleteButton component
 jest.mock('./organization-category-delete-button', () => ({
-  OrganizationCategoryDeleteButton: jest.fn(() => (
-    <div>Mock Delete Button</div>
-  )),
+  OrganizationCategoryDeleteButton: jest.fn(() => <div>Mock Delete Button</div>),
 }));
 
 describe('OrganizationCategoryEdit', () => {

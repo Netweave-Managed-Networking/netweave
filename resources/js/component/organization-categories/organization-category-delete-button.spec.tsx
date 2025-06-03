@@ -4,9 +4,7 @@ import { ReactNode } from 'react';
 import { UserDeleteButton } from '../users/user-delete-button';
 
 // Mocking dependencies
-jest.mock('@inertiajs/react', () => ({
-  useForm: jest.fn(),
-}));
+jest.mock('@inertiajs/react', () => ({ useForm: jest.fn() }));
 
 // Mock the `route` function
 const route = jest.fn();
@@ -14,43 +12,30 @@ const route = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).route = route;
 
-jest.mock(
-  '@/component/inputs/danger-button',
-  () => (props: { children: ReactNode }) => (
-    <button {...props} data-testid="danger-button">
-      {props.children}
-    </button>
-  )
-);
-
-jest.mock(
-  '@/component/inputs/secondary-button',
-  () => (props: { children: ReactNode }) => (
-    <button {...props} data-testid="secondary-button">
-      {props.children}
-    </button>
-  )
-);
-
-jest.mock('@mui/icons-material/PersonRemove', () => () => (
-  <div data-testid="person-remove-icon"></div>
+jest.mock('@/component/inputs/danger-button', () => (props: { children: ReactNode }) => (
+  <button {...props} data-testid="danger-button">
+    {props.children}
+  </button>
 ));
 
-jest.mock(
-  '@/component/utils/modals',
-  () => (props: { show: boolean; children: ReactNode }) => (
-    <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
-  )
-);
+jest.mock('@/component/inputs/secondary-button', () => (props: { children: ReactNode }) => (
+  <button {...props} data-testid="secondary-button">
+    {props.children}
+  </button>
+));
+
+jest.mock('@mui/icons-material/PersonRemove', () => () => <div data-testid="person-remove-icon"></div>);
+
+jest.mock('@/component/utils/modals', () => (props: { show: boolean; children: ReactNode }) => (
+  <div data-testid="modal">{props.show && <div>{props.children}</div>}</div>
+));
 
 describe('UserDeleteButton', () => {
   const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com' };
   const mockDelete = jest.fn();
 
   beforeEach(() => {
-    (useForm as jest.Mock).mockReturnValue({
-      delete: mockDelete,
-    });
+    (useForm as jest.Mock).mockReturnValue({ delete: mockDelete });
   });
 
   it('renders the delete button with the PersonRemoveIcon', () => {
@@ -82,11 +67,7 @@ describe('UserDeleteButton', () => {
     const cancelButton = screen.getByTestId('secondary-button');
     fireEvent.click(cancelButton);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('modal')).not.toHaveTextContent(
-        'Bist du sicher?'
-      )
-    );
+    await waitFor(() => expect(screen.queryByTestId('modal')).not.toHaveTextContent('Bist du sicher?'));
   });
 
   it('calls the delete function when the confirm button is clicked', async () => {
@@ -106,8 +87,6 @@ describe('UserDeleteButton', () => {
 
     fireEvent.click(screen.getByTestId('danger-button')); // Confirm delete
 
-    await waitFor(() =>
-      expect(screen.getByTestId('danger-button')).toBeDisabled()
-    );
+    await waitFor(() => expect(screen.getByTestId('danger-button')).toBeDisabled());
   });
 });

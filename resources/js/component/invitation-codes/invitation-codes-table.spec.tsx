@@ -9,35 +9,23 @@ jest.mock('@/component/icon/check-mark', () => () => <div>CheckMark</div>);
 
 jest.mock('@/component/icon/cross-mark', () => () => <div>CrossMark</div>);
 
-jest.mock(
-  '@/component/invitation-codes/invitation-code-invitation-link-button',
-  () => () => <div>InvitationCodeInvitationLinkButton</div>
-);
+jest.mock('@/component/invitation-codes/invitation-code-invitation-link-button', () => () => <div>InvitationCodeInvitationLinkButton</div>);
 
 jest.mock('@/component/invitation-codes/invitation-code-add-button', () => ({
   InvitationCodeAddButton: () => <button>Add Code</button>,
 }));
 
 jest.mock('@/component/invitation-codes/invitation-code-delete-button', () => ({
-  InvitationCodeDeleteButton: ({ id }: { id: number }) => (
-    <button>Delete {id}</button>
-  ),
+  InvitationCodeDeleteButton: ({ id }: { id: number }) => <button>Delete {id}</button>,
 }));
 
 jest.mock('@/component/users/user-delete-button', () => ({
-  UserDeleteButton: ({ user }: { user: UserMin }) => (
-    <button>Delete {user.name}</button>
-  ),
+  UserDeleteButton: ({ user }: { user: UserMin }) => <button>Delete {user.name}</button>,
 }));
 
 describe('InvitationCodesPage', () => {
   it('renders the table with invitation codes', () => {
-    render(
-      <InvitationCodesTable
-        showAddCodeButton={true}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
+    render(<InvitationCodesTable showAddCodeButton={true} invitationCodes={mockInvitationCodes} />);
 
     expect(screen.getByText('CODE123')).toBeInTheDocument();
     expect(screen.getByText('CODE456')).toBeInTheDocument();
@@ -58,50 +46,28 @@ describe('InvitationCodesPage', () => {
       },
     ] as InvitationCode[];
 
-    render(
-      <InvitationCodesTable
-        showAddCodeButton={true}
-        invitationCodes={noUnusedCodes}
-      />
-    );
+    render(<InvitationCodesTable showAddCodeButton={true} invitationCodes={noUnusedCodes} />);
 
     expect(screen.getByText('Add Code')).toBeInTheDocument();
   });
 
   it('does not show the Add Code button if showAddCodeButton is false', () => {
-    render(
-      <InvitationCodesTable
-        showAddCodeButton={false}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
+    render(<InvitationCodesTable showAddCodeButton={false} invitationCodes={mockInvitationCodes} />);
 
     expect(screen.queryByText('Add Code')).toBeNull();
   });
 
   it('renders delete buttons for unused codes', () => {
-    render(
-      <InvitationCodesTable
-        showAddCodeButton={true}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
+    render(<InvitationCodesTable showAddCodeButton={true} invitationCodes={mockInvitationCodes} />);
 
     expect(screen.getByText('Delete 1')).toBeInTheDocument(); // Unused code
     expect(screen.queryByText('Delete 2')).toBeNull(); // Used code
   });
 
   it('renders InvitationCodeInvitationLinkButton buttons for unused codes', () => {
-    render(
-      <InvitationCodesTable
-        showAddCodeButton={true}
-        invitationCodes={mockInvitationCodes}
-      />
-    );
+    render(<InvitationCodesTable showAddCodeButton={true} invitationCodes={mockInvitationCodes} />);
 
-    expect(
-      screen.getByText('InvitationCodeInvitationLinkButton')
-    ).toBeInTheDocument(); // Unused code
+    expect(screen.getByText('InvitationCodeInvitationLinkButton')).toBeInTheDocument(); // Unused code
     expect(screen.queryByText('-')).toBeNull(); // Used code
   });
 });

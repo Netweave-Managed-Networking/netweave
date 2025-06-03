@@ -8,11 +8,7 @@ jest.mock('@inertiajs/react', () => ({
   Head: ({ title }: { title: string }) => <title>{title}</title>,
 }));
 
-jest.mock(
-  '@/layouts/authenticated-layout',
-  () =>
-    ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-);
+jest.mock('@/layouts/authenticated-layout', () => ({ children }: { children: React.ReactNode }) => <div>{children}</div>);
 
 jest.mock('@/component/organizations/organization-create', () => ({
   OrganizationCreate: () => <div>OrganizationCreate</div>,
@@ -20,12 +16,7 @@ jest.mock('@/component/organizations/organization-create', () => ({
 
 describe('OrganizationsCreatePage', () => {
   it('should render the OrganizationCreate compo', () => {
-    render(
-      <OrganizationsCreatePage
-        auth={{ user: mockUser }}
-        organizationCategories={mockOrganizationCategories}
-      />
-    );
+    render(<OrganizationsCreatePage auth={{ user: mockUser }} organizationCategories={mockOrganizationCategories} />);
 
     expect(screen.getByText('OrganizationCreate')).toBeInTheDocument();
   });

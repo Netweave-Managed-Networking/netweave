@@ -10,19 +10,8 @@ export function InvitationCodeAddButton() {
   };
 
   return (
-    <Tooltip
-      title={
-        <Typography>
-          Einen neuen Einladungscode hinzufügen, um einen neuen User einzuladen.
-        </Typography>
-      }
-      placement="right"
-      arrow
-    >
-      <IconButton
-        onClick={postRequestToCreateNewInvitationCode}
-        sx={{ padding: 0 }}
-      >
+    <Tooltip title={<Typography>Einen neuen Einladungscode hinzufügen, um einen neuen User einzuladen.</Typography>} placement="right" arrow>
+      <IconButton onClick={postRequestToCreateNewInvitationCode} sx={{ padding: 0 }}>
         <AddCircleIcon />
       </IconButton>
     </Tooltip>
