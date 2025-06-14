@@ -31,7 +31,7 @@ describe('Resource', function (): void {
             $resource = Resource::factory()->create();
             $category = ResourceCategory::factory()->create();
 
-            $resource->resourceCategories()->attach($category);
+            $resource->resourceCategories()->attach($category->id);
 
             expect($resource->resourceCategories)->toHaveCount(1)
                 ->and($resource->resourceCategories->first()->id)->toBe($category->id);
@@ -41,7 +41,7 @@ describe('Resource', function (): void {
             $resource = Resource::factory()->create();
             $categories = ResourceCategory::factory()->count(3)->create();
 
-            $resource->resourceCategories()->attach($categories);
+            $resource->resourceCategories()->attach($categories->pluck('id')->toArray());
 
             expect($resource->resourceCategories)->toHaveCount(3)
                 ->and($resource->resourceCategories->pluck('id'))->toEqual($categories->pluck('id'));
