@@ -31,6 +31,10 @@ Route::get('/home', function (): Response {
     return Inertia::render('home-page');
 })->middleware(['auth', 'verified'])->name('home');
 
+Route::get('/test', function (): Response {
+    return Inertia::render('Test/example-page');
+});
+
 // ///// //
 // ADMIN //
 // ///// //

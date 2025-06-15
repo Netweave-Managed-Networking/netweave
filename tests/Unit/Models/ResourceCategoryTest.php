@@ -28,7 +28,7 @@ describe('ResourceCategory', function (): void {
             $resourceCategory = ResourceCategory::factory()->create();
             $resource = Resource::factory()->create(['type' => 'resource']);
 
-            $resourceCategory->resources()->attach($resource);
+            $resourceCategory->resources()->attach($resource->id);
 
             expect($resourceCategory->resources)->toHaveCount(1)
                 ->and($resourceCategory->resources->first()->id)->toBe($resource->id);
@@ -38,7 +38,7 @@ describe('ResourceCategory', function (): void {
             $resourceCategory = ResourceCategory::factory()->create();
             $resource = Resource::factory()->create(['type' => 'requirement']);
 
-            $resourceCategory->requirements()->attach($resource);
+            $resourceCategory->requirements()->attach($resource->id);
 
             expect($resourceCategory->requirements)->toHaveCount(1)
                 ->and($resourceCategory->requirements->first()->id)->toBe($resource->id);
@@ -50,7 +50,7 @@ describe('ResourceCategory', function (): void {
             $requirements = $requirementOrResourceList->where('type', 'requirement');
             $resources = $requirementOrResourceList->where('type', 'resource');
 
-            $resourceCategory->resources()->attach($requirementOrResourceList);
+            $resourceCategory->resources()->attach($requirementOrResourceList->pluck('id')->toArray());
 
             expect($resourceCategory->requirements)->toHaveCount($requirements->count())
                 ->and($resourceCategory->requirements->pluck('id'))->toEqual($requirements->pluck('id'));
@@ -64,7 +64,7 @@ describe('ResourceCategory', function (): void {
             $requirements = $requirementOrResourceList->where('type', 'requirement');
             $resources = $requirementOrResourceList->where('type', 'resource');
 
-            $resourceCategory->requirements()->attach($requirementOrResourceList);
+            $resourceCategory->requirements()->attach($requirementOrResourceList->pluck('id')->toArray());
 
             expect($resourceCategory->requirements)->toHaveCount($requirements->count())
                 ->and($resourceCategory->requirements->pluck('id'))->toEqual($requirements->pluck('id'));

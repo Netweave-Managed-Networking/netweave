@@ -39,7 +39,7 @@ describe('Organization', function (): void {
             $organization = Organization::factory()->create();
             $category = OrganizationCategory::factory()->create();
 
-            $organization->OrganizationCategories()->attach($category);
+            $organization->OrganizationCategories()->attach($category->id);
 
             expect($organization->OrganizationCategories)->toHaveCount(1)
                 ->and($organization->OrganizationCategories->first()->id)->toBe($category->id);
@@ -51,7 +51,7 @@ describe('Organization', function (): void {
             $organization = Organization::factory()->create();
             $statedOrganization = Organization::factory()->create();
 
-            $organization->statedOrganizations()->attach($statedOrganization, [
+            $organization->statedOrganizations()->attach($statedOrganization->id, [
                 'type' => 'type_example',
                 'conflict' => false,
             ]);
@@ -66,7 +66,7 @@ describe('Organization', function (): void {
             $organization = Organization::factory()->create();
             $statingOrganization = Organization::factory()->create();
 
-            $organization->statingOrganizations()->attach($statingOrganization, [
+            $organization->statingOrganizations()->attach($statingOrganization->id, [
                 'type' => 'another_type',
                 'conflict' => true,
             ]);
@@ -137,19 +137,34 @@ describe('Organization', function (): void {
     });
 
     describe('getResourceCategories', function (): void {
+        it('is an empty array for an organization without resources', function () {
+            $organization = Organization::factory()->create();
+
+            $resourceCategoriesOfOrganization = $organization->getResourceCategories();
+            expect($resourceCategoriesOfOrganization)->toHaveCount(0);
+        });
+
+        it('is an empty array for an organization with resources which have no categories', function () {
+            $organization = Organization::factory()->create();
+            $resources = Resource::factory(2)->create(['type' => 'resource']);
+            $organization->resources()->saveMany($resources);
+
+            $resourceCategoriesOfOrganization = $organization->getResourceCategories();
+            expect($resourceCategoriesOfOrganization)->toHaveCount(0);
+
+        });
+
         it('can get distinct resource categories of the resources of this organization', function () {
             $organization = Organization::factory()->create();
             $resources = Resource::factory(2)->create(['type' => 'resource']);
             $resourceCategories = ResourceCategory::factory(4)->create();
-            $resources[0]->resourceCategories()->attach($resourceCategories[0]);
-            $resources[0]->resourceCategories()->attach($resourceCategories[1]);
-            $resources[1]->resourceCategories()->attach($resourceCategories[0]);
-            $resources[1]->resourceCategories()->attach($resourceCategories[3]);
-
+            $resources[0]->resourceCategories()->attach($resourceCategories[0]->id);
+            $resources[0]->resourceCategories()->attach($resourceCategories[1]->id);
+            $resources[1]->resourceCategories()->attach($resourceCategories[0]->id);
+            $resources[1]->resourceCategories()->attach($resourceCategories[3]->id);
             $organization->resources()->saveMany($resources);
 
             $resourceCategoriesOfOrganization = $organization->getResourceCategories();
-
             expect($resourceCategoriesOfOrganization)->toHaveCount(3)
                 ->and($resourceCategoriesOfOrganization->pluck('id'))
                 ->toContain($resourceCategories[0]->id)
@@ -164,16 +179,14 @@ describe('Organization', function (): void {
             $organization = Organization::factory()->create();
             $requirements = Resource::factory(2)->create(['type' => 'requirement']);
             $requirementCategories = ResourceCategory::factory(5)->create();
-            $requirements[0]->resourceCategories()->attach($requirementCategories[3]);
-            $requirements[0]->resourceCategories()->attach($requirementCategories[0]);
-            $requirements[1]->resourceCategories()->attach($requirementCategories[3]);
-            $requirements[1]->resourceCategories()->attach($requirementCategories[2]);
-            $requirements[1]->resourceCategories()->attach($requirementCategories[0]);
-
+            $requirements[0]->resourceCategories()->attach($requirementCategories[3]->id);
+            $requirements[0]->resourceCategories()->attach($requirementCategories[0]->id);
+            $requirements[1]->resourceCategories()->attach($requirementCategories[3]->id);
+            $requirements[1]->resourceCategories()->attach($requirementCategories[2]->id);
+            $requirements[1]->resourceCategories()->attach($requirementCategories[0]->id);
             $organization->requirements()->saveMany($requirements);
 
             $requirementCategoriesOfOrganization = $organization->getRequirementCategories();
-
             expect($requirementCategoriesOfOrganization)->toHaveCount(3)
                 ->and($requirementCategoriesOfOrganization->pluck('id'))
                 ->toContain($requirementCategories[0]->id)
