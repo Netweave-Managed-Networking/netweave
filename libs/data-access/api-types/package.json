@@ -1,9 +1,6 @@
 {
-  "name": "@netweave-nx/api-types",
+  "name": "@netweave/api-types",
   "version": "0.0.1",
-  "peerDependencies": {
-    "@angular/common": "^21.0.0",
-    "@angular/core": "^21.0.0"
-  },
+  "peerDependencies": {},
   "sideEffects": false
 }

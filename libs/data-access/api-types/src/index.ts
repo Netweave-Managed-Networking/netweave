@@ -1,1 +1,1 @@
-export * from './lib/api-types/api-types';
+export * from './lib/api-types/welcome-message.dto';
