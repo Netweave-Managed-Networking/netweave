@@ -1,0 +1,16 @@
+node_modules
+../**node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+.prettierrc
+.prettierignore
+.editorconfig
+.vscode
+.nx
+.opencode
+.env
+.env.*
+.DS_Store
+response-log.json
