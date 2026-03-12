@@ -12,6 +12,12 @@ See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-dia
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
+### Environment Variables
+
+Configuration values such as API keys are pulled from a `.env` file (which is ignored by git) at the workspace root. A sample is provided in `.env.example`.
+
+Make sure `.env` is A) setting values for all keys listed by `.env.example` and B) not committed; it is listed in `.gitignore` and `.dockerignore` already.
+
 ### Run tasks
 
 To run the dev server for your app, use:

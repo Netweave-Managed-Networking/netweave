@@ -24,6 +24,12 @@ export class MailService {
         // read last entry and log it
         const lastEntry = await this.readLastLineFromFile();
 
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            this.logger.error('RESEND_API_KEY is not defined, aborting mail send');
+            return;
+        }
+
         return this.httpService.post('https://api.resend.com/emails', {
             from: "Marvin Frede<info@netweave.de>",
             to: ["marvinfrede@gmx.de"],
@@ -31,7 +37,7 @@ export class MailService {
             html: `<p>${lastEntry.data.quote}</p>`
         }, {
             headers: {
-                Authorization: 'Bearer re_GaTXtT5J_9DfFzU7xvUiJxfYaWC1uG6YZ', // TODO hide, put in .env
+                Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
             }
         }).pipe(
