@@ -13,4 +13,4 @@ README.md
 .env
 .env.*
 .DS_Store
-response-log.json
+response-log.txt

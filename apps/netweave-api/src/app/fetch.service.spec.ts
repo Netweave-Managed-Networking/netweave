@@ -44,7 +44,7 @@ describe('FetchService', () => {
 
     expect(writeSpy).toHaveBeenCalled();
     const [filePath, contents, opts] = writeSpy.mock.calls[0];
-    expect(filePath).toContain('response-log.json');
+    expect(filePath).toContain('response-log.txt');
     // ensure data, status code, and timestamp are written
     expect(contents).toContain('"id":1');
     expect(contents).toContain('"quote":"Hello, World!"');

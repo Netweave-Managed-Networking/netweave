@@ -38,7 +38,7 @@ docker run -p 3000:3000 \
 ### View logs
 
 ```bash
-docker exec <container-id> tail -f /app/logs/response-log.json
+docker exec <container-id> tail -f /app/logs/response-log.txt
 ```
 
 ## Building the image

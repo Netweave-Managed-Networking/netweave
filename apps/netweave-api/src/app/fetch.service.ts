@@ -49,7 +49,7 @@ export class FetchService {
   }
 
   private writeToFile(data: LogEntry) {
-    const filePath = join(this.logDir, 'response-log.json');
+    const filePath = join(this.logDir, 'response-log.txt');
     return writeFile(filePath, JSON.stringify(data) + '\n', { flag: 'a' });
   }
 }
