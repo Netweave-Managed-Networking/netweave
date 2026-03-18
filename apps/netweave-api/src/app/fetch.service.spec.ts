@@ -26,19 +26,21 @@ describe('FetchService', () => {
   });
 
   it('logs response to file and increments call count', async () => {
-    const dummy: DummyQuoteDTO = { id: 1, quote: 'Hello, World!', author: 'John Doe' };
+    const dummy: DummyQuoteDTO = {
+      id: 1,
+      quote: 'Hello, World!',
+      author: 'John Doe',
+    };
     jest.spyOn(httpService, 'get').mockReturnValue(
       of({
         data: dummy,
         status: 200,
         statusText: 'OK',
         headers: {},
-        config: {}
+        config: {},
       } as AxiosResponse<DummyQuoteDTO>),
     );
-    const writeSpy = jest
-      .spyOn(fs, 'writeFile')
-      .mockResolvedValue(undefined);
+    const writeSpy = jest.spyOn(fs, 'writeFile').mockResolvedValue(undefined);
 
     await service.handleCron();
 

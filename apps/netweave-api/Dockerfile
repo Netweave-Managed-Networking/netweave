@@ -1,5 +1,5 @@
 # Build stage
-FROM node:alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,9 @@ COPY . .
 RUN npm run build:api
 
 # Runtime stage
-FROM node:alpine
+FROM node:22-alpine
+
+RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
@@ -25,22 +27,15 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
 # Copy everything needed to run from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --chown=nestjs:nodejs --from=builder /app/dist ./dist
+COPY --chown=nestjs:nodejs package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-# Create and own logs directory
-RUN mkdir -p /app/logs && chown -R nestjs:nodejs /app
+# Own the app directory
+RUN chown -R nestjs:nodejs /app
 
 # Switch to non-root user
 USER nestjs
-
-# Set environment variables
-ENV NODE_ENV=production \
-    PORT=3000 \
-    LOG_DIR=/app/logs \
-    API_URL=https://dummyjson.com/quotes/random \
-    CRON_SCHEDULE="*/1 * * * *"
 
 # Expose port
 EXPOSE 3000
@@ -53,5 +48,7 @@ HEALTHCHECK --interval=60s --timeout=10s --start-period=10s --retries=3 \
 LABEL org.opencontainers.image.title="Netweave API" \
       org.opencontainers.image.description="NestJS backend with scheduled API fetching and logging"
 
-# Start the app
-CMD ["node", "dist/apps/netweave-api/main.js"]
+ENTRYPOINT ["dumb-init", "--"]
+
+# Create log dir at runtime (uses LOG_DIR from .env) and start the app
+CMD ["sh", "-c", "mkdir -p ${LOG_DIR} && exec node dist/apps/netweave-api/main.js"]

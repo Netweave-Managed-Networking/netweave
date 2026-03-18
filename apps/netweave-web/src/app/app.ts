@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class App {
   private http = inject(HttpClient);
+
   protected responseFromBackend = resource({
     loader: () => firstValueFrom(this.http.get<WelcomeResponseDTO>('/api')),
   });

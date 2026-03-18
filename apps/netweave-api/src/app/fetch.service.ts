@@ -5,7 +5,7 @@ import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { lastValueFrom } from 'rxjs';
 
-export type DummyQuoteDTO = { id: number; quote: string, author: string };
+export type DummyQuoteDTO = { id: number; quote: string; author: string };
 export type LogEntry = {
   timestamp: string;
   status: number;
@@ -15,26 +15,31 @@ export type LogEntry = {
 @Injectable()
 export class FetchService {
   private readonly logger = new Logger(FetchService.name);
-  private readonly apiUrl = process.env.API_URL || 'https://dummyjson.com/quotes/random';
-  private readonly logDir = process.env.LOG_DIR || join(process.cwd(), 'apps', 'netweave-api');
+  private readonly apiUrl = 'https://dummyjson.com/quotes/random';
+  private readonly logDir = process.env.LOG_DIR;
   private callCount = 0;
 
   constructor(private readonly httpService: HttpService) {
     this.logger.log(
-      `FetchService initialized: API_URL=${this.apiUrl}, LOG_DIR=${this.logDir}`,
+      `FetchService initialized: api_url=${this.apiUrl}, LOG_DIR=${this.logDir}`,
     );
   }
 
-  @Cron('*/1 * * * *') // Every minute by default
+  @Cron(process.env.CRON_SCHEDULE_API_FETCH)
   public async handleCron() {
     try {
       const { data, status } = await this.fetchDummyJson();
       const callCount = ++this.callCount;
-      const entry: LogEntry = { timestamp: new Date().toISOString(), status, callCount, data };
+      const entry: LogEntry = {
+        timestamp: new Date().toISOString(),
+        status,
+        callCount,
+        data,
+      };
       await this.writeToFile(entry);
       this.logger.log(`[${this.callCount}] API response saved successfully`);
     } catch (err: unknown) {
-      const e = err as unknown as { message: string, stack: object };
+      const e = err as unknown as { message: string; stack: object };
       this.logger.error(
         `failed to fetch from ${this.apiUrl}: ${e?.message || JSON.stringify(e)}`,
         e?.stack,

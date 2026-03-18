@@ -1,67 +1,136 @@
-# Docker Environment Variables
+# Netweave API – Docker Guide
 
-This API supports the following environment variables:
+## Environment Variables
 
-| Variable         | Default                    | Description                                                   |
-| ---------------- | -------------------------- | ------------------------------------------------------------- |
-| `PORT`           | 3000                       | HTTP port the API listens on                                  |
-| `NODE_ENV`       | production                 | Node.js environment (development/production)                  |
-| `LOG_DIR`        | /app/logs                  | Directory where response logs are written                     |
-| `API_URL`        | https://dummyjson.com/test | External API endpoint to fetch                                |
-| `CRON_SCHEDULE`  | _/5 _ \* \* \*             | Cron expression for fetch schedule (default: every 5 minutes) |
-| `RESEND_API_KEY` | (empty)                    | **Required** API key for Resend email service                 |
-
-## Running the container locally
-
-### Basic usage
+All variables are loaded from a `.env` file at the **workspace root**.
+Copy `.env.example` and fill in real values before running anything:
 
 ```bash
-docker run -p 3000:3000 netweave-api:poc
+cp .env.example .env
 ```
 
-### With custom API, schedule, and Resend API key
+---
+
+## Docker Compose
+
+All `docker compose` commands are run from the **project root** where
+`docker-compose.yml` lives.
+
+### Start
 
 ```bash
-docker run -p 3000:3000 \
-  -e API_URL="https://dummyjson.com/quotes/random" \
-  -e CRON_SCHEDULE="*/1 * * * *" \
-  -e RESEND_API_KEY="your_api_key_here" \
-  netweave-api:latest
+# Start in the foreground — logs stream to the terminal, Ctrl+C to stop
+docker compose up
+
+# Start detached (background)
+docker compose up -d
+
+# Rebuild the image before starting (use this after any code change)
+docker compose up --build -d
+
+# Force a full recreate of the container even if nothing changed
+docker compose up -d --force-recreate
+
+# Rebuild only netweave-api without touching other services
+docker compose up -d --build --no-deps netweave-api
 ```
 
-### With persistent log volume
+### Stop & tear down
 
 ```bash
-docker run -p 3000:3000 \
-  -v my-logs:/app/logs \
-  netweave-api:poc
+# Stop containers but keep them (and volumes) intact
+docker compose stop
+
+# Stop and remove containers + the default network (volumes are kept)
+docker compose down
+
+# Full wipe: containers + network + named volumes (deletes api-logs data!)
+docker compose down -v
+
+# Also remove the locally built image
+docker compose down --rmi local
 ```
 
-### View logs
+### Logs
 
 ```bash
-docker exec <container-id> tail -f /app/logs/response-log.txt
+# Stream logs from all services
+docker compose logs -f
+
+# Stream logs from netweave-api only
+docker compose logs -f netweave-api
+
+# Show the last 50 lines then follow
+docker compose logs --tail=50 -f netweave-api
 ```
 
-## Building the image
+### Status & health
 
 ```bash
-npm run build:api
+# Overview of running services including the STATUS / health column
+docker compose ps
+
+# Full health-check detail from the Docker daemon
+docker inspect netweave-api | grep -A 10 '"Health"'
+```
+
+The health check (`HEALTHCHECK` in the Dockerfile, mirrored in `docker-compose.yml`)
+polls `GET /api` every **60 s**, allows **10 s** to respond, and marks the container
+**unhealthy** after **3** consecutive failures. It waits **10 s** after start before
+the first check.
+
+### One-off commands inside a running container
+
+```bash
+# Open an interactive shell
+docker compose exec netweave-api sh
+
+# Tail the response log directly
+docker compose exec netweave-api tail -f /app/logs/response-log.txt
+```
+
+---
+
+## Building the Image Manually
+
+The Dockerfile uses a **multi-stage build**: a `builder` stage compiles the Nx
+project, and the lean runtime stage copies only the compiled output +
+production dependencies.
+
+```bash
+# Build from the project root (context must be the workspace root)
 docker build -t netweave-api:latest -f apps/netweave-api/Dockerfile .
+
+# Tag a specific release
+docker build -t netweave-api:1.0.0 -f apps/netweave-api/Dockerfile .
 ```
 
-## Health Check
+> The Nx build step (`npm run build:api`) runs **inside** the builder stage, so
+> you do not need to run it locally before building the image.
 
-The container includes a built-in health check that:
+---
 
-- Starts checking after 10 seconds
-- Makes HTTP GET requests to `/api` every 60 seconds
-- Allows 10 seconds for a response
-- Marks as unhealthy after 3 failed checks
+## Running Without Compose
 
-You can check health status via:
+Useful for quick smoke tests or CI pipelines.
 
 ```bash
-docker ps  # Shows STATUS column with health info
-docker inspect <container-id> | grep -A 5 Health
+# Minimal run — passes required vars inline
+docker run -p 3000:3000 \
+  -e NODE_ENV=production \
+  -e LOG_DIR=/app/logs \
+  -e RESEND_API_KEY="re_your_key" \
+  -e CRON_SCHEDULE_API_FETCH="*/5 * * * *" \
+  -e CRON_SCHEDULE_MAIL_SEND="*/5 * * * *" \
+  netweave-api:latest
+
+# Detached with a persistent log volume
+docker run -d -p 3000:3000 \
+  --env-file .env \
+  -v netweave-logs:/app/logs \
+  --name netweave-api \
+  netweave-api:latest
+
+# View logs from the named container
+docker logs -f netweave-api
 ```
