@@ -6,10 +6,9 @@
     "nx": "nx",
     "serve": "nx serve netweave-web",
     "serve:api": "nx serve netweave-api",
+    "build": "nx build netweave-web",
     "build:api": "nx build netweave-api",
-    "build:web": "nx build netweave-web",
     "test:api": "nx test netweave-api",
-    "test:api-e2e": "nx run netweave-api-e2e:e2e",
     "test:web": "nx test netweave-web",
     "lint:api": "nx lint netweave-api",
     "lint:web": "nx lint netweave-web"
