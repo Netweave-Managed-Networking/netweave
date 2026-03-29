@@ -1,0 +1,129 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/netweave-managed-networking
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ↓ new
+      - name: Docker metadata (API)
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/netweave-api
+          tags: |
+            type=sha,prefix=,format=short
+            type=raw,value=latest
+
+      - name: Build & push API
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/netweave-api/Dockerfile
+          push: true
+          tags: ${{ steps.meta-api.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ↓ new
+      - name: Docker metadata (Web)
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/netweave-web
+          tags: |
+            type=sha,prefix=,format=short
+            type=raw,value=latest
+
+      - name: Build & push Web
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/netweave-web/Dockerfile
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose file to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: docker-compose.yml
+          target: ~/netweave
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/netweave
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
+
+      - name: Log in to GHCR # in order to verify images in the next step
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify images exist in GHCR
+        run: |
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-api:latest
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-web:latest
+
+      - name: Verify deployment on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/netweave
+            UNHEALTHY=$(docker compose ps --status exited --status restarting -q)
+            if [ -n "$UNHEALTHY" ]; then
+              echo "❌ One or more containers are not running"
+              docker compose ps
+              exit 1
+            fi
+            echo "✅ All containers are running"
