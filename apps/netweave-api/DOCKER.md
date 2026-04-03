@@ -44,7 +44,7 @@ docker compose stop
 # Stop and remove containers + the default network (volumes are kept)
 docker compose down
 
-# Full wipe: containers + network + named volumes (deletes api-logs data!)
+# Full wipe: containers + network + named volumes
 docker compose down -v
 
 # Also remove the locally built image
@@ -118,7 +118,6 @@ Useful for quick smoke tests or CI pipelines.
 # Minimal run — passes required vars inline
 docker run -p 3000:3000 \
   -e NODE_ENV=production \
-  -e LOG_DIR=/app/logs \
   -e RESEND_API_KEY="re_your_key" \
   -e CRON_SCHEDULE_API_FETCH="*/5 * * * *" \
   -e CRON_SCHEDULE_MAIL_SEND="*/5 * * * *" \

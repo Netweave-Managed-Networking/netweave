@@ -16,13 +16,10 @@ export type LogEntry = {
 export class FetchService {
   private readonly logger = new Logger(FetchService.name);
   private readonly apiUrl = 'https://dummyjson.com/quotes/random';
-  private readonly logDir = process.env.LOG_DIR;
   private callCount = 0;
 
   constructor(private readonly httpService: HttpService) {
-    this.logger.log(
-      `FetchService initialized: api_url=${this.apiUrl}, LOG_DIR=${this.logDir}`,
-    );
+    this.logger.log(`FetchService initialized: api_url=${this.apiUrl}`);
   }
 
   @Cron(process.env.CRON_SCHEDULE_API_FETCH)
@@ -54,7 +51,8 @@ export class FetchService {
   }
 
   private writeToFile(data: LogEntry) {
-    const filePath = join(this.logDir, 'response-log.txt');
+    const filePath = join('./response-log.txt');
+    // create file if not exists, otherwise append to it
     return writeFile(filePath, JSON.stringify(data) + '\n', { flag: 'a' });
   }
 }

@@ -9,7 +9,6 @@ import { LogEntry } from './fetch.service';
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private readonly logDir = process.env.LOG_DIR;
 
   constructor(private readonly httpService: HttpService) {
     this.logger.log(`MailService initialized`);
@@ -49,7 +48,7 @@ export class MailService {
   }
 
   private async readLastLineFromFile(): Promise<LogEntry> {
-    const filePath = join(this.logDir, 'response-log.txt');
+    const filePath = join('./response-log.txt');
     const contents = await readFile(filePath, 'utf-8');
     const lines = contents.trim().split(/\r?\n/);
     const last = lines.pop() || '';

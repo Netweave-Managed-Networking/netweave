@@ -50,5 +50,5 @@ LABEL org.opencontainers.image.title="Netweave API" \
 
 ENTRYPOINT ["dumb-init", "--"]
 
-# Create log dir at runtime (uses LOG_DIR from .env) and start the app
-CMD ["sh", "-c", "mkdir -p ${LOG_DIR} && exec node dist/apps/netweave-api/main.js"]
+# start the app
+CMD ["sh", "-c", "exec node dist/apps/netweave-api/main.js"]
