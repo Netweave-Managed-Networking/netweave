@@ -14,7 +14,7 @@ export class MailService {
     this.logger.log(`MailService initialized`);
   }
 
-  @Cron(process.env.CRON_SCHEDULE_MAIL_SEND)
+  @Cron(process.env.CRON_SCHEDULE_MAIL_SEND ?? '*/1 * * * *') // CRON_SCHEDULE_MAIL_SEND or default: every minute
   public async sendMail() {
     this.logger.log(`Trying to send Mail...`);
 

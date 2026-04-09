@@ -7,9 +7,9 @@ module.exports = async function () {
   // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
   console.log('\nSetting up...\n');
 
-  const port = Number(process.env.PORT);
+  const port = Number(process.env.PORT ?? 3000);
   await waitForPortOpen(port, { host: 'localhost' });
 
   // Hint: Use `globalThis` to pass variables to global teardown.
-  globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
+  (globalThis as any).__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
 };

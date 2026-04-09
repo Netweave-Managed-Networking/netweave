@@ -22,7 +22,7 @@ export class FetchService {
     this.logger.log(`FetchService initialized: api_url=${this.apiUrl}`);
   }
 
-  @Cron(process.env.CRON_SCHEDULE_API_FETCH)
+  @Cron(process.env.CRON_SCHEDULE_API_FETCH ?? '*/1 * * * *') // CRON_SCHEDULE_API_FETCH or default: every minute
   public async handleCron() {
     try {
       const { data, status } = await this.fetchDummyJson();
