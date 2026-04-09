@@ -31,7 +31,7 @@ export class MailService {
       .post(
         'https://api.resend.com/emails',
         {
-          from: 'Marvin Frede<info@netweave.de>',
+          from: 'Netweave<info@netweave.de>',
           to: ['marvinfrede@gmx.de'],
           subject: `Netweave: message from ${lastEntry.data.author}`,
           html: `<p>${lastEntry.data.quote}</p>`,
