@@ -18,6 +18,9 @@ services:
       - '${PORT}:${PORT}'
     env_file:
       - .env
+    depends_on:
+      netweave-db:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test:
@@ -45,9 +48,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  postgres:
+  netweave-db:
     image: postgres:16-alpine
     container_name: netweave-db
+    ports:
+      - '5432:5432'
     env_file:
       - .env
     volumes:
