@@ -27,13 +27,16 @@ export class MailService {
       return;
     }
 
+    const deployInfo =
+      process.env.NODE_ENV === 'development' ? 'local' : 'online';
+
     return this.httpService
       .post(
         'https://api.resend.com/emails',
         {
           from: 'Netweave<info@netweave.de>',
           to: ['marvinfrede@gmx.de'],
-          subject: `Netweave: message from ${lastEntry.data.author}`,
+          subject: `Netweave (${deployInfo}): message from ${lastEntry.data.author}`,
           html: `<p>${lastEntry.data.quote}</p>`,
         },
         {
