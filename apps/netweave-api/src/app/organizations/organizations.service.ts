@@ -30,4 +30,8 @@ export class OrganizationsService {
       );
     }
   }
+
+  public async getOrganizationCount(): Promise<number> {
+    return this.organizationsRepository.count();
+  }
 }

@@ -5,12 +5,16 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { tap } from 'rxjs';
 import { LogEntry } from './fetch.service';
+import { OrganizationsService } from './organizations/organizations.service';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private organizationsService: OrganizationsService,
+  ) {
     this.logger.log(`MailService initialized`);
   }
 
@@ -30,6 +34,8 @@ export class MailService {
     const deployInfo =
       process.env.NODE_ENV === 'development' ? 'local' : 'online';
 
+    const orgCount = await this.organizationsService.getOrganizationCount();
+
     return this.httpService
       .post(
         'https://api.resend.com/emails',
@@ -37,7 +43,10 @@ export class MailService {
           from: 'Netweave<info@netweave.de>',
           to: ['marvinfrede@gmx.de'],
           subject: `Netweave (${deployInfo}): message from ${lastEntry.data.author}`,
-          html: `<p>${lastEntry.data.quote}</p>`,
+          html: `
+            <p>${lastEntry.data.quote}</p>
+            <p>Current organization count: ${orgCount}</p>
+          `,
         },
         {
           headers: {
