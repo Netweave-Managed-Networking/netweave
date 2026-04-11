@@ -48,6 +48,9 @@ export class MailService {
             <p>${lastEntry.data.quote}</p>
             <p>Current organization count: ${orgCount}</p>
             <p>Latest organization: ${latestOrg.name}</p>
+            <br />
+            <p>Kind regards</p>
+            <p>The Netweave Team</p>
           `,
         },
         {
