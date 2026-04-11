@@ -34,4 +34,16 @@ export class OrganizationsService {
   public async getOrganizationCount(): Promise<number> {
     return this.organizationsRepository.count();
   }
+
+  public async getLatestOrganization(): Promise<Organization | null> {
+    const result = await this.organizationsRepository
+      .createQueryBuilder('organizations')
+      .where(
+        'organizations.created_at = (SELECT MAX(e.created_at) FROM organizations e)',
+      )
+      .take(1)
+      .getOne();
+
+    return result;
+  }
 }

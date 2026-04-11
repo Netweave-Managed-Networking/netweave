@@ -35,6 +35,7 @@ export class MailService {
       process.env.NODE_ENV === 'development' ? 'local' : 'online';
 
     const orgCount = await this.organizationsService.getOrganizationCount();
+    const latestOrg = await this.organizationsService.getLatestOrganization();
 
     return this.httpService
       .post(
@@ -46,6 +47,7 @@ export class MailService {
           html: `
             <p>${lastEntry.data.quote}</p>
             <p>Current organization count: ${orgCount}</p>
+            <p>Latest organization: ${latestOrg.name}</p>
           `,
         },
         {
