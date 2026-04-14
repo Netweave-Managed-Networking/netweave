@@ -4,8 +4,8 @@ import { Cron } from '@nestjs/schedule';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { tap } from 'rxjs';
-import { LogEntry } from './fetch.service';
-import { OrganizationsService } from './organizations/organizations.service';
+import { OrganizationsService } from '../../organizations/organizations.service';
+import { LogEntry } from '../dummy-fetch/fetch.service';
 
 @Injectable()
 export class MailService {

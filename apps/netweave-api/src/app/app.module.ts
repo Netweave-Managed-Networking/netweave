@@ -4,10 +4,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FetchService } from './fetch.service';
-import { MailService } from './mail.service';
+import { TypeOrmDataSource } from './db/type-orm.data-source';
 import { OrganizationsModule } from './organizations/organizations.module';
-import { TypeOrmDataSource } from './type-orm.data-source';
+import { FetchService } from './utils/dummy-fetch/fetch.service';
+import { MailService } from './utils/dummy-mail/mail.service';
 
 @Module({
   imports: [
