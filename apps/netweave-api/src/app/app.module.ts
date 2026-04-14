@@ -6,24 +6,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FetchService } from './fetch.service';
 import { MailService } from './mail.service';
-import { Organization } from './organizations/organization.entity';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { TypeOrmDataSource } from './type-orm.data-source';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     HttpModule,
     OrganizationsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: 5432,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DB,
-      entities: [Organization],
-      synchronize: true, // TODO: Set to false in production
-    }),
+    TypeOrmModule.forRoot(TypeOrmDataSource.options),
   ],
   controllers: [AppController],
   providers: [AppService, FetchService, MailService],
