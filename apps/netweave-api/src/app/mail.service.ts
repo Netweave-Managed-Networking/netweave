@@ -22,8 +22,26 @@ export class MailService {
   public async sendMail() {
     this.logger.log(`Trying to send Mail...`);
 
-    // read last entry and log it
-    const lastEntry = await this.readLastLineFromFile();
+    let lastEntry: LogEntry;
+    try {
+      lastEntry = await this.readLastLineFromFile();
+    } catch (error) {
+      this.logger.error(
+        'Error reading last line from file. Mail will not be sent.',
+        error,
+      );
+      return;
+    }
+
+    const sendMailActivated: boolean =
+      process.env.SEND_MAIL_ACTIVATED === 'true';
+    if (!sendMailActivated) {
+      this.logger.log(
+        'SEND_MAIL_ACTIVATED is not set to true, mail will not be sent',
+        lastEntry,
+      );
+      return;
+    }
 
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
@@ -31,6 +49,10 @@ export class MailService {
       return;
     }
 
+    return this.postMail(apiKey, lastEntry);
+  }
+
+  private async postMail(apiKey: string, entry: LogEntry) {
     const deployInfo =
       process.env.NODE_ENV === 'development' ? 'local' : 'online';
 
@@ -43,9 +65,9 @@ export class MailService {
         {
           from: 'Netweave<info@netweave.de>',
           to: ['marvinfrede@gmx.de'],
-          subject: `Netweave (${deployInfo}): message from ${lastEntry.data.author}`,
+          subject: `Netweave (${deployInfo}): message from ${entry.data.author}`,
           html: `
-            <p>${lastEntry.data.quote}</p>
+            <p>${entry.data.quote}</p>
             <p>Current organization count: ${orgCount}</p>
             <p>Latest organization: ${latestOrg.name}</p>
             <br />
@@ -64,7 +86,7 @@ export class MailService {
       .subscribe();
   }
 
-  private async readLastLineFromFile(): Promise<LogEntry> {
+  private async readLastLineFromFile(): Promise<LogEntry> | never {
     const filePath = join('./response-log.txt');
     const contents = await readFile(filePath, 'utf-8');
     const lines = contents.trim().split(/\r?\n/);
