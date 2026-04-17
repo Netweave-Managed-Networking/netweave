@@ -12,8 +12,8 @@ import { MailService } from './utils/dummy-mail/mail.service';
   imports: [
     ScheduleModule.forRoot(),
     HttpModule,
-    OrganizationsModule,
     DatabaseModule,
+    OrganizationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, FetchService, MailService],

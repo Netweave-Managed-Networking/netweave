@@ -25,8 +25,9 @@ export class OrganizationsService {
       });
       this.logger.log(`New organization added: ${organization.name}`);
     } catch (error) {
+      const e = error as Error;
       this.logger.error(
-        `Error occurred while adding new organization: ${error.message}`,
+        `Error occurred while adding new organization: ${e.message}`,
       );
     }
   }
@@ -36,14 +37,16 @@ export class OrganizationsService {
   }
 
   public async getLatestOrganization(): Promise<Organization | null> {
-    const result = await this.organizationsRepository
-      .createQueryBuilder('organizations')
-      .where(
-        'organizations.created_at = (SELECT MAX(e.created_at) FROM organizations e)',
-      )
-      .take(1)
-      .getOne();
-
-    return result;
+    try {
+      return await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .where(
+          'organizations.created_at = (SELECT MAX(e.created_at) FROM organizations e)',
+        )
+        .take(1)
+        .getOneOrFail();
+    } catch {
+      return null;
+    }
   }
 }
