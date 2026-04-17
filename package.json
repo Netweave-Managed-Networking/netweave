@@ -11,7 +11,11 @@
     "test:api": "nx test netweave-api",
     "test:web": "nx test netweave-web",
     "lint:api": "nx lint netweave-api",
-    "lint:web": "nx lint netweave-web"
+    "lint:web": "nx lint netweave-web",
+    "typeorm": "TS_NODE_PROJECT=apps/netweave-api/tsconfig.app.json typeorm-ts-node-commonjs",
+    "mig:generate": "./scripts/typeorm-migration-generate.sh",
+    "mig:run": "./scripts/typeorm-migration-run.sh",
+    "mig:create": "./scripts/typeorm-migration-create.sh"
   },
   "private": true,
   "dependencies": {
