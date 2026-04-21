@@ -1,11 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import { tap } from 'rxjs';
 import { OrganizationsService } from '../../organizations/organizations.service';
-import { LogEntry } from '../dummy-fetch/fetch.service';
+import { QuoteService } from '../quote.service/quote.service';
 
 @Injectable()
 export class MailService {
@@ -13,6 +11,7 @@ export class MailService {
 
   constructor(
     private readonly httpService: HttpService,
+    private quoteService: QuoteService,
     private organizationsService: OrganizationsService,
   ) {
     this.logger.log(`MailService initialized`);
@@ -22,23 +21,11 @@ export class MailService {
   public async sendMail() {
     this.logger.log(`Trying to send Mail...`);
 
-    let lastEntry: LogEntry;
-    try {
-      lastEntry = await this.readLastLineFromFile();
-    } catch (error) {
-      this.logger.error(
-        'Error reading last line from file. Mail will not be sent.',
-        error,
-      );
-      return;
-    }
-
     const sendMailActivated: boolean =
       process.env.SEND_MAIL_ACTIVATED === 'true';
     if (!sendMailActivated) {
       this.logger.log(
         'SEND_MAIL_ACTIVATED is not set to true, mail will not be sent',
-        lastEntry,
       );
       return;
     }
@@ -49,13 +36,14 @@ export class MailService {
       return;
     }
 
-    return this.postMail(apiKey, lastEntry);
+    return this.postMail(apiKey);
   }
 
-  private async postMail(apiKey: string, entry: LogEntry) {
+  private async postMail(apiKey: string) {
     const deployInfo =
       process.env.NODE_ENV === 'development' ? 'local' : 'online';
 
+    const quote = (await this.quoteService.getQuote())?.quote;
     const orgCount = await this.organizationsService.getOrganizationCount();
     const latestOrg = await this.organizationsService.getLatestOrganization();
 
@@ -65,14 +53,14 @@ export class MailService {
         {
           from: 'Netweave<info@netweave.de>',
           to: ['marvinfrede@gmx.de'],
-          subject: `Netweave (${deployInfo}): message from ${entry.data.author}`,
+          subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
           html: `
-            <p>${entry.data.quote}</p>
-            <p>${latestOrg ? `Latest organization: ${latestOrg.name}` : 'No organizations found.'}</p>
-            <p>Current organization count: ${orgCount}.</p>
-            <br />
-            <p>Kind regards</p>
-            <p>The Netweave Team</p>
+          <p>${quote?.quote ?? '<em>No message today.</em>'}</p>
+          <p>${latestOrg ? `Latest organization: ${latestOrg.name}` : 'No organizations found.'}</p>
+          <p>Current organization count: ${orgCount}.</p>
+          <br />
+          <p>Kind regards</p>
+          <p>The Netweave Team</p>
           `,
         },
         {
@@ -84,16 +72,5 @@ export class MailService {
       )
       .pipe(tap(() => this.logger.log(`Mail Post successfully`)))
       .subscribe();
-  }
-
-  private async readLastLineFromFile(): Promise<LogEntry> | never {
-    const filePath = join('./response-log.txt');
-    const contents = await readFile(filePath, 'utf-8');
-    const lines = contents.trim().split(/\r?\n/);
-    const last = lines.pop() || '';
-    if (!last) {
-      throw new Error('log file is empty');
-    }
-    return JSON.parse(last) as LogEntry;
   }
 }

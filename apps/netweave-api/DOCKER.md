@@ -84,9 +84,6 @@ the first check.
 ```bash
 # Open an interactive shell
 docker compose exec netweave-api sh
-
-# Tail the response log directly
-docker compose exec netweave-api tail -f /app/logs/response-log.txt
 ```
 
 ---
@@ -119,7 +116,6 @@ Useful for quick smoke tests or CI pipelines.
 docker run -p 3000:3000 \
   -e NODE_ENV=production \
   -e RESEND_API_KEY="re_your_key" \
-  -e CRON_SCHEDULE_API_FETCH="*/5 * * * *" \
   -e CRON_SCHEDULE_MAIL_SEND="*/5 * * * *" \
   netweave-api:latest
 

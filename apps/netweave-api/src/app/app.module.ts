@@ -1,21 +1,11 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './db/database.module';
-import { OrganizationsModule } from './organizations/organizations.module';
-import { FetchService } from './utils/dummy-fetch/fetch.service';
-import { MailService } from './utils/dummy-mail/mail.service';
+import { MailModule } from './utils/mail.service/mail.module';
 
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    HttpModule,
-    DatabaseModule,
-    OrganizationsModule,
-  ],
+  imports: [MailModule],
   controllers: [AppController],
-  providers: [AppService, FetchService, MailService],
+  providers: [AppService],
 })
 export class AppModule {}
