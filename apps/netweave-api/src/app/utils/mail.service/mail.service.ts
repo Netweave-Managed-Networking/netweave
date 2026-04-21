@@ -21,18 +21,26 @@ export class MailService {
   public async sendMail() {
     this.logger.log(`Trying to send Mail...`);
 
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      this.logger.error('RESEND_API_KEY is not defined, aborting mail send');
+      return;
+    }
+
+    const mailReceiverIsSet: boolean =
+      process.env.MAIL_RECEIVER !== undefined &&
+      process.env.MAIL_RECEIVER !== '';
+    if (!mailReceiverIsSet) {
+      this.logger.log('MAIL_RECEIVER is not set, mail will not be sent');
+      return;
+    }
+
     const sendMailActivated: boolean =
       process.env.SEND_MAIL_ACTIVATED === 'true';
     if (!sendMailActivated) {
       this.logger.log(
         'SEND_MAIL_ACTIVATED is not set to true, mail will not be sent',
       );
-      return;
-    }
-
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      this.logger.error('RESEND_API_KEY is not defined, aborting mail send');
       return;
     }
 
@@ -52,7 +60,7 @@ export class MailService {
         'https://api.resend.com/emails',
         {
           from: 'Netweave<info@netweave.de>',
-          to: ['marvinfrede@gmx.de'],
+          to: [process.env.MAIL_RECEIVER],
           subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
           html: `
           <p>${quote?.quote ?? '<em>No message today.</em>'}</p>
