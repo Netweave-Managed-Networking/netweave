@@ -21,7 +21,7 @@ export default new DataSource({
   // migrations
   synchronize: false,
   migrations: [CreateOrganization1776427891713],
-  migrationsRun: false,
+  migrationsRun: true,
   migrationsTableName: 'migrations',
   migrationsTransactionMode: 'all',
 
