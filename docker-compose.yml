@@ -1,5 +1,12 @@
+networks:
+  frontend:
+  backend:
+
 services:
   nginx:
+    networks:
+      - frontend
+      - backend
     image: nginx:alpine
     container_name: netweave-proxy
     ports:
@@ -12,6 +19,8 @@ services:
     restart: unless-stopped
 
   netweave-api:
+    networks:
+      - backend
     image: ghcr.io/netweave-managed-networking/netweave-api:latest
     container_name: netweave-api
     ports:
@@ -36,6 +45,9 @@ services:
       start_period: 10s
 
   netweave-web:
+    networks:
+      - frontend
+      - backend
     image: ghcr.io/netweave-managed-networking/netweave-web:latest
     container_name: netweave-web
     env_file:
@@ -48,6 +60,8 @@ services:
     restart: unless-stopped
 
   netweave-db:
+    networks:
+      - backend
     image: postgres:16-alpine
     container_name: netweave-db
     ports:
