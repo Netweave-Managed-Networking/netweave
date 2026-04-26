@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 import { OrganizationsService } from '../../organizations/organizations.service';
 import { QuoteService } from '../quote.service/quote.service';
 
@@ -78,7 +78,13 @@ export class MailService {
           },
         },
       )
-      .pipe(tap(() => this.logger.log(`Mail Post successfully`)))
+      .pipe(
+        tap(() => this.logger.log(`Mail Post successfully`)),
+        catchError((error) => {
+          this.logger.error(`Failed to post mail: ${error.message}`);
+          return EMPTY;
+        }),
+      )
       .subscribe();
   }
 }
