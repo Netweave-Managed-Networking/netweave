@@ -1,1 +1,1 @@
-export type OrganizationDTO = { name: string; contact: string | null };
+export type OrganizationDTO = { oname: string; contact: string | null };
