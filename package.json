@@ -15,7 +15,8 @@
     "typeorm": "TS_NODE_PROJECT=apps/netweave-api/tsconfig.app.json typeorm-ts-node-commonjs",
     "mig:generate": "./scripts/typeorm-migration-generate.sh",
     "mig:run": "./scripts/typeorm-migration-run.sh",
-    "mig:create": "./scripts/typeorm-migration-create.sh"
+    "mig:create": "./scripts/typeorm-migration-create.sh",
+    "mig:show": "./scripts/typeorm-migration-show.sh"
   },
   "private": true,
   "dependencies": {
