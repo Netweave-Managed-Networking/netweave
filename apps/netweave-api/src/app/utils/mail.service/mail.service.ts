@@ -64,7 +64,7 @@ export class MailService {
           subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
           html: `
           <p>${quote?.quote ?? '<em>No message today.</em>'}</p>
-          <p>${latestOrg ? `Latest organization: ${latestOrg.name}` : 'No organizations found.'}</p>
+          <p>${latestOrg ? `Latest organization: ${latestOrg.oname}` : 'No organizations found.'}</p>
           <p>Current organization count: ${orgCount}.</p>
           <br />
           <p>Kind regards</p>
