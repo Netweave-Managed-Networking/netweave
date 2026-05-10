@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, resource } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WelcomeResponseDTO } from '@netweave/api-types';
+import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
 
 import { firstValueFrom } from 'rxjs';
 
@@ -16,5 +16,11 @@ export class App {
 
   protected responseFromBackend = resource({
     loader: () => firstValueFrom(this.http.get<WelcomeResponseDTO>('/api')),
+  });
+  protected organizationLatest = resource({
+    loader: () =>
+      firstValueFrom(
+        this.http.get<OrganizationDTO | null>('/api/organizations/latest'),
+      ),
   });
 }
