@@ -20,10 +20,10 @@ export class OrganizationsService {
   public async addNewOrganization() {
     try {
       const organization = await this.organizationsRepository.save({
-        oname: `Organization ${new Date().toISOString()}`,
+        name: `Organization ${new Date().toISOString()}`,
         contact: `contact@${new Date().getTime()}.com`,
       });
-      this.logger.log(`New organization added: ${organization.oname}`);
+      this.logger.log(`New organization added: ${organization.name}`);
     } catch (error) {
       const e = error as Error;
       this.logger.error(
