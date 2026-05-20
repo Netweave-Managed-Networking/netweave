@@ -2,8 +2,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Organization } from '../organizations/organization.entity';
-import { CreateOrganization1776427891713 } from './migrations/1776427891713-create-organization';
-import { OrganizationsChangeName1778436499335 } from './migrations/1778436499335-organizations-change-name';
+import { Migrations } from './db.migrations';
 
 dotenv.config({ path: '.env' }); // necessary to load env vars here for typeorm CLI: `npm run typeorm migration:generate -- -d ./apps/netweave-api/src/app/db/db.data-source.ts init`
 
@@ -21,10 +20,7 @@ export default new DataSource({
 
   // migrations
   synchronize: false,
-  migrations: [
-    CreateOrganization1776427891713,
-    OrganizationsChangeName1778436499335,
-  ],
+  migrations: Migrations,
   migrationsRun: true,
   migrationsTableName: 'migrations',
   migrationsTransactionMode: 'all',
