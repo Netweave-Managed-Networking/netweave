@@ -1,4 +1,5 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { Logger } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AxiosResponse } from 'axios';
 import { of } from 'rxjs';
@@ -17,6 +18,8 @@ describe('QuoteService', () => {
     service = module.get(QuoteService);
     httpService = module.get(HttpService);
   });
+
+  jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
 
   afterEach(() => {
     jest.resetAllMocks();
