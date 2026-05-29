@@ -10,6 +10,8 @@
     "build:api": "nx build netweave-api",
     "test:api": "nx test netweave-api",
     "test:web": "nx test netweave-web",
+    "e2e:api": "nx run netweave-api-e2e:e2e",
+    "e2e:web": "nx run netweave-web-e2e:e2e",
     "lint:api": "nx lint netweave-api",
     "lint:web": "nx lint netweave-web",
     "typeorm": "TS_NODE_PROJECT=apps/netweave-api/tsconfig.app.json typeorm-ts-node-commonjs",
