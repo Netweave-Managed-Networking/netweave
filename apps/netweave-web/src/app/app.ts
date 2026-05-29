@@ -3,7 +3,7 @@ import { Component, inject, resource } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
 
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   imports: [RouterModule],
@@ -14,13 +14,17 @@ import { firstValueFrom } from 'rxjs';
 export class App {
   private http = inject(HttpClient);
 
-  protected responseFromBackend = resource({
+  protected welcomeResponse = resource({
     loader: () => firstValueFrom(this.http.get<WelcomeResponseDTO>('/api')),
   });
+
   protected organizationLatest = resource({
     loader: () =>
+      // handle error
       firstValueFrom(
-        this.http.get<OrganizationDTO | null>('/api/organizations/latest'),
+        this.http
+          .get<OrganizationDTO | null>('/api/organizations/latest')
+          .pipe(catchError(() => of(null))),
       ),
   });
 }

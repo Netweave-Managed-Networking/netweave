@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { WelcomeResponseDTO } from '@netweave/api-types';
+import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
 import { App } from './app';
 
 describe('App', () => {
@@ -30,33 +30,119 @@ describe('App', () => {
     httpTesting.verify();
   });
 
-  it('should render static content without change detection', () => {
-    // Static DOM nodes are written during view creation (createComponent),
-    // not during change detection — no detectChanges() needed here.
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome Component',
-    );
+  describe('Static Content', () => {
+    it('should render static content without change detection', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.app__title')?.textContent).toContain(
+        'Welcome Component',
+      );
+    });
   });
 
-  it('should display the message from the API response', async () => {
-    // Kicks off the component lifecycle — the resource() effect fires here,
-    // triggering the HTTP request.
-    fixture.detectChanges();
+  describe('Welcome API', () => {
+    it('should display the message from the welcome API response', async () => {
+      fixture.detectChanges();
 
-    const mockResponse: WelcomeResponseDTO = { message: 'Hello, World!' };
+      const mockWelcomeResponse: WelcomeResponseDTO = {
+        message: 'Hello, World!',
+      };
 
-    // Flush before whenStable(): the flush resolves the Promise (firstValueFrom),
-    // which schedules the microtasks that whenStable() then drains.
-    // Reversing this order causes the test to time out.
-    const req = httpTesting.expectOne({ method: 'GET', url: '/api' });
-    req.flush(mockResponse);
+      // Mock both endpoints
+      const welcomeReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api',
+      });
+      welcomeReq.flush(mockWelcomeResponse);
 
-    await fixture.whenStable();
+      const latestOrgReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api/organizations/latest',
+      });
+      latestOrgReq.flush(null);
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('pre')?.textContent).toContain(
-      mockResponse.message,
-    );
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.app__welcome')?.textContent).toContain(
+        mockWelcomeResponse.message,
+      );
+    });
+  });
+
+  describe('Latest Organization API', () => {
+    it('should load organization data from the latest organizations endpoint', async () => {
+      fixture.detectChanges();
+
+      const welcomeReq = httpTesting.expectOne({ method: 'GET', url: '/api' });
+      welcomeReq.flush({ message: 'Welcome' });
+
+      const mockOrganization: OrganizationDTO = {
+        name: 'Test Organization',
+        contact: null,
+      };
+
+      const latestOrgReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api/organizations/latest',
+      });
+      latestOrgReq.flush(mockOrganization);
+
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(
+        compiled.querySelector('.app__organization')?.textContent,
+      ).toContain(mockOrganization.name);
+    });
+
+    it('should handle null response when no organization exists', async () => {
+      fixture.detectChanges();
+
+      const welcomeReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api',
+      });
+      welcomeReq.flush({ message: 'Welcome' });
+
+      const latestOrgReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api/organizations/latest',
+      });
+      latestOrgReq.flush(null);
+
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.app__organization')?.textContent).toBe(
+        '',
+      );
+    });
+
+    it('should handle API error for latest organization endpoint', async () => {
+      fixture.detectChanges();
+
+      const welcomeReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api',
+      });
+      welcomeReq.flush({ message: 'Welcome' });
+
+      const latestOrgReq = httpTesting.expectOne({
+        method: 'GET',
+        url: '/api/organizations/latest',
+      });
+
+      latestOrgReq.flush(null, {
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
+
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.app__organization')?.textContent).toBe(
+        '',
+      );
+    });
   });
 });

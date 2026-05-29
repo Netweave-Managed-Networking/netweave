@@ -1,4 +1,6 @@
-<h1>Welcome Component</h1>
-<pre>{{ responseFromBackend.value()?.message }}</pre>
-<pre>{{ organizationLatest.value()?.name }}</pre>
-<router-outlet></router-outlet>
+<div class="app">
+  <h1 class="app__title">Welcome Component</h1>
+  <pre class="app__welcome">{{ welcomeResponse.value()?.message }}</pre>
+  <pre class="app__organization">{{ organizationLatest.value()?.name }}</pre>
+  <router-outlet></router-outlet>
+</div>
