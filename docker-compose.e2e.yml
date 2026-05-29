@@ -1,0 +1,22 @@
+services:
+  netweave-db-e2e:
+    image: postgres:16-alpine
+    container_name: netweave-db-e2e
+    ports:
+      - '5433:5432'
+    env_file:
+      - .env.e2e
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DB}
+    volumes:
+      - netweave-e2e-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  netweave-e2e-db-data:

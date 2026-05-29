@@ -8,8 +8,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 // load .env variables as early as possible
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-dotenv.config();
+const envFile = process.env.NODE_ENV === 'e2e' ? '.env.e2e' : '.env';
+dotenv.config({ path: path.resolve(__dirname, '../../..', envFile) });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
