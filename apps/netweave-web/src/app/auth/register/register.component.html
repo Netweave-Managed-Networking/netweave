@@ -1,0 +1,10 @@
+    <div class="auth-page">
+      <h1>Create account</h1>
+      <app-auth-form
+        submitLabel="Register"
+        [errorMessage]="error()"
+        [loading]="loading()"
+        (submitted)="onSubmit($event)"
+      />
+      <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+    </div>

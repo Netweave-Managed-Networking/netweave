@@ -7,6 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
 import { App } from './app';
+import { LoginButtonComponent } from './login-button/login-button.component';
 
 describe('App', () => {
   let fixture: ComponentFixture<App>;
@@ -20,7 +21,11 @@ describe('App', () => {
         provideHttpClientTesting(),
         provideRouter([]),
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(LoginButtonComponent, {
+        set: { template: 'button' },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(App);
     httpTesting = TestBed.inject(HttpTestingController);
@@ -34,7 +39,7 @@ describe('App', () => {
     it('should render static content without change detection', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       expect(compiled.querySelector('.app__title')?.textContent).toContain(
-        'Welcome Component',
+        'netweave',
       );
     });
   });

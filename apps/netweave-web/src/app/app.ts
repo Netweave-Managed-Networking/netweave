@@ -4,9 +4,10 @@ import { RouterModule } from '@angular/router';
 import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
 
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { LoginButtonComponent } from './login-button/login-button.component';
 
 @Component({
-  imports: [RouterModule],
+  imports: [RouterModule, LoginButtonComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

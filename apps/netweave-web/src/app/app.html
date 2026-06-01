@@ -1,6 +1,9 @@
 <div class="app">
-  <h1 class="app__title">Welcome Component</h1>
-  <pre class="app__welcome">{{ welcomeResponse.value()?.message }}</pre>
-  <pre class="app__organization">{{ organizationLatest.value()?.name }}</pre>
+  <div class="top-nav">
+    <h1 class="app__title">netweave</h1>
+    <pre class="app__welcome">{{ welcomeResponse.value()?.message }}</pre>
+    <pre class="app__organization">{{ organizationLatest.value()?.name }}</pre>
+    <app-login-button />
+  </div>
   <router-outlet></router-outlet>
 </div>
