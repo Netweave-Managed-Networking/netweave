@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Organization } from '../organizations/organization.entity';
+import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
 
 dotenv.config({ path: '.env' }); // necessary to load env vars here for typeorm CLI: `npm run typeorm migration:generate -- -d ./apps/netweave-api/src/app/db/db.data-source.ts init`
@@ -16,7 +17,7 @@ export default new DataSource({
   database: process.env.DB_DB,
 
   // we need to specify entities here for typeorm CLI, otherwise (when using autoLoadEntities: true) it won't find them and won't generate migrations
-  entities: [Organization],
+  entities: [Organization, User],
 
   // migrations
   synchronize: false,
