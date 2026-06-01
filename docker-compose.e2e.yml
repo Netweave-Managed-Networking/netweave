@@ -5,7 +5,7 @@ services:
     ports:
       - '5433:5432'
     env_file:
-      - .env.e2e
+      - .env.e2e.api
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

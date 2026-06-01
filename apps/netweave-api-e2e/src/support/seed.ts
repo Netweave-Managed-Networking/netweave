@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { Client } from 'pg';
 
-const envPath = path.resolve(__dirname, '../../../../.env.e2e');
+const envPath = path.resolve(__dirname, '../../../../.api');
 dotenv.config({ path: envPath });
 
 export async function seedDatabase() {

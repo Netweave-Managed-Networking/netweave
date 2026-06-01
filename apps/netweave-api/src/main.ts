@@ -10,7 +10,7 @@ import { AppModule } from './app/app.module';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-const envFile = process.env.NODE_ENV === 'e2e' ? '.env.e2e' : '.env';
+const envFile = process.env.NODE_ENV === 'e2e.api' ? '.env.e2e.api' : '.env';
 dotenv.config({ path: path.resolve(__dirname, '../../..', envFile) });
 
 async function bootstrap() {

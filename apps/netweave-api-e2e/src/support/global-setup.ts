@@ -13,7 +13,7 @@ declare global {
 
 module.exports = async function () {
   const workspaceRoot = path.resolve(__dirname, '../../../../');
-  const envPath = path.join(workspaceRoot, '.env.e2e');
+  const envPath = path.join(workspaceRoot, '.env.e2e.api');
   dotenv.config({ path: envPath });
 
   // Start ephemeral database for local e2e.
@@ -54,7 +54,7 @@ module.exports = async function () {
     [path.join(workspaceRoot, 'dist/apps/netweave-api/main.js')],
     {
       cwd: workspaceRoot,
-      env: { ...process.env, NODE_ENV: 'e2e' },
+      env: { ...process.env, NODE_ENV: 'e2e.api' },
       stdio: 'inherit',
     },
   );
