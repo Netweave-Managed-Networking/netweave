@@ -51,6 +51,26 @@ jobs:
       - name: Test netweave-web
         run: npm exec nx test netweave-web
 
+  test-ui-design:
+    name: Test UI Design
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test ui design
+        run: npm exec nx test design
+
   test-api-e2e:
     name: Test API E2E
     runs-on: ubuntu-latest
