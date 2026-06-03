@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@netweave/api-types": ["libs/data-access/api-types/src/index.ts"]
+      "@netweave/api-types": ["libs/data-access/api-types/src/index.ts"],
+      "@netweave/design": ["libs/ui/design/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
