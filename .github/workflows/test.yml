@@ -108,8 +108,47 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright Linux dependencies
+        run: npm exec playwright install-deps
+
+      - name: Install Playwright browsers
+        run: npm exec playwright install
+
+      - name: Load e2e env into job
+        run: |
+          # ensure DB_PORT matches the Postgres service (5432)
+          if [ -f .env.e2e.web ]; then
+            sed -E 's/DB_PORT=.*/DB_PORT=5432/' -i .env.e2e.web || true
+            grep -v -E '^\s*(#|$)' .env.e2e.web >> $GITHUB_ENV
+          fi
+
+      - name: Install Postgres client
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U netweave_e2e_web && break
+            sleep 1
+          done
+
       - name: Test netweave-web-e2e
         run: npm exec nx run netweave-web-e2e:e2e
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: netweave_e2e_web
+          POSTGRES_PASSWORD: netweave_e2e_password_web
+          POSTGRES_DB: netweave_e2e_web
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U netweave_e2e_web -d netweave_e2e_web"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
   test-summary:
     name: Test Summary

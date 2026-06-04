@@ -1,6 +1,26 @@
 import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+// Load env file and parse so we can pass it explicitly to the webServer child process.
+const envPath = join(workspaceRoot, '.env.e2e.web');
+let webServerEnv: { [key: string]: string };
+
+try {
+  const envRaw = readFileSync(envPath, 'utf8');
+  const parsed = dotenv.parse(envRaw);
+  // merge with current process.env so defaults remain
+  webServerEnv = {
+    ...undefinedToEmptyString(process.env),
+    ...undefinedToEmptyString(parsed),
+  };
+} catch (_) {
+  // fallback to process.env if file not present
+  webServerEnv = undefinedToEmptyString({ ...process.env });
+}
 
 // For CI, you may want to set BASE_URL to the deployed application.
 const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
@@ -28,6 +48,7 @@ export default defineConfig({
     url: 'http://localhost:4200',
     reuseExistingServer: true,
     cwd: workspaceRoot,
+    env: webServerEnv,
   },
   projects: [
     {
@@ -66,3 +87,10 @@ export default defineConfig({
     } */
   ],
 });
+
+// Using a type-safe approach
+function undefinedToEmptyString<T extends Record<string, unknown>>(obj: T) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, v ?? '']),
+  ) as { [K in keyof T]: Exclude<T[K], undefined> | '' };
+}
