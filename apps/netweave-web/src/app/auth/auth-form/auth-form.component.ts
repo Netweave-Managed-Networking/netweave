@@ -14,20 +14,20 @@ export interface AuthFormValue {
   templateUrl: './auth-form.component.html',
 })
 export class AuthFormComponent {
-  submitLabel = input.required<string>();
-  errorMessage = input<string | null>(null);
-  loading = input<boolean>(false);
+  public submitLabel = input.required<string>();
+  public errorMessage = input<string | null>(null);
+  public loading = input<boolean>(false);
 
-  submitted = output<AuthFormValue>();
+  protected submitted = output<AuthFormValue>();
 
   private fb = inject(FormBuilder);
 
-  form = this.fb.group({
+  protected form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
-  onSubmit() {
+  protected onSubmit() {
     if (this.form.invalid) return;
     this.submitted.emit(this.form.getRawValue() as AuthFormValue);
   }

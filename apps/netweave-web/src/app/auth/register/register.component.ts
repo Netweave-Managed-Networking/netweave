@@ -16,10 +16,10 @@ export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
 
-  error = signal<string | null>(null);
-  loading = signal(false);
+  protected error = signal<string | null>(null);
+  protected loading = signal(false);
 
-  onSubmit({ email, password }: AuthFormValue) {
+  protected onSubmit({ email, password }: AuthFormValue) {
     this.loading.set(true);
     this.error.set(null);
 
