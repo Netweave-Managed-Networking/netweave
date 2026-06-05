@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, resource } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { OrganizationDTO, WelcomeResponseDTO } from '@netweave/api-types';
+import { WelcomeResponseDTO } from '@netweave/api-types';
 
-import { catchError, firstValueFrom, of } from 'rxjs';
-import { LoginButtonComponent } from './login-button/login-button.component';
+import { firstValueFrom } from 'rxjs';
+import { TopNavComponent } from './top-nav/top-nav.component';
 
 @Component({
-  imports: [RouterModule, LoginButtonComponent],
+  imports: [RouterModule, TopNavComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -17,15 +17,5 @@ export class App {
 
   protected welcomeResponse = resource({
     loader: () => firstValueFrom(this.http.get<WelcomeResponseDTO>('/api')),
-  });
-
-  protected organizationLatest = resource({
-    loader: () =>
-      // handle error
-      firstValueFrom(
-        this.http
-          .get<OrganizationDTO | null>('/api/organizations/latest')
-          .pipe(catchError(() => of(null))),
-      ),
   });
 }

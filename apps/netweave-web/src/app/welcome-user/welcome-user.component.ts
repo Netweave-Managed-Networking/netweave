@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, resource } from '@angular/core';
+import { OrganizationDTO } from '@netweave/api-types';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-welcome-user',
@@ -6,4 +9,16 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './welcome-user.component.html',
 })
-export class WelcomeUserComponent {}
+export class WelcomeUserComponent {
+  private http = inject(HttpClient);
+
+  protected organizationLatest = resource({
+    loader: () =>
+      // handle error
+      firstValueFrom(
+        this.http
+          .get<OrganizationDTO | null>('/api/organizations/latest')
+          .pipe(catchError(() => of(null))),
+      ),
+  });
+}
