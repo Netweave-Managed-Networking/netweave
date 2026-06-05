@@ -12,6 +12,8 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
+import Nora from '@primeuix/themes/nora';
+import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -20,5 +22,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
     provideHttpClient(withFetch(), withInterceptors([])),
+    providePrimeNG({
+      theme: { preset: Nora, options: { darkModeSelector: false } },
+      ripple: true,
+    }),
   ],
 };
