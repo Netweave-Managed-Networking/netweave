@@ -23,6 +23,7 @@ export default [
           ],
         },
       ],
+      '@typescript-eslint/explicit-member-accessibility': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
