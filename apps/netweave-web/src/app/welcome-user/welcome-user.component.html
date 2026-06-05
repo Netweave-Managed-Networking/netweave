@@ -1,9 +1,9 @@
-<div class="welcome-container">
-  <h1>
-    Welcome!
-    <!-- {{ userName() }} -->
-  </h1>
-
-  <p>You have successfully logged in to netweave.</p>
-  <!-- <button (click)="logout()">Logout</button> -->
+<div class="welcome-user">
+  <h1 class="welcome-user__title">Welcome!</h1>
+  <p class="welcome-user__message">
+    You have successfully logged in to netweave.
+  </p>
+  <pre class="welcome-user__organization">{{
+    organizationLatest.value()?.name ?? ''
+  }}</pre>
 </div>

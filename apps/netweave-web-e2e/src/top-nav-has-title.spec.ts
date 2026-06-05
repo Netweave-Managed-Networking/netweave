@@ -4,7 +4,7 @@ test('has title', async ({ page }) => {
   await page.goto('/');
 
   // Expect h1 to contain a substring.
-  expect(await page.locator('.top-nav > .app__title').innerText()).toContain(
-    'netweave',
-  );
+  expect(
+    await page.locator('.top-nav > .top-nav__title').innerText(),
+  ).toContain('netweave');
 });

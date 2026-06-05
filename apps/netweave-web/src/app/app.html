@@ -1,9 +1,4 @@
 <div class="app">
-  <div class="top-nav">
-    <h1 class="app__title">netweave</h1>
-    <pre class="app__welcome">{{ welcomeResponse.value()?.message }}</pre>
-    <pre class="app__organization">{{ organizationLatest.value()?.name }}</pre>
-    <app-login-button />
-  </div>
+  <app-top-nav [welcomeText]="welcomeResponse.value()?.message" />
   <router-outlet></router-outlet>
 </div>
