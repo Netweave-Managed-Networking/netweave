@@ -2,7 +2,6 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -20,18 +19,15 @@ describe('AuthService', () => {
       providers: [
         provideHttpClientTesting(),
         { provide: Router, useValue: routerSpy },
-        { provide: PLATFORM_ID, useValue: 'browser' },
       ],
     });
 
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    document.cookie = '';
   });
 
   afterEach(() => {
     httpMock.verify();
-    document.cookie = '';
     vi.restoreAllMocks();
   });
 
@@ -39,12 +35,12 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should register and save token cookie', () => {
-    const response = { access_token: 'register-token' };
+  it('should register and mark authenticated', () => {
+    const response = { success: true };
 
     service.register('test@example.com', 'password').subscribe((res) => {
       expect(res).toEqual(response);
-      expect(document.cookie).toContain('nw_token=register-token');
+      expect(service.authenticated()).toBe(true);
     });
 
     const req = httpMock.expectOne('/api/auth/register');
@@ -56,12 +52,12 @@ describe('AuthService', () => {
     req.flush(response);
   });
 
-  it('should login and save token cookie', () => {
-    const response = { access_token: 'login-token' };
+  it('should login and mark authenticated', () => {
+    const response = { success: true };
 
     service.login('user@example.com', 'password').subscribe((res) => {
       expect(res).toEqual(response);
-      expect(document.cookie).toContain('nw_token=login-token');
+      expect(service.authenticated()).toBe(true);
     });
 
     const req = httpMock.expectOne('/api/auth/login');
@@ -73,34 +69,44 @@ describe('AuthService', () => {
     req.flush(response);
   });
 
-  it('should return token from cookie on browser platform', () => {
-    document.cookie = 'nw_token=abc123; path=/;';
-
-    expect(service.getToken()).toBe('abc123');
-    expect(service.isLoggedIn()).toBe(true);
+  it('should be logged out by default', () => {
+    expect(service.authenticated()).toBe(false);
   });
 
-  it('should return null when not running in browser', () => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClientTesting(),
-        { provide: Router, useValue: routerSpy },
-        { provide: PLATFORM_ID, useValue: 'server' },
-      ],
+  it('should verify session and mark authenticated', () => {
+    const response = { email: 'test@example.com' };
+
+    service.verifySession().subscribe((authenticated) => {
+      expect(authenticated).toBe(true);
+      expect(service.authenticated()).toBe(true);
     });
 
-    const serverService = TestBed.inject(AuthService);
-    expect(serverService.getToken()).toBeNull();
-    expect(serverService.isLoggedIn()).toBe(false);
+    const req = httpMock.expectOne('/api/auth/me');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
   });
 
-  it('should clear token and navigate to login on logout', () => {
-    document.cookie = 'nw_token=delete-me; path=/;';
+  it('should treat a failed session verification as logged out', () => {
+    service.verifySession().subscribe((authenticated) => {
+      expect(authenticated).toBe(false);
+      expect(service.authenticated()).toBe(false);
+    });
 
-    service.logout();
+    const req = httpMock.expectOne('/api/auth/me');
+    expect(req.request.method).toBe('GET');
+    req.flush(null, { status: 401, statusText: 'Unauthorized' });
+  });
 
+  it('should clear authentication and navigate to login on logout', async () => {
+    service.authenticated.set(true);
+
+    const logoutPromise = service.logout();
+    const req = httpMock.expectOne('/api/auth/logout');
+    expect(req.request.method).toBe('POST');
+    req.flush({ success: true });
+    await logoutPromise;
+
+    expect(service.authenticated()).toBe(false);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
-    expect(service.isLoggedIn()).toBe(false);
   });
 });

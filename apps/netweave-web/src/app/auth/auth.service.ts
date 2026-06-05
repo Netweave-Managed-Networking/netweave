@@ -1,59 +1,48 @@
-import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import { catchError, lastValueFrom, map, Observable, of, tap } from 'rxjs';
 
-const COOKIE_NAME = 'nw_token';
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+type AuthApiResponse = { success: true };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
 
-  public register(email: string, password: string) {
+  public authenticated = signal<boolean>(false);
+
+  public register(
+    email: string,
+    password: string,
+  ): Observable<AuthApiResponse> {
     return this.http
-      .post<{ access_token: string }>('/api/auth/register', { email, password })
-      .pipe(tap((res) => this.saveToken(res.access_token)));
+      .post<AuthApiResponse>('/api/auth/register', { email, password })
+      .pipe(tap(() => this.authenticated.set(true)));
   }
 
-  public login(email: string, password: string) {
+  public login(email: string, password: string): Observable<AuthApiResponse> {
     return this.http
-      .post<{ access_token: string }>('/api/auth/login', { email, password })
-      .pipe(tap((res) => this.saveToken(res.access_token)));
+      .post<AuthApiResponse>('/api/auth/login', { email, password })
+      .pipe(tap(() => this.authenticated.set(true)));
   }
 
-  public logout() {
-    this.deleteToken();
-    this.router.navigate(['/login']);
-  }
-
-  public getToken(): string | null {
-    if (!isPlatformBrowser(this.platformId)) return null;
-    return this.parseCookie(COOKIE_NAME);
-  }
-
-  public isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  private saveToken(token: string) {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `${COOKIE_NAME}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Strict${secureFlag}`;
-  }
-
-  private deleteToken() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    document.cookie = `${COOKIE_NAME}=; path=/; max-age=0`;
-  }
-
-  private parseCookie(name: string): string | null {
-    const match = document.cookie.match(
-      new RegExp('(?:^|; )' + name + '=([^;]*)'),
+  public verifySession(): Observable<boolean> {
+    return this.http.get<{ email: string }>('/api/auth/me').pipe(
+      tap(() => this.authenticated.set(true)),
+      map(() => true),
+      catchError(() => {
+        this.authenticated.set(false);
+        return of(false);
+      }),
     );
-    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  public async logout(): Promise<boolean> {
+    await lastValueFrom(
+      this.http.post<AuthApiResponse>('/api/auth/logout', {}),
+    );
+    this.authenticated.set(false);
+    return this.router.navigate(['/login']);
   }
 }

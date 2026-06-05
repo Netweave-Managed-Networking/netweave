@@ -1,3 +1,4 @@
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,13 +9,13 @@ import { LoginButtonComponent } from './login-button.component';
 describe('LoginButtonComponent', () => {
   let fixture: ComponentFixture<LoginButtonComponent>;
   let authServiceSpy: {
-    isLoggedIn: ReturnType<typeof vi.fn>;
+    authenticated: WritableSignal<boolean>;
     logout: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
     authServiceSpy = {
-      isLoggedIn: vi.fn(),
+      authenticated: signal(false),
       logout: vi.fn(),
     };
 
@@ -28,7 +29,7 @@ describe('LoginButtonComponent', () => {
   });
 
   it('should render the login button when the user is not logged in', () => {
-    authServiceSpy.isLoggedIn.mockReturnValue(false);
+    authServiceSpy.authenticated.set(false);
     fixture = TestBed.createComponent(LoginButtonComponent);
     fixture.detectChanges();
 
@@ -40,7 +41,7 @@ describe('LoginButtonComponent', () => {
   });
 
   it('should render the logout button and call logout when clicked', () => {
-    authServiceSpy.isLoggedIn.mockReturnValue(true);
+    authServiceSpy.authenticated.set(true);
     fixture = TestBed.createComponent(LoginButtonComponent);
     fixture.detectChanges();
 

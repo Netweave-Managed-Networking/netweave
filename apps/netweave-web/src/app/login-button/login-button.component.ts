@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 export class LoginButtonComponent {
   private auth = inject(AuthService);
 
-  protected isLoggedIn = signal<boolean>(this.auth.isLoggedIn());
+  protected authenticated = this.auth.authenticated;
 
   protected logout() {
     this.auth.logout();

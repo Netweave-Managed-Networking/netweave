@@ -1,4 +1,4 @@
-@if (isLoggedIn()) {
+@if (authenticated()) {
   <button class="app__login-logout" (click)="logout()">Logout</button>
 } @else {
   <button class="app__login-logout" routerLink="/login">Login</button>
