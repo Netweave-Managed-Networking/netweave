@@ -1,15 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request, Response } from 'express';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let authService: Partial<Record<'register' | 'login', jest.Mock>>;
+  let authService: Partial<
+    Record<'register' | 'login' | 'verifyToken', jest.Mock>
+  >;
 
   beforeEach(async () => {
     authService = {
       register: jest.fn().mockResolvedValue({ access_token: 'register-token' }),
       login: jest.fn().mockResolvedValue({ access_token: 'login-token' }),
+      verifyToken: jest
+        .fn()
+        .mockReturnValue({ sub: 1, email: 'test@example.com' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -24,21 +30,66 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should call authService.register for register', async () => {
+  it('should set an HttpOnly cookie on register', async () => {
     const dto = { email: 'test@example.com', password: 'password123' };
+    const res = { cookie: jest.fn() } as unknown as Response;
 
-    const result = await controller.register(dto);
+    const result = await controller.register(dto, res);
 
     expect(authService.register).toHaveBeenCalledWith(dto.email, dto.password);
-    expect(result).toEqual({ access_token: 'register-token' });
+    expect(res.cookie).toHaveBeenCalledWith(
+      'netweave_auth_token',
+      'register-token',
+      expect.objectContaining({
+        path: '/',
+        httpOnly: true,
+        sameSite: 'strict',
+      }),
+    );
+    expect(result).toEqual({ success: true });
   });
 
-  it('should call authService.login for login', async () => {
+  it('should set an HttpOnly cookie on login', async () => {
     const dto = { email: 'test@example.com', password: 'password123' };
+    const res = { cookie: jest.fn() } as unknown as Response;
 
-    const result = await controller.login(dto);
+    const result = await controller.login(dto, res);
 
     expect(authService.login).toHaveBeenCalledWith(dto.email, dto.password);
-    expect(result).toEqual({ access_token: 'login-token' });
+    expect(res.cookie).toHaveBeenCalledWith(
+      'netweave_auth_token',
+      'login-token',
+      expect.objectContaining({
+        path: '/',
+        httpOnly: true,
+        sameSite: 'strict',
+      }),
+    );
+    expect(result).toEqual({ success: true });
+  });
+
+  it('should clear the auth cookie on logout', () => {
+    const res = { clearCookie: jest.fn() } as unknown as Response;
+
+    const result = controller.logout(res);
+
+    expect(res.clearCookie).toHaveBeenCalledWith('netweave_auth_token', {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    expect(result).toEqual({ success: true });
+  });
+
+  it('should verify the session from the auth cookie on me', async () => {
+    const req = {
+      headers: { cookie: 'netweave_auth_token=test-token' },
+    } as unknown as Request;
+
+    const result = await controller.me(req);
+
+    expect(authService.verifyToken).toHaveBeenCalledWith('test-token');
+    expect(result).toEqual({ email: 'test@example.com' });
   });
 });

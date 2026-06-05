@@ -13,6 +13,11 @@ export type AuthResponse = {
   access_token: string;
 };
 
+export type AuthPayload = {
+  sub: number;
+  email: string;
+};
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,6 +40,14 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))
       throw new UnauthorizedException('Invalid credentials');
     return this.sign(user);
+  }
+
+  verifyToken(token: string): AuthPayload {
+    try {
+      return this.jwtService.verify<AuthPayload>(token);
+    } catch {
+      throw new UnauthorizedException('Invalid auth token');
+    }
   }
 
   private sign(user: User): AuthResponse {
