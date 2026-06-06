@@ -40,34 +40,34 @@ export class AuthController {
   public async register(
     @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ success: true }> | never {
+  ): Promise<UserAuthDTO> | never {
     const { access_token } = await this.authService.register(
       dto.email,
       dto.password,
     );
     res.cookie(COOKIE_NAME, access_token, this.getAuthCookieOptions());
-    return { success: true };
+    return this.authService.getAuthenticatedUser(access_token);
   }
 
   @Post('login')
   public async login(
     @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ success: true }> | never {
+  ): Promise<UserAuthDTO> | never {
     const { access_token } = await this.authService.login(
       dto.email,
       dto.password,
     );
     res.cookie(COOKIE_NAME, access_token, this.getAuthCookieOptions());
-    return { success: true };
+    return this.authService.getAuthenticatedUser(access_token);
   }
 
   @Get('me')
   public async me(@Req() req: Request): Promise<UserAuthDTO> | never {
-    const token = this.getTokenFromRequest(req);
-    if (!token) throw new UnauthorizedException('Missing auth cookie');
+    const access_token = this.getTokenFromRequest(req);
+    if (!access_token) throw new UnauthorizedException('Missing auth cookie');
 
-    return this.authService.getAuthenticatedUser(token);
+    return this.authService.getAuthenticatedUser(access_token);
   }
 
   @Post('logout')

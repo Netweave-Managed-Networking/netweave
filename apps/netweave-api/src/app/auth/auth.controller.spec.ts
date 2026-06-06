@@ -35,7 +35,7 @@ describe('AuthController', () => {
   });
 
   it('should set an HttpOnly cookie on register', async () => {
-    const dto = { email: 'test@example.com', password: 'password123' };
+    const dto = { email: mockUserAuthDTO.user.email, password: 'password123' };
     const res = { cookie: jest.fn() } as unknown as Response;
 
     const result = await controller.register(dto, res);
@@ -50,11 +50,11 @@ describe('AuthController', () => {
         sameSite: 'strict',
       }),
     );
-    expect(result).toEqual({ success: true });
+    expect(result).toEqual(mockUserAuthDTO);
   });
 
   it('should set an HttpOnly cookie on login', async () => {
-    const dto = { email: 'test@example.com', password: 'password123' };
+    const dto = { email: mockUserAuthDTO.user.email, password: 'password123' };
     const res = { cookie: jest.fn() } as unknown as Response;
 
     const result = await controller.login(dto, res);
@@ -69,7 +69,7 @@ describe('AuthController', () => {
         sameSite: 'strict',
       }),
     );
-    expect(result).toEqual({ success: true });
+    expect(result).toEqual(mockUserAuthDTO);
   });
 
   it('should clear the auth cookie on logout', () => {
