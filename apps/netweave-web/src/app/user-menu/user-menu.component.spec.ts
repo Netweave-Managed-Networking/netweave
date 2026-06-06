@@ -1,19 +1,17 @@
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { UserAuthDTO } from '@netweave/api-types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../auth/auth.service';
-import { LoginComponent } from '../auth/login/login.component';
-import { LoginButtonComponent } from './login-button.component';
+import { UserMenuComponent } from './user-menu.component';
 
 const mockUserAuthDTO: UserAuthDTO['user'] | 'unauthenticated' = {
   email: 'test@example.de',
   role: 'editor',
 };
 
-describe('LoginButtonComponent', () => {
-  let fixture: ComponentFixture<LoginButtonComponent>;
+describe('UserMenuComponent', () => {
+  let fixture: ComponentFixture<UserMenuComponent>;
   let authServiceSpy: {
     me: WritableSignal<UserAuthDTO['user'] | 'unauthenticated'>;
     logout: ReturnType<typeof vi.fn>;
@@ -26,29 +24,24 @@ describe('LoginButtonComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginButtonComponent],
-      providers: [
-        provideRouter([{ path: 'login', component: LoginComponent }]),
-        { provide: AuthService, useValue: authServiceSpy },
-      ],
+      imports: [UserMenuComponent],
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
     }).compileComponents();
   });
 
-  it('should render the login button when the user is not logged in', () => {
+  it('should not show user avatar when the user is not logged in', () => {
     authServiceSpy.me.set('unauthenticated');
-    fixture = TestBed.createComponent(LoginButtonComponent);
+    fixture = TestBed.createComponent(UserMenuComponent);
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector('.login-button__login');
+    const avatar = fixture.nativeElement.querySelector('.login-button__avatar');
 
-    expect(button).toBeInstanceOf(HTMLAnchorElement);
-    expect(button.textContent?.trim()).toBe('Anmelden');
-    expect(authServiceSpy.logout).not.toHaveBeenCalled();
+    expect(avatar).toBeNull();
   });
 
   it('should render the users avatar and call logout when clicked', () => {
     authServiceSpy.me.set(mockUserAuthDTO);
-    fixture = TestBed.createComponent(LoginButtonComponent);
+    fixture = TestBed.createComponent(UserMenuComponent);
     fixture.detectChanges();
 
     const avatar = fixture.nativeElement.querySelector('.login-button__avatar');

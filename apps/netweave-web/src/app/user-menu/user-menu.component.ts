@@ -1,15 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'app-login-button',
+  selector: 'app-user-menu',
   standalone: true,
-  imports: [RouterLink],
-  templateUrl: './login-button.component.html',
-  styleUrls: ['./login-button.component.scss'],
+  templateUrl: './user-menu.component.html',
+  styleUrls: ['./user-menu.component.scss'],
 })
-export class LoginButtonComponent {
+export class UserMenuComponent {
   private auth = inject(AuthService);
 
   protected authenticated = this.auth.me;

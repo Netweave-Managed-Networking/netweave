@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { LoginButtonComponent } from '../login-button/login-button.component';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 import { TopNavComponent } from './top-nav.component';
 
 describe('TopNav', () => {
@@ -12,7 +12,7 @@ describe('TopNav', () => {
       imports: [TopNavComponent],
       providers: [provideRouter([])],
     })
-      .overrideComponent(LoginButtonComponent, {
+      .overrideComponent(UserMenuComponent, {
         set: { template: '<button>Login</button>' },
       })
       .compileComponents();

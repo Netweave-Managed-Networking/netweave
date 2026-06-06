@@ -1,9 +1,9 @@
 import { Component, input } from '@angular/core';
-import { LoginButtonComponent } from '../login-button/login-button.component';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @Component({
   selector: 'app-top-nav',
-  imports: [LoginButtonComponent],
+  imports: [UserMenuComponent],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.scss',
 })
