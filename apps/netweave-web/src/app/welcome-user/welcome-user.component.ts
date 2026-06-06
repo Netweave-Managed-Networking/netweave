@@ -8,6 +8,7 @@ import { catchError, firstValueFrom, of } from 'rxjs';
   standalone: true,
   imports: [],
   templateUrl: './welcome-user.component.html',
+  styleUrls: ['./welcome-user.component.css'],
 })
 export class WelcomeUserComponent {
   private http = inject(HttpClient);
