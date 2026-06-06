@@ -3,15 +3,15 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { UserAuthDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthService } from './auth.service';
-import { loggedInGuard } from './logged-in.guard';
+import { AuthService } from '../../services/auth/auth.service';
+import { authenticatedGuard } from './authenticated.guard';
 
 const mockUserAuthDTO: UserAuthDTO = {
   sub: 1,
   user: { email: 'test@example.de', role: 'editor' },
 };
 
-describe('loggedInGuard', () => {
+describe('authenticatedGuard', () => {
   let authService: AuthService;
   let router: Router;
   let route: ActivatedRouteSnapshot;
@@ -47,9 +47,9 @@ describe('loggedInGuard', () => {
     TestBed.resetTestingModule();
   });
 
-  function runLoggedInGuard() {
+  function runAuthenticatedGuard() {
     return TestBed.runInInjectionContext(() =>
-      loggedInGuard(route, router.routerState.snapshot),
+      authenticatedGuard(route, router.routerState.snapshot),
     );
   }
 
@@ -58,7 +58,7 @@ describe('loggedInGuard', () => {
       of(mockUserAuthDTO),
     );
 
-    const result = await runLoggedInGuard();
+    const result = await runAuthenticatedGuard();
 
     expect(result).toBe(true);
     expect(authService.getMe).toHaveBeenCalled();
@@ -70,7 +70,7 @@ describe('loggedInGuard', () => {
       of('unauthenticated'),
     );
 
-    const result = await runLoggedInGuard();
+    const result = await runAuthenticatedGuard();
 
     expect(result).toEqual(router.createUrlTree(['/login']));
     expect(authService.getMe).toHaveBeenCalled();

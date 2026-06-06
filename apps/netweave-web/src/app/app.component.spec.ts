@@ -6,8 +6,8 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { WelcomeResponseDTO } from '@netweave/api-types';
-import { App } from './app';
-import { TopNavComponent } from './top-nav/top-nav.component';
+import { App } from './app.component';
+import { TopNavComponent } from './components/top-nav/top-nav.component';
 
 describe('App', () => {
   let component: App;

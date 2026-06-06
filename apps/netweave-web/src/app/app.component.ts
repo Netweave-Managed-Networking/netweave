@@ -4,13 +4,13 @@ import { RouterModule } from '@angular/router';
 import { WelcomeResponseDTO } from '@netweave/api-types';
 
 import { firstValueFrom } from 'rxjs';
-import { TopNavComponent } from './top-nav/top-nav.component';
+import { TopNavComponent } from './components/top-nav/top-nav.component';
 
 @Component({
   imports: [RouterModule, TopNavComponent],
   selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.scss',
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class App {
   private http = inject(HttpClient);

@@ -2,7 +2,7 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserAuthDTO } from '@netweave/api-types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { UserMenuComponent } from './user-menu.component';
 
 const mockUserAuthDTO: UserAuthDTO['user'] | 'unauthenticated' = {

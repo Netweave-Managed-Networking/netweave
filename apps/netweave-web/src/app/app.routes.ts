@@ -1,27 +1,29 @@
 import { Routes } from '@angular/router';
 
-import { loggedInGuard } from './auth/logged-in.guard';
-import { loggedOutGuard } from './auth/logged-out.guard';
+import { authenticatedGuard } from './guards/authenticated/authenticated.guard';
+import { unauthenticatedGuard } from './guards/unauthenticated/unauthenticated.guard';
 
 export const appRoutes: Routes = [
   {
     path: 'login',
-    canActivate: [loggedOutGuard],
+    canActivate: [unauthenticatedGuard],
     loadComponent: () =>
-      import('./auth/login/login.component').then((m) => m.LoginComponent),
+      import('./components/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./auth/register/register.component').then(
+      import('./components/register/register.component').then(
         (m) => m.RegisterComponent,
       ),
   },
   {
     path: 'welcome-user',
-    canActivate: [loggedInGuard],
+    canActivate: [authenticatedGuard],
     loadComponent: () =>
-      import('./welcome-user/welcome-user.component').then(
+      import('./components/welcome-user/welcome-user.component').then(
         (m) => m.WelcomeUserComponent,
       ),
   },

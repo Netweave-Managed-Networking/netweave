@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { LoadingState } from '../../shared/loading-state.type';
+import { AuthService } from '../../services/auth/auth.service';
+import { LoadingState } from '../../types/loading-state.type';
 import {
   AuthFormComponent,
   AuthFormValue,
 } from '../auth-form/auth-form.component';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',

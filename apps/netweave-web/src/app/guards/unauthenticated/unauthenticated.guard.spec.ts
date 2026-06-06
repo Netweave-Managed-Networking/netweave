@@ -3,15 +3,15 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { UserAuthDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthService } from './auth.service';
-import { loggedOutGuard } from './logged-out.guard';
+import { AuthService } from '../../services/auth/auth.service';
+import { unauthenticatedGuard } from './unauthenticated.guard';
 
 const mockUserAuthDTO: UserAuthDTO['user'] | 'unauthenticated' = {
   email: 'test@example.de',
   role: 'editor',
 };
 
-describe('loggedOutGuard', () => {
+describe('unauthenticatedGuard', () => {
   let authService: AuthService;
   let router: Router;
   let route: ActivatedRouteSnapshot;
@@ -47,9 +47,9 @@ describe('loggedOutGuard', () => {
     TestBed.resetTestingModule();
   });
 
-  function runLoggedOutGuard() {
+  function runUnauthenticatedGuard() {
     return TestBed.runInInjectionContext(() =>
-      loggedOutGuard(route, router.routerState.snapshot),
+      unauthenticatedGuard(route, router.routerState.snapshot),
     );
   }
 
@@ -58,7 +58,7 @@ describe('loggedOutGuard', () => {
       of('unauthenticated'),
     );
 
-    const result = await runLoggedOutGuard();
+    const result = await runUnauthenticatedGuard();
 
     expect(result).toBe(true);
     expect(authService.getMe).toHaveBeenCalled();
@@ -70,7 +70,7 @@ describe('loggedOutGuard', () => {
       of(mockUserAuthDTO),
     );
 
-    const result = await runLoggedOutGuard();
+    const result = await runUnauthenticatedGuard();
 
     expect(result).toEqual(router.createUrlTree(['']));
     expect(authService.getMe).toHaveBeenCalled();
