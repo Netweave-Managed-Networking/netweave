@@ -12,9 +12,9 @@ export interface AuthFormValue {
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './auth-form.component.html',
+  styleUrls: ['./auth-form.component.scss'],
 })
 export class AuthFormComponent {
-  public submitLabel = input.required<string>();
   public errorMessage = input<string | null>(null);
   public loading = input<boolean>(false);
 

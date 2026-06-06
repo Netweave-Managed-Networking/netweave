@@ -1,10 +1,17 @@
-<div class="auth-page">
-  <h1>Sign in</h1>
+<div class="login">
   <app-auth-form
-    submitLabel="Sign in"
+    class="login__auth-form"
     [errorMessage]="error()"
-    [loading]="loading()"
+    [loading]="loading() === 'loading'"
     (submitted)="onSubmit($event)"
-  />
-  <p>No account? <a routerLink="/register">Register</a></p>
+  >
+    <p ngProjectAs="top-label">Anmelden</p>
+    <p ngProjectAs="bottom-text">
+      Noch keinen Account angelegt?
+      <a routerLink="/register" class="link">Account anlegen</a>
+    </p>
+    <p ngProjectAs="button-text">
+      {{ loading() === 'loading' ? 'Bitte warten…' : 'Anmelden' }}
+    </p>
+  </app-auth-form>
 </div>

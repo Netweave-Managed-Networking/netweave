@@ -1,10 +1,17 @@
-    <div class="auth-page">
-      <h1>Create account</h1>
-      <app-auth-form
-        submitLabel="Register"
-        [errorMessage]="error()"
-        [loading]="loading()"
-        (submitted)="onSubmit($event)"
-      />
-      <p>Already have an account? <a routerLink="/login">Sign in</a></p>
-    </div>
+<div class="register">
+  <app-auth-form
+    class="register__auth-form"
+    [errorMessage]="error()"
+    [loading]="loading() === 'loading'"
+    (submitted)="onSubmit($event)"
+  >
+    <p ngProjectAs="top-label">Account anlegen</p>
+    <p ngProjectAs="bottom-text">
+      Du hast schon einen Account?
+      <a routerLink="/login" class="link">Jetzt anmelden</a>
+    </p>
+    <p ngProjectAs="button-text">
+      {{ loading() === 'loading' ? 'Bitte warten…' : 'Account anlegen' }}
+    </p>
+  </app-auth-form>
+</div>
