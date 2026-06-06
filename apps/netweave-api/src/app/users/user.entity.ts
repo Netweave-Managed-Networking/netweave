@@ -8,4 +8,7 @@ export class User extends BaseEntity {
 
   @Column()
   declare public passwordHash: string;
+
+  @Column()
+  declare public role: 'admin' | 'editor' | 'viewer';
 }

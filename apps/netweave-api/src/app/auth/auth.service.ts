@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserAuthDTO } from '@netweave/api-types';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
@@ -33,7 +34,7 @@ export class AuthService {
     if (existing) throw new ConflictException('Email already in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = this.userRepo.create({ email, passwordHash });
+    const user = this.userRepo.create({ email, passwordHash, role: 'editor' });
     await this.userRepo.save(user);
     return this.sign(user);
   }
@@ -45,9 +46,12 @@ export class AuthService {
     return this.sign(user);
   }
 
-  public verifyToken(token: string): AuthPayload {
+  public async getAuthenticatedUser(token: string): Promise<UserAuthDTO> {
     try {
-      return this.jwtService.verify<AuthPayload>(token);
+      const { sub, email } = this.jwtService.verify<AuthPayload>(token);
+      const user = await this.userRepo.findOneBy({ email });
+      if (!user) throw new UnauthorizedException('Invalid user');
+      return { sub, user };
     } catch {
       throw new UnauthorizedException('Invalid auth token');
     }

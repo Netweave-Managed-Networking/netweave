@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 
 const mockJwtService = {
   sign: jest.fn().mockReturnValue('signed-token'),
+  verify: jest.fn(),
 };
 
 const mockUserRepository = {
@@ -48,7 +49,7 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('creates a new user and returns an access token', async () => {
+    it('creates a new user as editor and returns an access token', async () => {
       userRepo.findOneBy.mockResolvedValue(undefined);
       const savedUser = {
         id: 1,
@@ -66,6 +67,7 @@ describe('AuthService', () => {
       expect(userRepo.create).toHaveBeenCalledWith({
         email: 'test@example.com',
         passwordHash: expect.any(String),
+        role: 'editor',
       });
       expect(userRepo.save).toHaveBeenCalledWith(savedUser);
       expect(mockJwtService.sign).toHaveBeenCalledWith({
@@ -139,6 +141,46 @@ describe('AuthService', () => {
       expect(userRepo.findOneBy).toHaveBeenCalledWith({
         email: 'test@example.com',
       });
+    });
+  });
+
+  describe('getAuthenticatedUser', () => {
+    it('returns authenticated user when token exists', async () => {
+      const expectedUser = {
+        id: 1,
+        email: 'test@example.com',
+        passwordHash: 'hash',
+      } as User;
+
+      mockJwtService.verify.mockReturnValue({
+        sub: expectedUser.id,
+        email: expectedUser.email,
+      });
+
+      userRepo.findOneBy.mockResolvedValue(expectedUser);
+
+      const result = await service.getAuthenticatedUser('valid-token');
+
+      expect(mockJwtService.verify).toHaveBeenCalledWith('valid-token');
+      expect(userRepo.findOneBy).toHaveBeenCalledWith({
+        email: expectedUser.email,
+      });
+      expect(result).toEqual({
+        sub: expectedUser.id,
+        user: expectedUser,
+      });
+    });
+
+    it('throws Invalid auth token when token invalid', async () => {
+      mockJwtService.verify.mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      await expect(
+        service.getAuthenticatedUser('invalid-token'),
+      ).rejects.toBeInstanceOf(UnauthorizedException);
+
+      expect(mockJwtService.verify).toHaveBeenCalledWith('invalid-token');
     });
   });
 });

@@ -10,6 +10,7 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 
+import { UserAuthDTO } from '@netweave/api-types';
 import { IsEmail, MinLength } from 'class-validator';
 
 const COOKIE_NAME = 'netweave_auth_token';
@@ -62,12 +63,11 @@ export class AuthController {
   }
 
   @Get('me')
-  public async me(@Req() req: Request): Promise<{ email: string }> | never {
+  public async me(@Req() req: Request): Promise<UserAuthDTO> | never {
     const token = this.getTokenFromRequest(req);
     if (!token) throw new UnauthorizedException('Missing auth cookie');
 
-    const { email } = this.authService.verifyToken(token);
-    return { email };
+    return this.authService.getAuthenticatedUser(token);
   }
 
   @Post('logout')

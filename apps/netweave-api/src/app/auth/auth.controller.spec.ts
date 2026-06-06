@@ -1,21 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserAuthDTO } from '@netweave/api-types';
 import { Request, Response } from 'express';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
+const mockUserAuthDTO: UserAuthDTO = {
+  sub: 1,
+  user: { email: 'test@example.de', role: 'editor' },
+};
+
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: Partial<
-    Record<'register' | 'login' | 'verifyToken', jest.Mock>
+    Record<'register' | 'login' | 'getAuthenticatedUser', jest.Mock>
   >;
 
   beforeEach(async () => {
     authService = {
       register: jest.fn().mockResolvedValue({ access_token: 'register-token' }),
       login: jest.fn().mockResolvedValue({ access_token: 'login-token' }),
-      verifyToken: jest
-        .fn()
-        .mockReturnValue({ sub: 1, email: 'test@example.com' }),
+      getAuthenticatedUser: jest.fn().mockReturnValue(mockUserAuthDTO),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -89,7 +93,7 @@ describe('AuthController', () => {
 
     const result = await controller.me(req);
 
-    expect(authService.verifyToken).toHaveBeenCalledWith('test-token');
-    expect(result).toEqual({ email: 'test@example.com' });
+    expect(authService.getAuthenticatedUser).toHaveBeenCalledWith('test-token');
+    expect(result).toEqual(mockUserAuthDTO);
   });
 });
