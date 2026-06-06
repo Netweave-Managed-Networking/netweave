@@ -7,11 +7,11 @@ import {
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn()
-  declare id: number;
+  declare public id: number;
 
   @CreateDateColumn({ name: 'created_at' })
-  declare createdAt: Date;
+  declare public createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  declare updatedAt: Date;
+  declare public updatedAt: Date;
 }

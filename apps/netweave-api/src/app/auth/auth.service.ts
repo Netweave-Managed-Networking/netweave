@@ -20,12 +20,15 @@ export type AuthPayload = {
 
 @Injectable()
 export class AuthService {
-  constructor(
+  public constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string): Promise<AuthResponse> {
+  public async register(
+    email: string,
+    password: string,
+  ): Promise<AuthResponse> {
     const existing = await this.userRepo.findOneBy({ email });
     if (existing) throw new ConflictException('Email already in use');
 
@@ -35,14 +38,14 @@ export class AuthService {
     return this.sign(user);
   }
 
-  async login(email: string, password: string): Promise<AuthResponse> {
+  public async login(email: string, password: string): Promise<AuthResponse> {
     const user = await this.userRepo.findOneBy({ email });
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))
       throw new UnauthorizedException('Invalid credentials');
     return this.sign(user);
   }
 
-  verifyToken(token: string): AuthPayload {
+  public verifyToken(token: string): AuthPayload {
     try {
       return this.jwtService.verify<AuthPayload>(token);
     } catch {

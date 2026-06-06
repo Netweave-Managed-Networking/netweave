@@ -33,10 +33,10 @@ export class AuthDto {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  public constructor(private authService: AuthService) {}
 
   @Post('register')
-  async register(
+  public async register(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ success: true }> | never {
@@ -49,7 +49,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(
+  public async login(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ success: true }> | never {
@@ -62,7 +62,7 @@ export class AuthController {
   }
 
   @Get('me')
-  async me(@Req() req: Request): Promise<{ email: string }> | never {
+  public async me(@Req() req: Request): Promise<{ email: string }> | never {
     const token = this.getTokenFromRequest(req);
     if (!token) throw new UnauthorizedException('Missing auth cookie');
 
@@ -71,7 +71,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
+  public logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie(COOKIE_NAME, {
       path: '/',
       httpOnly: true,

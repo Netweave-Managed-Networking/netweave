@@ -4,10 +4,10 @@ import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  public constructor(private readonly appService: AppService) {}
 
   @Get()
-  getData(): WelcomeResponseDTO {
+  public getData(): WelcomeResponseDTO {
     return this.appService.getData();
   }
 }

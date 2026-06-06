@@ -4,10 +4,12 @@ import { OrganizationsService } from './organizations.service';
 
 @Controller('organizations')
 export class OrganizationController {
-  constructor(private readonly organizationService: OrganizationsService) {}
+  public constructor(
+    private readonly organizationService: OrganizationsService,
+  ) {}
 
   @Get('/latest')
-  getLatest(): Promise<OrganizationDTO | null> {
+  public getLatest(): Promise<OrganizationDTO | null> {
     return this.organizationService.getLatestOrganization();
   }
 }

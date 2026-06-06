@@ -9,7 +9,7 @@ import { QuoteService } from '../quote.service/quote.service';
 export class MailService {
   private readonly logger = new Logger(MailService.name);
 
-  constructor(
+  public constructor(
     private readonly httpService: HttpService,
     private quoteService: QuoteService,
     private organizationsService: OrganizationsService,

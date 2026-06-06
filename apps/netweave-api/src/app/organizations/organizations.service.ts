@@ -9,7 +9,7 @@ import { Organization } from './organization.entity';
 export class OrganizationsService {
   private readonly logger = new Logger(OrganizationsService.name);
 
-  constructor(
+  public constructor(
     @InjectRepository(Organization)
     private organizationsRepository: Repository<Organization>,
   ) {

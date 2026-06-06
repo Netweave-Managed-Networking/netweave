@@ -15,7 +15,7 @@ export class QuoteService {
   private readonly apiUrl = 'https://dummyjson.com/quotes/random';
   private callCount = 0;
 
-  constructor(private readonly httpService: HttpService) {
+  public constructor(private readonly httpService: HttpService) {
     this.logger.log(`FetchService initialized: api_url=${this.apiUrl}`);
   }
 

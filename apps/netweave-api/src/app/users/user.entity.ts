@@ -4,8 +4,8 @@ import { BaseEntity } from '../db/entity/base/base.entity';
 @Entity()
 export class User extends BaseEntity {
   @Column({ unique: true })
-  declare email: string;
+  declare public email: string;
 
   @Column()
-  declare passwordHash: string;
+  declare public passwordHash: string;
 }
