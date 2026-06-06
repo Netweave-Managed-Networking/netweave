@@ -23,7 +23,7 @@ type CookieOptions = {
   maxAge: number;
 };
 
-export class AuthDto {
+export class LoginUserDto {
   @IsEmail()
   declare public email: string;
 
@@ -37,7 +37,7 @@ export class AuthController {
 
   @Post('register')
   public async register(
-    @Body() dto: AuthDto,
+    @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ success: true }> | never {
     const { access_token } = await this.authService.register(
@@ -50,7 +50,7 @@ export class AuthController {
 
   @Post('login')
   public async login(
-    @Body() dto: AuthDto,
+    @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ success: true }> | never {
     const { access_token } = await this.authService.login(
