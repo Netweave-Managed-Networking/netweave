@@ -1,9 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { UserAuthDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from './auth.service';
 import { loggedInGuard } from './logged-in.guard';
+
+const mockUserAuthDTO: UserAuthDTO = {
+  sub: 1,
+  user: { email: 'test@example.de', role: 'editor' },
+};
 
 describe('loggedInGuard', () => {
   let authService: AuthService;
@@ -12,7 +18,8 @@ describe('loggedInGuard', () => {
 
   beforeEach(() => {
     authService = {
-      verifySession: vi.fn(),
+      // getMe(): Observable<UserAuthDTO | 'unauthenticated'> {
+      getMe: vi.fn(),
     } as unknown as AuthService;
 
     router = {
@@ -47,26 +54,26 @@ describe('loggedInGuard', () => {
   }
 
   it('should allow access when user is logged in', async () => {
-    (authService.verifySession as ReturnType<typeof vi.fn>).mockReturnValue(
-      of(true),
+    (authService.getMe as ReturnType<typeof vi.fn>).mockReturnValue(
+      of(mockUserAuthDTO),
     );
 
     const result = await runLoggedInGuard();
 
     expect(result).toBe(true);
-    expect(authService.verifySession).toHaveBeenCalled();
+    expect(authService.getMe).toHaveBeenCalled();
     expect(router.createUrlTree).not.toHaveBeenCalled();
   });
 
   it('should redirect to login when user is not logged in', async () => {
-    (authService.verifySession as ReturnType<typeof vi.fn>).mockReturnValue(
-      of(false),
+    (authService.getMe as ReturnType<typeof vi.fn>).mockReturnValue(
+      of('unauthenticated'),
     );
 
     const result = await runLoggedInGuard();
 
     expect(result).toEqual(router.createUrlTree(['/login']));
-    expect(authService.verifySession).toHaveBeenCalled();
+    expect(authService.getMe).toHaveBeenCalled();
     expect(router.createUrlTree).toHaveBeenCalledWith(['/login']);
   });
 });

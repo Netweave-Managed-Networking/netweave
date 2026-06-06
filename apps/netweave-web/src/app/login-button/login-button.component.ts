@@ -6,13 +6,13 @@ import { AuthService } from '../auth/auth.service';
   selector: 'app-login-button',
   standalone: true,
   imports: [RouterLink],
-  styleUrls: ['./login-button.component.scss'],
   templateUrl: './login-button.component.html',
+  styleUrls: ['./login-button.component.scss'],
 })
 export class LoginButtonComponent {
   private auth = inject(AuthService);
 
-  protected authenticated = this.auth.authenticated;
+  protected authenticated = this.auth.me;
 
   protected logout() {
     this.auth.logout();

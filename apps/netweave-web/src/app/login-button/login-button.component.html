@@ -1,5 +1,41 @@
-@if (authenticated()) {
-  <button class="app__login-logout" (click)="logout()">Logout</button>
-} @else {
-  <button class="app__login-logout" routerLink="/login">Login</button>
-}
+<div class="login-button">
+  @let authenticated_ = authenticated();
+
+  @if (authenticated_ !== 'unauthenticated') {
+    @let user = authenticated_;
+
+    <button
+      class="login-button__avatar avatar avatar-placeholder cursor-pointer"
+      popovertarget="user-menu"
+      style="anchor-name: --user-menu-anchor"
+    >
+      <div class="bg-neutral text-neutral-content w-8 rounded-full">
+        <span>{{ user.email.slice(0, 2) }}</span>
+      </div>
+    </button>
+    <ul
+      class="login-button__user-menu dropdown dropdown-end menu rounded-box bg-base-100 shadow-sm"
+      popover
+      id="user-menu"
+      style="position-anchor: --user-menu-anchor"
+    >
+      <div class="login-button__user-infos stats flex flex-col">
+        <div class="login-button__user-email stat">
+          <div class="stat-title">Email</div>
+          <div class="stat-value">{{ user.email }}</div>
+        </div>
+        <div class="login-button__user-role stat">
+          <div class="stat-title">Rolle</div>
+          <div class="stat-value">{{ user.role }}</div>
+        </div>
+      </div>
+      <li class="mt-1">
+        <button class="login-button__logout btn btn-soft" (click)="logout()">
+          Abmelden
+        </button>
+      </li>
+    </ul>
+  } @else {
+    <a class="login-button__login link" routerLink="/login"> Anmelden </a>
+  }
+</div>

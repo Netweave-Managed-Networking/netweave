@@ -4,8 +4,14 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { UserAuthDTO } from '@netweave/api-types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from './auth.service';
+
+const mockUserAuthDTO: UserAuthDTO = {
+  sub: 123,
+  user: { email: 'test@example.de', role: 'editor' },
+};
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -36,49 +42,51 @@ describe('AuthService', () => {
   });
 
   it('should register and mark authenticated', () => {
-    const response = { success: true };
+    const response = mockUserAuthDTO;
 
-    service.register('test@example.com', 'password').subscribe((res) => {
-      expect(res).toEqual(response);
-      expect(service.authenticated()).toBe(true);
-    });
+    service
+      .register(mockUserAuthDTO.user.email, 'password')
+      .subscribe((res) => {
+        expect(res).toEqual(response);
+        expect(service.me()).toBe(mockUserAuthDTO.user);
+      });
 
     const req = httpMock.expectOne('/api/auth/register');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
-      email: 'test@example.com',
+      email: mockUserAuthDTO.user.email,
       password: 'password',
     });
     req.flush(response);
   });
 
   it('should login and mark authenticated', () => {
-    const response = { success: true };
+    const response = mockUserAuthDTO;
 
-    service.login('user@example.com', 'password').subscribe((res) => {
+    service.login(mockUserAuthDTO.user.email, 'password').subscribe((res) => {
       expect(res).toEqual(response);
-      expect(service.authenticated()).toBe(true);
+      expect(service.me()).toBe(mockUserAuthDTO.user);
     });
 
     const req = httpMock.expectOne('/api/auth/login');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
-      email: 'user@example.com',
+      email: mockUserAuthDTO.user.email,
       password: 'password',
     });
     req.flush(response);
   });
 
   it('should be logged out by default', () => {
-    expect(service.authenticated()).toBe(false);
+    expect(service.me()).toBe('unauthenticated');
   });
 
   it('should verify session and mark authenticated', () => {
-    const response = { email: 'test@example.com' };
+    const response = mockUserAuthDTO;
 
-    service.verifySession().subscribe((authenticated) => {
-      expect(authenticated).toBe(true);
-      expect(service.authenticated()).toBe(true);
+    service.getMe().subscribe((me) => {
+      expect(me).toBe(mockUserAuthDTO);
+      expect(service.me()).toBe(mockUserAuthDTO.user);
     });
 
     const req = httpMock.expectOne('/api/auth/me');
@@ -87,9 +95,9 @@ describe('AuthService', () => {
   });
 
   it('should treat a failed session verification as logged out', () => {
-    service.verifySession().subscribe((authenticated) => {
-      expect(authenticated).toBe(false);
-      expect(service.authenticated()).toBe(false);
+    service.getMe().subscribe((me) => {
+      expect(me).toBe('unauthenticated');
+      expect(service.me()).toBe('unauthenticated');
     });
 
     const req = httpMock.expectOne('/api/auth/me');
@@ -98,7 +106,7 @@ describe('AuthService', () => {
   });
 
   it('should clear authentication and navigate to login on logout', async () => {
-    service.authenticated.set(true);
+    service.me.set(mockUserAuthDTO.user);
 
     const logoutPromise = service.logout();
     const req = httpMock.expectOne('/api/auth/logout');
@@ -106,7 +114,7 @@ describe('AuthService', () => {
     req.flush({ success: true });
     await logoutPromise;
 
-    expect(service.authenticated()).toBe(false);
+    expect(service.me()).toBe('unauthenticated');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 });
