@@ -49,8 +49,9 @@ export class AuthService {
   public async getAuthenticatedUser(token: string): Promise<UserAuthDTO> {
     try {
       const { sub, email } = this.jwtService.verify<AuthPayload>(token);
-      const user = await this.userRepo.findOneBy({ email });
-      if (!user) throw new UnauthorizedException('Invalid user');
+      const userRow = await this.userRepo.findOneBy({ email });
+      if (!userRow) throw new UnauthorizedException('Invalid user');
+      const { passwordHash, ...user } = userRow;
       return { sub, user };
     } catch {
       throw new UnauthorizedException('Invalid auth token');

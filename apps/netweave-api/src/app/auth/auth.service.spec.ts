@@ -146,11 +146,7 @@ describe('AuthService', () => {
 
   describe('getAuthenticatedUser', () => {
     it('returns authenticated user when token exists', async () => {
-      const expectedUser = {
-        id: 1,
-        email: 'test@example.com',
-        passwordHash: 'hash',
-      } as User;
+      const expectedUser = { id: 1, email: 'test@example.com' } as User;
 
       mockJwtService.verify.mockReturnValue({
         sub: expectedUser.id,
