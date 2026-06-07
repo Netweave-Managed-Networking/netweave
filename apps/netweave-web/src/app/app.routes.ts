@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { adminGuard } from './guards/admin/admin.guard';
 import { authenticatedGuard } from './guards/authenticated/authenticated.guard';
 import { unauthenticatedGuard } from './guards/unauthenticated/unauthenticated.guard';
 
@@ -26,6 +27,14 @@ export const appRoutes: Routes = [
     loadComponent: () =>
       import('./components/welcome-user/welcome-user.component').then(
         (m) => m.WelcomeUserComponent,
+      ),
+  },
+  {
+    path: 'user-invitation',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./components/user-invitation/user-invitation.component').then(
+        (m) => m.UserInvitationComponent,
       ),
   },
   { path: '', redirectTo: 'welcome-user', pathMatch: 'full' },
