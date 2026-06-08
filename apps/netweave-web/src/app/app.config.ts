@@ -13,12 +13,13 @@ import {
 } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { ssrCookieInterceptor } from './interceptors/ssr-cookie.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
-    provideHttpClient(withFetch(), withInterceptors([])),
+    provideHttpClient(withFetch(), withInterceptors([ssrCookieInterceptor])),
   ],
 };
