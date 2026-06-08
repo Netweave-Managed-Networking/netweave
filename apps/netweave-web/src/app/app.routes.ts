@@ -14,6 +14,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'register',
+    canActivate: [unauthenticatedGuard],
     loadComponent: () =>
       import('./components/register/register.component').then(
         (m) => m.RegisterComponent,
