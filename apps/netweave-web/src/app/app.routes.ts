@@ -15,6 +15,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'register',
+    canActivate: [unauthenticatedGuard],
     loadComponent: () =>
       import('./components/register/register.component').then(
         (m) => m.RegisterComponent,
@@ -28,6 +29,12 @@ export const appRoutes: Routes = [
         (m) => m.WelcomeUserComponent,
       ),
   },
+
+  // TODO the current problem is that when reloading page on user-invitation page, it gets reset to welcome-user page
+  // NEW OBSERVATION: this is because welcome-user is default (/ -> /welcome-user)
+  //                  on reload I always land on default page
+  // EVEN NEWER OBSERVATION: does only happen if Server side render (or prerender), not for client side rendering
+  // EVEN NEWER OBSERVATION: does only happen if Server side render (or prerender) AND adminGuard are activated, does not happen for ssr without guard
   {
     path: 'user-invitation',
     canActivate: [adminGuard],
