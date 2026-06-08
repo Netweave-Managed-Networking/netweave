@@ -1,0 +1,19 @@
+<div class="home w-full flex justify-center mt-4">
+  <div class="home__container flex flex-col">
+    <h1 class="home__title">Welcome!</h1>
+
+    <p class="home__message">You have successfully logged in to netweave.</p>
+
+    <pre class="home__organization">{{
+      organizationLatest.value()?.name ?? ''
+    }}</pre>
+
+    <a
+      class="home__link pt-4 link"
+      *appHasRole="'admin'"
+      routerLink="/user-invitation"
+    >
+      Go to User Invitation Page
+    </a>
+  </div>
+</div>

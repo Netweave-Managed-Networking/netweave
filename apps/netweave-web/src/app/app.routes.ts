@@ -22,12 +22,10 @@ export const appRoutes: Routes = [
       ),
   },
   {
-    path: 'welcome-user',
+    path: 'home',
     canActivate: [authenticatedGuard],
     loadComponent: () =>
-      import('./components/welcome-user/welcome-user.component').then(
-        (m) => m.WelcomeUserComponent,
-      ),
+      import('./components/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'user-invitation',
@@ -37,6 +35,6 @@ export const appRoutes: Routes = [
         (m) => m.UserInvitationComponent,
       ),
   },
-  { path: '', redirectTo: 'welcome-user', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

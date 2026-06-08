@@ -6,16 +6,16 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { OrganizationDTO } from '@netweave/api-types';
-import { WelcomeUserComponent } from './welcome-user.component';
+import { HomeComponent } from './home.component';
 
-describe('WelcomeUserComponent', () => {
-  let component: WelcomeUserComponent;
-  let fixture: ComponentFixture<WelcomeUserComponent>;
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
   let httpTesting: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WelcomeUserComponent],
+      imports: [HomeComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -23,7 +23,7 @@ describe('WelcomeUserComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WelcomeUserComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     httpTesting = TestBed.inject(HttpTestingController);
   });
@@ -55,7 +55,7 @@ describe('WelcomeUserComponent', () => {
 
       const compiled = fixture.nativeElement as HTMLElement;
       expect(
-        compiled.querySelector('.welcome-user__organization')?.textContent,
+        compiled.querySelector('.home__organization')?.textContent,
       ).toContain(mockOrganization.name);
     });
 
@@ -71,9 +71,9 @@ describe('WelcomeUserComponent', () => {
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      expect(
-        compiled.querySelector('.welcome-user__organization')?.textContent,
-      ).toBe('');
+      expect(compiled.querySelector('.home__organization')?.textContent).toBe(
+        '',
+      );
     });
 
     it('should handle API error for latest organization endpoint', async () => {
@@ -92,9 +92,9 @@ describe('WelcomeUserComponent', () => {
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      expect(
-        compiled.querySelector('.welcome-user__organization')?.textContent,
-      ).toBe('');
+      expect(compiled.querySelector('.home__organization')?.textContent).toBe(
+        '',
+      );
     });
   });
 });

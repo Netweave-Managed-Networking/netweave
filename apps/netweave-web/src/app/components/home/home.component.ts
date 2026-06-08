@@ -6,13 +6,13 @@ import { catchError, firstValueFrom, of } from 'rxjs';
 import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
 
 @Component({
-  selector: 'app-welcome-user',
+  selector: 'app-home',
   standalone: true,
   imports: [RouterLink, HasRoleDirective],
-  templateUrl: './welcome-user.component.html',
-  styleUrls: ['./welcome-user.component.scss'],
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
 })
-export class WelcomeUserComponent {
+export class HomeComponent {
   private http = inject(HttpClient);
 
   protected organizationLatest = resource({

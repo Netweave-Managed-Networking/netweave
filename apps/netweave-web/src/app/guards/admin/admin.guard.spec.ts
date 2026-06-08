@@ -70,16 +70,16 @@ describe('adminGuard', () => {
     expect(router.createUrlTree).not.toHaveBeenCalled();
   });
 
-  it('should redirect to welcome-user when user is not an admin', async () => {
+  it('should redirect to home when user is not an admin', async () => {
     (authService.getMe as ReturnType<typeof vi.fn>).mockReturnValue(
       of(mockEditorAuthDTO),
     );
 
     const result = await runAdminGuard();
 
-    expect(result).toEqual(router.createUrlTree(['/welcome-user']));
+    expect(result).toEqual(router.createUrlTree(['/home']));
     expect(authService.getMe).toHaveBeenCalled();
-    expect(router.createUrlTree).toHaveBeenCalledWith(['/welcome-user']);
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/home']);
   });
 
   it('should redirect to login when user is not logged in', async () => {
