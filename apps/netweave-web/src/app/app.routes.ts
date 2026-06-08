@@ -28,11 +28,11 @@ export const appRoutes: Routes = [
       import('./components/home/home.component').then((m) => m.HomeComponent),
   },
   {
-    path: 'user-invitation',
+    path: 'user-invitations',
     canActivate: [adminGuard],
     loadComponent: () =>
-      import('./components/user-invitation/user-invitation.component').then(
-        (m) => m.UserInvitationComponent,
+      import('./components/user-invitations/user-invitations.component').then(
+        (m) => m.UserInvitationsComponent,
       ),
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
