@@ -1,6 +1,7 @@
 import { UserDTO } from '@netweave/api-types';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
+import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity implements UserDTO {
@@ -12,4 +13,10 @@ export class User extends BaseEntity implements UserDTO {
 
   @Column()
   declare public role: 'admin' | 'editor' | 'viewer';
+
+  @OneToMany(
+    () => UserEmailWhitelist,
+    (userEmailWhitelist) => userEmailWhitelist.createdBy,
+  )
+  declare public userEmailWhitelistsCreated: UserEmailWhitelist[];
 }

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Organization } from '../organizations/organization.entity';
+import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
 
@@ -17,7 +18,7 @@ export default new DataSource({
   database: process.env.DB_DB,
 
   // we need to specify entities here for typeorm CLI, otherwise (when using autoLoadEntities: true) it won't find them and won't generate migrations
-  entities: [Organization, User],
+  entities: [Organization, User, UserEmailWhitelist],
 
   // migrations
   synchronize: false,
