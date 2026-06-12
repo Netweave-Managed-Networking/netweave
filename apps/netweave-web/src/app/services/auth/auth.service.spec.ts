@@ -4,13 +4,13 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { UserAuthDTO } from '@netweave/api-types';
+import { UserAuthDTO, UserDTO } from '@netweave/api-types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from './auth.service';
 
 const mockUserAuthDTO: UserAuthDTO = {
   sub: 123,
-  user: { email: 'test@example.de', role: 'editor' },
+  user: { email: 'test@example.de', role: 'editor' } as UserDTO,
 };
 
 describe('AuthService', () => {

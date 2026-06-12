@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { UserAuthDTO } from '@netweave/api-types';
+import { UserAuthDTO, UserDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../../services/auth/auth.service';
@@ -8,12 +8,12 @@ import { adminGuard } from './admin.guard';
 
 const mockAdminAuthDTO: UserAuthDTO = {
   sub: 1,
-  user: { email: 'test@example.de', role: 'admin' },
+  user: { email: 'test@example.de', role: 'admin' } as UserDTO,
 };
 
 const mockEditorAuthDTO: UserAuthDTO = {
   sub: 1,
-  user: { email: 'test@example.de', role: 'editor' },
+  user: { email: 'test@example.de', role: 'editor' } as UserDTO,
 };
 
 describe('adminGuard', () => {

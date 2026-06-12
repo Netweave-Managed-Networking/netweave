@@ -43,7 +43,7 @@ describe('HomeComponent', () => {
       const mockOrganization: OrganizationDTO = {
         name: 'Test Organization',
         contact: null,
-      };
+      } as OrganizationDTO;
 
       const latestOrgReq = httpTesting.expectOne({
         method: 'GET',

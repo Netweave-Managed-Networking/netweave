@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { UserAuthDTO } from '@netweave/api-types';
+import { UserAuthDTO, UserDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../../services/auth/auth.service';
@@ -9,7 +9,7 @@ import { unauthenticatedGuard } from './unauthenticated.guard';
 const mockUserAuthDTO: UserAuthDTO['user'] | 'unauthenticated' = {
   email: 'test@example.de',
   role: 'editor',
-};
+} as UserDTO;
 
 describe('unauthenticatedGuard', () => {
   let authService: AuthService;
