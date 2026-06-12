@@ -4,6 +4,7 @@ import { OrganizationsChangeName1778567667688 } from './migrations/1778567667688
 import { UsersCreate1780322559206 } from './migrations/1780322559206-users-create';
 import { UsersAddRole1780767586491 } from './migrations/1780767586491-users-add-role';
 import { UsersRenameTable1780949556090 } from './migrations/1780949556090-users-rename-table';
+import { UsersFixesRoleNoDefaultSequenceRename1781288095192 } from './migrations/1781288095192-users-fixes-role-no-default-sequence-rename';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -12,4 +13,5 @@ export const Migrations = [
   UsersCreate1780322559206,
   UsersAddRole1780767586491,
   UsersRenameTable1780949556090,
+  UsersFixesRoleNoDefaultSequenceRename1781288095192,
 ];
