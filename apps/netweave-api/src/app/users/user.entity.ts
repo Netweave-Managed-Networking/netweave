@@ -1,8 +1,9 @@
+import { UserDTO } from '@netweave/api-types';
 import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 
 @Entity({ name: 'users' })
-export class User extends BaseEntity {
+export class User extends BaseEntity implements UserDTO {
   @Column({ unique: true })
   declare public email: string;
 

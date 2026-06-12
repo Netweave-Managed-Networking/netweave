@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserAuthDTO } from '@netweave/api-types';
+import { UserAuthDTO, UserDTO } from '@netweave/api-types';
 import { Request, Response } from 'express';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 const mockUserAuthDTO: UserAuthDTO = {
   sub: 1,
-  user: { email: 'test@example.de', role: 'editor' },
+  user: { email: 'test@example.de', role: 'editor' } as UserDTO,
 };
 
 describe('AuthController', () => {
