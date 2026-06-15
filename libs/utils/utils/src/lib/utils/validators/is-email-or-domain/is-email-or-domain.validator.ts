@@ -1,4 +1,5 @@
-import { isEmail, registerDecorator, ValidationOptions } from 'class-validator';
+import { registerDecorator, ValidationOptions } from 'class-validator';
+import { isEmailOrDomain } from './is-email-or-domain.fn';
 
 export function IsEmailOrDomain(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
@@ -7,14 +8,7 @@ export function IsEmailOrDomain(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: {
-        validate(value: unknown) {
-          if (isEmail(value)) return true;
-          if (typeof value !== 'string') return false;
-          if (value.charAt(0) === '@' && isEmail('a' + value)) return true;
-          return false;
-        },
-      },
+      validator: { validate: (value: unknown) => isEmailOrDomain(value) },
     });
   };
 }
