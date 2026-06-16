@@ -8,7 +8,7 @@ export class User extends BaseEntity implements UserDTO {
   @Column({ unique: true })
   declare public email: string;
 
-  @Column()
+  @Column({ select: false })
   declare public passwordHash: string;
 
   @Column()
@@ -17,6 +17,7 @@ export class User extends BaseEntity implements UserDTO {
   @OneToMany(
     () => UserEmailWhitelist,
     (userEmailWhitelist) => userEmailWhitelist.createdBy,
+    { eager: false },
   )
   declare public userEmailWhitelistsCreated: UserEmailWhitelist[];
 }

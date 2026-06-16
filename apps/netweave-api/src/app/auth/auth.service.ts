@@ -35,30 +35,35 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = this.userRepo.create({ email, passwordHash, role: 'editor' });
-    await this.userRepo.save(user);
+    await this.userRepo.save({ ...user, passwordHash });
     return this.sign(user);
   }
 
   public async login(email: string, password: string): Promise<AuthResponse> {
-    const user = await this.userRepo.findOneBy({ email });
+    const user: Pick<User, 'id' | 'email' | 'passwordHash'> =
+      await this.userRepo.findOneOrFail({
+        where: { email },
+        select: ['id', 'email', 'passwordHash'],
+      });
+
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))
       throw new UnauthorizedException('Invalid credentials');
+
     return this.sign(user);
   }
 
   public async getAuthenticatedUser(token: string): Promise<UserAuthDTO> {
     try {
       const { sub, email } = this.jwtService.verify<AuthPayload>(token);
-      const userRow = await this.userRepo.findOneBy({ email });
-      if (!userRow) throw new UnauthorizedException('Invalid user');
-      const { passwordHash, ...user } = userRow;
+      const user = await this.userRepo.findOneBy({ email });
+      if (!user) throw new UnauthorizedException('Invalid user');
       return { sub, user };
     } catch {
       throw new UnauthorizedException('Invalid auth token');
     }
   }
 
-  private sign(user: User): AuthResponse {
+  private sign(user: Pick<User, 'id' | 'email'>): AuthResponse {
     return {
       access_token: this.jwtService.sign({ sub: user.id, email: user.email }),
     };
