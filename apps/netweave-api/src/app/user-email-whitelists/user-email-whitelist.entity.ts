@@ -11,6 +11,11 @@ export class UserEmailWhitelist
   @Column({ name: 'email_or_domain', unique: true })
   declare public emailOrDomain: string;
 
-  @ManyToOne(() => User, (user) => user.userEmailWhitelistsCreated)
+  @ManyToOne(() => User, (user) => user.userEmailWhitelistsCreated, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    eager: true,
+  })
   declare public createdBy: User;
 }

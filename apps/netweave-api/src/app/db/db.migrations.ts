@@ -6,6 +6,7 @@ import { UsersAddRole1780767586491 } from './migrations/1780767586491-users-add-
 import { UsersRenameTable1780949556090 } from './migrations/1780949556090-users-rename-table';
 import { UsersFixesRoleNoDefaultSequenceRename1781288095192 } from './migrations/1781288095192-users-fixes-role-no-default-sequence-rename';
 import { UserEmailWhitelistsCreate1781289531508 } from './migrations/1781289531508-user-email-whitelists-create';
+import { UserEmailWhitelistsFixForeignKeyOnUser1781623307811 } from './migrations/1781623307811-user-email-whitelists-fix-foreign-key-on-user';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -16,4 +17,5 @@ export const Migrations = [
   UsersRenameTable1780949556090,
   UsersFixesRoleNoDefaultSequenceRename1781288095192,
   UserEmailWhitelistsCreate1781289531508,
+  UserEmailWhitelistsFixForeignKeyOnUser1781623307811,
 ];
