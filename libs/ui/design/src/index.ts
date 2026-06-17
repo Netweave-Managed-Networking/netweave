@@ -1,1 +1,1 @@
-export * from './lib/design/design';
+export * from './lib/design/icons';
