@@ -10,23 +10,16 @@
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/netweave-web",
+        "allowedCommonJsDependencies": ["validator"],
+        "assets": [{ "glob": "**/*", "input": "apps/netweave-web/public" }],
         "browser": "apps/netweave-web/src/main.ts",
-        "tsConfig": "apps/netweave-web/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/netweave-web/public"
-          }
-        ],
-        "styles": ["apps/netweave-web/src/styles.scss"],
-        "server": "apps/netweave-web/src/main.server.ts",
-        "ssr": {
-          "entry": "apps/netweave-web/src/server.ts"
-        },
         "outputMode": "server",
-        "allowedCommonJsDependencies": ["validator"]
+        "outputPath": "dist/apps/netweave-web",
+        "server": "apps/netweave-web/src/main.server.ts",
+        "ssr": { "entry": "apps/netweave-web/src/server.ts" },
+        "styles": ["apps/netweave-web/src/styles.scss"],
+        "tsConfig": "apps/netweave-web/tsconfig.app.json"
       },
       "configurations": {
         "production": {
