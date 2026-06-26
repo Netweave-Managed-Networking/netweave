@@ -10,14 +10,22 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 
-export type AuthResponse = {
-  access_token: string;
-};
+export type AccessToken = string;
 
-export type AuthPayload = {
-  sub: number;
-  email: string;
-};
+export type CookieConsts = Readonly<{
+  name: CookieName;
+  options: CookieOptions;
+}>;
+
+export type CookieName = Readonly<string>;
+
+export type CookieOptions = Readonly<{
+  path: '/';
+  httpOnly: true;
+  sameSite: 'strict';
+  secure: boolean;
+  maxAge: number;
+}>;
 
 @Injectable()
 export class AuthService {
@@ -26,10 +34,21 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  public async register(
+  public static readonly COOKIE_CONSTS: CookieConsts = {
+    name: 'netweave_auth_token',
+    options: {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    },
+  };
+
+  public async registerOrFail(
     email: string,
     password: string,
-  ): Promise<AuthResponse> {
+  ): Promise<AccessToken> {
     const existing = await this.userRepo.findOneBy({ email });
     if (existing) throw new ConflictException('Email already in use');
 
@@ -39,7 +58,10 @@ export class AuthService {
     return this.sign(user);
   }
 
-  public async login(email: string, password: string): Promise<AuthResponse> {
+  public async loginOrFail(
+    email: string,
+    password: string,
+  ): Promise<AccessToken> {
     const user: Pick<User, 'id' | 'email' | 'passwordHash'> =
       await this.userRepo.findOneOrFail({
         where: { email },
@@ -48,12 +70,20 @@ export class AuthService {
 
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))
       throw new UnauthorizedException('Invalid credentials');
-
     return this.sign(user);
   }
 
-  public async getAuthenticatedUser(token: string): Promise<UserAuthDTO> {
+  public async getAuthUserFromCookieOrFail(
+    cookie?: string,
+  ): Promise<UserAuthDTO> {
+    const token: AccessToken | null = this.readTokenFromCookie(cookie);
+    if (!token) throw new UnauthorizedException('Missing auth cookie');
+    return this.getAuthUserFromTokenOrFail(token);
+  }
+
+  public async getAuthUserFromTokenOrFail(token: string): Promise<UserAuthDTO> {
     try {
+      type AuthPayload = { sub: number; email: string };
       const { sub, email } = this.jwtService.verify<AuthPayload>(token);
       const user = await this.userRepo.findOneBy({ email });
       if (!user) throw new UnauthorizedException('Invalid user');
@@ -63,9 +93,25 @@ export class AuthService {
     }
   }
 
-  private sign(user: Pick<User, 'id' | 'email'>): AuthResponse {
-    return {
-      access_token: this.jwtService.sign({ sub: user.id, email: user.email }),
-    };
+  private readTokenFromCookie(rawCookie?: string): AccessToken | null {
+    if (!rawCookie) return null;
+
+    const cookiePair = rawCookie
+      .split(';')
+      .map((cookie) => cookie.trim())
+      .map((cookie) => {
+        const index = cookie.indexOf('=');
+        return {
+          name: cookie.slice(0, index),
+          value: cookie.slice(index + 1),
+        };
+      })
+      .find((cookie) => cookie.name === AuthService.COOKIE_CONSTS.name);
+
+    return cookiePair ? decodeURIComponent(cookiePair.value) : null;
+  }
+
+  private sign(user: Pick<User, 'id' | 'email'>): AccessToken {
+    return this.jwtService.sign({ sub: user.id, email: user.email });
   }
 }

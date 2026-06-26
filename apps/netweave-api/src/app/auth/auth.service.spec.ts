@@ -12,6 +12,7 @@ const mockJwtService = {
 };
 
 const mockUserRepository = {
+  findOneOrFail: jest.fn(),
   findOneBy: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
@@ -23,6 +24,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     userRepo = {
+      findOneOrFail: mockUserRepository.findOneOrFail,
       findOneBy: mockUserRepository.findOneBy,
       create: mockUserRepository.create,
       save: mockUserRepository.save,
@@ -48,7 +50,7 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('register', () => {
+  describe('registerOrFail', () => {
     it('creates a new user as editor and returns an access token', async () => {
       userRepo.findOneBy.mockResolvedValue(undefined);
       const savedUser = {
@@ -59,7 +61,10 @@ describe('AuthService', () => {
       userRepo.create.mockReturnValue(savedUser);
       userRepo.save.mockResolvedValue(savedUser);
 
-      const result = await service.register('test@example.com', 'password');
+      const result = await service.registerOrFail(
+        'test@example.com',
+        'password',
+      );
 
       expect(userRepo.findOneBy).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -69,12 +74,15 @@ describe('AuthService', () => {
         passwordHash: expect.any(String),
         role: 'editor',
       });
-      expect(userRepo.save).toHaveBeenCalledWith(savedUser);
+      expect(userRepo.save).toHaveBeenCalledWith({
+        ...savedUser,
+        passwordHash: expect.any(String),
+      });
       expect(mockJwtService.sign).toHaveBeenCalledWith({
         sub: savedUser.id,
         email: savedUser.email,
       });
-      expect(result).toEqual({ access_token: 'signed-token' });
+      expect(result).toEqual('signed-token');
     });
 
     it('throws ConflictException when email already exists', async () => {
@@ -84,7 +92,7 @@ describe('AuthService', () => {
       } as User);
 
       await expect(
-        service.register('test@example.com', 'password'),
+        service.registerOrFail('test@example.com', 'password'),
       ).rejects.toBeInstanceOf(ConflictException);
       expect(userRepo.findOneBy).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -93,36 +101,37 @@ describe('AuthService', () => {
     });
   });
 
-  describe('login', () => {
+  describe('loginOrFail', () => {
     it('returns an access token when credentials are valid', async () => {
-      const passwordHash = await bcrypt.hash('password', 10);
       const existingUser = {
         id: 1,
         email: 'test@example.com',
-        passwordHash,
+        passwordHash: await bcrypt.hash('password', 10),
       } as User;
-      userRepo.findOneBy.mockResolvedValue(existingUser);
+      userRepo.findOneOrFail.mockResolvedValue(existingUser);
 
-      const result = await service.login('test@example.com', 'password');
+      const result = await service.loginOrFail('test@example.com', 'password');
 
-      expect(userRepo.findOneBy).toHaveBeenCalledWith({
-        email: 'test@example.com',
+      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+        where: { email: 'test@example.com' },
+        select: expect.any(Array),
       });
       expect(mockJwtService.sign).toHaveBeenCalledWith({
         sub: existingUser.id,
         email: existingUser.email,
       });
-      expect(result).toEqual({ access_token: 'signed-token' });
+      expect(result).toEqual('signed-token');
     });
 
     it('throws UnauthorizedException when user is not found', async () => {
-      userRepo.findOneBy.mockResolvedValue(undefined);
+      userRepo.findOneOrFail.mockResolvedValue(undefined);
 
       await expect(
-        service.login('test@example.com', 'password'),
+        service.loginOrFail('test@example.com', 'password'),
       ).rejects.toBeInstanceOf(UnauthorizedException);
-      expect(userRepo.findOneBy).toHaveBeenCalledWith({
-        email: 'test@example.com',
+      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+        where: { email: 'test@example.com' },
+        select: expect.any(Array),
       });
     });
 
@@ -133,13 +142,14 @@ describe('AuthService', () => {
         email: 'test@example.com',
         passwordHash,
       } as User;
-      userRepo.findOneBy.mockResolvedValue(existingUser);
+      userRepo.findOneOrFail.mockResolvedValue(existingUser);
 
       await expect(
-        service.login('test@example.com', 'wrong-password'),
+        service.loginOrFail('test@example.com', 'wrong-password'),
       ).rejects.toBeInstanceOf(UnauthorizedException);
-      expect(userRepo.findOneBy).toHaveBeenCalledWith({
-        email: 'test@example.com',
+      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+        where: { email: 'test@example.com' },
+        select: expect.any(Array),
       });
     });
   });
@@ -155,7 +165,7 @@ describe('AuthService', () => {
 
       userRepo.findOneBy.mockResolvedValue(expectedUser);
 
-      const result = await service.getAuthenticatedUser('valid-token');
+      const result = await service.getAuthUserFromTokenOrFail('valid-token');
 
       expect(mockJwtService.verify).toHaveBeenCalledWith('valid-token');
       expect(userRepo.findOneBy).toHaveBeenCalledWith({
@@ -173,7 +183,7 @@ describe('AuthService', () => {
       });
 
       await expect(
-        service.getAuthenticatedUser('invalid-token'),
+        service.getAuthUserFromTokenOrFail('invalid-token'),
       ).rejects.toBeInstanceOf(UnauthorizedException);
 
       expect(mockJwtService.verify).toHaveBeenCalledWith('invalid-token');

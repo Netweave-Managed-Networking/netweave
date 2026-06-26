@@ -1,28 +1,11 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-import { AuthService } from './auth.service';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
+import { AccessToken, AuthService } from './auth.service';
 
 import { UserAuthDTO } from '@netweave/api-types';
 import { IsEmail, MinLength } from 'class-validator';
-
-const COOKIE_NAME = 'netweave_auth_token';
-const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-
-type CookieOptions = {
-  path: '/';
-  httpOnly: true;
-  sameSite: 'strict';
-  secure: boolean;
-  maxAge: number;
-};
+import { AuthGuard } from './auth.guard';
+import { Me } from './me.decorator';
 
 export class LoginUserDto {
   @IsEmail()
@@ -41,12 +24,13 @@ export class AuthController {
     @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<UserAuthDTO> | never {
-    const { access_token } = await this.authService.register(
+    const token: AccessToken = await this.authService.registerOrFail(
       dto.email,
       dto.password,
     );
-    res.cookie(COOKIE_NAME, access_token, this.getAuthCookieOptions());
-    return this.authService.getAuthenticatedUser(access_token);
+    const { name, options } = AuthService.COOKIE_CONSTS;
+    res.cookie(name, token, options);
+    return this.authService.getAuthUserFromTokenOrFail(token);
   }
 
   @Post('login')
@@ -54,59 +38,25 @@ export class AuthController {
     @Body() dto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<UserAuthDTO> | never {
-    const { access_token } = await this.authService.login(
+    const token: AccessToken = await this.authService.loginOrFail(
       dto.email,
       dto.password,
     );
-    res.cookie(COOKIE_NAME, access_token, this.getAuthCookieOptions());
-    return this.authService.getAuthenticatedUser(access_token);
+    const { name, options } = AuthService.COOKIE_CONSTS;
+    res.cookie(name, token, options);
+    return this.authService.getAuthUserFromTokenOrFail(token);
   }
 
+  @UseGuards(AuthGuard)
   @Get('me')
-  public async me(@Req() req: Request): Promise<UserAuthDTO> | never {
-    const access_token = this.getTokenFromRequest(req);
-    if (!access_token) throw new UnauthorizedException('Missing auth cookie');
-
-    return this.authService.getAuthenticatedUser(access_token);
+  public me(@Me() user: UserAuthDTO): UserAuthDTO {
+    return user;
   }
 
   @Post('logout')
-  public logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie(COOKIE_NAME, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
+  public logout(@Res({ passthrough: true }) res: Response): { success: true } {
+    const { name, options } = AuthService.COOKIE_CONSTS;
+    res.clearCookie(name, options);
     return { success: true };
-  }
-
-  private getAuthCookieOptions(): CookieOptions {
-    return {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: COOKIE_MAX_AGE_MS,
-    } as const;
-  }
-
-  private getTokenFromRequest(req: Request): string | null {
-    const rawCookie = req.headers.cookie;
-    if (!rawCookie) return null;
-
-    const cookiePair = rawCookie
-      .split(';')
-      .map((cookie) => cookie.trim())
-      .map((cookie) => {
-        const index = cookie.indexOf('=');
-        return {
-          name: cookie.slice(0, index),
-          value: cookie.slice(index + 1),
-        };
-      })
-      .find((cookie) => cookie.name === COOKIE_NAME);
-
-    return cookiePair ? decodeURIComponent(cookiePair.value) : null;
   }
 }

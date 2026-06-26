@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserAuthDTO, UserDTO } from '@netweave/api-types';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -12,14 +12,17 @@ const mockUserAuthDTO: UserAuthDTO = {
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: Partial<
-    Record<'register' | 'login' | 'getAuthenticatedUser', jest.Mock>
+    Record<
+      'registerOrFail' | 'loginOrFail' | 'getAuthUserFromTokenOrFail',
+      jest.Mock
+    >
   >;
 
   beforeEach(async () => {
     authService = {
-      register: jest.fn().mockResolvedValue({ access_token: 'register-token' }),
-      login: jest.fn().mockResolvedValue({ access_token: 'login-token' }),
-      getAuthenticatedUser: jest.fn().mockReturnValue(mockUserAuthDTO),
+      registerOrFail: jest.fn().mockResolvedValue('register-token'),
+      loginOrFail: jest.fn().mockResolvedValue('login-token'),
+      getAuthUserFromTokenOrFail: jest.fn().mockReturnValue(mockUserAuthDTO),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -40,15 +43,14 @@ describe('AuthController', () => {
 
     const result = await controller.register(dto, res);
 
-    expect(authService.register).toHaveBeenCalledWith(dto.email, dto.password);
+    expect(authService.registerOrFail).toHaveBeenCalledWith(
+      dto.email,
+      dto.password,
+    );
     expect(res.cookie).toHaveBeenCalledWith(
       'netweave_auth_token',
       'register-token',
-      expect.objectContaining({
-        path: '/',
-        httpOnly: true,
-        sameSite: 'strict',
-      }),
+      AuthService.COOKIE_CONSTS.options,
     );
     expect(result).toEqual(mockUserAuthDTO);
   });
@@ -59,15 +61,14 @@ describe('AuthController', () => {
 
     const result = await controller.login(dto, res);
 
-    expect(authService.login).toHaveBeenCalledWith(dto.email, dto.password);
+    expect(authService.loginOrFail).toHaveBeenCalledWith(
+      dto.email,
+      dto.password,
+    );
     expect(res.cookie).toHaveBeenCalledWith(
       'netweave_auth_token',
       'login-token',
-      expect.objectContaining({
-        path: '/',
-        httpOnly: true,
-        sameSite: 'strict',
-      }),
+      AuthService.COOKIE_CONSTS.options,
     );
     expect(result).toEqual(mockUserAuthDTO);
   });
@@ -77,23 +78,24 @@ describe('AuthController', () => {
 
     const result = controller.logout(res);
 
-    expect(res.clearCookie).toHaveBeenCalledWith('netweave_auth_token', {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    expect(res.clearCookie).toHaveBeenCalledWith(
+      'netweave_auth_token',
+      AuthService.COOKIE_CONSTS.options,
+    );
     expect(result).toEqual({ success: true });
   });
 
-  it('should verify the session from the auth cookie on me', async () => {
-    const req = {
-      headers: { cookie: 'netweave_auth_token=test-token' },
-    } as unknown as Request;
+  describe('me', () => {
+    it('returns the user injected by the @Me() decorator', () => {
+      const mockUser = { sub: 1, user: {} as UserDTO };
+      const result = controller.me(mockUser);
+      expect(result).toEqual(mockUser);
+    });
 
-    const result = await controller.me(req);
-
-    expect(authService.getAuthenticatedUser).toHaveBeenCalledWith('test-token');
-    expect(result).toEqual(mockUserAuthDTO);
+    it('returns the same reference, performing no transformation', () => {
+      const mockUser = { sub: 1, user: {} as UserDTO };
+      const result = controller.me(mockUser);
+      expect(result).toBe(mockUser);
+    });
   });
 });
