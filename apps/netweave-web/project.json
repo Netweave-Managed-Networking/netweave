@@ -25,7 +25,8 @@
         "ssr": {
           "entry": "apps/netweave-web/src/server.ts"
         },
-        "outputMode": "server"
+        "outputMode": "server",
+        "allowedCommonJsDependencies": ["validator"]
       },
       "configurations": {
         "production": {
