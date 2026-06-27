@@ -22,7 +22,7 @@ export class RegisterComponent {
   protected loading = signal<LoadingState>('initial');
 
   protected onSubmit({ email, password }: AuthFormValue) {
-    this.loading.set('loading');
+    this.loading.set('pending');
     this.error.set(null);
 
     this.auth.register(email, password).subscribe({

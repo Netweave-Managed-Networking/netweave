@@ -1,1 +1,1 @@
-export type LoadingState = 'initial' | 'loading' | 'success' | 'error';
+export type LoadingState = 'initial' | 'pending' | 'success' | 'error';

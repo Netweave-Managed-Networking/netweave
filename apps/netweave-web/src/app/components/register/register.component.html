@@ -2,7 +2,7 @@
   <app-auth-form
     class="register__auth-form"
     [errorMessage]="error()"
-    [loading]="loading() === 'loading'"
+    [loading]="loading() === 'pending'"
     (submitted)="onSubmit($event)"
   >
     <p ngProjectAs="top-label">Account anlegen</p>
@@ -11,7 +11,7 @@
       <a routerLink="/login" class="link">Jetzt anmelden</a>
     </p>
     <p ngProjectAs="button-text">
-      {{ loading() === 'loading' ? 'Bitte warten…' : 'Account anlegen' }}
+      {{ loading() === 'pending' ? 'Bitte warten…' : 'Account anlegen' }}
     </p>
   </app-auth-form>
 </div>

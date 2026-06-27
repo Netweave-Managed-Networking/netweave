@@ -22,7 +22,7 @@ export class LoginComponent {
   protected error = signal<string | null>(null);
 
   protected onSubmit({ email, password }: AuthFormValue) {
-    this.loading.set('loading');
+    this.loading.set('pending');
     this.error.set(null);
 
     this.auth.login(email, password).subscribe({
