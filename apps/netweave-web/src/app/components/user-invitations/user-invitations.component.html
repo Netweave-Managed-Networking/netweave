@@ -1,1 +1,82 @@
-<div class="user-invitations w-full flex justify-center mt-4"></div>
+<div class="user-invitations w-full max-w-6xl m-auto p-4">
+  <div
+    class="user-invitations__title w-full flex flex-col items-center pb-4 gap-2"
+  >
+    <h1>Zugelassene Emails und Domänen</h1>
+  </div>
+
+  <div
+    class="user-invitations__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
+  >
+    @let invitations = userEmailWhitelists();
+
+    @if (invitations) {
+      <table class="user-invitations__table table">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th class="w-1"></th>
+            <th></th>
+            <th>Erstellt von</th>
+            <th class="w-1">
+              <app-user-invitation-create
+                (entity)="updateUserEmailWhitelistsResponse($event)"
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invitation of invitations; track invitation.id) {
+            @let isDomain = invitation.emailOrDomain.startsWith('@');
+
+            <tr>
+              <td class="w-1">
+                <div class="tooltip tooltip-right tooltip-secondary">
+                  <div class="tooltip-content">
+                    @if (isDomain) {
+                      <span
+                        >Alle E-Mail-Adressen mit
+                        <strong
+                          ><em>{{ invitation.emailOrDomain }}</em></strong
+                        >
+                        erhalten Zugriff auf netwwave.</span
+                      >
+                    } @else {
+                      <span
+                        ><strong
+                          ><em>{{ invitation.emailOrDomain }}</em></strong
+                        >
+                        hat Zugriff auf netweave.</span
+                      >
+                    }
+                  </div>
+                  <div
+                    [class]="
+                      `badge badge-secondary ${isDomain ? '' : 'badge-outline'}`
+                    "
+                  >
+                    @if (isDomain) {
+                      <span>Domäne</span>
+                    } @else {
+                      <span>Benutzer</span>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td class="user-invitations__email-or-domain">
+                <span>{{ invitation.emailOrDomain }}</span>
+              </td>
+
+              <td class="user-invitations__created-by">
+                {{ invitation.createdBy.email.split('@')[0] }}
+              </td>
+              <td class="user-invitations__delete-button w-1">
+                <button class="btn btn-square"><lib-trash-icon /></button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

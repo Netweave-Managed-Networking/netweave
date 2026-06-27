@@ -1,0 +1,13 @@
+.user-invitations {
+  .user-invitations__container {
+    .user-invitations__table {
+      .user-invitations__delete-button {
+        .btn:hover {
+          lib-trash-icon {
+            --stroke: var(--color-error);
+          }
+        }
+      }
+    }
+  }
+}

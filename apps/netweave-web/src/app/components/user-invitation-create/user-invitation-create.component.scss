@@ -1,0 +1,7 @@
+.user-invitation-create {
+  .user-invitation-create__button:hover {
+    lib-plus-icon {
+      --stroke: var(--color-accent);
+    }
+  }
+}

@@ -1,0 +1,105 @@
+<div class="user-invitation-create">
+  <div class="tooltip tooltip-left tooltip-accent">
+    <div class="tooltip-content">Dialog öffnen</div>
+    <button
+      class="user-invitation-create__button btn btn-square"
+      onclick="uew_modal__create.showModal()"
+    >
+      <lib-plus-icon />
+    </button>
+  </div>
+
+  <dialog
+    id="uew_modal__create"
+    class="user-invitation-create__modal modal whitespace-normal"
+  >
+    <div class="user-invitation-create__modal-box modal-box">
+      <h3 class="text-lg font-bold">Zugelassene Email / Domäne hinzufügen</h3>
+
+      <fieldset class="p-4">
+        @let isMail = emailToAddType() === 'email';
+
+        <div class="w-full pt-4 pb-4 flex justify-between gap-2">
+          <label class="label" for="toggle">Typ</label>
+          <div class="join">
+            <button
+              class="join-item btn"
+              [class.btn-secondary]="isMail"
+              (click)="toggleType('email')"
+            >
+              Email
+            </button>
+            <button
+              class="join-item btn"
+              [class.btn-secondary]="!isMail"
+              (click)="toggleType('domain')"
+            >
+              Domäne
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full pt-4 pb-4 flex flex-col relative">
+          @let errors = emailToAddForm.emailOrDomain().errors();
+          @let hasError =
+            emailToAddForm.emailOrDomain().touched() && errors.length > 0;
+
+          <div class="flex justify-between gap-2">
+            <label class="label" for="toggle">
+              {{ isMail ? 'Email' : 'Domäne' }}
+            </label>
+            <div>
+              <input
+                class="input lowercase"
+                [class.border-error]="hasError"
+                type="text"
+                [placeholder]="(isMail ? 'example' : '') + '@domain.com'"
+                [formField]="emailToAddForm.emailOrDomain"
+              />
+            </div>
+          </div>
+
+          <div class="absolute right-0 top-13 flex flex-col items-end">
+            @if (hasError) {
+              @for (error of errors; track error) {
+                <div class="text-error validator-hint visible">
+                  {{ error.message }}
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="flex items-center gap-2 w-full">
+        <lib-info-icon />
+        @let highlight = 'mark bg-secondary text-white px-1 rounded';
+        <p class="text-justify">
+          Es können
+          <span [class]="isMail ? highlight : 'px-1'"
+            >einzelne Emails (<code>example&#64;domain.com</code>)</span
+          >
+          oder
+          <span [class]="!isMail ? highlight : 'px-1'"
+            >alle Emails einer Domäne (<code>&#64;domain.com</code>)</span
+          >
+          zugelassen werden.
+        </p>
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn" (click)="cancel()">Abbrechen</button>
+        </form>
+        <button
+          class="btn btn-accent"
+          [disabled]="errors.length > 0"
+          (click)="submit()"
+        >
+          Speichern
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
