@@ -2,7 +2,17 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'lib-info-icon',
-  imports: [],
+  styles: `
+    :host {
+      --fill: none; /* can be overridden by parent component */
+      --stroke: black; /* can be overridden by parent component */
+    }
+
+    svg {
+      fill: var(--fill);
+      stroke: var(--stroke);
+    }
+  `,
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
