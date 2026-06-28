@@ -29,7 +29,9 @@ describe('UserInvitationCreateComponent', () => {
   it('opens modal via button click (mocked dialog API)', () => {
     const fixture = create();
 
-    const dialog = fixture.nativeElement.querySelector('#uew_modal__create');
+    const dialog = fixture.nativeElement.querySelector(
+      '.user-invitation-create__modal',
+    );
     const showModalSpy = vi.spyOn(dialog, 'showModal');
 
     const button = fixture.debugElement.query(
@@ -108,7 +110,9 @@ describe('UserInvitationCreateComponent', () => {
     const fixture = create();
     const component = fixture.componentInstance;
 
-    const dialog = fixture.nativeElement.querySelector('#uew_modal__create');
+    const dialog = fixture.nativeElement.querySelector(
+      '.user-invitation-create__modal',
+    );
     const closeSpy = vi.spyOn(dialog, 'close');
 
     const httpSpy = vi

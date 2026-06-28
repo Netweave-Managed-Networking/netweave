@@ -3,14 +3,14 @@
     <div class="tooltip-content">Dialog öffnen</div>
     <button
       class="user-invitation-create__button btn btn-square"
-      onclick="uew_modal__create.showModal()"
+      (click)="uewModalCreate.showModal()"
     >
       <lib-plus-icon />
     </button>
   </div>
 
   <dialog
-    id="uew_modal__create"
+    #uewModalCreate
     class="user-invitation-create__modal modal whitespace-normal"
   >
     <div class="user-invitation-create__modal-box modal-box">
@@ -95,7 +95,7 @@
         <button
           class="btn btn-accent"
           [disabled]="errors.length > 0"
-          (click)="submit()"
+          (click)="submit(uewModalCreate)"
         >
           Speichern
         </button>

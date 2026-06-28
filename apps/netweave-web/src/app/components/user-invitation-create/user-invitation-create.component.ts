@@ -59,7 +59,7 @@ export class UserInvitationCreateComponent {
     this.resetForm();
   }
 
-  protected async submit() {
+  protected async submit(dialog: HTMLDialogElement) {
     this.loadingState.set('pending');
 
     const userEmailWhitelistCreateDTO: UserEmailWhitelistCreateDTO = {
@@ -81,7 +81,7 @@ export class UserInvitationCreateComponent {
       )
       .subscribe();
 
-    this.elementRef.nativeElement.querySelector('#uew_modal__create').close();
+    dialog.close();
   }
 
   protected toggleType(type: 'email' | 'domain') {
