@@ -23,7 +23,7 @@ export class UserEmailWhitelistsService {
     });
   }
 
-  public async create(
+  public async save(
     dto: UserEmailWhitelistCreateDTO,
     creatorId: number,
   ): Promise<UserEmailWhitelist | null> {

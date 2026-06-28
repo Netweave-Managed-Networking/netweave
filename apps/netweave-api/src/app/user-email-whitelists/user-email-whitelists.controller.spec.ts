@@ -29,12 +29,12 @@ const mockWhitelistEntry: UserEmailWhitelistDTO = {
 describe('UserEmailWhitelistsController', () => {
   let controller: UserEmailWhitelistsController;
 
-  let service: Partial<Record<'all' | 'create', jest.Mock>>;
+  let service: Partial<Record<'all' | 'save', jest.Mock>>;
 
   beforeEach(async () => {
     service = {
       all: jest.fn().mockResolvedValue([mockWhitelistEntry]),
-      create: jest.fn().mockResolvedValue(mockWhitelistEntry),
+      save: jest.fn().mockResolvedValue(mockWhitelistEntry),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -84,7 +84,7 @@ describe('UserEmailWhitelistsController', () => {
 
       const result = await controller.create(mockAuthUser, dto);
 
-      expect(service.create).toHaveBeenCalledWith(dto, mockAuthUser.user.id);
+      expect(service.save).toHaveBeenCalledWith(dto, mockAuthUser.user.id);
       expect(result).toEqual(mockWhitelistEntry);
     });
 
@@ -93,7 +93,7 @@ describe('UserEmailWhitelistsController', () => {
         emailOrDomain: 'example.com',
       };
 
-      (service.create as jest.Mock).mockResolvedValueOnce(null);
+      (service.save as jest.Mock).mockResolvedValueOnce(null);
 
       const result = await controller.create(mockAuthUser, dto);
 

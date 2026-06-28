@@ -25,7 +25,7 @@ export class UserEmailWhitelistsController {
     @Me() { user }: UserAuthDTO,
     @Body() userEmailWhitelistDTO: UserEmailWhitelistCreateDTO,
   ): Promise<UserEmailWhitelistDTO | null> {
-    return await this.userEmailWhitelistsService.create(
+    return await this.userEmailWhitelistsService.save(
       userEmailWhitelistDTO,
       user.id,
     );

@@ -56,8 +56,8 @@ describe('UserEmailWhitelistsService', () => {
     });
   });
 
-  describe('create', () => {
-    it('should create a whitelist entry and return full entity with relations', async () => {
+  describe('save', () => {
+    it('should save a whitelist entry and return full entity with relations', async () => {
       const dto: UserEmailWhitelistCreateDTO = {
         emailOrDomain: 'test@example.com',
       };
@@ -78,7 +78,7 @@ describe('UserEmailWhitelistsService', () => {
       repository.save?.mockResolvedValue(savedEntity);
       repository.findOne?.mockResolvedValue(fullEntity);
 
-      const result = await service.create(dto, creatorId);
+      const result = await service.save(dto, creatorId);
 
       expect(repository.save).toHaveBeenCalledWith({
         ...dto,
@@ -101,7 +101,7 @@ describe('UserEmailWhitelistsService', () => {
       repository.save?.mockResolvedValue({ id: 1 });
       repository.findOne?.mockResolvedValue(null);
 
-      const result = await service.create(dto, 1);
+      const result = await service.save(dto, 1);
 
       expect(result).toBeNull();
     });
