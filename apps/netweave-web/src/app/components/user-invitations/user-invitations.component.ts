@@ -36,7 +36,7 @@ export class UserInvitationsComponent {
       ),
   });
 
-  protected updateUserEmailWhitelistsResponse(entity: UserEmailWhitelistDTO) {
+  protected addToUserEmailWhitelistsResponse(entity: UserEmailWhitelistDTO) {
     this.userEmailWhitelistsResponse.update((items) =>
       items ? [entity, ...items] : items,
     );
