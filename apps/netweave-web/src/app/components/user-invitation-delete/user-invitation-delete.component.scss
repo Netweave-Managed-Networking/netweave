@@ -1,0 +1,7 @@
+.user-invitation-delete {
+  .user-invitation-delete__button:hover {
+    lib-trash-icon {
+      --stroke: var(--color-error);
+    }
+  }
+}

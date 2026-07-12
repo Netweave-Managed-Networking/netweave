@@ -8,13 +8,13 @@ import {
 } from '@angular/core';
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
 
-import { TrashIcon } from '@netweave/design';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { UserInvitationCreateComponent } from '../user-invitation-create/user-invitation-create.component';
+import { UserInvitationDeleteComponent } from '../user-invitation-delete/user-invitation-delete.component';
 
 @Component({
   selector: 'app-user-invitations',
-  imports: [TrashIcon, UserInvitationCreateComponent],
+  imports: [UserInvitationCreateComponent, UserInvitationDeleteComponent],
   templateUrl: './user-invitations.component.html',
   styleUrls: ['./user-invitations.component.scss'],
 })
@@ -39,6 +39,14 @@ export class UserInvitationsComponent {
   protected addToUserEmailWhitelistsResponse(entity: UserEmailWhitelistDTO) {
     this.userEmailWhitelistsResponse.update((items) =>
       items ? [entity, ...items] : items,
+    );
+  }
+
+  protected removeFromUserEmailWhitelistsResponse(
+    id: UserEmailWhitelistDTO['id'],
+  ) {
+    this.userEmailWhitelistsResponse.update((items) =>
+      items ? items.filter((i) => i.id !== id) : items,
     );
   }
 }

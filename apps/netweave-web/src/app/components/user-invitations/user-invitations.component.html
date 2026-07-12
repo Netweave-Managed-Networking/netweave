@@ -15,10 +15,10 @@
         <!-- head -->
         <thead>
           <tr>
-            <th class="w-1"></th>
-            <th></th>
-            <th>Erstellt von</th>
-            <th class="w-1">
+            <th class="user-invitations__type-th w-1"></th>
+            <th class="user-invitations__email-or-domain-th"></th>
+            <th class="user-invitations__created-by-th">Erstellt von</th>
+            <th class="user-invitations__create-button-th w-1">
               <app-user-invitation-create
                 (entity)="addToUserEmailWhitelistsResponse($event)"
               />
@@ -30,7 +30,7 @@
             @let isDomain = invitation.emailOrDomain.startsWith('@');
 
             <tr>
-              <td class="w-1">
+              <td class="user-invitations__type-td w-1">
                 <div class="tooltip tooltip-right tooltip-secondary">
                   <div class="tooltip-content">
                     @if (isDomain) {
@@ -63,15 +63,18 @@
                   </div>
                 </div>
               </td>
-              <td class="user-invitations__email-or-domain">
+              <td class="user-invitations__email-or-domain-td">
                 <span>{{ invitation.emailOrDomain }}</span>
               </td>
 
-              <td class="user-invitations__created-by">
+              <td class="user-invitations__created-by-td">
                 {{ invitation.createdBy.email.split('@')[0] }}
               </td>
-              <td class="user-invitations__delete-button w-1">
-                <button class="btn btn-square"><lib-trash-icon /></button>
+              <td class="user-invitations__delete-button-td w-1">
+                <app-user-invitation-delete
+                  [toDelete]="invitation"
+                  (deleted)="removeFromUserEmailWhitelistsResponse($event)"
+                />
               </td>
             </tr>
           }
