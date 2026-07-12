@@ -90,10 +90,12 @@
       <div class="modal-action">
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
-          <button class="btn" (click)="cancel()">Abbrechen</button>
+          <button class="user-invitation-create__cancel btn" (click)="cancel()">
+            Abbrechen
+          </button>
         </form>
         <button
-          class="btn btn-accent"
+          class="user-invitation-create__confirm btn btn-accent"
           [disabled]="errors.length > 0"
           (click)="submit(uewModalCreate)"
         >

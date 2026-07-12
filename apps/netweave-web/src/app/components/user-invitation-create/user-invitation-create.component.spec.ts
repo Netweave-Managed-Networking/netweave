@@ -87,7 +87,9 @@ describe('UserInvitationCreateComponent', () => {
 
     fixture.detectChanges();
 
-    const submit = fixture.nativeElement.querySelector('.btn-accent');
+    const submit = fixture.nativeElement.querySelector(
+      '.user-invitation-create__confirm',
+    );
     expect(submit.disabled).toBe(true);
   });
 
@@ -102,7 +104,9 @@ describe('UserInvitationCreateComponent', () => {
 
     fixture.detectChanges();
 
-    const submit = fixture.nativeElement.querySelector('.btn-accent');
+    const submit = fixture.nativeElement.querySelector(
+      '.user-invitation-create__confirm',
+    );
     expect(submit.disabled).toBe(false);
   });
 
@@ -126,7 +130,9 @@ describe('UserInvitationCreateComponent', () => {
     input.nativeElement.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    const submit = fixture.nativeElement.querySelector('.btn-accent');
+    const submit = fixture.nativeElement.querySelector(
+      '.user-invitation-create__confirm',
+    );
     submit.click();
 
     fixture.detectChanges();
@@ -147,7 +153,9 @@ describe('UserInvitationCreateComponent', () => {
 
     fixture.detectChanges();
 
-    const cancel = fixture.nativeElement.querySelector('.btn');
+    const cancel = fixture.nativeElement.querySelector(
+      '.user-invitation-create__cancel',
+    );
     cancel.click();
 
     fixture.detectChanges();
