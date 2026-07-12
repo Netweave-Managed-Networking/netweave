@@ -106,7 +106,7 @@ describe('UserInvitationCreateComponent', () => {
     expect(submit.disabled).toBe(false);
   });
 
-  it('submits form, calls API, emits entity, closes modal', () => {
+  it('submits form, calls API, emits entity, closes modal, clears form', () => {
     const fixture = create();
     const component = fixture.componentInstance;
 
@@ -124,15 +124,17 @@ describe('UserInvitationCreateComponent', () => {
     const input = fixture.debugElement.query(By.css('input'));
     input.nativeElement.value = 'test@example.com';
     input.nativeElement.dispatchEvent(new Event('input'));
-
     fixture.detectChanges();
 
     const submit = fixture.nativeElement.querySelector('.btn-accent');
     submit.click();
 
+    fixture.detectChanges();
+
     expect(httpSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalled();
     expect(closeSpy).toHaveBeenCalled();
+    expect(input.nativeElement.value).toEqual('');
   });
 
   it('cancel resets form state (verified via UI reset, not input.value)', () => {

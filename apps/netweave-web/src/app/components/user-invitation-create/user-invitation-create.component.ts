@@ -81,6 +81,7 @@ export class UserInvitationCreateComponent {
       )
       .subscribe();
 
+    this.resetForm();
     dialog.close();
   }
 
