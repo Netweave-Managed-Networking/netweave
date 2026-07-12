@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEmailWhitelistCreateDTO } from '@netweave/api-types';
+import {
+  UserEmailWhitelistCreateDTO,
+  UserEmailWhitelistDTO,
+} from '@netweave/api-types';
 import { Repository } from 'typeorm';
 import { UserEmailWhitelist } from './user-email-whitelist.entity';
 
@@ -34,5 +37,11 @@ export class UserEmailWhitelistsService {
       where: { id: entity.id },
       relations: { createdBy: true },
     });
+  }
+
+  public async remove(id: UserEmailWhitelistDTO['id']): Promise<true> {
+    const entity = await this.repository.findBy({ id });
+    await this.repository.remove(entity);
+    return true;
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   UserAuthDTO,
   UserEmailWhitelistCreateDTO,
@@ -29,5 +37,11 @@ export class UserEmailWhitelistsController {
       userEmailWhitelistDTO,
       user.id,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  public async delete(@Param() { id }: { id: string }): Promise<true> {
+    return await this.userEmailWhitelistsService.remove(Number(id));
   }
 }
