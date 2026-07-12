@@ -42,7 +42,7 @@ describe('UserInvitationDeleteComponent', () => {
     const showModalSpy = vi.spyOn(dialog, 'showModal');
 
     const button = fixture.debugElement.query(
-      By.css('.user-invitation-delete__button'),
+      By.css('.user-invitation-delete__open'),
     );
 
     button.nativeElement.click();
@@ -58,7 +58,7 @@ describe('UserInvitationDeleteComponent', () => {
     );
 
     const button = fixture.debugElement.query(
-      By.css('.user-invitation-delete__button'),
+      By.css('.user-invitation-delete__open'),
     );
 
     button.nativeElement.click();
