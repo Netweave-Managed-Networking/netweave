@@ -1,6 +1,7 @@
 # icons
 
-mostly https://heroicons.com/ as svg
+- mostly https://heroicons.com/ as svg
+- then add `class="h-5 w-5"`
 
 ## Running unit tests
 
