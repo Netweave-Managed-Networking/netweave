@@ -18,7 +18,8 @@
     "paths": {
       "@netweave/api-types": ["libs/data-access/api-types/src/index.ts"],
       "@netweave/design": ["libs/ui/design/src/index.ts"],
-      "@netweave/utils": ["libs/utils/utils/src/index.ts"]
+      "@netweave/utils": ["libs/utils/utils/src/index.ts"],
+      "@netweave/icons": ["libs/ui/icons/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
