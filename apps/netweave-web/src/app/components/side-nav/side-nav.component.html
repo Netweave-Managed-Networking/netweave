@@ -1,0 +1,60 @@
+<div class="sidenav drawer sm:drawer-open">
+  <!-- hidden input to control the drawer state -->
+  <input
+    [id]="sideNavId()"
+    type="checkbox"
+    class="drawer-toggle"
+    [(ngModel)]="this.isDrawerOpen"
+  />
+
+  <div class="sidenav__content drawer-content">
+    <ng-content select="top-nav" />
+    <ng-content select="main" />
+  </div>
+
+  <div class="sidenav__sidebar drawer-side is-drawer-close:overflow-visible">
+    <!-- label closes side nav when side nav is an overlay (happens on small screens) when clicked beside -->
+    <label
+      [for]="sideNavId()"
+      aria-label="close sidenav"
+      class="drawer-overlay"
+    ></label>
+    <div
+      class="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64"
+    >
+      <div class="menu w-full grow flex-col justify-between">
+        <ul class="sidenav__menu--top">
+          <li>
+            <button
+              routerLink="/"
+              class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
+              data-tip="Home"
+            >
+              <icon-home />
+              <span class="is-drawer-close:hidden">Home</span>
+            </button>
+          </li>
+        </ul>
+        <ul class="sidenav__menu--bottom" *appHasRole="'admin'">
+          <div class="divider my-2">
+            @if (isDrawerOpen()) {
+              <span>Admin</span>
+            }
+          </div>
+          <li>
+            <button
+              routerLink="/user-invitations"
+              class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
+              data-tip="Manager-Verwaltung"
+            >
+              <div class="rotate-90">
+                <icon-settings />
+              </div>
+              <span class="is-drawer-close:hidden">Manager-Verwaltung</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

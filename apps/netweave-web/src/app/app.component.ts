@@ -1,21 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, resource } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WelcomeResponseDTO } from '@netweave/api-types';
 
-import { firstValueFrom } from 'rxjs';
+import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 
+export const NETWEAVE_SIDE_NAV_ID = 'netweave-sidenav';
+
 @Component({
-  imports: [RouterModule, TopNavComponent],
+  imports: [RouterModule, TopNavComponent, SideNavComponent],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class App {
-  private http = inject(HttpClient);
-
-  protected welcomeResponse = resource({
-    loader: () => firstValueFrom(this.http.get<WelcomeResponseDTO>('/api')),
-  });
+  public sideNavId = NETWEAVE_SIDE_NAV_ID;
 }

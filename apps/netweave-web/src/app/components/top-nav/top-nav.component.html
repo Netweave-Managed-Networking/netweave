@@ -1,7 +1,11 @@
-<div class="top-nav">
+<nav class="top-nav navbar w-full bg-base-300 flex justify-between">
+  <label
+    [for]="sideNavId()"
+    aria-label="Sidebar öffnen"
+    class="btn btn-square btn-ghost"
+  >
+    <icon-sidebar />
+  </label>
   <h1 class="top-nav__title">netweave</h1>
-  @if (welcomeText()) {
-    <pre class="top-nav__welcome">{{ welcomeText() }}</pre>
-  }
-  <app-user-menu />
-</div>
+  <app-user-menu class="mx-4" />
+</nav>

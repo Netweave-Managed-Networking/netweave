@@ -1,4 +1,6 @@
 <div class="app">
-  <app-top-nav [welcomeText]="welcomeResponse.value()?.message" />
-  <router-outlet></router-outlet>
+  <app-side-nav [sideNavId]="sideNavId">
+    <app-top-nav ngProjectAs="top-nav" [sideNavId]="sideNavId" />
+    <router-outlet ngProjectAs="main" />
+  </app-side-nav>
 </div>

@@ -5,7 +5,6 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { WelcomeResponseDTO } from '@netweave/api-types';
 import { App } from './app.component';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 
@@ -41,28 +40,5 @@ describe('App', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('Welcome API', () => {
-    it('should handover the the message from the welcome API response to the top navigation component', async () => {
-      fixture.detectChanges();
-
-      const mockWelcomeResponse: WelcomeResponseDTO = {
-        message: 'Hello, World!',
-      };
-
-      const welcomeReq = httpTesting.expectOne({
-        method: 'GET',
-        url: '/api',
-      });
-      welcomeReq.flush(mockWelcomeResponse);
-
-      await fixture.whenStable();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.top-nav')?.textContent).toContain(
-        mockWelcomeResponse.message,
-      );
-    });
   });
 });
