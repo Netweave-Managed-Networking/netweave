@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
 
-import { TrashIcon } from '@netweave/design';
+import { IconTrash } from '@netweave/icons';
 import { catchError, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
 
 @Component({
   selector: 'app-user-invitation-delete',
-  imports: [TrashIcon],
+  imports: [IconTrash],
   templateUrl: './user-invitation-delete.component.html',
   styleUrls: ['./user-invitation-delete.component.scss'],
 })
