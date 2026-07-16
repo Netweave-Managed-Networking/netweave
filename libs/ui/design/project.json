@@ -2,7 +2,7 @@
   "name": "design",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui/design/src",
-  "prefix": "lib",
+  "prefix": "design",
   "projectType": "library",
   "tags": ["type:ui"],
   "targets": {
