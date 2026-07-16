@@ -15,13 +15,14 @@ import {
 import { isDomain } from '@netweave/utils';
 import { isEmail } from 'class-validator';
 
-import { InfoIcon, PlusIcon } from '@netweave/design';
+import { InfoIcon } from '@netweave/design';
+import { IconPlus } from '@netweave/icons';
 import { catchError, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
 
 @Component({
   selector: 'app-user-invitation-create',
-  imports: [FormField, InfoIcon, PlusIcon],
+  imports: [FormField, InfoIcon, IconPlus],
   templateUrl: './user-invitation-create.component.html',
   styleUrls: ['./user-invitation-create.component.scss'],
 })
