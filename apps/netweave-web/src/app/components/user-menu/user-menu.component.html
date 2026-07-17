@@ -13,27 +13,30 @@
         <span>{{ user.email.slice(0, 2) }}</span>
       </div>
     </button>
-    <ul
-      class="login-button__user-menu dropdown dropdown-end menu rounded-box bg-base-100 shadow-sm"
+    <div
+      class="login-button__user-menu dropdown dropdown-end menu rounded-box mt-1 bg-base-100 shadow-sm max-w-xl"
       popover
       id="user-menu"
       style="position-anchor: --user-menu-anchor"
     >
-      <div class="login-button__user-infos stats flex flex-col">
-        <div class="login-button__user-email stat">
-          <div class="stat-title">Email</div>
-          <div class="stat-value">{{ user.email }}</div>
-        </div>
-        <div class="login-button__user-role stat">
-          <div class="stat-title">Rolle</div>
-          <div class="stat-value">{{ user.role }}</div>
-        </div>
-      </div>
-      <li class="mt-1">
-        <button class="login-button__logout btn btn-soft" (click)="logout()">
+      <div class="card-body">
+        <p class="text-m">Email</p>
+        <h2 class="font-bold text-3xl break-words">
+          {{ user.email }}
+        </h2>
+
+        <p class="text-m">Role</p>
+        <h2 class="font-bold text-3xl break-words">
+          {{ user.role }}
+        </h2>
+
+        <button
+          class="login-button__logout mt-1 btn btn-block btn-soft"
+          (click)="logout()"
+        >
           Abmelden
         </button>
-      </li>
-    </ul>
+      </div>
+    </div>
   }
 </div>
