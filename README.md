@@ -2,6 +2,8 @@
 
 ## About
 
+The code written here is a pure result of the private work of Marvin Frede. It is not part of any Employment relationship.\
+The code written here also does not contain any code of [Netweave 1.0](https://github.com/Netweave-Managed-Networking/netweave-v1).\
 See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
 
 ## Software
