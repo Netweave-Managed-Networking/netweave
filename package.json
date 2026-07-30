@@ -1,7 +1,7 @@
 {
   "name": "@netweave/source",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "EUPL-1.2",
   "scripts": {
     "nx": "nx",
     "serve": "nx serve netweave-web",
