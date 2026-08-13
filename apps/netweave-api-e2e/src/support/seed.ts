@@ -2,8 +2,9 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { Client } from 'pg';
 
-const envPath = path.resolve(__dirname, '../../../../.api');
-dotenv.config({ path: envPath });
+const workspaceRoot = path.resolve(__dirname, '../../../../');
+const envPath = path.join(workspaceRoot, '.env.e2e.api');
+dotenv.config({ path: envPath, override: true });
 
 export async function seedDatabase() {
   const client = new Client({

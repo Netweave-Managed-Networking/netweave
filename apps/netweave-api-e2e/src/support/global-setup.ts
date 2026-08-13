@@ -14,7 +14,7 @@ declare global {
 module.exports = async function () {
   const workspaceRoot = path.resolve(__dirname, '../../../../');
   const envPath = path.join(workspaceRoot, '.env.e2e.api');
-  dotenv.config({ path: envPath });
+  dotenv.config({ path: envPath, override: true });
 
   // Start ephemeral database for local e2e.
   console.log('\nSetting up e2e database...\n');
