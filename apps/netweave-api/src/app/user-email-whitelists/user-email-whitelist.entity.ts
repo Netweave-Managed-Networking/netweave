@@ -1,5 +1,5 @@
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 import { User } from '../users/user.entity';
 
@@ -17,5 +17,6 @@ export class UserEmailWhitelist
     onUpdate: 'CASCADE',
     eager: true,
   })
+  @JoinColumn({ name: 'created_by_id' })
   declare public createdBy: User;
 }
