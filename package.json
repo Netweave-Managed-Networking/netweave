@@ -21,7 +21,8 @@
     "mig:run": "./scripts/typeorm-migration-run.sh",
     "mig:revert": "./scripts/typeorm-migration-revert.sh",
     "mig:create": "./scripts/typeorm-migration-create.sh",
-    "mig:show": "./scripts/typeorm-migration-show.sh"
+    "mig:show": "./scripts/typeorm-migration-show.sh",
+    "schema:drop": "./scripts/typeorm-schema-drop.sh"
   },
   "private": true,
   "dependencies": {
