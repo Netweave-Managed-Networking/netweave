@@ -11,7 +11,10 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 const envFile = process.env.NODE_ENV === 'e2e.api' ? '.env.e2e.api' : '.env';
-dotenv.config({ path: path.resolve(__dirname, '../../..', envFile) });
+dotenv.config({
+  path: path.resolve(__dirname, '../../..', envFile),
+  override: process.env.NODE_ENV === 'e2e.api',
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

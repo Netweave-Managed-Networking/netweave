@@ -6,7 +6,7 @@ import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelis
 import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
 
-dotenv.config({ path: '.env' }); // necessary to load env vars here for typeorm CLI: `npm run typeorm migration:generate -- -d ./apps/netweave-api/src/app/db/db.data-source.ts init`
+dotenv.config({ path: '.env', override: process.env.NODE_ENV === 'e2e.api' }); // necessary to load env vars here for typeorm CLI: `npm run typeorm migration:generate -- -d ./apps/netweave-api/src/app/db/db.data-source.ts init`
 
 export default new DataSource({
   // main
