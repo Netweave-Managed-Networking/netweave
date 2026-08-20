@@ -6,69 +6,141 @@ The code written here is a pure result of the private work of Marvin Frede. It i
 The code written here also does not contain any code of [Netweave 1.0](https://github.com/Netweave-Managed-Networking/netweave-v1).\
 See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
 
+## How to get started
+
+There are two ways to run Netweave locally. Use the source-based workflow for
+active development because it runs Angular's development server with live
+reload. Use Docker Compose when you want to run the deployment-like stack.
+
+### 1. Shared setup
+
+1. Install Node.js and npm, then install the project dependencies from the
+   repository root:
+
+   ```sh
+   npm ci
+   ```
+
+2. Create the local environment file:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+3. Fill in the values in `.env`. At minimum, configure the PostgreSQL
+   connection, `JWT_SECRET`, and the mail settings. Set `SEND_MAIL_ACTIVATED`
+   to `false` when you do not want the application to send mail during local
+   development.
+
+### 2A. Recommended: run from source
+
+This workflow requires a PostgreSQL server running on the local machine. The
+database and user must match `.env`; for a local database, keep
+`DB_HOST=localhost` and use the configured `DB_PORT` (5432 by default).
+
+Start the frontend and API together:
+
+```sh
+npm run serve
+```
+
+Then open [http://localhost:4200](http://localhost:4200). Nx starts the API as
+a dependency of the web development server. The API listens at
+[http://localhost:3000/api](http://localhost:3000/api), and the Angular proxy
+forwards browser requests under `/api` to it. Frontend changes are picked up
+by Angular's development server automatically.
+
+The API connects to PostgreSQL when it starts. TypeORM does not synchronize
+the schema automatically, but it does run pending migrations
+(`synchronize: false` and `migrationsRun: true`). The database must therefore
+be reachable before running `npm run serve`.
+
+### 2B. Run with Docker Compose
+
+This workflow requires Docker Desktop with a running Docker daemon. It starts
+PostgreSQL, the API, the server-rendered Angular web app, and an Nginx reverse
+proxy:
+
+```sh
+docker compose up
+```
+
+To run the stack in the background:
+
+```sh
+docker compose up -d
+```
+
+The Compose file uses prebuilt `latest` images from GitHub Container Registry;
+it does not build the checked-out source code. It also expects the Nginx TLS
+certificates at:
+
+```text
+/etc/letsencrypt/live/dev.netweave.de/fullchain.pem
+/etc/letsencrypt/live/dev.netweave.de/privkey.pem
+```
+
+The Nginx configuration expects the hostname `dev.netweave.de` and redirects
+HTTP to HTTPS, so this path may require local DNS or `/etc/hosts` setup and
+valid certificates before it works on a fresh machine. The application is
+served through Nginx on ports 80 and 443; the web container does not publish a
+host port directly.
+
+Docker Compose does not provide Angular development live reload. For frontend
+work, use the source-based workflow above. To stop the containers while
+keeping the database volume, run `docker compose down`; `docker compose down
+-v` also deletes the database volume and its data.
+
 ## Software
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This workspace uses [Nx](https://nx.dev) to manage the applications and
+libraries.
 
-Run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-### Environment Variables
-
-Configuration values such as API keys are pulled from a `.env` file (which is ignored by git) at the workspace root. A sample is provided in `.env.example`.
-
-Make sure `.env` is A) setting values for all keys listed by `.env.example` and B) not committed; it is listed in `.gitignore` and `.dockerignore` already.
-
-### Run tasks
-
-To run the dev server for your app, use:
+To explore the project graph, run:
 
 ```sh
-npm run serve # starts frontend, backend and all other required nx libs
+npm run nx graph
 ```
 
-To create a production bundle:
+To inspect the available targets for either application, run:
 
 ```sh
-npm run build
+npm run nx show project netweave-web
+npm run nx show project netweave-api
 ```
 
-To see all available targets to run for a project, run:
+### Add Projects
+
+Use Nx generators to create new libraries, components, services, ...:
 
 ```sh
-npm run nx show project [netweave-web][netweave-api]
+npm run nx g @nx/angular:library mylib
+npm run nx g c apps/netweave-web/src/app/components/.../name
 ```
 
-### Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npm run nx g @nx/angular:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npm run nx g @nx/angular:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Use `npm run nx list` to see installed plugins and
+`npm run nx list <plugin-name>` to see their generators.
 
 ### Change Database
 
-In order to make changes to a productive database, migrations are used.
+Use migrations when changing the database schema:
 
-1. make changes to an entity (for example just rename any property of organization.entity.ts)
-1. after each change individually generate a migration file via `npm run mig:generate -- [name]`, name could be: organizations-renamed-name
-   - this will track all changes seen to the entities and pour them into the newly generated migrations file under `apps/netweave-api/src/app/db/migrations/`
-1. link the new migrations file in `apps/netweave-api/src/app/db/db.migrations.ts`
-1. repeat those steps for multiple different changes.
-1. see that the new migration is shown, but not yet executed via `npm run mig:show`
-   - when there is an "X" in the box it means the migration has already been executed in the database currently connected (see .env).
-1. run all migrations via `npm run mig:run`. This will execute all migrations which have not before to the currently connected (see .env) database.
+1. Change the relevant entity.
+2. Generate a migration, giving it a descriptive name:
+
+   ```sh
+   npm run mig:generate -- organizations-renamed-name
+   ```
+
+   Generated migrations are placed under
+   `apps/netweave-api/src/app/db/migrations/`.
+
+3. Import the migration in
+   `apps/netweave-api/src/app/db/db.migrations.ts`.
+4. Inspect and run pending migrations against the database configured in
+   `.env`:
+
+   ```sh
+   npm run mig:show
+   npm run mig:run
+   ```
