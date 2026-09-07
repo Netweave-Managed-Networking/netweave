@@ -96,6 +96,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -euo pipefail
             cd ~/netweave
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
             docker compose pull
