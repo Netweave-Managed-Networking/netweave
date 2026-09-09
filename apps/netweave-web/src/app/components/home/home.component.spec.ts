@@ -72,7 +72,7 @@ describe('HomeComponent', () => {
 
       const compiled = fixture.nativeElement as HTMLElement;
       expect(compiled.querySelector('.home__organization')?.textContent).toBe(
-        '',
+        'No organization created yet.',
       );
     });
 
@@ -93,7 +93,7 @@ describe('HomeComponent', () => {
 
       const compiled = fixture.nativeElement as HTMLElement;
       expect(compiled.querySelector('.home__organization')?.textContent).toBe(
-        '',
+        'No organization created yet.',
       );
     });
   });
