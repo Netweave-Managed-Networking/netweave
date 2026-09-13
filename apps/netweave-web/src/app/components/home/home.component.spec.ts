@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { OrganizationDTO } from '@netweave/api-types';
+import { MemberDTO } from '@netweave/api-types';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
@@ -36,52 +36,52 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Latest Organization API', () => {
-    it('should load organization data from the latest organizations endpoint', async () => {
+  describe('Latest Member API', () => {
+    it('should load member data from the latest members endpoint', async () => {
       fixture.detectChanges();
 
-      const mockOrganization: OrganizationDTO = {
-        name: 'Test Organization',
+      const mockMember: MemberDTO = {
+        name: 'Test Member',
         contact: null,
-      } as OrganizationDTO;
+      } as MemberDTO;
 
       const latestOrgReq = httpTesting.expectOne({
         method: 'GET',
-        url: '/api/organizations/latest',
+        url: '/api/members/latest',
       });
-      latestOrgReq.flush(mockOrganization);
+      latestOrgReq.flush(mockMember);
 
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      expect(
-        compiled.querySelector('.home__organization')?.textContent,
-      ).toContain(mockOrganization.name);
+      expect(compiled.querySelector('.home__member')?.textContent).toContain(
+        mockMember.name,
+      );
     });
 
-    it('should handle null response when no organization exists', async () => {
+    it('should handle null response when no member exists', async () => {
       fixture.detectChanges();
 
       const latestOrgReq = httpTesting.expectOne({
         method: 'GET',
-        url: '/api/organizations/latest',
+        url: '/api/members/latest',
       });
       latestOrgReq.flush(null);
 
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.home__organization')?.textContent).toBe(
-        'No organization created yet.',
+      expect(compiled.querySelector('.home__member')?.textContent).toBe(
+        'No member added yet.',
       );
     });
 
-    it('should handle API error for latest organization endpoint', async () => {
+    it('should handle API error for latest member endpoint', async () => {
       fixture.detectChanges();
 
       const latestOrgReq = httpTesting.expectOne({
         method: 'GET',
-        url: '/api/organizations/latest',
+        url: '/api/members/latest',
       });
 
       latestOrgReq.flush(null, {
@@ -92,8 +92,8 @@ describe('HomeComponent', () => {
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.home__organization')?.textContent).toBe(
-        'No organization created yet.',
+      expect(compiled.querySelector('.home__member')?.textContent).toBe(
+        'No member added yet.',
       );
     });
   });
