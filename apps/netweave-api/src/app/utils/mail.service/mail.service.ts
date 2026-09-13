@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { catchError, EMPTY, tap } from 'rxjs';
-import { OrganizationsService } from '../../organizations/organizations.service';
+import { MembersService } from '../../members/members.service';
 import { QuoteService } from '../quote.service/quote.service';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class MailService {
   public constructor(
     private readonly httpService: HttpService,
     private quoteService: QuoteService,
-    private organizationsService: OrganizationsService,
+    private membersService: MembersService,
   ) {
     this.logger.log(`MailService initialized`);
   }
@@ -52,8 +52,8 @@ export class MailService {
       process.env.NODE_ENV === 'development' ? 'local' : 'online';
 
     const quote = (await this.quoteService.getQuote())?.quote;
-    const orgCount = await this.organizationsService.getOrganizationCount();
-    const latestOrg = await this.organizationsService.getLatestOrganization();
+    const orgCount = await this.membersService.getMemberCount();
+    const latestOrg = await this.membersService.getLatestMember();
 
     return this.httpService
       .post(
@@ -64,8 +64,8 @@ export class MailService {
           subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
           html: `
           <p>${quote?.quote ?? '<em>No message today.</em>'}</p>
-          <p>${latestOrg ? `Latest organization: ${latestOrg.name}` : 'No organizations found.'}</p>
-          <p>Current organization count: ${orgCount}.</p>
+          <p>${latestOrg ? `Latest member: ${latestOrg.name}` : 'No members found.'}</p>
+          <p>Current member count: ${orgCount}.</p>
           <br />
           <p>Kind regards</p>
           <p>The Netweave Team</p>
