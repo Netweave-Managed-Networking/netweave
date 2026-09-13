@@ -129,7 +129,7 @@ Use migrations when changing the database schema:
 2. Generate a migration, giving it a descriptive name:
 
    ```sh
-   npm run mig:generate -- organizations-renamed-name
+   npm run mig:generate -- members-rename-column-age
    ```
 
    Generated migrations are placed under

@@ -21,7 +21,7 @@ Entspricht fachlich dem [Netzwerkberater](#netzwerkberater), welcher entweder [E
 
 _Synonyme:_ **Ressourcenbedarf**
 
-[Ressource](#ressource), die von einer Organisation benötigt wird.
+[Ressource](#ressource), die von einem [Netzwerkteilnehmer](#netzwerkteilnehmer) benötigt wird.
 
 Eigenschaften:
 
@@ -131,7 +131,7 @@ Kernfunktionen:
 ### Netzwerkberater
 
 Fachliche Rolle.  
-Person, die ein Netzwerk betreibt und das [Netweave-System](#netweave) nutzt, um [Vernetzungsempfehlungen](#empfehlung) and [Teilnehmer](#netzwerkteilnehmer) auszusprechen.
+Person, die ein Netzwerk betreibt und das [Netweave-System](#netweave) nutzt, um [Vernetzungsempfehlungen](#empfehlung) an [Teilnehmer](#netzwerkteilnehmer) auszusprechen.
 
 Im [Netweave-System](#netweave) wird der Netzwerkberater technisch abgebildet als [Editor](#editor) oder [Admin](#admin)
 
@@ -170,7 +170,7 @@ Fließt als weicher Faktor in den [Matching-Score](#matching-score) ein.
 
 ### Ressource
 
-Fähigkeit, Mittel oder Angebot einer Organisation.\
+Fähigkeit, Mittel oder Angebot eines [Netzwerkteilnehmers](#netzwerkteilnehmer).\
 Soll anderen [Netzwerkteilnehmern](#netzwerkteilnehmer) zur Verfügung gestellt werden.
 
 Eigenschaften:

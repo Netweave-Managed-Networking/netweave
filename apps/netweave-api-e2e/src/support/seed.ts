@@ -18,9 +18,9 @@ export async function seedDatabase() {
   await client.connect();
 
   try {
-    await client.query('DELETE FROM organizations');
+    await client.query('DELETE FROM members');
     await client.query(
-      `INSERT INTO organizations (name, contact) VALUES ($1, $2), ($3, $4)`,
+      `INSERT INTO members (name, contact) VALUES ($1, $2), ($3, $4)`,
       [
         'Acme E2E',
         'acme-e2e@example.com',
