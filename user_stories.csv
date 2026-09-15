@@ -48,7 +48,7 @@ h3. Out of Scope
 h3. Developer Notes
 * use DaisyUI for UI components
 * your turn"
-"Story","LM5b:NB können Email/Domänen Whitelists einsehen und löschen","LM - LoginManagers","","Medium","Frontend Backend","New","_Als NB möchte ich sehen, welche Email/Domänen Whitelists existieren und diese löschen können._
+"Story","LM5b:NB können Email/Domänen Whitelists einsehen und löschen","LM - LoginManagers","","Medium","Frontend Backend","Done","_Als NB möchte ich sehen, welche Email/Domänen Whitelists existieren und diese löschen können._
 
 h3. Akzeptanzkriterien
 * Übersicht existiert, welche alle bestehenden Whitelist-Einträge (Email und Domäne) anzeigt
@@ -72,7 +72,7 @@ h3. Developer Notes
 h3. Akzeptanzkriterien
 * Registrierungsmaske mit Eingabefeldern für Email und Passwort existiert
 * NB kann Email und Passwort eingeben
-* NB wird auf fehlerhafte Email Adresse hingewiesen
+* NB wird auf fehlerhafte Email Adresse hingewiesen (Falsches Format)
 * NB wird auf bereits verwendete Email Adresse hingewiesen
 * NB wird auf leere Pflichtfelder hingewiesen
 * NB kann Registrierung mit Button „Registrieren“ oder Enter-Taste auslösen
@@ -82,26 +82,29 @@ h3. Akzeptanzkriterien
 * Neu registrierter NB erhält standardmäßig die Rolle `Viewer`, Die Rolle kann sein: `Admin`|`Editor`|`Viewer`
 
 h3. Out of Scope
+* Zwei-Faktor-Authentifizierung (Email Verifizierung) (TODO Story anlegen)
 * Passwort-vergessen-Funktion
 * „Angemeldet bleiben“-Funktion
-* Zwei-Faktor-Authentifizierung
 
 h3. Developer Notes
+* FYI Relevant sind zunächst nur die Rollen Admin und Viewer. Admins verwalten andere NBs, Viewer nicht. Perspektivisch sollen Admins und Editoren auch Einträge von NT ändern können. Diese Funktion ist jetzt aber noch nicht umzusetzen.
 * use DaisyUI for UI components if applicable
 * your turn"
 "Story","LM7:NB können andere NB aus dem System entfernen","LM - LoginManagers","","Low","Frontend Backend","New","_Als Netzwerkberater NB möchte ich andere NB aus dem System entfernen können._
 
 h3. Akzeptanzkriterien
 * Übersicht existiert, welche alle bestehenden NB anzeigt
-* NB kann einen anderen NB auswählen und entfernen
+* NB (Admin) kann einen anderen NB (Rolle egal) auswählen und entfernen
 * System entfernt den ausgewählten NB aus dem Backend
-* NB erhält Bestätigung nach erfolgreichem Entfernen
-* Entfernter NB kann sich nicht mehr einloggen
+* NB (Admin) erhält Bestätigung nach erfolgreichem Entfernen
+* Entfernter NB kann sich nicht mehr einloggen und wird auch automatisch ausgeloggt
 
 h3. Out of Scope
 *
 
 h3. Developer Notes
+* Diese Funktion gilt nur für NB, die Admin sind
+* Muss als Teil der Admin-Sektion umgesetzt werden
 * use DaisyUI for UI components if applicable
 * your turn"
 "Story","LM10:NB mit der Rolle Admin können die Rolle anderer NB ändern","LM - LoginManagers","","Low","Frontend Backend","New","_Als Netzwerkberater NB mit der Rolle Admin möchte ich die Rolle anderer NB (auch anderer Admins) ändern können._
@@ -111,28 +114,31 @@ h3. Akzeptanzkriterien
 * Admin kann für einen NB eine neue Rolle auswählen (Admin, Editor, Viewer)
 * Admin kann die Rollenänderung speichern
 * System speichert die geänderte Rolle im Backend ab
-* Admin erhält Bestätigung nach erfolgreicher Rollenänderung
+* Admin erhält Bestätigung nach erfolgreicher Rollenänderung, zB Toast Message
 
 h3. Out of Scope
-* Als NBeraterin möchte ich sehen welche Email/Domänen Whitelists bereits von wem verwendet wurden
+* Als NB möchte ich sehen welche Email/Domänen Whitelists bereits von wem verwendet wurden
 * Nur diejenigen mit entsprechendem Whitelisting können sich registrieren
 
 h3. Developer Notes
 * use DaisyUI for UI components if applicable
 * your turn"
+"Story","LM11:Neue NB Email Whitelist Einträge werden direkt per Mail zum Regsitrieren aufgefordert","LM - LoginManagers","","Low","Frontend Backend","New","_Als NB möchte ich..."
 "Story","IM1:NB haben E-Mail-Eingabemaske für NT","IM - InviteMemberForm","","High","Frontend Backend","New","_Als Netzwerkberater NB benötige ich die Möglichkeit, neue Netzwerkteilnehmer NT in mein Netzwerk aufzunehmen, sodass Netweave neue sowie bestehende NT miteinander vernetzen kann._
 
 h3. Akzeptanzkriterien
 * Email Eingabemaske existiert
 * NB kann Email eingeben / einfügen
-* NB wird auf fehlerhafte Email Adresse hingewiesen
-* NB hat Möglichkeit Email zu speichern (Enter und Button „Einladen“)
+* NB wird auf fehlerhafte Email Adresse hingewiesen (Format der Email)
+* NB hat Möglichkeit Email Einladung im Backend zu speichern (Enter und Button „Einladen“)
+* NB muss Richtigkeit der Email im Dialogfenster bestätigen
 * System speichert Email als erste Information über den NT im Backend ab
 
 h3. Out of Scope
 * Absenden einer Email (Einladung an NT)
 * Anzeigen der erfassten Emails
 * Alles zum Fragebogen NT
+* 
 
 h3. Design
 Design Scribble for Orientation
@@ -145,25 +151,24 @@ h3. Developer Notes
   * stattdessen eine eigene Tabelle `invitations` mit columns:
     * email
     * invited_by (fk to table `users`; manager who created the invitation)
-    * expire_date (timestamp, default one month from now)
+    * expire_date (timestamp, default three months from now)
     * answered_date (timestamp, nullable, will be set when NT answers questionnaire)
     * token (random unguessable string for unique link without login, e.g. a UUID or a cryptographically random 32+ byte value, base64/hex-encoded)
-    * status: `pending` (default) | `dispatched` | `revoked` (`expired` and `answered` are not necessary can be checked by expire_date, answer_date)
+      * sollte nochmal im Team gechallenged, werden was hier der beste Weg ist
+    * status: `pending` (default) | `dispatched` | `revoked` | `failed` (`expired` and `answered` are not necessary can be checked by expire_date, answer_date)
 * benutze nie den Datenbank Typ `enum`, sondern immer string/varchar
 * your turn"
-"Story","IM2:System versendet Email an neu hinzugefügte NT","IM - InviteMemberForm","","High","Backend","New","_Als Netzwerkberater NB möchte ich, dass an neue Netzwerkteilnehmer NT, die ich hinzugefügt habe (siehe IM1), eine Email ausgesendet wird._
+"Story","IM2:System versendet Email an neu hinzugefügte NT","IM - InviteMemberForm","","High","Backend","New","_Als Netzwerkberater NB möchte ich, dass an neue Netzwerkteilnehmer NT, die ich hinzugefügt habe (siehe IM1), eine Email abgesendet wird._
 
 h3. Akzeptanzkriterien
 * System versendet Emails an NT, sobald dieser gemäß IM1 hinzugefügt wurde
-  * Trigger ist ein Daily CRON Job (siehe MembersService.addNewMember)
-  * table `invitations` ist dabei als Queue zu verstehen
-  * für alle Einträge mit Status `pending` wird eine Email versendet
+  * Trigger ist das Klicken des Bestätigungsbuttons im Dialogfesnter (siehe IM1)
   * Bei erfolgreichem Absenden der Mail wird Status auf `dispatched` gesetzt 
+  * Bei fehlgeschlagenem Absenden der Mail wird Status auf `failed` gesetzt 
 * Email enthält: 'Hallo' und einen Einladungslink für NT mit Token als Route Parameter
-* Bei fehlgeschlagenem Versand wird NB entsprechend informiert
 
 h3. Out of Scope
-* System protokolliert das Fehlschlagen des Mail-Versands
+* NB kann Einladung zurückziehen, wenn diese noch nicht versandt wurde (`revoked`)
 * Link aus Email funktioniert / Zugriff auf Seite, die die Email verlinkt, ist möglich
 * Anzeige des Versandstatus im Frontend
 * Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
@@ -171,12 +176,13 @@ h3. Out of Scope
 
 h3. Developer Notes
 * your turn"
-"Story","IM3:NB können erfasste Email Einladungen an NT einsehen","IM - InviteMemberForm","","High","Frontend","New","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt und erfolgreich gewesen ist._
+"Story","IM3:NB können erfasste Email Einladungen an NT einsehen","IM - InviteMemberForm","","High","Frontend","New","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
 
 h3. Akzeptanzkriterien
-* Übersicht existiert, welche alle erfassten Emails (Tabelle `invitations`) anzeigt
-* NB kann pro Eintrag den aktuellen Status einsehen (`pending`, `dispatched`, `revoked`, außerdem wird hier angezeigt `expired` und `answered`)
+* Tabellarische Übersicht existiert, welche alle erfassten Emails (Tabelle `invitations`) anzeigt
+* NB kann pro Eintrag den aktuellen Status einsehen (`pending`, `dispatched`, `failed`, außerdem wird hier angezeigt `expired` und `answered`)
 * NB kann pro Eintrag erkennen, wann die Einladung erstellt wurde
+* NB sieht die NT sortiert nach Status in der Reihenfolge: `failed` -> `pending` -> `answered` -> `dispatched` -> `expired`
 
 h3. Out of Scope
 * NB kann Einladung zurückziehen, wenn diese noch nicht versandt wurde (`revoked`)
@@ -184,7 +190,12 @@ h3. Out of Scope
 * Filter- oder Suchfunktion innerhalb der Übersicht
 * Setzen des Status answered, nach Beantwortung eines Fragebogens durch NT
 * Alles Weitere zum NT-Fragebogen
+* Anzeige der Daten eines NT, der bereits (umfangreiche) Antworten auf den Fragebogen gegeben hat
 
 h3. Developer Notes
-* use DaisyUI for UI components if applicable
+* Für die Anzeige der Einladungen kann die DaisyUI Zebra Tabelle genutzt werden: https://daisyui.com/components/table/#zebra
+  * 2 Spalten: Email und Status
+    * Email ist Text, Status ist Status: https://daisyui.com/components/status/#status-with-ping-animation
+    * Status ping animation für Email `failed`, ansonsten passende Farben wählen und keine ping animation
+  * 
 * your turn"
