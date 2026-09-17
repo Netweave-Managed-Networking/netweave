@@ -1,17 +1,5 @@
-"Issue Type","Summary","Epic Link","Parent/Initiative","Priority","Labels","Status","Description"
-"Initiative","I1 - Onboarding","","","High","","","Onboarding & Zugang für Netzwerkteilnehmer aus Sicht des Netzwerkberaters (Initiative I1)"
-"Initiative","I2 - Fragebogen","","","High","","","Daten der Netzwerkteilnehmer / der Organisationen (Initiative I2)"
-"Initiative","I3 - Matching","","","High","","","Matching & Empfehlungen für die Netzwerkteilnehmer (Initiative I3)"
-"Epic","LM - LoginManagers","",I1 - Onboarding,"High","","","Registrierung, Login und Nutzerverwaltung für Netzwerkberater (Epic LM)"
-"Epic","IM - InviteMemberForm","",I1 - Onboarding,"High","","","Einladung von Organisationen / Anlegen Teilnehmerdaten (Epic IM)"
-"Epic","UM - UpdateMemberData","",I1 - Onboarding,"Medium","","","Updaten Teilnehmerdaten (Epic UM)"
-"Epic","MemV - MemberView","",I1 - Onboarding,"High","","","Ansicht Teilnehmerdaten für Berater (Epic MemV)"
-"Epic","MatV - MatchingView","",I1 - Onboarding,"Low","","","Ansicht Vernetzungsergebnisse für Berater (Epic MatV)"
-"Epic","MDF - MemberDataForm","",I2 - Fragebogen,"High","","","Aufnahme & Updaten Teilnehmerdaten `Fragebogen` (Epic MDF)"
-"Epic","MDCF - MemberDataCustomForm","",I2 - Fragebogen,"Low","","","Eigene Fragebögen & Fragebogen-Katalog (Epic MDCF)"
-"Epic","MM - MemberMatching","",I3 - Matching,"High","","","Datenverarbeitung: Matching-Score aus Teilnehmerdaten erzeugen (Epic MM)"
-"Epic","MN - MemberNotification","",I3 - Matching,"High","","","Benachrichtigung Teilnehmer: Vernetzungsempfehlung (Epic MN)"
-"Story","LM1:NB können sich ins System einloggen","LM - LoginManagers","","High","Frontend Backend","Done","_Als Netzwerkberater NB möchte ich mich einloggen, damit ich Zugang zum System habe._
+"Issue Type","Summary","Parent","Priority","Labels","Status","Description"
+"Development","LM1:NB können sich ins System einloggen","NETW-2","High","Frontend Backend","Done","_Als Netzwerkberater NB möchte ich mich einloggen, damit ich Zugang zum System habe._
 
 h3. Akzeptanzkriterien
 * Login-Maske mit Eingabefeldern für Email und Passwort existiert
@@ -31,7 +19,7 @@ h3. Out of Scope
 h3. Developer Notes
 * use DaisyUI for UI components: [Login Form|https://daisyui.com/components/fieldset/#login-form-with-fieldset]
 * your turn"
-"Story","LM5a:NB können Email und Domänen Whitelist Einträge erstellen","LM - LoginManagers","","Medium","Frontend Backend","Done","_Als NB möchte ich Email und Domänen Whitelist Einträge erstellen können, sodass andere sich NB sich registrieren können._
+"Development","LM5a:NB können Email und Domänen Whitelist Einträge erstellen","NETW-2","Medium","Frontend Backend","Done","_Als NB möchte ich Email und Domänen Whitelist Einträge erstellen können, sodass andere sich NB sich registrieren können._
 
 h3. Akzeptanzkriterien
 * Eingabemaske zum Erstellen von Whitelist-Einträgen existiert
@@ -48,7 +36,7 @@ h3. Out of Scope
 h3. Developer Notes
 * use DaisyUI for UI components
 * your turn"
-"Story","LM5b:NB können Email/Domänen Whitelists einsehen und löschen","LM - LoginManagers","","Medium","Frontend Backend","Done","_Als NB möchte ich sehen, welche Email/Domänen Whitelists existieren und diese löschen können._
+"Development","LM5b:NB können Email/Domänen Whitelists einsehen und löschen","NETW-2","Medium","Frontend Backend","Done","_Als NB möchte ich sehen, welche Email/Domänen Whitelists existieren und diese löschen können._
 
 h3. Akzeptanzkriterien
 * Übersicht existiert, welche alle bestehenden Whitelist-Einträge (Email und Domäne) anzeigt
@@ -67,7 +55,7 @@ h3. Out of Scope
 h3. Developer Notes
 * use DaisyUI for UI components if applicable
 * your turn"
-"Story","L6:NB können sich registrieren","LM - LoginManagers","","Low","Frontend Backend","New","_Als Netzwerkberater NB möchte ich mich registrieren können, um am System teilzunehmen._
+"Development","L6:NB können sich registrieren","NETW-2","Geringfügig","Frontend Backend","Define","_Als Netzwerkberater NB möchte ich mich registrieren können, um am System teilzunehmen._
 
 h3. Akzeptanzkriterien
 * Registrierungsmaske mit Eingabefeldern für Email und Passwort existiert
@@ -90,7 +78,7 @@ h3. Developer Notes
 * FYI Relevant sind zunächst nur die Rollen Admin und Viewer. Admins verwalten andere NBs, Viewer nicht. Perspektivisch sollen Admins und Editoren auch Einträge von NT ändern können. Diese Funktion ist jetzt aber noch nicht umzusetzen.
 * use DaisyUI for UI components if applicable
 * your turn"
-"Story","LM7:NB können andere NB aus dem System entfernen","LM - LoginManagers","","Low","Frontend Backend","New","_Als Netzwerkberater NB möchte ich andere NB aus dem System entfernen können._
+"Development","LM7:NB können andere NB aus dem System entfernen","NETW-2","Geringfügig","Frontend Backend","Define","_Als Netzwerkberater NB möchte ich andere NB aus dem System entfernen können._
 
 h3. Akzeptanzkriterien
 * Übersicht existiert, welche alle bestehenden NB anzeigt
@@ -107,7 +95,7 @@ h3. Developer Notes
 * Muss als Teil der Admin-Sektion umgesetzt werden
 * use DaisyUI for UI components if applicable
 * your turn"
-"Story","LM10:NB mit der Rolle Admin können die Rolle anderer NB ändern","LM - LoginManagers","","Low","Frontend Backend","New","_Als Netzwerkberater NB mit der Rolle Admin möchte ich die Rolle anderer NB (auch anderer Admins) ändern können._
+"Development","LM10:NB mit der Rolle Admin können die Rolle anderer NB ändern","NETW-2","Geringfügig","Frontend Backend","Define","_Als Netzwerkberater NB mit der Rolle Admin möchte ich die Rolle anderer NB (auch anderer Admins) ändern können._
 
 h3. Akzeptanzkriterien
 * In der NB Übersicht (siehe Story LM7), wird für alle bestehenden NB ihre aktuelle Rolle anzeigt
@@ -123,8 +111,8 @@ h3. Out of Scope
 h3. Developer Notes
 * use DaisyUI for UI components if applicable
 * your turn"
-"Story","LM11:Neue NB Email Whitelist Einträge werden direkt per Mail zum Regsitrieren aufgefordert","LM - LoginManagers","","Low","Frontend Backend","New","_Als NB möchte ich..."
-"Story","IM1:NB haben E-Mail-Eingabemaske für NT","IM - InviteMemberForm","","High","Frontend Backend","New","_Als Netzwerkberater NB benötige ich die Möglichkeit, neue Netzwerkteilnehmer NT in mein Netzwerk aufzunehmen, sodass Netweave neue sowie bestehende NT miteinander vernetzen kann._
+"Development","LM11:Neue NB Email Whitelist Einträge werden direkt per Mail zum Regsitrieren aufgefordert","NETW-2","Geringfügig","Frontend Backend","Define","_Als NB möchte ich..."
+"Development","IM1:NB haben E-Mail-Eingabemaske für NT","NETW-3","High","Frontend Backend","Define","_Als Netzwerkberater NB benötige ich die Möglichkeit, neue Netzwerkteilnehmer NT in mein Netzwerk aufzunehmen, sodass Netweave neue sowie bestehende NT miteinander vernetzen kann._
 
 h3. Akzeptanzkriterien
 * Email Eingabemaske existiert
@@ -159,7 +147,7 @@ h3. Developer Notes
     * status: `pending` (default) | `dispatched` | `revoked` | `failed` (`expired` and `answered` are not necessary can be checked by expire_date, answer_date)
 * benutze nie den Datenbank Typ `enum`, sondern immer string/varchar
 * your turn"
-"Story","IM2:System versendet Email an neu hinzugefügte NT","IM - InviteMemberForm","","High","Backend","New","_Als Netzwerkberater NB möchte ich, dass an neue Netzwerkteilnehmer NT, die ich hinzugefügt habe (siehe IM1), eine Email abgesendet wird._
+"Development","IM2:System versendet Email an neu hinzugefügte NT","NETW-3","High","Backend","Define","_Als Netzwerkberater NB möchte ich, dass an neue Netzwerkteilnehmer NT, die ich hinzugefügt habe (siehe IM1), eine Email abgesendet wird._
 
 h3. Akzeptanzkriterien
 * System versendet Emails an NT, sobald dieser gemäß IM1 hinzugefügt wurde
@@ -180,7 +168,7 @@ h3. Out of Scope
 h3. Developer Notes
 * Einladungslink zum Fragebogen kann zB sein: dev.netweave.de/member-questions/{{token}}
 * your turn"
-"Story","MemV1:NB können erfasste Email Einladungen an NT einsehen","MemV - MemberView","","High","Frontend","New","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
+"Development","MemV1:NB können erfasste Email Einladungen an NT einsehen","NETW-5","High","Frontend","Define","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
 
 h3. Akzeptanzkriterien
 * Tabellarische Übersicht existiert, welche alle erfassten Emails (Tabelle `invitations`) anzeigt
@@ -204,7 +192,7 @@ h3. Developer Notes
     * Status ping animation für Email `failed`, ansonsten passende Farben wählen und keine ping animation
   * 
 * your turn"
-"Story","MDF1:NT können per Link ohne Login auf Fragebogen zugreifen","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT möchte ich per Link ohne Login auf den Fragebogen zugreifen, um meine Daten einfach einsehen und eintragen zu können._
+"Development","MDF1:NT können per Link ohne Login auf Fragebogen zugreifen","NETW-7","High","Frontend Backend","Define","_Als Netzwerkteilnehmer NT möchte ich per Link ohne Login auf den Fragebogen zugreifen, um meine Daten einfach einsehen und eintragen zu können._
 
 h3. Akzeptanzkriterien
 * Fragebogen ist über Link mit Token als Route Parameter ohne Login erreichbar
@@ -224,7 +212,7 @@ h3. Developer Notes
 * 
 * use simple Daisy UI Input Field, later the needs to be a good overall Form
 * your turn"
-"Story","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
+"Development","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","NETW-7","High","Frontend Backend","Define","_Als Netzwerkteilnehmer NT möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
 
 h3. Akzeptanzkriterien
 * Fragebogen enthält Eingabefelder für Organisationsname und Ansprechpartner des NT
@@ -241,7 +229,7 @@ h3. Developer Notes
 * use Daisy UI Field Set with title `Allgemeine Daten` https://daisyui.com/components/fieldset/#fieldset-with-background-and-border
 * Email is outside of Field Set `Allgemeine Daten` but below that in its own Input
 * your turn"
-"Story","MDF3:NT können Ressourcen und Bedarfe in verschiedenen Kategorien eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT soll ich meine Ressourcen und Bedarfe in verschiedenen Kategorien eintragen, damit mein Matching möglichst präzise ist._
+"Development","MDF3:NT können Ressourcen und Bedarfe in verschiedenen Kategorien eintragen und speichern","NETW-7","High","Frontend Backend","Define","_Als Netzwerkteilnehmer NT soll ich meine Ressourcen und Bedarfe in verschiedenen Kategorien eintragen, damit mein Matching auf inhaltlicher Ebene so präzise wie möglich ist._
 
 h3. Akzeptanzkriterien
 * Fragebogen enthält Eingabefelder für Ressourcen und Bedarfe, innerhalb derselben 7 Kategorien
