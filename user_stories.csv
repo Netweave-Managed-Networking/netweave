@@ -220,3 +220,20 @@ h3. Out of Scope
 h3. Developer Notes
 * use simple Daisy UI Input Field, later the needs to be a good overall Form
 * your turn"
+"Story","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT (Organisation) möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält Eingabefelder für Organisationsname und Ansprechpartner des NT
+* NT kann Organisationsname und Ansprechpartner eingeben
+* NT kann eingegebene Daten speichern (Button „Speichern“)
+* System speichert Organisationsname und Ansprechpartner im Backend ab
+
+h3. Out of Scope
+* Sonstige Eingabefelder
+* Ändern der Email
+
+h3. Developer Notes
+* nun wird die Tabelle `members` genutzt
+* use Daisy UI Field Set with title `Allgemeine Infos` https://daisyui.com/components/fieldset/
+* Email is outside of Field Set `Allgemeine Infos` but below that in its own Input
+* your turn"
