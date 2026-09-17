@@ -204,3 +204,19 @@ h3. Developer Notes
     * Status ping animation für Email `failed`, ansonsten passende Farben wählen und keine ping animation
   * 
 * your turn"
+"Story","MDF1:NT können per Link ohne Login auf Fragebogen zugreifen","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT möchte ich per Link ohne Login auf den Fragebogen zugreifen, um meine Daten einfach einsehen und eintragen zu können._
+
+h3. Akzeptanzkriterien
+* Fragebogen ist über Link mit Token als Route Parameter ohne Login erreichbar
+* System prüft Gültigkeit des Tokens
+* Bei gültigem Token wird NT die zugehörige Email-Adresse als erstes Form Field disabled Input angezeigt 
+
+h3. Out of Scope
+* Sämtliche Eingabefelder
+* Ändern der Email
+* Speichern von Änderungen
+* Ungültiges Token (zB wegen Fehler im Link o.Ä.)
+
+h3. Developer Notes
+* use simple Daisy UI Input Field, later the needs to be a good overall Form
+* your turn"
