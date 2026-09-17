@@ -1,0 +1,270 @@
+"Vorgangstyp","Zusammenfassung","Übergeordnet","Epic-Name","Priorität","Stichwort","Beschreibung"
+"Development","LM1:NB können sich ins System einloggen","NETW-2","NETW-2","High","Frontend Backend","_Als Netzwerkberater NB möchte ich mich einloggen, damit ich Zugang zum System habe._
+
+h3. Akzeptanzkriterien
+* Login-Maske mit Eingabefeldern für Email und Passwort existiert
+* NB kann Email und Passwort eingeben
+* NB kann Login mit Button „Anmelden“ oder Enter-Taste auslösen
+* System prüft eingegebene Zugangsdaten gegen bestehende Nutzerdaten im Backend
+* Bei korrekten Zugangsdaten wird NB erfolgreich eingeloggt und zur Startseite weitergeleitet
+* Bei fehlerhaften Zugangsdaten erhält NB eine entsprechende Fehlermeldung
+* NB wird auf leere Pflichtfelder hingewiesen
+
+h3. Out of Scope
+* Registrierung neuer Nutzer
+* Passwort-vergessen-Funktion
+* „Angemeldet bleiben“-Funktion
+* Zwei-Faktor-Authentifizierung
+
+h3. Developer Notes
+* use DaisyUI for UI components: [Login Form|https://daisyui.com/components/fieldset/#login-form-with-fieldset]
+* your turn"
+"Development","LM5a:NB können Email und Domänen Whitelist Einträge erstellen","NETW-2","NETW-2","Medium","Frontend Backend","_Als NB möchte ich Email und Domänen Whitelist Einträge erstellen können, sodass andere sich NB sich registrieren können._
+
+h3. Akzeptanzkriterien
+* Eingabemaske zum Erstellen von Whitelist-Einträgen existiert
+* NB kann wählen, ob ein Eintrag eine einzelne Email-Adresse oder eine Domäne betrifft
+* NB kann Email-Adresse bzw. Domäne eingeben
+* NB wird auf fehlerhafte Email- bzw. Domänen-Eingabe hingewiesen
+* NB kann den Eintrag speichern (Enter und Button „Erstellen“)
+* System speichert Whitelist-Eintrag im Backend ab
+
+h3. Out of Scope
+* Als NB möchte ich sehen welche Email/Domänen Whitelists existieren sind und welche bereits von wem verwendet wurden
+* Nicht alle, sondern nur diejenigen mit entsprechendem Whitelisting können sich registrieren
+
+h3. Developer Notes
+* use DaisyUI for UI components
+* your turn"
+"Development","LM5b:NB können Email/Domänen Whitelists einsehen und löschen","NETW-2","NETW-2","Medium","Frontend Backend","_Als NB möchte ich sehen, welche Email/Domänen Whitelists existieren und diese löschen können._
+
+h3. Akzeptanzkriterien
+* Übersicht existiert, welche alle bestehenden Whitelist-Einträge (Email und Domäne) anzeigt
+* NB kann pro Whitelist-Eintrag erkennen, ob es sich um eine Email-Adresse oder eine Domäne handelt
+* NB kann einen Whitelist-Eintrag auswählen und löschen
+* System entfernt gelöschten Whitelist-Eintrag aus dem Backend
+* NB erhält Bestätigung nach erfolgreichem Löschen
+
+h3. Hinweise
+* Registrierte NB bleiben bestehen, auch wenn das entsprechende Whitelisting nicht mehr existiert.
+
+h3. Out of Scope
+* Als NB möchte ich sehen welche Email/Domänen Whitelists bereits von wem verwendet wurden
+* Nur diejenigen mit entsprechendem Whitelisting können sich registrieren
+
+h3. Developer Notes
+* use DaisyUI for UI components if applicable
+* your turn"
+"Development","L6:NB können sich registrieren","NETW-2","NETW-2","Geringfügig","Frontend Backend","_Als Netzwerkberater NB möchte ich mich registrieren können, um am System teilzunehmen._
+
+h3. Akzeptanzkriterien
+* Registrierungsmaske mit Eingabefeldern für Email und Passwort existiert
+* NB kann Email und Passwort eingeben
+* NB wird auf fehlerhafte Email Adresse hingewiesen (Falsches Format)
+* NB wird auf bereits verwendete Email Adresse hingewiesen
+* NB wird auf leere Pflichtfelder hingewiesen
+* NB kann Registrierung mit Button „Registrieren“ oder Enter-Taste auslösen
+* System prüft, ob die eingegebene Email bzw. Domäne auf der Whitelist steht
+  * Bei erfolgreicher Prüfung wird ein neuer NB-Account im Backend angelegt
+  * Bei nicht gewhitelisteter Email/Domäne erhält NB eine entsprechende Fehlermeldung
+* Neu registrierter NB erhält standardmäßig die Rolle `Viewer`, Die Rolle kann sein: `Admin`|`Editor`|`Viewer`
+
+h3. Out of Scope
+* Zwei-Faktor-Authentifizierung (Email Verifizierung) (TODO Story anlegen)
+* Passwort-vergessen-Funktion
+* „Angemeldet bleiben“-Funktion
+
+h3. Developer Notes
+* FYI Relevant sind zunächst nur die Rollen Admin und Viewer. Admins verwalten andere NBs, Viewer nicht. Perspektivisch sollen Admins und Editoren auch Einträge von NT ändern können. Diese Funktion ist jetzt aber noch nicht umzusetzen.
+* use DaisyUI for UI components if applicable
+* your turn"
+"Development","LM7:NB können andere NB aus dem System entfernen","NETW-2","NETW-2","Geringfügig","Frontend Backend","_Als Netzwerkberater NB möchte ich andere NB aus dem System entfernen können._
+
+h3. Akzeptanzkriterien
+* Übersicht existiert, welche alle bestehenden NB anzeigt
+* NB (Admin) kann einen anderen NB (Rolle egal) auswählen und entfernen
+* System entfernt den ausgewählten NB aus dem Backend
+* NB (Admin) erhält Bestätigung nach erfolgreichem Entfernen
+* Entfernter NB kann sich nicht mehr einloggen und wird auch automatisch ausgeloggt
+
+h3. Out of Scope
+*
+
+h3. Developer Notes
+* Diese Funktion gilt nur für NB, die Admin sind
+* Muss als Teil der Admin-Sektion umgesetzt werden
+* use DaisyUI for UI components if applicable
+* your turn"
+"Development","LM10:NB mit der Rolle Admin können die Rolle anderer NB ändern","NETW-2","NETW-2","Geringfügig","Frontend Backend","_Als Netzwerkberater NB mit der Rolle Admin möchte ich die Rolle anderer NB (auch anderer Admins) ändern können._
+
+h3. Akzeptanzkriterien
+* In der NB Übersicht (siehe Story LM7), wird für alle bestehenden NB ihre aktuelle Rolle anzeigt
+* Admin kann für einen NB eine neue Rolle auswählen (Admin, Editor, Viewer)
+* Admin kann die Rollenänderung speichern
+* System speichert die geänderte Rolle im Backend ab
+* Admin erhält Bestätigung nach erfolgreicher Rollenänderung, zB Toast Message
+
+h3. Out of Scope
+* Als NB möchte ich sehen welche Email/Domänen Whitelists bereits von wem verwendet wurden
+* Nur diejenigen mit entsprechendem Whitelisting können sich registrieren
+
+h3. Developer Notes
+* use DaisyUI for UI components if applicable
+* your turn"
+"Development","LM11:Neue NB Email Whitelist Einträge werden direkt per Mail zum Regsitrieren aufgefordert","NETW-2","NETW-2","Geringfügig","Frontend Backend","_Als NB möchte ich..."
+"Development","IM1:NB haben E-Mail-Eingabemaske für NT","NETW-3","NETW-3","High","Frontend Backend","_Als Netzwerkberater NB benötige ich die Möglichkeit, neue Netzwerkteilnehmer NT in mein Netzwerk aufzunehmen, sodass Netweave neue sowie bestehende NT miteinander vernetzen kann._
+
+h3. Akzeptanzkriterien
+* Email Eingabemaske existiert
+* NB kann Email eingeben / einfügen
+* NB wird auf fehlerhafte Email Adresse hingewiesen (Format der Email)
+* NB hat Möglichkeit Email Einladung im Backend zu speichern (Enter und Button „Einladen“)
+* NB wird nach Buton `Hinzufügen` zunächst im Modal darauf hingewiesen, dass an diese Organisation nun eine E-mail mit Einladung zum Ausfüllen des Fragebogens gesandt wird
+* NB muss Richtigkeit der Email und Hinweis im Dialogfenster bestätigen
+* System speichert Email als erste Information über den NT im Backend ab
+
+h3. Out of Scope
+* Absenden einer Email (Einladung an NT)
+* Anzeigen der erfassten Emails
+* Alles zum Fragebogen NT
+* Invalidierung von tokens
+
+h3. Design
+Design Scribble for Orientation
+[Screenshot 1 - siehe Anhang]
+
+h3. Developer Notes
+* use DaisyUI for UI components: [Email Input with Icon and Button|https://daisyui.com/components/input/#email-input-with-icon-validator-button-join]
+* see Login component for example component containing a Form with Email
+* Für das Speichern der Email wird nicht die `members` Tabelle genutzt.
+  * stattdessen eine eigene Tabelle `invitations` mit columns:
+    * email
+    * invited_by (fk to table `users`; manager who created the invitation)
+    * expire_date (timestamp, default three months from now)
+    * answered_date (timestamp, nullable, will be set when NT answers questionnaire)
+    * token (random unguessable string for unique link without login, e.g. a UUID or a cryptographically random 32+ byte value, base64/hex-encoded)
+      * sollte nochmal im Team gechallenged, werden was hier der beste Weg ist
+    * status: `pending` (default) | `dispatched` | `revoked` | `failed` (`expired` and `answered` are not necessary can be checked by expire_date, answer_date)
+* benutze nie den Datenbank Typ `enum`, sondern immer string/varchar
+* your turn"
+"Development","IM2:System versendet Email an neu hinzugefügte NT","NETW-3","NETW-3","High","Backend","_Als Netzwerkberater NB möchte ich, dass an neue Netzwerkteilnehmer NT, die ich hinzugefügt habe (siehe IM1), eine Email abgesendet wird._
+
+h3. Akzeptanzkriterien
+* System versendet Emails an NT, sobald dieser gemäß IM1 hinzugefügt wurde
+  * Trigger ist das Klicken des Bestätigungsbuttons im Dialogfesnter (siehe IM1)
+  * Bei erfolgreichem Absenden der Mail wird Status auf `dispatched` gesetzt 
+  * Bei fehlgeschlagenem Absenden der Mail wird Status auf `failed` gesetzt 
+* Email enthält: 'Hallo' und einen Einladungslink für NT mit Token als Route Parameter
+
+h3. Out of Scope
+* NB kann Einladung zurückziehen, wenn diese noch nicht versandt wurde (`revoked`)
+* Link aus Email funktioniert / Zugriff auf Seite, die die Email verlinkt, ist möglich
+* Anzeige des Versandstatus im Frontend
+* Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
+  * Hinweise in der Mail, wozu die dort abgefragten Daten verwendet werden
+  * Hinweise dazu, welche der angegeben Infos mit anderen geteilt werden und DSGVO Konformitä prüfen: Name der Organisation, Ressourcen der Organiatione sowie Organisationskultur (aufbereitet, verständlich gemacht) sowie ggf Umweltansschauung und Mail-Adresse werden mit anderen teilnehmenden Organisationen geteilt (“Alle angegeben Informationen außer die Bedarfe! (TODO, werden sie mitgeteilt?) werden mit den Top 3 Matches aus dem Netzwerk geteilt”)
+* Erinnerungs-Emails an NT nach der initialen Email
+
+h3. Developer Notes
+* Einladungslink zum Fragebogen kann zB sein: dev.netweave.de/member-questions/{{token}}
+* your turn"
+"Development","MemV1:NB können erfasste Email Einladungen an NT einsehen","NETW-5","NETW-5","High","Frontend","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
+
+h3. Akzeptanzkriterien
+* Tabellarische Übersicht existiert, welche alle erfassten Emails (Tabelle `invitations`) anzeigt
+* NB kann pro Eintrag den aktuellen Status einsehen (`pending`, `dispatched`, `failed`, außerdem wird hier angezeigt `expired` und `answered`)
+* NB kann pro Eintrag erkennen, wann die Einladung erstellt wurde
+* NB sieht die NT sortiert nach Status in der Reihenfolge: `failed` -> `pending` -> `answered` -> `dispatched` -> `expired`
+* NB sieht über der Tabelle ein paar Zahlen: Anzahl eingeladener NT, die noch nicht geantwortet haben (pending + dispatched) | Anzahl NT, die geantwortet haben (answered) | Anzahl fehlgeschlagene (failed + expired)
+
+h3. Out of Scope
+* NB kann Einladung zurückziehen, wenn diese noch nicht versandt wurde (`revoked`)
+* Bearbeiten oder Löschen von erfassten Email-Einladungen
+* Filter- oder Suchfunktion innerhalb der Übersicht
+* Setzen des Status answered, nach Beantwortung eines Fragebogens durch NT
+* Alles Weitere zum NT-Fragebogen
+* Anzeige der Daten eines NT, der bereits (umfangreiche) Antworten auf den Fragebogen gegeben hat
+
+h3. Developer Notes
+* Für die Anzeige der Einladungen kann die DaisyUI Zebra Tabelle genutzt werden: https://daisyui.com/components/table/#zebra
+  * 2 Spalten: Email und Status
+    * Email ist Text, Status ist Status: https://daisyui.com/components/status/#status-with-ping-animation
+    * Status ping animation für Email `failed`, ansonsten passende Farben wählen und keine ping animation
+  * 
+* your turn"
+"Development","MDF1:NT können per Link ohne Login auf Fragebogen zugreifen","NETW-7","NETW-7","High","Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich per Link ohne Login auf den Fragebogen zugreifen, um meine Daten einfach einsehen und eintragen zu können._
+
+h3. Akzeptanzkriterien
+* Fragebogen ist über Link mit Token als Route Parameter ohne Login erreichbar
+* System prüft Gültigkeit des Tokens
+* Bei gültigem Token wird NT die zugehörige Email-Adresse als erstes Form Field im disabled Input angezeigt 
+* Die Fragebogen Seite enthält keine Seitennavigation
+
+h3. Out of Scope
+* Sämtliche Eingabefelder
+* Ändern der Email
+* Speichern von Änderungen
+* Handling von ungültigen Token (zB wegen Fehler im Link o.Ä.)
+
+h3. Developer Notes
+* Einladungslink zum Fragebogen kann zB sein: dev.netweave.de/member-questions/{{token}} (siehe IM2)
+* Orientierung für das grundlegende Layout der Seite kann zB anhand der home.component erfolgen
+* 
+* use simple Daisy UI Input Field, later the needs to be a good overall Form
+* your turn"
+"Development","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","NETW-7","NETW-7","High","Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält Eingabefelder für Organisationsname und Ansprechpartner des NT
+* NT kann „Name der Organisation“ und „Name des Ansprechpartners“ eingeben
+* NT kann eingegebene Daten speichern (Button „Speichern“)
+* System speichert Organisationsname und Ansprechpartner im Backend ab
+
+h3. Out of Scope
+* Placeholder
+* Ändern der Email
+
+h3. Developer Notes
+* nun wird die Backend Tabelle `members` genutzt
+* use Daisy UI Field Set with title `Allgemeine Daten` https://daisyui.com/components/fieldset/#fieldset-with-background-and-border
+* Email is outside of Field Set `Allgemeine Daten` but below that in its own Input
+* your turn"
+"Development","MDF3:NT können Ressourcen und Bedarfe in verschiedenen Kategorien eintragen und speichern","NETW-7","NETW-7","High","Frontend Backend","_Als Netzwerkteilnehmer NT soll ich meine Ressourcen und Bedarfe in verschiedenen Kategorien eintragen, damit mein Matching auf inhaltlicher Ebene so präzise wie möglich ist._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält Eingabefelder für Ressourcen und Bedarfe, innerhalb derselben 7 Kategorien
+  * Kompetenzen, Finanzielle Mittel, Räumlichkeiten, Flächen, Geräte/physische Ausstattung, Netzwerke / Beziehungen, Helfende Hände
+* NT kann pro Kategorie jeweils seine Ressourcen sowie seine Bedarfe in dieser Kategorie beschreiben
+* NT kann eingegebene Daten speichern (Button „Speichern“)
+* System speichert alle Antworten im Backend ab
+
+h3. Out of Scope
+* Nudging zu bestimmten Angaben, stattdessen nur leere Textfelder
+* Organizational culture & Umweltanschauungen—nep&mon 
+
+h3. Kategorien der Ressourcen und Bedarfe
+* Kompetenzen
+  * Placeholder: Fachwissen in bestimmten Bereichen, Vorträge über bestimmte Themen…
+  * Placeholder: Studien, Wissen, Datenzugänge, Dokumentationen
+* Finanzielle Mittel
+  * Placeholder: Verwaltung öffentlicher Gelder, Stipendien, Stiftungsgelder, …
+* Räumlichkeiten
+  * Placeholder: Gebäude, Innenräume, Büros, Hallen, …
+* Flächen
+  * Placeholder: Grundstücke, Pachtflächen, Außenareale, landwirtschaftliche Flächen, Parkflächen, Naturreservate, …
+* Geräte/physische Ausstattung
+  * Placeholder: Maschinen, IT, Fahrzeuge, Tools, …
+* Netzwerke / Beziehungen
+  * Placeholder: Kontakte, Partner, Zugänge zu Zielgruppen, Multiplikatoren
+  * Placeholder: “Wir sind das Landvolk und haben gute Kontakte zu den Landwirten”
+* Helfende Hände
+  * Placeholder: menschliche Helfer, die bei Projekten unterstützen können/wollen, Arbeitszeit, ehrenamtliches Engagement
+
+h3. Developer Notes
+* Gutes DB Datenmodell muss gefunden und abgesprochen werden: Jeder member hat Allgemeine Infos (members table) und dann aber noch:
+  * 1. Resources & Requirements
+  * 2. organizational culture
+  * 3. Umweltanschauungen—nep&mon 
+* nutze in Daisy UI Field Set (Wie? TODO für Marvin)
+* nutze Textarea für jedes Feld https://daisyui.com/components/textarea/
+* your turn"
