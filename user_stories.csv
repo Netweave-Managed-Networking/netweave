@@ -131,14 +131,15 @@ h3. Akzeptanzkriterien
 * NB kann Email eingeben / einfügen
 * NB wird auf fehlerhafte Email Adresse hingewiesen (Format der Email)
 * NB hat Möglichkeit Email Einladung im Backend zu speichern (Enter und Button „Einladen“)
-* NB muss Richtigkeit der Email im Dialogfenster bestätigen
+* NB wird nach Buton `Hinzufügen` zunächst im Modal darauf hingewiesen, dass an diese Organisation nun eine E-mail mit Einladung zum Ausfüllen des Fragebogens gesandt wird
+* NB muss Richtigkeit der Email und Hinweis im Dialogfenster bestätigen
 * System speichert Email als erste Information über den NT im Backend ab
 
 h3. Out of Scope
 * Absenden einer Email (Einladung an NT)
 * Anzeigen der erfassten Emails
 * Alles zum Fragebogen NT
-* 
+* Invalidierung von tokens
 
 h3. Design
 Design Scribble for Orientation
@@ -172,17 +173,21 @@ h3. Out of Scope
 * Link aus Email funktioniert / Zugriff auf Seite, die die Email verlinkt, ist möglich
 * Anzeige des Versandstatus im Frontend
 * Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
+  * Hinweise in der Mail, wozu die dort abgefragten Daten verwendet werden
+  * Hinweise dazu, welche der angegeben Infos mit anderen geteilt werden und DSGVO Konformitä prüfen: Name der Organisation, Ressourcen der Organiatione sowie Organisationskultur (aufbereitet, verständlich gemacht) sowie ggf Umweltansschauung und Mail-Adresse werden mit anderen teilnehmenden Organisationen geteilt (“Alle angegeben Informationen außer die Bedarfe! (TODO, werden sie mitgeteilt?) werden mit den Top 3 Matches aus dem Netzwerk geteilt”)
 * Erinnerungs-Emails an NT nach der initialen Email
 
 h3. Developer Notes
+* Einladungslink zum Fragebogen kann zB sein: dev.netweave.de/member-questions/{{token}}
 * your turn"
-"Story","IM3:NB können erfasste Email Einladungen an NT einsehen","IM - InviteMemberForm","","High","Frontend","New","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
+"Story","MemV1:NB können erfasste Email Einladungen an NT einsehen","MemV - MemberView","","High","Frontend","New","_Als Netzwerkberater NB möchte ich die erfassten Emails einsehen können, um zu wissen, welche Netzwerkteilnehmer NT bereits eingeladen wurden und ob die Email Einladung schon erfolgt (abgesendet) ist._
 
 h3. Akzeptanzkriterien
 * Tabellarische Übersicht existiert, welche alle erfassten Emails (Tabelle `invitations`) anzeigt
 * NB kann pro Eintrag den aktuellen Status einsehen (`pending`, `dispatched`, `failed`, außerdem wird hier angezeigt `expired` und `answered`)
 * NB kann pro Eintrag erkennen, wann die Einladung erstellt wurde
 * NB sieht die NT sortiert nach Status in der Reihenfolge: `failed` -> `pending` -> `answered` -> `dispatched` -> `expired`
+* NB sieht über der Tabelle ein paar Zahlen: Anzahl eingeladener NT, die noch nicht geantwortet haben (pending + dispatched) | Anzahl NT, die geantwortet haben (answered) | Anzahl fehlgeschlagene (failed + expired)
 
 h3. Out of Scope
 * NB kann Einladung zurückziehen, wenn diese noch nicht versandt wurde (`revoked`)
