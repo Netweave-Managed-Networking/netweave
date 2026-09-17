@@ -220,20 +220,57 @@ h3. Out of Scope
 h3. Developer Notes
 * use simple Daisy UI Input Field, later the needs to be a good overall Form
 * your turn"
-"Story","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT (Organisation) möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
+"Story","MDF2:NT können Organisationsnamen und Ansprechpartner eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT möchte ich den Namen meiner Organisation und den eines Ansprechpartners eintragen. Ich möchte, meine Antworten speichern können, damit diese im weiteren Verlauf für das Matching genutzt werden können._
 
 h3. Akzeptanzkriterien
 * Fragebogen enthält Eingabefelder für Organisationsname und Ansprechpartner des NT
-* NT kann Organisationsname und Ansprechpartner eingeben
+* NT kann `Name der Organisation` und `Name des Ansprechpartners` eingeben
 * NT kann eingegebene Daten speichern (Button „Speichern“)
 * System speichert Organisationsname und Ansprechpartner im Backend ab
 
 h3. Out of Scope
-* Sonstige Eingabefelder
+* Nudging zu bestimmten Angaben, stattdessen nur leere Textfelder
 * Ändern der Email
 
 h3. Developer Notes
+
+
 * nun wird die Tabelle `members` genutzt
 * use Daisy UI Field Set with title `Allgemeine Infos` https://daisyui.com/components/fieldset/
 * Email is outside of Field Set `Allgemeine Infos` but below that in its own Input
+* your turn"
+"Story","MDF3:NT können Ressourcen und Bedarfe in verschiedenen Kategorien eintragen und speichern","MDF - MemberDataForm","","High","Frontend Backend","New","_Als Netzwerkteilnehmer NT soll ich meine Ressourcen und Bedarfe in verschiedenen Kategorien eintragen, damit mein Matching möglichst präzise ist._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält Eingabefelder für Ressourcen und Bedarfe, innerhalb derselben 7 Kategorien
+  * Kompetenzen
+    * Placeholder: Fachwissen in bestimmten Bereichen, Vorträge über bestimmte Themen…
+    * Placeholder: Studien, Wissen, Datenzugänge, Dokumentationen
+  * Finanzielle Mittel
+    * Placeholder: Verwaltung öffentlicher Gelder, Stipendien, Stiftungsgelder, …
+  * Räumlichkeiten
+    * Placeholder: Gebäude, Innenräume, Büros, Hallen, …
+  * Flächen
+    * Placeholder: Grundstücke, Pachtflächen, Außenareale, landwirtschaftliche Flächen, Parkflächen, Naturreservate, …
+  * Geräte/physische Ausstattung
+    * Placeholder: Maschinen, IT, Fahrzeuge, Tools, …
+  * Netzwerke / Beziehungen
+    * Placeholder: Kontakte, Partner, Zugänge zu Zielgruppen, Multiplikatoren
+    * Placeholder: “Wir sind das Landvolk und haben gute Kontakte zu den Landwirten”
+  * Helfende Hände
+    * Placeholder: menschliche Helfer, die bei Projekten unterstützen können/wollen, Arbeitszeit, ehrenamtliches Engagement
+* NT kann pro Kategorie jeweils seine Ressourcen sowie seine Bedarfe in dem Bereich beschreiben
+* NT kann eingegebene Daten speichern (Button „Speichern“)
+* System speichert alle Antworten im Backend ab
+
+h3. Out of Scope
+* Nudging zu bestimmten Angaben, stattdessen nur leere Textfelder
+
+h3. Developer Notes
+* Gutes DB Datenmodell muss gefunden werden: Jeder member hat Allgemeine Infos (members table) und dann aber noch:
+  * 1. Resources & Requirements
+  * 2. organizational culture
+  * 3. Umweltanschauungen—nep&mon 
+* nutze in Daisy UI Field Set für alle Kategorien (links) und eins für alle Bedarfe (rechts), siehe [Field Set|https://daisyui.com/components/fieldset/]
+* nutze Textarea für jedes Feld https://daisyui.com/components/textarea/
 * your turn"
