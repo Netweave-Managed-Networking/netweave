@@ -1,0 +1,67 @@
+<div
+  class="statement-ranker mx-auto flex w-full max-w-2xl flex-col items-center gap-4 p-6"
+>
+  <span
+    class="statement-ranker__legend-label statement-ranker__legend-label--top"
+  >
+    Volle Zustimmung
+  </span>
+  <div
+    class="statement-ranker__legend flex w-full items-center justify-between text-sm font-medium"
+  ></div>
+
+  <div class="statement-ranker__frame flex w-full items-stretch gap-3">
+    <div
+      #canvasTrack
+      class="statement-ranker__track relative w-full overflow-hidden rounded-xl border border-base-300"
+      [style.height.px]="canvasHeight"
+    >
+      <div class="statement-ranker__gradient absolute inset-0"></div>
+
+      @for (item of items; track item.id) {
+        <div
+          #boxEl
+          [class]="
+            `statement-ranker__box box-${item.id} absolute left-2 right-2 flex cursor-grab items-center gap-3 rounded-lg border px-4 shadow-sm select-none active:cursor-grabbing`
+          "
+          [class.statement-ranker__box--dragging]="item.dragging"
+          [style.top.px]="item.top"
+          [style.height.px]="boxHeight"
+        >
+          <span
+            class="statement-ranker__box-rank badge badge-ghost badge-sm shrink-0 font-semibold"
+            >{{ item.id }}</span
+          >
+
+          <span class="statement-ranker__box-text flex-1 text-sm leading-snug">
+            {{ item.text }}
+          </span>
+
+          <span
+            class="statement-ranker__box-score badge badge-neutral shrink-0"
+          >
+            {{ scoreOf(item) }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <div
+      class="statement-ranker__scale relative w-8 shrink-0"
+      [style.height.px]="canvasHeight"
+    >
+      @for (tick of scaleTicks; track $index) {
+        <span
+          class="statement-ranker__scale-tick absolute text-xs text-base-content/50"
+          [style.top.px]="tickTop(tick)"
+          >{{ tick }}</span
+        >
+      }
+    </div>
+  </div>
+  <span
+    class="statement-ranker__legend-label statement-ranker__legend-label--bottom"
+  >
+    Vollständige Ablehnung
+  </span>
+</div>

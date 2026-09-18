@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, resource } from '@angular/core';
 import { MemberDTO } from '@netweave/api-types';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { StatementRankerComponent } from '../statement-ranker/statement-ranker.component';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [StatementRankerComponent],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {

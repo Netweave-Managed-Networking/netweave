@@ -1,0 +1,73 @@
+// BEM block: .statement-ranker
+// Layout/spacing utilities live inline in the template via Tailwind;
+// this file only holds what Tailwind utility classes can't express
+// cleanly (the gradient wash, drag states, transitions).
+
+.statement-ranker {
+  &__legend-label {
+    // @apply text-base-content/70;
+
+    &--top {
+      // @apply text-success;
+    }
+
+    &--bottom {
+      // @apply text-error;
+    }
+  }
+
+  &__track {
+    background-color: theme('colors.base-200', #eef0ec);
+  }
+
+  &__gradient {
+    // Faint approval (top) → rejection (bottom) wash. Decorative only,
+    // the score badge and axis carry the actual meaning.
+    background: linear-gradient(
+      to bottom,
+      rgba(59, 110, 89, 0.08),
+      rgba(176, 65, 62, 0.08)
+    );
+    pointer-events: none;
+  }
+
+  &__box {
+    // Smooth reflow when a neighbouring box gets pushed aside by a swap.
+    transition:
+      top 150ms ease,
+      box-shadow 150ms ease,
+      border-color 150ms ease;
+    border-color: theme('colors.base-300', #d9ded6);
+  }
+
+  .box-A {
+    background-color: #cab7a2;
+  }
+  .box-B {
+    background-color: #bfb59e;
+  }
+  .box-C {
+    background-color: #b4ada3;
+  }
+  .box-D {
+    background-color: #c4b1ae;
+  }
+
+  &__box--dragging {
+    // The box being dragged must track the pointer 1:1, no easing lag.
+    transition:
+      box-shadow 150ms ease,
+      border-color 150ms ease;
+    z-index: 10;
+    border-color: #3b6e59;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  }
+
+  &__box-text {
+    line-height: 1.35;
+  }
+
+  &__scale-tick {
+    font-variant-numeric: tabular-nums;
+  }
+}
