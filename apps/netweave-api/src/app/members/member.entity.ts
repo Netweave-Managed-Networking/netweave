@@ -1,9 +1,9 @@
-import { OrganizationDTO } from '@netweave/api-types';
+import { MemberDTO } from '@netweave/api-types';
 import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 
-@Entity({ name: 'organizations' })
-export class Organization extends BaseEntity implements OrganizationDTO {
+@Entity({ name: 'members' })
+export class Member extends BaseEntity implements MemberDTO {
   @Column()
   declare public name: string;
 

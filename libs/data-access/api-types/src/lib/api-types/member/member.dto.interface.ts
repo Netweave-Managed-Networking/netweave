@@ -1,6 +1,6 @@
 import { EntityDTO } from '../entity/entity.dto.interface';
 
-export interface OrganizationDTO extends EntityDTO {
+export interface MemberDTO extends EntityDTO {
   name: string;
   contact: string | null;
 }

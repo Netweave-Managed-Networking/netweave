@@ -3,7 +3,7 @@ left to right direction
 
 actor Admin
 actor Editor
-actor Organisation
+actor Member
 actor System
 
 rectangle Netweave {
@@ -30,9 +30,9 @@ Admin --> UC1
 Editor --> UC2
 Editor --> UC6
 
-' Organisation
-Organisation --> UC4
-Organisation --> UC10
+' Member
+Member --> UC4
+Member --> UC10
 
 ' System
 System --> UC6

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, resource } from '@angular/core';
-import { OrganizationDTO } from '@netweave/api-types';
+import { MemberDTO } from '@netweave/api-types';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { InviteParticipantComponent } from '../invite-participant/invite-participant.component';
 
@@ -12,11 +12,11 @@ import { InviteParticipantComponent } from '../invite-participant/invite-partici
 export class HomeComponent {
   private http = inject(HttpClient);
 
-  protected organizationLatest = resource({
+  protected memberLatest = resource({
     loader: () =>
       firstValueFrom(
         this.http
-          .get<OrganizationDTO | null>('/api/organizations/latest')
+          .get<MemberDTO | null>('/api/members/latest')
           .pipe(catchError(() => of(null))),
       ),
   });
