@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   InvitationCreateDTO,
   InvitationDTO,
+  InvitationListItemDTO,
   UserAuthDTO,
   UserDTO,
 } from '@netweave/api-types';
@@ -30,11 +31,12 @@ const mockInvitation: InvitationDTO = {
 describe('InvitationsController', () => {
   let controller: InvitationsController;
 
-  let service: Partial<Record<'save', jest.Mock>>;
+  let service: Partial<Record<'save' | 'all', jest.Mock>>;
 
   beforeEach(async () => {
     service = {
       save: jest.fn().mockResolvedValue(mockInvitation),
+      all: jest.fn().mockResolvedValue([]),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -55,6 +57,26 @@ describe('InvitationsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('all', () => {
+    it('returns the invitation list from the service', async () => {
+      const mockList: InvitationListItemDTO[] = [
+        {
+          id: 1,
+          email: 'nt@example.com',
+          status: 'pending',
+          createdAt: new Date(),
+        },
+      ];
+
+      (service.all as jest.Mock).mockResolvedValueOnce(mockList);
+
+      const result = await controller.all();
+
+      expect(service.all).toHaveBeenCalled();
+      expect(result).toEqual(mockList);
+    });
   });
 
   describe('create', () => {

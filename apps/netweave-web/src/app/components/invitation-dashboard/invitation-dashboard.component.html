@@ -1,0 +1,78 @@
+<div class="invitation-dashboard w-full max-w-6xl m-auto p-4">
+  <div
+    class="invitation-dashboard__title w-full flex flex-col items-center pb-4 gap-2"
+  >
+    <h1>Einladungen</h1>
+  </div>
+
+  <div
+    class="invitation-dashboard__stats stats stats-vertical sm:stats-horizontal w-full mb-4 rounded-box border border-base-content/5 bg-base-100"
+  >
+    <div class="invitation-dashboard__stat-awaiting stat">
+      <div class="stat-title">Ausstehend</div>
+      <div class="stat-value text-warning">{{ awaitingCount() }}</div>
+      <div class="stat-desc">Noch keine Antwort erhalten</div>
+    </div>
+    <div class="invitation-dashboard__stat-answered stat">
+      <div class="stat-title">Beantwortet</div>
+      <div class="stat-value text-success">{{ answeredCount() }}</div>
+    </div>
+    <div class="invitation-dashboard__stat-failed stat">
+      <div class="stat-title">Fehlgeschlagen</div>
+      <div class="stat-value text-error">{{ failedCount() }}</div>
+    </div>
+  </div>
+
+  <div
+    class="invitation-dashboard__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
+  >
+    @let items = invitations();
+
+    @if (items) {
+      <table class="invitation-dashboard__table table table-zebra">
+        <thead>
+          <tr>
+            <th class="invitation-dashboard__email-th">Email</th>
+            <th class="invitation-dashboard__status-th">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invitation of items; track invitation.id) {
+            @let config = statusConfig[invitation.status];
+
+            <tr>
+              <td class="invitation-dashboard__email-td">
+                {{ invitation.email }}
+              </td>
+              <td class="invitation-dashboard__status-td">
+                <div
+                  class="invitation-dashboard__status-tooltip tooltip tooltip-right"
+                  [attr.data-tip]="
+                    'Erstellt am ' +
+                    (invitation.createdAt | date: 'dd.MM.yyyy HH:mm')
+                  "
+                >
+                  <div
+                    class="invitation-dashboard__status-badge flex items-center gap-2"
+                  >
+                    <div class="inline-grid *:[grid-area:1/1]">
+                      @if (config.ping) {
+                        <div
+                          [class]="
+                            'status ' + config.colorClass + ' animate-ping'
+                          "
+                        ></div>
+                      }
+                      <div [class]="'status ' + config.colorClass"></div>
+                    </div>
+                    <span>{{ config.label }}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

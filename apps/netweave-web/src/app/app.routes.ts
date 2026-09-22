@@ -28,6 +28,14 @@ export const appRoutes: Routes = [
       import('./components/home/home.component').then((m) => m.HomeComponent),
   },
   {
+    path: 'invitation-dashboard',
+    canActivate: [authenticatedGuard],
+    loadComponent: () =>
+      import(
+        './components/invitation-dashboard/invitation-dashboard.component'
+      ).then((m) => m.InvitationDashboardComponent),
+  },
+  {
     path: 'user-invitations',
     canActivate: [adminGuard],
     loadComponent: () =>

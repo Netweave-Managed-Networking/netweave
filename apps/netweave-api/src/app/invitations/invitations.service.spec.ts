@@ -8,6 +8,7 @@ type MockRepo = Partial<Record<keyof Repository<Invitation>, jest.Mock>>;
 const createMockRepository = (): MockRepo => ({
   save: jest.fn(),
   findOne: jest.fn(),
+  find: jest.fn(),
 });
 
 describe('InvitationsService', () => {
@@ -23,6 +24,70 @@ describe('InvitationsService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('all', () => {
+    const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000);
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    it('maps raw pending/dispatched invitations to their status, and marks expired ones', async () => {
+      repository.find?.mockResolvedValue([
+        {
+          id: 1,
+          email: 'pending@example.com',
+          status: 'pending',
+          expireDate: oneHourFromNow,
+          answeredDate: null,
+          createdAt: new Date('2026-01-01'),
+        },
+        {
+          id: 2,
+          email: 'dispatched@example.com',
+          status: 'dispatched',
+          expireDate: oneHourFromNow,
+          answeredDate: null,
+          createdAt: new Date('2026-01-02'),
+        },
+        {
+          id: 3,
+          email: 'expired@example.com',
+          status: 'dispatched',
+          expireDate: oneHourAgo,
+          answeredDate: null,
+          createdAt: new Date('2026-01-03'),
+        },
+        {
+          id: 4,
+          email: 'failed@example.com',
+          status: 'failed',
+          expireDate: oneHourFromNow,
+          answeredDate: null,
+          createdAt: new Date('2026-01-04'),
+        },
+        {
+          id: 5,
+          email: 'answered@example.com',
+          status: 'dispatched',
+          expireDate: oneHourAgo,
+          answeredDate: new Date('2026-01-05'),
+          createdAt: new Date('2026-01-05'),
+        },
+      ]);
+
+      const result = await service.all();
+
+      expect(repository.find).toHaveBeenCalledWith({
+        order: { createdAt: 'DESC' },
+      });
+
+      expect(result.map((i) => i.status)).toEqual([
+        'failed',
+        'pending',
+        'answered',
+        'dispatched',
+        'expired',
+      ]);
+    });
   });
 
   describe('save', () => {
