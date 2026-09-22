@@ -1,3 +1,6 @@
+import { EntityDTO } from '../entity/entity.dto.interface';
+import { InvitationCreateDTO } from './invitation.create.dto.class';
+
 export type InvitationDisplayStatus =
   | 'pending'
   | 'dispatched'
@@ -5,9 +8,8 @@ export type InvitationDisplayStatus =
   | 'expired'
   | 'answered';
 
-export interface InvitationListItemDTO {
-  id: number;
-  email: string;
+export interface InvitationListItemDTO
+  extends Pick<EntityDTO, 'id' | 'createdAt'>,
+    InvitationCreateDTO {
   status: InvitationDisplayStatus;
-  createdAt: Date;
 }
