@@ -150,10 +150,7 @@ describe('MailConfigService', () => {
         });
 
       const { authPass: _authPass, ...dtoWithoutPassword } = dto;
-      await service.update(
-        dtoWithoutPassword as MailConfigUpdateDTO,
-        7,
-      );
+      await service.update(dtoWithoutPassword as MailConfigUpdateDTO, 7);
 
       const saved = repository.save?.mock.calls[0][0];
       expect(saved.id).toBe(1);

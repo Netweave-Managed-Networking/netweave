@@ -38,7 +38,11 @@ export class MailerService {
     this.transporter = null;
   }
 
-  public async sendMail({ to, subject, html }: SendMailInput): Promise<boolean> {
+  public async sendMail({
+    to,
+    subject,
+    html,
+  }: SendMailInput): Promise<boolean> {
     try {
       const config = await this.getEffectiveConfig();
       const transporter = this.getTransporter(config);
@@ -53,8 +57,8 @@ export class MailerService {
       this.logger.log(`Mail sent to ${to}`);
       return true;
     } catch (error) {
-      const e = error as { message?: string };
-      this.logger.error(`Failed to send mail to ${to}: ${e?.message ?? String(error)}`);
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to send mail to ${to}: ${message}`);
       return false;
     }
   }
@@ -75,6 +79,7 @@ export class MailerService {
     const row = await this.repository.findOne({
       where: {},
       order: { id: 'ASC' },
+      // authPassEncrypted is `select: false` on the entity; list it explicitly to read it back
       select: {
         id: true,
         host: true,

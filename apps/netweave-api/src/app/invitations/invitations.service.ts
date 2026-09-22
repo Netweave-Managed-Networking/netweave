@@ -68,10 +68,7 @@ export class InvitationsService {
     });
   }
 
-  /**
-   * sends the invitation mail to the new network participant and returns the
-   * resulting status ('dispatched'/'failed') per the invitation-dispatch AC.
-   */
+  /** sends the invitation mail and reports back whether it went out ('dispatched' or 'failed') */
   private async dispatch(
     email: string,
     token: string,

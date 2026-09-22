@@ -71,12 +71,12 @@ export class MailConfigService {
       select: { id: true, authPassEncrypted: true },
     });
 
-    const authPassEncrypted =
-      dto.authPass === undefined
-        ? (existing?.authPassEncrypted ?? null)
-        : dto.authPass === ''
-          ? null
-          : encryptSecret(dto.authPass);
+    // authPass omitted -> keep the stored password; '' -> clear it; otherwise -> replace it
+    let authPassEncrypted = existing?.authPassEncrypted ?? null;
+    if (dto.authPass !== undefined) {
+      authPassEncrypted =
+        dto.authPass === '' ? null : encryptSecret(dto.authPass);
+    }
 
     await this.repository.save({
       id: existing?.id,

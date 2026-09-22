@@ -17,12 +17,15 @@ const KEY_SALT = 'netweave-mail-config';
 function deriveKey(): Buffer {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    throw new Error('JWT_SECRET must be set to encrypt/decrypt mail config secrets');
+    throw new Error(
+      'JWT_SECRET must be set to encrypt/decrypt mail config secrets',
+    );
   }
 
   return scryptSync(secret, KEY_SALT, 32);
 }
 
+/** stores the result as `iv:authTag:cipherText`, each part hex-encoded */
 export function encryptSecret(plainText: string): string {
   const key = deriveKey();
   const iv = randomBytes(12);
