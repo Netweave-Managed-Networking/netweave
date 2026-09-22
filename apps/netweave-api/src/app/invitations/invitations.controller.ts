@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   InvitationCreateDTO,
   InvitationDTO,
   InvitationListItemDTO,
+  InvitationTokenDTO,
   UserAuthDTO,
 } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
@@ -17,6 +26,19 @@ export class InvitationsController {
   @Get('')
   public async all(): Promise<InvitationListItemDTO[]> {
     return await this.invitationsService.all();
+  }
+
+  @Get('by-token/:token')
+  public async findByToken(
+    @Param('token') token: string,
+  ): Promise<InvitationTokenDTO> {
+    const invitation = await this.invitationsService.findValidByToken(token);
+
+    if (!invitation) {
+      throw new NotFoundException();
+    }
+
+    return { email: invitation.email };
   }
 
   @UseGuards(AuthGuard)

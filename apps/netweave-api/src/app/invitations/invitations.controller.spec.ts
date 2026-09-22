@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   InvitationCreateDTO,
@@ -31,12 +32,13 @@ const mockInvitation: InvitationDTO = {
 describe('InvitationsController', () => {
   let controller: InvitationsController;
 
-  let service: Partial<Record<'save' | 'all', jest.Mock>>;
+  let service: Partial<Record<'save' | 'all' | 'findValidByToken', jest.Mock>>;
 
   beforeEach(async () => {
     service = {
       save: jest.fn().mockResolvedValue(mockInvitation),
       all: jest.fn().mockResolvedValue([]),
+      findValidByToken: jest.fn().mockResolvedValue(mockInvitation),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -76,6 +78,23 @@ describe('InvitationsController', () => {
 
       expect(service.all).toHaveBeenCalled();
       expect(result).toEqual(mockList);
+    });
+  });
+
+  describe('findByToken', () => {
+    it('returns the email for a valid token', async () => {
+      const result = await controller.findByToken('valid-token');
+
+      expect(service.findValidByToken).toHaveBeenCalledWith('valid-token');
+      expect(result).toEqual({ email: mockInvitation.email });
+    });
+
+    it('throws NotFoundException when the token is invalid or expired', async () => {
+      (service.findValidByToken as jest.Mock).mockResolvedValueOnce(null);
+
+      await expect(controller.findByToken('unknown-token')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
