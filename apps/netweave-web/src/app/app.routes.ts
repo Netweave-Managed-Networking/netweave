@@ -36,11 +36,11 @@ export const appRoutes: Routes = [
       ).then((m) => m.InvitationDashboardComponent),
   },
   {
-    path: 'user-invitations',
+    path: 'settings',
     canActivate: [adminGuard],
     loadComponent: () =>
-      import('./components/user-invitations/user-invitations.component').then(
-        (m) => m.UserInvitationsComponent,
+      import('./components/settings/settings.component').then(
+        (m) => m.SettingsComponent,
       ),
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
