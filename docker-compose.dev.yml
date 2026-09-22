@@ -1,0 +1,8 @@
+services:
+  mailcatcher:
+    image: axllent/mailpit
+    container_name: netweave-mailcatcher
+    ports:
+      - '1025:1025' # SMTP - point SMTP_HOST/SMTP_PORT at this
+      - '8025:8025' # Web UI - view caught mail at http://localhost:8025
+    restart: unless-stopped
