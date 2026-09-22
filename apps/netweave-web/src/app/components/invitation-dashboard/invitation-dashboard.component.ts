@@ -58,27 +58,24 @@ export class InvitationDashboardComponent {
       ),
   });
 
-  protected awaitingCount = computed(
-    () =>
-      (this.invitations() ?? []).filter(
-        (invitation) =>
-          invitation.status === 'pending' ||
-          invitation.status === 'dispatched',
-      ).length,
+  protected awaitingCount = this.countBy(
+    (invitation) =>
+      invitation.status === 'pending' || invitation.status === 'dispatched',
   );
 
-  protected answeredCount = computed(
-    () =>
-      (this.invitations() ?? []).filter(
-        (invitation) => invitation.status === 'answered',
-      ).length,
+  protected answeredCount = this.countBy(
+    (invitation) => invitation.status === 'answered',
   );
 
-  protected failedCount = computed(
-    () =>
-      (this.invitations() ?? []).filter(
-        (invitation) =>
-          invitation.status === 'failed' || invitation.status === 'expired',
-      ).length,
+  protected failedCount = this.countBy(
+    (invitation) =>
+      invitation.status === 'failed' || invitation.status === 'expired',
   );
+
+  // Shared by the stat tiles above so each one only has to state its own status predicate.
+  private countBy(predicate: (invitation: InvitationListItemDTO) => boolean) {
+    return computed(
+      () => (this.invitations() ?? []).filter(predicate).length,
+    );
+  }
 }
