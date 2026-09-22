@@ -88,7 +88,9 @@ describe('MailSettingsComponent', () => {
 
     const putSpy = vi
       .spyOn(http, 'put')
-      .mockReturnValue(of({ ...mockConfig, authUser: null, hasPassword: false }));
+      .mockReturnValue(
+        of({ ...mockConfig, authUser: null, hasPassword: false }),
+      );
 
     const submit = fixture.nativeElement.querySelector(
       '.mail-settings__submit',
@@ -105,9 +107,7 @@ describe('MailSettingsComponent', () => {
   it('shows error feedback when saving fails', async () => {
     const fixture = await create();
 
-    vi.spyOn(http, 'put').mockReturnValue(
-      throwError(() => new Error('fail')),
-    );
+    vi.spyOn(http, 'put').mockReturnValue(throwError(() => new Error('fail')));
 
     const submit = fixture.nativeElement.querySelector(
       '.mail-settings__submit',

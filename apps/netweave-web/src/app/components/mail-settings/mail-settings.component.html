@@ -25,9 +25,7 @@
       </div>
     </div>
 
-    <label
-      class="mail-settings__secure flex items-center gap-2 cursor-pointer"
-    >
+    <label class="mail-settings__secure flex items-center gap-2 cursor-pointer">
       <input
         class="checkbox"
         type="checkbox"
@@ -36,7 +34,9 @@
       <span>TLS verwenden</span>
     </label>
 
-    <label class="mail-settings__no-auth flex items-center gap-2 cursor-pointer">
+    <label
+      class="mail-settings__no-auth flex items-center gap-2 cursor-pointer"
+    >
       <input
         class="checkbox"
         type="checkbox"
@@ -61,7 +61,9 @@
         <label class="label" for="mail-settings-auth-pass">
           Passwort
           @if (hasPassword()) {
-            <span class="text-base-content/60">(aktuell gesetzt, leer lassen zum Beibehalten)</span>
+            <span class="text-base-content/60"
+              >(aktuell gesetzt, leer lassen zum Beibehalten)</span
+            >
           }
         </label>
         <input
@@ -145,7 +147,9 @@
       <span class="text-success text-sm">Testmail wurde versendet.</span>
     }
     @if (testState() === 'error') {
-      <span class="text-error text-sm">Testmail konnte nicht versendet werden.</span>
+      <span class="text-error text-sm"
+        >Testmail konnte nicht versendet werden.</span
+      >
     }
   </fieldset>
 </div>

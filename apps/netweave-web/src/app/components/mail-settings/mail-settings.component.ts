@@ -103,16 +103,14 @@ export class MailSettingsComponent {
     this.saveState.set('pending');
     const model = this.settingsModel();
 
+    // noAuth clears any stored credentials; otherwise an empty password field
+    // means "keep the current password" (see MailConfigUpdateDTO.authPass)
     const dto: MailConfigUpdateDTO = {
       host: model.host,
       port: Number(model.port),
       secure: model.secure,
       authUser: model.noAuth ? undefined : model.authUser || undefined,
-      authPass: model.noAuth
-        ? ''
-        : model.authPass === ''
-          ? undefined
-          : model.authPass,
+      authPass: model.noAuth ? '' : model.authPass || undefined,
       fromName: model.fromName,
       fromAddress: model.fromAddress,
     };
@@ -147,9 +145,7 @@ export class MailSettingsComponent {
       .post<{ success: boolean }>('/api/mail-config/test', { to })
       .pipe(
         take(1),
-        tap(({ success }) =>
-          this.testState.set(success ? 'success' : 'error'),
-        ),
+        tap(({ success }) => this.testState.set(success ? 'success' : 'error')),
         catchError(() => {
           this.testState.set('error');
           return of(null);

@@ -7,7 +7,12 @@ type SettingsTab = 'manager' | 'mail';
 
 @Component({
   selector: 'app-settings',
-  imports: [IconMail, IconSettings, UserInvitationsComponent, MailSettingsComponent],
+  imports: [
+    IconMail,
+    IconSettings,
+    UserInvitationsComponent,
+    MailSettingsComponent,
+  ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
