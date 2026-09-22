@@ -1,6 +1,7 @@
 import { UserDTO } from '@netweave/api-types';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
+import { Invitation } from '../invitations/invitation.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 
 @Entity({ name: 'users' })
@@ -20,4 +21,9 @@ export class User extends BaseEntity implements UserDTO {
     { eager: false },
   )
   declare public userEmailWhitelistsCreated: UserEmailWhitelist[];
+
+  @OneToMany(() => Invitation, (invitation) => invitation.invitedBy, {
+    eager: false,
+  })
+  declare public invitationsSent: Invitation[];
 }

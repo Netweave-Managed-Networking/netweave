@@ -1,0 +1,102 @@
+<div class="invite-participant w-full flex flex-col items-center gap-2">
+  <h2 class="invite-participant__title text-lg font-bold">
+    Netzwerkteilnehmer einladen
+  </h2>
+
+  <div class="invite-participant__form flex flex-col items-start gap-1">
+    @let errors = inviteForm.email().errors();
+    @let hasError = inviteForm.email().touched() && errors.length > 0;
+
+    <div class="invite-participant__input-group join">
+      <span class="invite-participant__icon join-item btn btn-disabled px-3">
+        <icon-mail />
+      </span>
+      <input
+        class="invite-participant__input join-item input"
+        [class.border-error]="hasError"
+        type="email"
+        placeholder="teilnehmer@domain.com"
+        autocomplete="email"
+        [formField]="inviteForm.email"
+        (keydown.enter)="openConfirmation(inviteParticipantModal)"
+      />
+      <button
+        class="invite-participant__submit join-item btn btn-neutral"
+        [disabled]="errors.length > 0"
+        (click)="openConfirmation(inviteParticipantModal)"
+      >
+        Einladen
+      </button>
+    </div>
+
+    @if (hasError) {
+      @for (error of errors; track error) {
+        <div
+          class="invite-participant__error text-error validator-hint visible"
+        >
+          {{ error.message }}
+        </div>
+      }
+    }
+
+    @if (feedback(); as feedbackValue) {
+      <div
+        class="invite-participant__feedback text-sm"
+        [class.text-success]="feedbackValue.type === 'success'"
+        [class.text-error]="feedbackValue.type === 'error'"
+      >
+        {{ feedbackValue.message }}
+      </div>
+    }
+  </div>
+
+  <dialog
+    #inviteParticipantModal
+    class="invite-participant__modal modal whitespace-normal"
+  >
+    <div class="invite-participant__modal-box modal-box">
+      <h3 class="text-lg font-bold">Einladung versenden?</h3>
+
+      <p class="invite-participant__modal-text text-justify break-words py-4">
+        An
+        <strong
+          ><em>{{ inviteModel().email }}</em></strong
+        >
+        wird eine Email mit einer Einladung zum Ausfüllen des Fragebogens
+        gesendet.
+      </p>
+
+      <label
+        class="invite-participant__confirm-label flex items-start gap-2 cursor-pointer text-base-content/60"
+      >
+        <input
+          #confirmCheckbox
+          class="invite-participant__confirm-checkbox checkbox mt-1"
+          type="checkbox"
+          [checked]="confirmed()"
+          (change)="confirmed.set(confirmCheckbox.checked)"
+        />
+        <span class="invite-participant__confirm-text">
+          Ich bestätige, dass die Email-Adresse korrekt ist und mit der
+          Versendung der Einladung einverstanden bin.
+        </span>
+      </label>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="invite-participant__cancel btn" (click)="cancel()">
+            Abbrechen
+          </button>
+        </form>
+        <button
+          class="invite-participant__confirm btn btn-neutral"
+          [disabled]="!confirmed()"
+          (click)="submit(inviteParticipantModal)"
+        >
+          Bestätigen
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>
