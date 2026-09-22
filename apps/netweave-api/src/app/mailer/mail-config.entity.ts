@@ -17,10 +17,15 @@ export class MailConfig extends BaseEntity {
   @Column({ default: false })
   declare public secure: boolean;
 
-  @Column({ name: 'auth_user', nullable: true })
+  @Column({ name: 'auth_user', type: 'varchar', nullable: true })
   declare public authUser: string | null;
 
-  @Column({ name: 'auth_pass_encrypted', nullable: true, select: false })
+  @Column({
+    name: 'auth_pass_encrypted',
+    type: 'varchar',
+    nullable: true,
+    select: false,
+  })
   declare public authPassEncrypted: string | null;
 
   @Column({ name: 'from_name' })
