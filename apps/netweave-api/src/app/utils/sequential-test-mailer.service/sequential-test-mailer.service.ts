@@ -5,26 +5,28 @@ import { MembersService } from '../../members/members.service';
 import { QuoteService } from '../quote.service/quote.service';
 
 @Injectable()
-export class MailService {
-  private readonly logger = new Logger(MailService.name);
+export class SequentialTestMailerService {
+  private readonly logger = new Logger(SequentialTestMailerService.name);
 
   public constructor(
     private readonly mailerService: MailerService,
     private quoteService: QuoteService,
     private membersService: MembersService,
   ) {
-    this.logger.log(`MailService initialized`);
+    this.logger.log(`SequentialTestMailerService initialized`);
   }
 
-  @Cron(process.env.CRON_SCHEDULE_MAIL_SEND ?? '*/1 * * * *') // CRON_SCHEDULE_MAIL_SEND or default: every minute
+  @Cron(process.env.SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE ?? '*/1 * * * *') // SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE or default: every minute
   public async sendMail() {
     this.logger.log(`Trying to send Mail...`);
 
     const mailReceiverIsSet: boolean =
-      process.env.MAIL_RECEIVER !== undefined &&
-      process.env.MAIL_RECEIVER !== '';
+      process.env.SEQUENTIAL_TEST_MAIL_RECEIVER !== undefined &&
+      process.env.SEQUENTIAL_TEST_MAIL_RECEIVER !== '';
     if (!mailReceiverIsSet) {
-      this.logger.log('MAIL_RECEIVER is not set, mail will not be sent');
+      this.logger.log(
+        'SEQUENTIAL_TEST_MAIL_RECEIVER is not set, mail will not be sent',
+      );
       return;
     }
 
@@ -49,7 +51,7 @@ export class MailService {
     const latestOrg = await this.membersService.getLatestMember();
 
     const sent = await this.mailerService.sendMail({
-      to: process.env.MAIL_RECEIVER as string,
+      to: process.env.SEQUENTIAL_TEST_MAIL_RECEIVER as string,
       subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
       html: `
           <p>${quote?.quote ?? '<em>No message today.</em>'}</p>

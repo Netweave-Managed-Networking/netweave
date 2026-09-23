@@ -1,10 +1,10 @@
 import { MailerService } from '../../mailer/mailer.service';
 import { MembersService } from '../../members/members.service';
 import { QuoteService } from '../quote.service/quote.service';
-import { MailService } from './mail.service';
+import { SequentialTestMailerService } from './sequential-test-mailer.service';
 
-describe('MailService', () => {
-  let service: MailService;
+describe('SequentialTestMailerService', () => {
+  let service: SequentialTestMailerService;
   let mailerService: jest.Mocked<Pick<MailerService, 'sendMail'>>;
   let quoteService: jest.Mocked<Pick<QuoteService, 'getQuote'>>;
   let membersService: jest.Mocked<
@@ -25,7 +25,7 @@ describe('MailService', () => {
       getLatestMember: jest.fn().mockResolvedValue({ name: 'Acme' }),
     };
 
-    service = new MailService(
+    service = new SequentialTestMailerService(
       mailerService as unknown as MailerService,
       quoteService as unknown as QuoteService,
       membersService as unknown as MembersService,
@@ -42,8 +42,8 @@ describe('MailService', () => {
   });
 
   describe('sendMail', () => {
-    it('does not send when MAIL_RECEIVER is unset', async () => {
-      process.env.MAIL_RECEIVER = '';
+    it('does not send when SEQUENTIAL_TEST_MAIL_RECEIVER is unset', async () => {
+      process.env.SEQUENTIAL_TEST_MAIL_RECEIVER = '';
       process.env.SEND_MAIL_ACTIVATED = 'true';
 
       await service.sendMail();
@@ -52,7 +52,7 @@ describe('MailService', () => {
     });
 
     it('does not send when SEND_MAIL_ACTIVATED is not true', async () => {
-      process.env.MAIL_RECEIVER = 'team@example.com';
+      process.env.SEQUENTIAL_TEST_MAIL_RECEIVER = 'team@example.com';
       process.env.SEND_MAIL_ACTIVATED = 'false';
 
       await service.sendMail();
@@ -61,7 +61,7 @@ describe('MailService', () => {
     });
 
     it('sends the quote/member digest via MailerService when enabled and configured', async () => {
-      process.env.MAIL_RECEIVER = 'team@example.com';
+      process.env.SEQUENTIAL_TEST_MAIL_RECEIVER = 'team@example.com';
       process.env.SEND_MAIL_ACTIVATED = 'true';
 
       await service.sendMail();

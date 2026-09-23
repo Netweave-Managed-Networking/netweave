@@ -6,7 +6,7 @@ import { InvitationsModule } from './invitations/invitations.module';
 import { MailerModule } from './mailer/mailer.module';
 import { MembersModule } from './members/members.module';
 import { UserEmailWhitelistsModule } from './user-email-whitelists/user-email-whitelists.module';
-import { MailModule } from './utils/mail.service/mail.module';
+import { SequentialTestMailerModule } from './utils/sequential-test-mailer.service/sequential-test-mailer.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { MailModule } from './utils/mail.service/mail.module';
     HealthCheckModule,
     InvitationsModule,
     MailerModule,
-    MailModule,
+    SequentialTestMailerModule,
     MembersModule,
     UserEmailWhitelistsModule,
   ],
