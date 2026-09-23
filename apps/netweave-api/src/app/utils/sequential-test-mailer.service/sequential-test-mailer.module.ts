@@ -4,7 +4,7 @@ import { DatabaseModule } from '../../db/database.module';
 import { MailerModule } from '../../mailer/mailer.module';
 import { MembersModule } from '../../members/members.module';
 import { QuoteModule } from '../quote.service/quote.module';
-import { MailService } from './mail.service';
+import { SequentialTestMailerService } from './sequential-test-mailer.service';
 
 @Module({
   imports: [
@@ -14,6 +14,6 @@ import { MailService } from './mail.service';
     DatabaseModule,
     MailerModule,
   ],
-  providers: [MailService],
+  providers: [SequentialTestMailerService],
 })
-export class MailModule {}
+export class SequentialTestMailerModule {}

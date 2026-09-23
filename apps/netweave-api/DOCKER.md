@@ -120,7 +120,7 @@ docker run -p 3000:3000 \
   -e SMTP_SECURE="true" \
   -e SMTP_USER="your_smtp_user" \
   -e SMTP_PASSWORD="your_smtp_password" \
-  -e CRON_SCHEDULE_MAIL_SEND="*/5 * * * *" \
+  -e SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE="*/5 * * * *" \
   netweave-api:latest
 
 # Detached with a persistent log volume
