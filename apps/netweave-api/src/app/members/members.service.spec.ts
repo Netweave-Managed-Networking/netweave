@@ -1,5 +1,6 @@
 import { MemberUpsertDTO } from '@netweave/api-types';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, IsNull, Repository } from 'typeorm';
+import { Invitation } from '../invitations/invitation.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
 import { MembersService } from './members.service';
@@ -10,6 +11,7 @@ const createMockManager = (): MockManager => ({
   findOne: jest.fn(),
   save: jest.fn((_target, entity) => Promise.resolve({ id: 7, ...entity })),
   upsert: jest.fn(),
+  update: jest.fn(),
   findOneOrFail: jest.fn(),
 });
 
@@ -136,6 +138,18 @@ describe('MembersService', () => {
         relations: { resourcesRequirements: true },
       });
       expect(result).toBe(saved);
+    });
+
+    it('marks the invitation as answered, unless it already is', async () => {
+      manager.findOne?.mockResolvedValue(null);
+
+      await service.saveForInvitation(123, dto);
+
+      expect(manager.update).toHaveBeenCalledWith(
+        Invitation,
+        { id: 123, answeredDate: IsNull() },
+        { answeredDate: expect.any(Date) },
+      );
     });
   });
 });
