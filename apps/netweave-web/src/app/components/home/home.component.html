@@ -1,13 +1,9 @@
-<div class="home w-full flex justify-center">
-  <div class="home__container flex flex-col">
-    <h1 class="home__title">Welcome!</h1>
+<div class="home w-full h-full flex flex-col">
+  <div class="home__top flex-1 content-center">
+    <app-invite-participant class="home__invite-participant" />
+  </div>
 
-    <p class="home__message">You have successfully logged in to netweave.</p>
-
-    <pre class="home__member">{{
-      memberLatest.value()?.name ?? 'No member added yet.'
-    }}</pre>
-
-    <app-invite-participant class="home__invite-participant mt-4" />
+  <div class="home__bottom pt-4 mt-auto flex justify-center">
+    <app-dev-infos class="home__dev-infos" />
   </div>
 </div>
