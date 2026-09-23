@@ -1,6 +1,7 @@
 import { InvitationDTO, InvitationStatus } from '@netweave/api-types';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
+import { Member } from '../members/member.entity';
 import { User } from '../users/user.entity';
 
 @Entity({ name: 'invitations' })
@@ -32,4 +33,7 @@ export class Invitation extends BaseEntity implements InvitationDTO {
   })
   @JoinColumn({ name: 'invited_by_id' })
   declare public invitedBy: User;
+
+  @OneToOne(() => Member, (member) => member.invitation, { eager: false })
+  declare public member?: Member | null;
 }

@@ -38,7 +38,12 @@ export class InvitationsController {
       throw new NotFoundException();
     }
 
-    return { email: invitation.email };
+    const { member } = invitation;
+
+    return {
+      email: invitation.email,
+      member: member ? { name: member.name, contact: member.contact } : null,
+    };
   }
 
   @UseGuards(AuthGuard)
