@@ -22,15 +22,15 @@ export interface EffectiveMailConfig {
 }
 
 @Injectable()
-export class MailerService {
-  private readonly logger = new Logger(MailerService.name);
+export class MailService {
+  private readonly logger = new Logger(MailService.name);
   private transporter: Transporter | null = null;
 
   public constructor(
     @InjectRepository(MailConfig)
     private readonly repository: Repository<MailConfig>,
   ) {
-    this.logger.log(`MailerService initialized`);
+    this.logger.log(`MailService initialized`);
   }
 
   /** drops the cached transporter so the next send rebuilds it from fresh config */

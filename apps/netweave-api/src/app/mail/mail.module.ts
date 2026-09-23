@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { MailConfig } from './mail-config.entity';
 import { MailConfigController } from './mail-config.controller';
+import { MailConfig } from './mail-config.entity';
 import { MailConfigService } from './mail-config.service';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MailConfig]), AuthModule],
   controllers: [MailConfigController],
-  providers: [MailerService, MailConfigService],
-  exports: [MailerService],
+  providers: [MailService, MailConfigService],
+  exports: [MailService],
 })
-export class MailerModule {}
+export class MailModule {}

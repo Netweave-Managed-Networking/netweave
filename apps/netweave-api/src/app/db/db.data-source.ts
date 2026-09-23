@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
-import { MailConfig } from '../mailer/mail-config.entity';
+import { MailConfig } from '../mail/mail-config.entity';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';

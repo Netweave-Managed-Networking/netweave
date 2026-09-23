@@ -1,11 +1,11 @@
-import { MailerService } from '../../mailer/mailer.service';
+import { MailService } from '../../mail/mail.service';
 import { MembersService } from '../../members/members.service';
 import { QuoteService } from '../quote.service/quote.service';
 import { SequentialTestMailerService } from './sequential-test-mailer.service';
 
 describe('SequentialTestMailerService', () => {
   let service: SequentialTestMailerService;
-  let mailerService: jest.Mocked<Pick<MailerService, 'sendMail'>>;
+  let mailService: jest.Mocked<Pick<MailService, 'sendMail'>>;
   let quoteService: jest.Mocked<Pick<QuoteService, 'getQuote'>>;
   let membersService: jest.Mocked<
     Pick<MembersService, 'getMemberCount' | 'getLatestMember'>
@@ -14,7 +14,7 @@ describe('SequentialTestMailerService', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    mailerService = { sendMail: jest.fn().mockResolvedValue(true) };
+    mailService = { sendMail: jest.fn().mockResolvedValue(true) };
     quoteService = {
       getQuote: jest
         .fn()
@@ -26,7 +26,7 @@ describe('SequentialTestMailerService', () => {
     };
 
     service = new SequentialTestMailerService(
-      mailerService as unknown as MailerService,
+      mailService as unknown as MailService,
       quoteService as unknown as QuoteService,
       membersService as unknown as MembersService,
     );
@@ -48,7 +48,7 @@ describe('SequentialTestMailerService', () => {
 
       await service.sendMail();
 
-      expect(mailerService.sendMail).not.toHaveBeenCalled();
+      expect(mailService.sendMail).not.toHaveBeenCalled();
     });
 
     it('does not send when SEND_MAIL_ACTIVATED is not true', async () => {
@@ -57,17 +57,17 @@ describe('SequentialTestMailerService', () => {
 
       await service.sendMail();
 
-      expect(mailerService.sendMail).not.toHaveBeenCalled();
+      expect(mailService.sendMail).not.toHaveBeenCalled();
     });
 
-    it('sends the quote/member digest via MailerService when enabled and configured', async () => {
+    it('sends the quote/member digest via MailService when enabled and configured', async () => {
       process.env.SEQUENTIAL_TEST_MAIL_RECEIVER = 'team@example.com';
       process.env.SEND_MAIL_ACTIVATED = 'true';
 
       await service.sendMail();
 
-      expect(mailerService.sendMail).toHaveBeenCalledTimes(1);
-      const call = mailerService.sendMail.mock.calls[0][0];
+      expect(mailService.sendMail).toHaveBeenCalledTimes(1);
+      const call = mailService.sendMail.mock.calls[0][0];
       expect(call.to).toBe('team@example.com');
       expect(call.html).toContain('Stay hungry.');
       expect(call.html).toContain('Acme');

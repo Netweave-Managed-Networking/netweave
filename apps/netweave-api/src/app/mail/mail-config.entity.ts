@@ -4,7 +4,7 @@ import { User } from '../users/user.entity';
 
 /**
  * singleton-style table: the app only ever reads/writes the first row (ordered by id).
- * no row at all means "no admin override yet", MailerService then falls back to env vars.
+ * no row at all means "no admin override yet", MailService then falls back to env vars.
  */
 @Entity({ name: 'mail_config' })
 export class MailConfig extends BaseEntity {

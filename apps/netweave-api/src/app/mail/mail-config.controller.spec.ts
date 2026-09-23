@@ -9,7 +9,7 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { MailConfigController } from './mail-config.controller';
 import { MailConfigService } from './mail-config.service';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 const mockUser: UserDTO = {
   id: 7,
@@ -36,14 +36,14 @@ const mockConfig: MailConfigDTO = {
 describe('MailConfigController', () => {
   let controller: MailConfigController;
   let mailConfigService: Partial<Record<'get' | 'update', jest.Mock>>;
-  let mailerService: Partial<Record<'sendTestMail', jest.Mock>>;
+  let mailService: Partial<Record<'sendTestMail', jest.Mock>>;
 
   beforeEach(async () => {
     mailConfigService = {
       get: jest.fn().mockResolvedValue(mockConfig),
       update: jest.fn().mockResolvedValue(mockConfig),
     };
-    mailerService = {
+    mailService = {
       sendTestMail: jest.fn().mockResolvedValue(true),
     };
 
@@ -51,7 +51,7 @@ describe('MailConfigController', () => {
       controllers: [MailConfigController],
       providers: [
         { provide: MailConfigService, useValue: mailConfigService },
-        { provide: MailerService, useValue: mailerService },
+        { provide: MailService, useValue: mailService },
       ],
     })
       .overrideGuard(AuthGuard)
@@ -99,17 +99,17 @@ describe('MailConfigController', () => {
   });
 
   describe('test', () => {
-    it('sends a test mail via MailerService and reports success', async () => {
+    it('sends a test mail via MailService and reports success', async () => {
       const result = await controller.test({ to: 'someone@example.com' });
 
-      expect(mailerService.sendTestMail).toHaveBeenCalledWith(
+      expect(mailService.sendTestMail).toHaveBeenCalledWith(
         'someone@example.com',
       );
       expect(result).toEqual({ success: true });
     });
 
     it('reports failure when the test mail could not be sent', async () => {
-      mailerService.sendTestMail?.mockResolvedValueOnce(false);
+      mailService.sendTestMail?.mockResolvedValueOnce(false);
 
       const result = await controller.test({ to: 'someone@example.com' });
 

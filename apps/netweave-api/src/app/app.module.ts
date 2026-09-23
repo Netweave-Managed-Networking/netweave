@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { HealthCheckModule } from './health-check/health-check.module';
 import { InvitationsModule } from './invitations/invitations.module';
-import { MailerModule } from './mailer/mailer.module';
+import { MailModule } from './mail/mail.module';
 import { MembersModule } from './members/members.module';
 import { UserEmailWhitelistsModule } from './user-email-whitelists/user-email-whitelists.module';
 import { SequentialTestMailerModule } from './utils/sequential-test-mailer.service/sequential-test-mailer.module';
@@ -13,7 +13,7 @@ import { SequentialTestMailerModule } from './utils/sequential-test-mailer.servi
     AuthModule,
     HealthCheckModule,
     InvitationsModule,
-    MailerModule,
+    MailModule,
     SequentialTestMailerModule,
     MembersModule,
     UserEmailWhitelistsModule,

@@ -9,14 +9,14 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Me } from '../auth/me.decorator';
 import { MailConfigService } from './mail-config.service';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 @Controller('mail-config')
 @UseGuards(AuthGuard, AdminGuard)
 export class MailConfigController {
   public constructor(
     private readonly mailConfigService: MailConfigService,
-    private readonly mailerService: MailerService,
+    private readonly maiService: MailService,
   ) {}
 
   @Get('')
@@ -36,6 +36,6 @@ export class MailConfigController {
   public async test(
     @Body() { to }: MailConfigTestDTO,
   ): Promise<{ success: boolean }> {
-    return { success: await this.mailerService.sendTestMail(to) };
+    return { success: await this.maiService.sendTestMail(to) };
   }
 }
