@@ -119,7 +119,7 @@ h3. Akzeptanzkriterien
 * NB kann Email eingeben / einfügen
 * NB wird auf fehlerhafte Email Adresse hingewiesen (Format der Email)
 * NB hat Möglichkeit Email Einladung im Backend zu speichern (Enter und Button „Einladen“)
-* NB wird nach Buton `Hinzufügen` zunächst im Modal darauf hingewiesen, dass an diese Organisation nun eine E-mail mit Einladung zum Ausfüllen des Fragebogens gesandt wird
+* NB wird nach Buton `Hinzufügen` zunächst im Modal darauf hingewiesen, dass an diesen NT nun eine E-mail mit Einladung zum Ausfüllen des Fragebogens gesandt wird
 * NB muss Richtigkeit der Email und Hinweis im Dialogfenster bestätigen
 * System speichert Email als erste Information über den NT im Backend ab
 
@@ -162,7 +162,7 @@ h3. Out of Scope
 * Anzeige des Versandstatus im Frontend
 * Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
   * Hinweise in der Mail, wozu die dort abgefragten Daten verwendet werden
-  * Hinweise dazu, welche der angegeben Infos mit anderen geteilt werden und DSGVO Konformitä prüfen: Name der Organisation, Ressourcen der Organiatione sowie Organisationskultur (aufbereitet, verständlich gemacht) sowie ggf Umweltansschauung und Mail-Adresse werden mit anderen teilnehmenden Organisationen geteilt (“Alle angegeben Informationen außer die Bedarfe! (TODO, werden sie mitgeteilt?) werden mit den Top 3 Matches aus dem Netzwerk geteilt”)
+  * Hinweise dazu, welche der angegeben Infos mit anderen geteilt werden und DSGVO Konformitä prüfen: Name des NT, Ressourcen des NT sowie Organisationskultur (aufbereitet, verständlich gemacht) sowie ggf Umweltansschauung und Mail-Adresse werden mit anderen teilnehmende NT geteilt (“Alle angegeben Informationen außer die Bedarfe! (TODO, werden sie mitgeteilt?) werden mit den Top 3 Matches aus dem Netzwerk geteilt”)
 * Erinnerungs-Emails an NT nach der initialen Email
 
 h3. Developer Notes
@@ -268,3 +268,155 @@ h3. Developer Notes
 * nutze in Daisy UI Field Set (Wie? TODO für Marvin)
 * nutze Textarea für jedes Feld https://daisyui.com/components/textarea/
 * your turn"
+"Development","NT können Angaben zur GWIS-Organisationskultur machen","NETW-7","NETW-7","High","4 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich Angaben zur GWIS-Organisationskultur machen, damit Soft-Faktoren berücksichtigt werden. Im späteren Verlauf soll das System mögliche kulturelle Passungen und Reibungspunkte zwischen zwei NT erkennen und im Matching Score sowie bei der Kommunikation der Netzwerkempfehlungen berücksichtigen._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält UI-Element(e) zur Erfassung der Organisationskultur in 4 Themenfeldern
+* NT kann pro Themenfeld die vier Antwortmöglichkeiten (G, I, W, S) relativ zueinander quantifiziert priorisieren
+* NT sieht dabei nicht, welche Orientierung (G, I, W, S) hinter welcher Antwortmöglichkeit steht
+* NT kann eingegebene Gewichtungen speichern (kein eigener, sondern allgemeiner Button „Speichern“ des NT Fragebogens)
+* System speichert pro NT alle 16 Antworten (4 Orientierungen x 4 Themenfelder) im Backend ab mit der klaren, festen Zuordnung von 'Interne ID' bspw Z1-G (siehe Anhang) zu Gewicht(number) 
+* System normiert die gespeicherten Gewichte pro Themenfeld (siehe Dev Notes)
+
+h3. Out of Scope
+* Keine
+
+h3. Developer Notes
+* Siehe Anhang unter Punkt 4 für die exakten Themenfelder und Orientierungen
+* System normiert die gespeicherten Gewichte pro Themenfeld auf ein Gesamtgewicht von 10000 (10000 hier nur gewählt, um Rundungsfehlern bei Normioerung auf 100 auszuweichen, falls möglich gerne auch als Bruch speichern, statt auf 10000 zu normieren)
+  * bspw. rankt ein NT G:100, I: 90, W: 80, S: 70, beträgt das Gewicht 340, Alle Antworten müssen mit Faktor 10000/340 multipliziert werden, damit ein passendes Gesamtgewicht dabei rumkommt.
+  * Dann kann man danach sofort NT1s Antwort xy mit NT2s Antwort xy vergleichen. 
+* Zur Erhebung dieser Informationen muss ein gutes UI Element gefunden und konstruiert werden
+* Es gibt vier Themenfelder: Jedes Themenfeld beschreibt eine typische Entscheidungssituation NT-übergreifender Zusammenarbeit
+* Pro Themenfeld gibt es vier Orientierungen: Pro Themenfeld steht jeweils eine Aussage für G, I, W oder S: Gemeinschaft, Innovation, Ziel+Wirkung sowie Struktur
+* Der NT muss die vier Orientierungen innerhalb jedes Themenfeldes quantifiziert priorisieren. Dadurch werden relative Prioritäten und Zielkonflikte sichtbar
+* Ipsative Interpretation: Ein höherer Wert für eine Orientierung geht zwangsläufig mit niedrigeren Werten für mindestens eine andere Orientierung einher. Gemessen werden relative Präferenzen, nicht absolute Zustimmung
+* Zur besseren Vergleichbarkeit müssen die Antworten 'genormt' gespeichert werden:
+  * Pro NT soll jedes zugewiesene Gewicht pro Orientierung pro Themenfeld gespeichert werden, d.h. 16 Antworten pro NT
+  * Die Antworten sollen auf ein Gesamtgewicht / Budget von 10.000 genormt werden. D.h. bspw. rankt ein NT G:100, I:90, W:80, S:70, beträgt das Gewicht 340. Alle Antworten müssen mit Faktor 10000/340 multipliziert werden, damit ein passendes Gesamtgewicht dabei rumkommt. Dann kann man danach sofort NT1s Antwort xy mit NT2s Antwort xy vergleichen
+* Weiter unten ist eine Design Idee gescribbelt. Diese hat das Problem, dass sich keine gute Ausgangssituation finden lässt, wo alle gleichgewichtet werden. Das ist aber nicht so schlimm. Am besten werden GWIS pro Themenfeld geshuffelt
+* Dem NT soll die Zuteilung GWIS pro Antwortmöglichkeit nicht ersichtlich sein
+* your turn"
+"Development","NT können bereits hinterlegte Fragebogen-Daten beim erneuten Aufruf sehen und aktualisieren","NETW-7","NETW-7","Medium","5 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich meine Fragebogen Antworten zu einem späteren Zeipunkt aktualisieren und dazu bisherige Eingaben modifizieren können._
+
+h3. Akzeptanzkriterien
+* Hat ein NT bereits Daten hinterlegt (Fragebogen bereits ausgefüllt), werden beim Aufruf des Fragebogens die bisherigen Angaben vorausgefüllt geladen
+* NT kann die geladenen Angaben bearbeiten
+* NT kann die aktualisierten Angaben speichern (Button „Speichern“)
+* System speichert die aktualisierten Angaben im Backend ab und überschreibt die bisherigen Werte
+
+h3. Out of Scope
+* Nudging zu bestimmten Antworten
+* Reminder Email zum Erneuten ausfüllen
+
+h3. Developer Notes
+* eine Historie gegebener Antworten pro NT ist nicht erforderlich"
+"Development","System berechnet unidirektionale Matching-Scores zwischen NT","NETW-9","NETW-9","High","1a Backend","_Als System möchte ich unidirektionale Matching-Scores berechnen, sodass für zwei Netzwerkteilnehmer NT ermittelt werden kann, zu wie viel Prozent NT1 zu NT2 matcht (0-100%)._
+
+h3. Akzeptanzkriterien
+* System berechnet für ein Paar NT1 und NT2 einen unidirektionalen Matching-Score im Bereich 0-100%
+* Matching-Score von NT1 zu NT2 kann sich vom Matching-Score von NT2 zu NT1 unterscheiden
+* System speichert berechnete Matching-Scores im Backend ab
+
+h3. Out of Scope
+* Bidirektionale/symmetrische Zusammenführung der Scores
+* Anzeige der Matching-Scores im Frontend
+* Benachrichtigung der NT über neue Matching Scores
+* Berücksichtigung von GWIS-Organisationskultur im Matching-Score
+* Berücksichtigung von Resourcen und Bedarfen im Matching-Score
+
+h3. Developer Notes
+
+* Hier kann bspw. der hinterlegte Organisationsname zur Errechnung des Matchings genutzt werden, je gleicher die Anzahl der Buchstaben, desto höher das Matching
+* Jeweils ausgehend von eines jeden NTeilnehmers wird ein Matching-Score (0-100%) für jeden anderen NTeilnehmer berechnet. A–00%-->B; A–64%-->C, B–80%-->A, B–21%-->C, C…
+  * Matching auf Basis der Länge der Strings als Dummy Matching Algorithmus
+  * bspw. NT A hat Bedarf mit 56 chars, dann sind die NT B, C und D mit Ressourcen von jeweils 57 chars, 50 chars und 80 chars die Top 3 Matches, wenn alle anderen weiter abweichen
+* System speichert berechnete Matching-Scores im Backend ab
+  * Die Idee hier war, eine Tabelle 'matchings' zu haben, die pro NT den Score zu jedem anderen NT n:m speichert"
+"Development","System berechnet Matching-Scores asynchron als geplanter Hintergrundprozess","NETW-9","NETW-9","High","1b Backend","_Als System möchte ich die Matching-Scores asynchron berechnen, sodass die (zukünftig zeitintensive) Berechnung als Hintergrundprozess läuft und Matching-Ergebnisse nur in regelmäßigen Abständen (Tage bis Monate) neu bereitgestellt werden._
+
+h3. Akzeptanzkriterien
+* Berechnung der Matching-Scores (siehe NETW-9/1) wird nicht synchron bei einer Nutzeranfrage ausgelöst, sondern als Hintergrundprozess
+* Hintergrundprozess wird gemäß einer konfigurierbaren Schedule ausgelöst, definiert über ENV-Variable MATCHING_COMPUTATION_CRON_SCHEDULE
+* Hintergrundprozess berechnet die Matching-Scores für die relevanten NT-Paare neu
+* System speichert die neu berechneten Matching-Scores im Backend ab
+
+h3. Out of Scope
+* Anzeige der Matching-Scores im Frontend
+* Konfigurierbarkeit der Schedule über UI
+* Auslassen bestimmter NT im Matching-Score, wo schon eine aktuelle Errechnung vorliegt
+* Auslösen einer erneuten Matching Score Berechnung durch einen NB
+
+
+h3. Developer Notes
+* Schedule wird über ENV-Variable MATCHING_COMPUTATION_CRON_SCHEDULE (Cron-Format) konfiguriert
+* Berechnung erfolgt für alle NT-Paare bei jedem Durchlauf
+* Zu Testzwecken kann zunächst stündlich/minütlich/was-auch-immer auf dev.netweave eingestellt werden"
+"Development","NB können die Matching-Score-Berechnung manuell starten","NETW-9","NETW-9","High","2 Frontend Backend","_Als Netzwerkberater NB möchte ich den Matching-Algorithmus manuell starten können._
+
+h3. Akzeptanzkriterien
+* NB hat Möglichkeit, die Berechnung der Matching-Scores (siehe NETW-9/1) manuell auszulösen
+* System startet bei Auslösung durch NB die Matching-Score-Berechnung als Hintergrundprozess (siehe 'System berechnet Matching-Scores asynchron als geplanter Hintergrundprozess')
+* Manuelles Auslösen erfolgt unabhängig von der konfigurierten Schedule (MATCHING_COMPUTATION_CRON_SCHEDULE)
+* UI zum manuellen Starten im Frontend, zugänglich für alle NB
+
+h3. Out of Scope
+* Anzeige des Berechnungsstatus/-fortschritts
+* Anzeige der Matching-Scores im Frontend
+
+h3. Developer Notes
+* Manuelles Auslösen sollte denselben Berechnungspfad wie der geplante Hintergrundprozess nutzen"
+"Development","NB können einsehen, wann die letzte Matching-Score-Berechnung stattgefunden hat","NETW-9","NETW-9","High","3 Frontend Backend","_Als Netzwerkberater NB möchte ich einsehen können, wann die letzte Matching-Score-Berechnung stattgefunden hat._
+
+h3. Akzeptanzkriterien
+* NB kann den Zeitpunkt der letzten Matching-Score-Berechnung abrufen
+* Historie vergangener Berechnungszeitpunkte
+
+h3. Out of Scope
+* System speichert Zeitpunkt der letzten (erfolgreich abgeschlossenen) Matching-Score-Berechnung im Backend ab (siehe 'System berechnet unidirektionale Matching-Scores zwischen NT')
+* Anzeige des Zeitpunkts im Frontend
+* Anzeige der Matching-Scores im Frontend
+
+h3. Developer Notes
+* Zeitstempel kann z.B. am Ende des Hintergrundprozesses gesetzt werden"
+"Development","System bezieht Ressourcen/Bedarfe in Matching-Score ein","NETW-9","NETW-9","High","4 Backend","_Als System möchte ich Ressourcen und Bedarfe der Netzwerkteilnehmer NT in den Matching-Score einbeziehen, sodass der Algorithmus semantisch abschätzt, wie gut die Ressourcen eines NT B die Bedarfe eines NT A abdecken. Das Ergebnis ist ein unidirektionaler Abdeckungs-Score zwischen 0-100% (siehe auch NETW-9/1)._
+
+h3. Akzeptanzkriterien
+* System sendet für jede Kombination aus NT A (Bedarf) und NT B (Ressource) und jede Ressourcen/Bedarfs-Kategorie (siehe MDF3, 7 Kategorien) einen Prompt an das LLM
+* Pro NT A werden somit (n-1) * k Prompts abgesendet, mit n = Anzahl NT und k = Anzahl Ressourcen/Bedarfs-Kategorien
+* Prompt liefert einen ganzzahligen Wert zwischen 0-100 als Abdeckungsgrad
+* System speichert den Wert pro Kategorie k separat im Backend ab (nicht nur die Summe/den Durchschnitt)
+* Berechnung erfolgt im Rahmen der bestehenden Matching-Score-Berechnung (siehe NETW-9/1, NETW-9/2)
+
+h3. Out of Scope
+* Verbesserung des Prompts (zunächst)
+* Ausgabe der verbrauchten Tokens
+* Aggregation der Kategorie-Werte zu einem Gesamt-Matching-Score
+* Berücksichtigung von GWIS-Organisationskultur (siehe NETW-7) im Matching-Score
+* Anzeige der Matching-Scores im Frontend
+
+h3. Developer Notes
+* Verwendeter Prompt (pro Kategorie, mit jeweiligem Bedarfs- und Ressourcentext befüllt):
+
+{quote}
+Du bist ein Match-Scoring-Algorithmus.
+
+Deine Aufgabe ist die streng objektive und ausschließliche Bewertung des inhaltlichen Deckungsgrads der Ressource für den Bedarf.
+
+Wichtig: Bewerte die semantische und fachliche Übereinstimmung, ignoriere aber die Textlänge, Schreibweise oder Stilistik der Eingaben.
+
+Skala 0-100 (Ganzer Wert):
+0: Kein inhaltlicher Bezug. Die Ressource erfüllt den Bedarf in keiner Weise.
+100: Vollständige, präzise und qualitativ hochwertige Abdeckung des Bedarfs.
+1-99: Werte stehen für eine teilweise Abdeckung, proportional zum Grad der inhaltlichen Übereinstimmung.
+
+Ausgabeformat-Zwang:
+Gib als Ergebnis NUR die errechnete ganze Zahl zwischen 0 und 100 aus. KEIN anderer Text, KEINE Begründung, KEINE Umschreibung.
+
+Bedarf:
+{'{'}Bedarfstext der Kategorie k von NT A{'}'}
+
+Ressource:
+{'{'}Ressourcentext der Kategorie k von NT B{'}'}
+{quote}
+* Pro NT-Paar und Kategorie ist ein eigener LLM-Call nötig; Ergebnisse werden granular pro Kategorie gespeichert, um spätere Auswertungen/Gewichtungen zu ermöglichen"
