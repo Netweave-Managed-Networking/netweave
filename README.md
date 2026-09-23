@@ -55,6 +55,22 @@ the schema automatically, but it does run pending migrations
 (`synchronize: false` and `migrationsRun: true`). The database must therefore
 be reachable before running `npm run serve`.
 
+#### Local mail testing (Mailcatcher)
+
+To see mail the API sends (invitation emails, etc.) without configuring a real
+SMTP provider, start the bundled Mailcatcher container:
+
+```sh
+docker compose -f docker-compose.dev.yml up -d
+```
+
+The `.env` defaults already point `SMTP_HOST`/`SMTP_PORT` at this container
+(`localhost:1025`, no auth). Caught mail can be viewed at
+[http://localhost:8025](http://localhost:8025). The mail transport itself
+(host, port, TLS, credentials, sender) can also be changed at runtime from the
+"Mail-Einstellungen" admin page instead of editing `.env`; a change made there
+is persisted to the database and survives a restart.
+
 ### 2B. Run with Docker Compose
 
 This workflow requires Docker Desktop with a running Docker daemon. It starts

@@ -1,5 +1,6 @@
 import { InvitationCreateDTO } from '@netweave/api-types';
 import { Repository } from 'typeorm';
+import { MailerService } from '../mailer/mailer.service';
 import { Invitation } from './invitation.entity';
 import { InvitationsService } from './invitations.service';
 
@@ -9,20 +10,35 @@ const createMockRepository = (): MockRepo => ({
   save: jest.fn(),
   findOne: jest.fn(),
   find: jest.fn(),
+  update: jest.fn(),
 });
+
+const createMockMailerService = () =>
+  ({
+    sendMail: jest.fn(),
+  }) as unknown as jest.Mocked<Pick<MailerService, 'sendMail'>>;
 
 describe('InvitationsService', () => {
   let service: InvitationsService;
   let repository: MockRepo;
+  let mailerService: ReturnType<typeof createMockMailerService>;
+
+  const originalEnv = process.env;
 
   beforeEach(() => {
     repository = createMockRepository();
+    mailerService = createMockMailerService();
+    mailerService.sendMail.mockResolvedValue(true);
+    process.env = { ...originalEnv, WEB_APP_URL: 'https://dev.netweave.de' };
+
     service = new InvitationsService(
       repository as unknown as Repository<Invitation>,
+      mailerService as unknown as MailerService,
     );
   });
 
   afterEach(() => {
+    process.env = originalEnv;
     jest.clearAllMocks();
   });
 
@@ -112,6 +128,7 @@ describe('InvitationsService', () => {
 
       repository.save?.mockResolvedValue(savedEntity);
       repository.findOne?.mockResolvedValue(fullEntity);
+      mailerService.sendMail.mockResolvedValue(true);
 
       const result = await service.save(dto, invitedById);
 
@@ -122,12 +139,38 @@ describe('InvitationsService', () => {
       expect(typeof saveArg.token).toBe('string');
       expect(saveArg.token.length).toBeGreaterThanOrEqual(32);
 
+      expect(mailerService.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({ to: dto.email }),
+      );
+      const mailArg = mailerService.sendMail.mock.calls[0][0];
+      expect(mailArg.html).toContain(saveArg.token);
+      expect(mailArg.html).toContain('Hallo');
+
+      expect(repository.update).toHaveBeenCalledWith(savedEntity.id, {
+        status: 'dispatched',
+      });
+
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { id: savedEntity.id },
         relations: { invitedBy: true },
       });
 
       expect(result).toEqual(fullEntity);
+    });
+
+    it('sets the status to failed when sending the invitation mail fails', async () => {
+      const dto: InvitationCreateDTO = { email: 'nt@example.com' };
+      const invitedById = 42;
+
+      repository.save?.mockResolvedValue({ id: 10, email: dto.email });
+      repository.findOne?.mockResolvedValue({ id: 10, status: 'failed' });
+      mailerService.sendMail.mockResolvedValue(false);
+
+      await service.save(dto, invitedById);
+
+      expect(repository.update).toHaveBeenCalledWith(10, {
+        status: 'failed',
+      });
     });
 
     it('should generate a different token for every invitation', async () => {

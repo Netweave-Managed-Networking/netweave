@@ -1,0 +1,155 @@
+<div class="mail-settings w-full max-w-2xl flex flex-col gap-6">
+  <fieldset
+    class="mail-settings__form fieldset bg-base-100 border border-base-content/5 rounded-box p-4 flex flex-col gap-4"
+  >
+    <div class="flex gap-4">
+      <div class="flex flex-col grow gap-1">
+        <label class="label" for="mail-settings-host">SMTP-Host</label>
+        <input
+          id="mail-settings-host"
+          class="input w-full"
+          type="text"
+          placeholder="smtp.example.com"
+          [formField]="settingsForm.host"
+        />
+      </div>
+
+      <div class="flex flex-col w-28 gap-1">
+        <label class="label" for="mail-settings-port">Port</label>
+        <input
+          id="mail-settings-port"
+          class="input w-full"
+          type="number"
+          [formField]="settingsForm.port"
+        />
+      </div>
+    </div>
+
+    <label class="mail-settings__secure flex items-center gap-2 cursor-pointer">
+      <input
+        class="checkbox"
+        type="checkbox"
+        [formField]="settingsForm.secure"
+      />
+      <span>TLS verwenden</span>
+    </label>
+
+    <label
+      class="mail-settings__no-auth flex items-center gap-2 cursor-pointer"
+    >
+      <input
+        class="checkbox"
+        type="checkbox"
+        [formField]="settingsForm.noAuth"
+      />
+      <span>Ohne Authentifizierung (z. B. lokaler Mailcatcher)</span>
+    </label>
+
+    @if (!settingsModel().noAuth) {
+      <div class="flex flex-col gap-1">
+        <label class="label" for="mail-settings-auth-user">Benutzername</label>
+        <input
+          id="mail-settings-auth-user"
+          class="input w-full"
+          type="text"
+          autocomplete="off"
+          [formField]="settingsForm.authUser"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="label" for="mail-settings-auth-pass">
+          Passwort
+          @if (hasPassword()) {
+            <span class="text-base-content/60"
+              >(aktuell gesetzt, leer lassen zum Beibehalten)</span
+            >
+          }
+        </label>
+        <input
+          id="mail-settings-auth-pass"
+          class="input w-full"
+          type="password"
+          autocomplete="new-password"
+          [formField]="settingsForm.authPass"
+        />
+      </div>
+    }
+
+    <div class="flex gap-4">
+      <div class="flex flex-col grow gap-1">
+        <label class="label" for="mail-settings-from-name">Absendername</label>
+        <input
+          id="mail-settings-from-name"
+          class="input w-full"
+          type="text"
+          [formField]="settingsForm.fromName"
+        />
+      </div>
+
+      <div class="flex flex-col grow gap-1">
+        <label class="label" for="mail-settings-from-address">
+          Absender-Email
+        </label>
+        <input
+          id="mail-settings-from-address"
+          class="input w-full"
+          type="email"
+          [formField]="settingsForm.fromAddress"
+        />
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 pt-2">
+      <button
+        class="mail-settings__submit btn btn-accent"
+        [disabled]="
+          settingsForm().errors().length > 0 || saveState() === 'pending'
+        "
+        (click)="submit()"
+      >
+        Speichern
+      </button>
+
+      @if (saveState() === 'success') {
+        <span class="text-success text-sm">Gespeichert.</span>
+      }
+      @if (saveState() === 'error') {
+        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
+      }
+    </div>
+  </fieldset>
+
+  <fieldset
+    class="mail-settings__test fieldset bg-base-100 border border-base-content/5 rounded-box p-4 flex flex-col gap-3"
+  >
+    <legend class="fieldset-legend">Testmail</legend>
+
+    <div class="join">
+      <input
+        #testRecipientInput
+        class="join-item input"
+        type="email"
+        placeholder="empfaenger@domain.com"
+        [value]="testRecipient()"
+        (input)="testRecipient.set(testRecipientInput.value)"
+      />
+      <button
+        class="join-item btn"
+        [disabled]="testState() === 'pending'"
+        (click)="sendTestMail()"
+      >
+        Testmail senden
+      </button>
+    </div>
+
+    @if (testState() === 'success') {
+      <span class="text-success text-sm">Testmail wurde versendet.</span>
+    }
+    @if (testState() === 'error') {
+      <span class="text-error text-sm"
+        >Testmail konnte nicht versendet werden.</span
+      >
+    }
+  </fieldset>
+</div>

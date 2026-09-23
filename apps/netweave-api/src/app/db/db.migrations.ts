@@ -10,6 +10,7 @@ import { UserEmailWhitelistsFixForeignKeyOnUser1781623307811 } from './migration
 import { UserEmailWhitelistRenameCreatedByIdColumn1786635620919 } from './migrations/1786635620919-user-email-whitelist-rename-created-by-id-column';
 import { OrganizationsRenameMember1789313978460 } from './migrations/1789313978460-organizations-rename-member';
 import { InvitationsCreate1790057195000 } from './migrations/1790057195000-invitations-create';
+import { MailConfigCreate1790200000000 } from './migrations/1790200000000-mail-config-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -24,4 +25,5 @@ export const Migrations = [
   UserEmailWhitelistRenameCreatedByIdColumn1786635620919,
   OrganizationsRenameMember1789313978460,
   InvitationsCreate1790057195000,
+  MailConfigCreate1790200000000,
 ];

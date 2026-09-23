@@ -6,8 +6,10 @@ import {
   InvitationCreateDTO,
   InvitationDisplayStatus,
   InvitationListItemDTO,
+  InvitationStatus,
 } from '@netweave/api-types';
 import { Repository } from 'typeorm';
+import { MailerService } from '../mailer/mailer.service';
 import { Invitation } from './invitation.entity';
 
 const STATUS_ORDER: InvitationDisplayStatus[] = [
@@ -25,6 +27,7 @@ export class InvitationsService {
   public constructor(
     @InjectRepository(Invitation)
     private repository: Repository<Invitation>,
+    private readonly mailerService: MailerService,
   ) {
     this.logger.log(`InvitationsService initialized`);
   }
@@ -56,10 +59,29 @@ export class InvitationsService {
 
     const entity = await this.repository.save({ ...dto, invitedBy, token });
 
+    const status = await this.dispatch(dto.email, token);
+    await this.repository.update(entity.id, { status });
+
     return this.repository.findOne({
       where: { id: entity.id },
       relations: { invitedBy: true },
     });
+  }
+
+  /** sends the invitation mail and reports back whether it went out ('dispatched' or 'failed') */
+  private async dispatch(
+    email: string,
+    token: string,
+  ): Promise<InvitationStatus> {
+    const link = `${process.env.WEB_APP_URL}/member-questions/${token}`;
+
+    const sent = await this.mailerService.sendMail({
+      to: email,
+      subject: 'Einladung zu Netweave',
+      html: `<p>Hallo,</p><p>du wurdest zu Netweave eingeladen. Über folgenden Link kannst du fortfahren:</p><p><a href="${link}">${link}</a></p>`,
+    });
+
+    return sent ? 'dispatched' : 'failed';
   }
 
   private toDisplayStatus(invitation: Invitation): InvitationDisplayStatus {

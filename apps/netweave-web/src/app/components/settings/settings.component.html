@@ -1,0 +1,36 @@
+<div class="settings w-full max-w-6xl m-auto p-4 flex flex-col gap-4">
+  <h1 class="text-lg font-bold">Einstellungen</h1>
+
+  <div role="tablist" class="settings__tabs tabs tabs-lift">
+    <button
+      type="button"
+      role="tab"
+      class="settings__tab tab gap-2"
+      [class.tab-active]="activeTab() === 'manager'"
+      (click)="activeTab.set('manager')"
+    >
+      <div class="rotate-90">
+        <icon-settings />
+      </div>
+      Manager-Verwaltung
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="settings__tab tab gap-2"
+      [class.tab-active]="activeTab() === 'mail'"
+      (click)="activeTab.set('mail')"
+    >
+      <icon-mail />
+      Mail-Einstellungen
+    </button>
+  </div>
+
+  <div class="settings__panel py-2">
+    @if (activeTab() === 'manager') {
+      <app-user-invitations />
+    } @else {
+      <app-mail-settings />
+    }
+  </div>
+</div>
