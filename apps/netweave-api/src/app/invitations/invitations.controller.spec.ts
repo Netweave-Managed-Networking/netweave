@@ -82,11 +82,25 @@ describe('InvitationsController', () => {
   });
 
   describe('findByToken', () => {
-    it('returns the email for a valid token', async () => {
+    it('returns the email and no member for a valid, unanswered token', async () => {
       const result = await controller.findByToken('valid-token');
 
       expect(service.findValidByToken).toHaveBeenCalledWith('valid-token');
-      expect(result).toEqual({ email: mockInvitation.email });
+      expect(result).toEqual({ email: mockInvitation.email, member: null });
+    });
+
+    it('returns the saved member data for a valid token', async () => {
+      (service.findValidByToken as jest.Mock).mockResolvedValueOnce({
+        ...mockInvitation,
+        member: { id: 7, name: 'Acme e.V.', contact: 'Erika Musterfrau' },
+      });
+
+      const result = await controller.findByToken('valid-token');
+
+      expect(result).toEqual({
+        email: mockInvitation.email,
+        member: { name: 'Acme e.V.', contact: 'Erika Musterfrau' },
+      });
     });
 
     it('throws NotFoundException when the token is invalid or expired', async () => {

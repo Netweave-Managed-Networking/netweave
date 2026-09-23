@@ -3,18 +3,66 @@
     <h1 class="member-questions__title text-xl font-bold">Fragebogen</h1>
 
     <fieldset
-      class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 mt-4"
+      class="member-questions__general fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 mt-4"
     >
-      <div class="field">
-        <label class="label" for="email">Email</label>
-        <input
-          class="input"
-          id="email"
-          type="email"
-          [value]="invitation.value()?.email ?? ''"
-          disabled
-        />
+      <legend class="fieldset-legend">Allgemeine Daten</legend>
+
+      @let nameErrors = memberForm.name().errors();
+      @let hasNameError = memberForm.name().touched() && nameErrors.length > 0;
+
+      <label class="label" for="name">Name der Organisation</label>
+      <input
+        class="input"
+        [class.border-error]="hasNameError"
+        id="name"
+        type="text"
+        autocomplete="organization"
+        [formField]="memberForm.name"
+      />
+      <div class="member-questions__error text-error text-xs min-h-4">
+        @if (hasNameError) {
+          @for (error of nameErrors; track error) {
+            {{ error.message }}
+          }
+        }
       </div>
+
+      <label class="label" for="contact">Name des Ansprechpartners</label>
+      <input
+        class="input"
+        id="contact"
+        type="text"
+        autocomplete="name"
+        [formField]="memberForm.contact"
+      />
     </fieldset>
+
+    <div class="member-questions__email flex flex-col gap-1 w-xs mt-4">
+      <label class="label" for="email">Email</label>
+      <input
+        class="input"
+        id="email"
+        type="email"
+        [value]="invitation.value()?.email ?? ''"
+        disabled
+      />
+    </div>
+
+    <div class="member-questions__actions flex items-center gap-3 mt-4">
+      <button
+        class="member-questions__submit btn btn-neutral"
+        [disabled]="!canSave()"
+        (click)="submit()"
+      >
+        Speichern
+      </button>
+
+      @if (saveState() === 'success') {
+        <span class="text-success text-sm">Gespeichert.</span>
+      }
+      @if (saveState() === 'error') {
+        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
+      }
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
 
 import { InjectRepository } from '@nestjs/typeorm';
+import { MemberUpsertDTO } from '@netweave/api-types';
 import { Repository } from 'typeorm';
 import { Member } from './member.entity';
 
@@ -14,20 +14,6 @@ export class MembersService {
     private membersRepository: Repository<Member>,
   ) {
     this.logger.log(`MembersService initialized`);
-  }
-
-  @Cron('*/1 * * * *')
-  public async addNewMember() {
-    try {
-      const member = await this.membersRepository.save({
-        name: `Netzwerkteilnehmer ${new Date().toISOString()}`,
-        contact: `contact@${new Date().getTime()}.com`,
-      });
-      this.logger.log(`New member added: ${member.name}`);
-    } catch (error) {
-      const e = error as Error;
-      this.logger.error(`Error occurred while adding new member: ${e.message}`);
-    }
   }
 
   public async getMemberCount(): Promise<number> {
@@ -44,5 +30,22 @@ export class MembersService {
     } catch {
       return null;
     }
+  }
+
+  /** creates or updates the member of an invitation */
+  public async saveForInvitation(
+    invitationId: number,
+    dto: MemberUpsertDTO,
+  ): Promise<Member> {
+    const existing = await this.membersRepository.findOne({
+      where: { invitation: { id: invitationId } },
+    });
+
+    return this.membersRepository.save({
+      ...existing,
+      name: dto.name,
+      contact: dto.contact || null,
+      invitation: { id: invitationId },
+    });
   }
 }
