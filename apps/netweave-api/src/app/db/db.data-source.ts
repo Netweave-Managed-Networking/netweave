@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
 import { MailConfig } from '../mailer/mail-config.entity';
+import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 import { User } from '../users/user.entity';
@@ -20,7 +21,14 @@ export default new DataSource({
   database: process.env.DB_DB,
 
   // we need to specify entities here for typeorm CLI, otherwise (when using autoLoadEntities: true) it won't find them and won't generate migrations
-  entities: [Invitation, MailConfig, Member, User, UserEmailWhitelist],
+  entities: [
+    Invitation,
+    MailConfig,
+    Member,
+    MemberResourceRequirement,
+    User,
+    UserEmailWhitelist,
+  ],
 
   // migrations
   synchronize: false,

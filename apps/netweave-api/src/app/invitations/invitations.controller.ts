@@ -16,6 +16,7 @@ import {
 } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { Me } from '../auth/me.decorator';
+import { toMemberUpsertDTO } from '../members/member-upsert-dto.mapper';
 import { InvitationsService } from './invitations.service';
 
 @Controller('invitations')
@@ -42,7 +43,7 @@ export class InvitationsController {
 
     return {
       email: invitation.email,
-      member: member ? { name: member.name, contact: member.contact } : null,
+      member: member ? toMemberUpsertDTO(member) : null,
     };
   }
 

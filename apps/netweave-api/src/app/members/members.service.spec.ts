@@ -1,20 +1,35 @@
-import { Repository } from 'typeorm';
+import { MemberUpsertDTO } from '@netweave/api-types';
+import { EntityManager, Repository } from 'typeorm';
+import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
 import { MembersService } from './members.service';
 
-type MockRepo = Partial<Record<keyof Repository<Member>, jest.Mock>>;
+type MockManager = Partial<Record<keyof EntityManager, jest.Mock>>;
 
-const createMockRepository = (): MockRepo => ({
+const createMockManager = (): MockManager => ({
   findOne: jest.fn(),
-  save: jest.fn((entity) => Promise.resolve({ id: 7, ...entity })),
+  save: jest.fn((_target, entity) => Promise.resolve({ id: 7, ...entity })),
+  upsert: jest.fn(),
+  findOneOrFail: jest.fn(),
 });
+
+const dto: MemberUpsertDTO = {
+  name: 'Acme e.V.',
+  contact: 'Erika Musterfrau',
+  resourcesRequirements: [],
+};
 
 describe('MembersService', () => {
   let service: MembersService;
-  let repository: MockRepo;
+  let manager: MockManager;
 
   beforeEach(() => {
-    repository = createMockRepository();
+    manager = createMockManager();
+    const repository = {
+      manager: {
+        transaction: jest.fn((work) => work(manager)),
+      },
+    };
     service = new MembersService(repository as unknown as Repository<Member>);
   });
 
@@ -24,17 +39,14 @@ describe('MembersService', () => {
 
   describe('saveForInvitation', () => {
     it('creates a new member linked to the invitation when none exists yet', async () => {
-      repository.findOne?.mockResolvedValue(null);
+      manager.findOne?.mockResolvedValue(null);
 
-      await service.saveForInvitation(123, {
-        name: 'Acme e.V.',
-        contact: 'Erika Musterfrau',
-      });
+      await service.saveForInvitation(123, dto);
 
-      expect(repository.findOne).toHaveBeenCalledWith({
+      expect(manager.findOne).toHaveBeenCalledWith(Member, {
         where: { invitation: { id: 123 } },
       });
-      expect(repository.save).toHaveBeenCalledWith({
+      expect(manager.save).toHaveBeenCalledWith(Member, {
         name: 'Acme e.V.',
         contact: 'Erika Musterfrau',
         invitation: { id: 123 },
@@ -42,18 +54,15 @@ describe('MembersService', () => {
     });
 
     it('updates the existing member of the invitation', async () => {
-      repository.findOne?.mockResolvedValue({
+      manager.findOne?.mockResolvedValue({
         id: 7,
         name: 'Old name',
         contact: 'Old contact',
       });
 
-      await service.saveForInvitation(123, {
-        name: 'Acme e.V.',
-        contact: 'Erika Musterfrau',
-      });
+      await service.saveForInvitation(123, dto);
 
-      expect(repository.save).toHaveBeenCalledWith({
+      expect(manager.save).toHaveBeenCalledWith(Member, {
         id: 7,
         name: 'Acme e.V.',
         contact: 'Erika Musterfrau',
@@ -62,13 +71,71 @@ describe('MembersService', () => {
     });
 
     it('stores an empty contact as null', async () => {
-      repository.findOne?.mockResolvedValue(null);
+      manager.findOne?.mockResolvedValue(null);
 
-      await service.saveForInvitation(123, { name: 'Acme e.V.', contact: '' });
+      await service.saveForInvitation(123, { ...dto, contact: '' });
 
-      expect(repository.save).toHaveBeenCalledWith(
+      expect(manager.save).toHaveBeenCalledWith(
+        Member,
         expect.objectContaining({ contact: null }),
       );
+    });
+
+    it('upserts the resources and requirements per category of the member, storing empty texts as null', async () => {
+      manager.findOne?.mockResolvedValue(null);
+
+      await service.saveForInvitation(123, {
+        ...dto,
+        resourcesRequirements: [
+          {
+            category: 'competencies',
+            resources: 'Moderation',
+            requirements: '',
+          },
+          { category: 'land', resources: null, requirements: 'Ackerfläche' },
+        ],
+      });
+
+      expect(manager.upsert).toHaveBeenCalledWith(
+        MemberResourceRequirement,
+        [
+          {
+            memberId: 7,
+            category: 'competencies',
+            resources: 'Moderation',
+            requirements: null,
+          },
+          {
+            memberId: 7,
+            category: 'land',
+            resources: null,
+            requirements: 'Ackerfläche',
+          },
+        ],
+        ['memberId', 'category'],
+      );
+    });
+
+    it('does not upsert when no resources and requirements are given', async () => {
+      manager.findOne?.mockResolvedValue(null);
+
+      await service.saveForInvitation(123, dto);
+
+      expect(manager.upsert).not.toHaveBeenCalled();
+    });
+
+    it('returns the saved member including its resources and requirements', async () => {
+      const saved = { id: 7, ...dto, resourcesRequirements: [] };
+      manager.findOne?.mockResolvedValue(null);
+      manager.findOneOrFail?.mockResolvedValue(saved);
+
+      const result = await service.saveForInvitation(123, dto);
+
+      expect(manager.findOneOrFail).toHaveBeenCalledWith(Member, {
+        where: { id: 7 },
+        relations: { resourcesRequirements: true },
+      });
+      expect(result).toBe(saved);
     });
   });
 });

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { MemberDTO, MemberUpsertDTO } from '@netweave/api-types';
 import { InvitationsService } from '../invitations/invitations.service';
+import { toMemberUpsertDTO } from './member-upsert-dto.mapper';
 import { MembersService } from './members.service';
 
 @Controller('members')
@@ -38,6 +39,6 @@ export class MemberController {
       memberUpsertDTO,
     );
 
-    return { name: member.name, contact: member.contact };
+    return toMemberUpsertDTO(member);
   }
 }

@@ -92,14 +92,37 @@ describe('InvitationsController', () => {
     it('returns the saved member data for a valid token', async () => {
       (service.findValidByToken as jest.Mock).mockResolvedValueOnce({
         ...mockInvitation,
-        member: { id: 7, name: 'Acme e.V.', contact: 'Erika Musterfrau' },
+        member: {
+          id: 7,
+          name: 'Acme e.V.',
+          contact: 'Erika Musterfrau',
+          resourcesRequirements: [
+            {
+              id: 1,
+              memberId: 7,
+              category: 'premises',
+              resources: 'Seminarraum für 20 Personen',
+              requirements: null,
+            },
+          ],
+        },
       });
 
       const result = await controller.findByToken('valid-token');
 
       expect(result).toEqual({
         email: mockInvitation.email,
-        member: { name: 'Acme e.V.', contact: 'Erika Musterfrau' },
+        member: {
+          name: 'Acme e.V.',
+          contact: 'Erika Musterfrau',
+          resourcesRequirements: [
+            {
+              category: 'premises',
+              resources: 'Seminarraum für 20 Personen',
+              requirements: null,
+            },
+          ],
+        },
       });
     });
 

@@ -12,6 +12,7 @@ import { OrganizationsRenameMember1789313978460 } from './migrations/17893139784
 import { InvitationsCreate1790057195000 } from './migrations/1790057195000-invitations-create';
 import { MailConfigCreate1790200000000 } from './migrations/1790200000000-mail-config-create';
 import { MembersAddInvitation1790300000000 } from './migrations/1790300000000-members-add-invitation';
+import { MemberResourcesRequirementsCreate1790400000000 } from './migrations/1790400000000-member-resources-requirements-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -28,4 +29,5 @@ export const Migrations = [
   InvitationsCreate1790057195000,
   MailConfigCreate1790200000000,
   MembersAddInvitation1790300000000,
+  MemberResourcesRequirementsCreate1790400000000,
 ];
