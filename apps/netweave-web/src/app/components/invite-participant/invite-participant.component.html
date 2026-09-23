@@ -3,7 +3,9 @@
     Netzwerkteilnehmer einladen
   </h2>
 
-  <div class="invite-participant__form flex flex-col items-start gap-1">
+  <div
+    class="invite-participant__form min-h-32 flex flex-col items-start gap-1"
+  >
     @let errors = inviteForm.email().errors();
     @let hasError = inviteForm.email().touched() && errors.length > 0;
 
@@ -32,7 +34,7 @@
     @if (hasError) {
       @for (error of errors; track error) {
         <div
-          class="invite-participant__error text-error validator-hint visible"
+          class="invite-participant__error text-error validator-hint visible mt-0"
         >
           {{ error.message }}
         </div>
