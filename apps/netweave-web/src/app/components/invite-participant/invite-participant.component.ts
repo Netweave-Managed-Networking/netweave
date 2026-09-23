@@ -17,7 +17,6 @@ interface Feedback {
   selector: 'app-invite-participant',
   imports: [FormField, IconMail],
   templateUrl: './invite-participant.component.html',
-  styleUrls: ['./invite-participant.component.scss'],
 })
 export class InviteParticipantComponent {
   private http = inject(HttpClient);
