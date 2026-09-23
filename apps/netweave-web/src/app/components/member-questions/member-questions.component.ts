@@ -9,14 +9,62 @@ import {
 } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
-import { InvitationTokenDTO, MemberUpsertDTO } from '@netweave/api-types';
+import {
+  InvitationTokenDTO,
+  MemberUpsertDTO,
+  RESOURCE_REQUIREMENT_CATEGORIES,
+  ResourceRequirementCategory,
+} from '@netweave/api-types';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
+import { RESOURCE_REQUIREMENT_CATEGORY_TEXTS } from './resource-requirement-categories';
 
 interface MemberFormModel {
   name: string;
   contact: string;
+  resourcesRequirements: Record<
+    ResourceRequirementCategory,
+    { resources: string; requirements: string }
+  >;
 }
+
+// form fields need strings, while the API uses null for empty values
+
+const toMemberFormModel = (member: MemberUpsertDTO | null): MemberFormModel => {
+  const saved = new Map(
+    member?.resourcesRequirements.map((item) => [item.category, item]),
+  );
+
+  const resourcesRequirements = Object.fromEntries(
+    RESOURCE_REQUIREMENT_CATEGORIES.map((category) => [
+      category,
+      {
+        resources: saved.get(category)?.resources ?? '',
+        requirements: saved.get(category)?.requirements ?? '',
+      },
+    ]),
+  ) as MemberFormModel['resourcesRequirements']; // fromEntries loses the key type
+
+  return {
+    name: member?.name ?? '',
+    contact: member?.contact ?? '',
+    resourcesRequirements,
+  };
+};
+
+const toMemberUpsertDTO = ({
+  name,
+  contact,
+  resourcesRequirements,
+}: MemberFormModel): MemberUpsertDTO => ({
+  name,
+  contact: contact || null,
+  resourcesRequirements: RESOURCE_REQUIREMENT_CATEGORIES.map((category) => ({
+    category,
+    resources: resourcesRequirements[category].resources || null,
+    requirements: resourcesRequirements[category].requirements || null,
+  })),
+});
 
 @Component({
   selector: 'app-member-questions',
@@ -29,6 +77,9 @@ export class MemberQuestionsComponent {
 
   private token = this.route.snapshot.paramMap.get('token') ?? '';
 
+  protected readonly categories = RESOURCE_REQUIREMENT_CATEGORIES;
+  protected readonly categoryTexts = RESOURCE_REQUIREMENT_CATEGORY_TEXTS;
+
   protected saveState = signal<LoadingState>('initial');
 
   protected invitation = resource({
@@ -40,7 +91,7 @@ export class MemberQuestionsComponent {
       ),
   });
 
-  protected memberModel = signal<MemberFormModel>({ name: '', contact: '' });
+  protected memberModel = signal<MemberFormModel>(toMemberFormModel(null));
 
   protected memberForm = form(this.memberModel, (schemaPath) => {
     required(schemaPath.name, {
@@ -60,10 +111,7 @@ export class MemberQuestionsComponent {
       const member = this.invitation.value()?.member;
       if (!member) return;
 
-      this.memberModel.set({
-        name: member.name,
-        contact: member.contact ?? '',
-      });
+      this.memberModel.set(toMemberFormModel(member));
     });
   }
 
@@ -72,10 +120,7 @@ export class MemberQuestionsComponent {
 
     this.saveState.set('pending');
 
-    const memberUpsertDTO: MemberUpsertDTO = {
-      name: this.memberModel().name,
-      contact: this.memberModel().contact || null,
-    };
+    const memberUpsertDTO = toMemberUpsertDTO(this.memberModel());
 
     this.http
       .put<MemberUpsertDTO>(

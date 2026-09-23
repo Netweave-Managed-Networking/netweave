@@ -1,54 +1,141 @@
-<div class="member-questions w-full flex justify-center mt-4">
-  <div class="member-questions__container flex flex-col">
-    <h1 class="member-questions__title text-xl font-bold">Fragebogen</h1>
+<div class="member-questions min-h-screen flex flex-col bg-base-200">
+  <div
+    class="member-questions__container w-full max-w-3xl mx-auto flex-1 flex flex-col gap-6 px-4 py-8"
+  >
+    <header class="member-questions__header flex flex-col gap-1">
+      <h1 class="member-questions__title text-2xl font-bold">Fragebogen</h1>
+      <p class="text-base-content/60">
+        Erzähle uns von deiner Organisation, ihren Ressourcen und Bedarfen.
+      </p>
+    </header>
 
-    <fieldset
-      class="member-questions__general fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 mt-4"
+    <div
+      class="member-questions__card bg-base-100 border border-base-content/5 rounded-box p-6"
     >
-      <legend class="fieldset-legend">Allgemeine Daten</legend>
+      <fieldset
+        class="member-questions__general fieldset grid gap-x-4 gap-y-1 md:grid-cols-2 p-0"
+      >
+        <legend class="fieldset-legend text-lg pt-0">Allgemeine Daten</legend>
 
-      @let nameErrors = memberForm.name().errors();
-      @let hasNameError = memberForm.name().touched() && nameErrors.length > 0;
+        @let nameErrors = memberForm.name().errors();
+        @let hasNameError =
+          memberForm.name().touched() && nameErrors.length > 0;
 
-      <label class="label" for="name">Name der Organisation</label>
-      <input
-        class="input"
-        [class.border-error]="hasNameError"
-        id="name"
-        type="text"
-        autocomplete="organization"
-        [formField]="memberForm.name"
-      />
-      <div class="member-questions__error text-error text-xs min-h-4">
-        @if (hasNameError) {
-          @for (error of nameErrors; track error) {
-            {{ error.message }}
-          }
-        }
-      </div>
+        <div class="flex flex-col gap-1">
+          <label class="label" for="name">Name der Organisation</label>
+          <input
+            class="input w-full"
+            [class.border-error]="hasNameError"
+            id="name"
+            type="text"
+            autocomplete="organization"
+            [formField]="memberForm.name"
+          />
+          <div class="member-questions__error text-error text-xs min-h-4">
+            @if (hasNameError) {
+              @for (error of nameErrors; track error) {
+                {{ error.message }}
+              }
+            }
+          </div>
+        </div>
 
-      <label class="label" for="contact">Name des Ansprechpartners</label>
-      <input
-        class="input"
-        id="contact"
-        type="text"
-        autocomplete="name"
-        [formField]="memberForm.contact"
-      />
-    </fieldset>
+        <div class="flex flex-col gap-1">
+          <label class="label" for="contact">Name des Ansprechpartners</label>
+          <input
+            class="input w-full"
+            id="contact"
+            type="text"
+            autocomplete="name"
+            [formField]="memberForm.contact"
+          />
+        </div>
+      </fieldset>
 
-    <div class="member-questions__email flex flex-col gap-1 w-xs mt-4">
-      <label class="label" for="email">Email</label>
-      <input
-        class="input"
-        id="email"
-        type="email"
-        [value]="invitation.value()?.email ?? ''"
-        disabled
-      />
+      <fieldset
+        class="member-questions__email fieldset p-0 mt-3 md:mt-0 md:w-1/2 md:pr-2"
+      >
+        <label class="label" for="email">Email</label>
+        <input
+          class="input w-full"
+          id="email"
+          type="email"
+          [value]="invitation.value()?.email ?? ''"
+          disabled
+        />
+      </fieldset>
     </div>
 
-    <div class="member-questions__actions flex items-center gap-3 mt-4">
+    <section
+      class="member-questions__resources-requirements member-questions__card bg-base-100 border border-base-content/5 rounded-box p-6"
+    >
+      <h2 class="text-lg font-semibold">Ressourcen & Bedarfe</h2>
+      <p class="text-sm text-base-content/60 mt-1">
+        Beschreibe pro Kategorie, was deine Organisation einbringen kann und was
+        sie benötigt.
+      </p>
+
+      @for (category of categories; track category) {
+        @let fields = memberForm.resourcesRequirements[category];
+        @let text = categoryTexts[category];
+
+        <div class="divider my-4"></div>
+
+        <fieldset class="member-questions__category fieldset p-0">
+          <legend class="fieldset-legend text-base pb-0">
+            {{ text.label }}
+          </legend>
+          <p
+            class="member-questions__category-description text-sm text-base-content/60"
+          >
+            {{ text.description }}
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-2 mt-3">
+            <div class="flex flex-col gap-1">
+              <label class="label" [for]="category + '-resources'">
+                Ressourcen
+              </label>
+              <textarea
+                class="textarea w-full"
+                [id]="category + '-resources'"
+                rows="3"
+                placeholder="Beschreibe alle deine Ressourcen möglichst präzise"
+                [formField]="fields.resources"
+              ></textarea>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="label" [for]="category + '-requirements'">
+                Bedarfe
+              </label>
+              <textarea
+                class="textarea w-full"
+                [id]="category + '-requirements'"
+                rows="3"
+                placeholder="Beschreibe alle deine Bedarfe möglichst präzise"
+                [formField]="fields.requirements"
+              ></textarea>
+            </div>
+          </div>
+        </fieldset>
+      }
+    </section>
+  </div>
+
+  <div
+    class="member-questions__actions sticky bottom-0 bg-base-100 border-t border-base-content/10"
+  >
+    <div
+      class="w-full max-w-3xl mx-auto px-4 py-3 flex items-center justify-end gap-3"
+    >
+      @if (saveState() === 'success') {
+        <span class="text-success text-sm">Gespeichert.</span>
+      }
+      @if (saveState() === 'error') {
+        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
+      }
+
       <button
         class="member-questions__submit btn btn-neutral"
         [disabled]="!canSave()"
@@ -56,13 +143,6 @@
       >
         Speichern
       </button>
-
-      @if (saveState() === 'success') {
-        <span class="text-success text-sm">Gespeichert.</span>
-      }
-      @if (saveState() === 'error') {
-        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
-      }
     </div>
   </div>
 </div>

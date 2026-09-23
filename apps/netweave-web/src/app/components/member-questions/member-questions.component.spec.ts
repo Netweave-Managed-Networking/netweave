@@ -5,8 +5,15 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { InvitationTokenDTO } from '@netweave/api-types';
+import {
+  InvitationTokenDTO,
+  RESOURCE_REQUIREMENT_CATEGORIES,
+} from '@netweave/api-types';
 import { MemberQuestionsComponent } from './member-questions.component';
+
+const emptyResourcesRequirements = RESOURCE_REQUIREMENT_CATEGORIES.map(
+  (category) => ({ category, resources: null, requirements: null }),
+);
 
 describe('MemberQuestionsComponent', () => {
   let component: MemberQuestionsComponent;
@@ -128,7 +135,11 @@ describe('MemberQuestionsComponent', () => {
   it('prefills the fields with previously saved member data', async () => {
     await loadInvitation({
       email: 'nt@example.com',
-      member: { name: 'Acme e.V.', contact: 'Erika Musterfrau' },
+      member: {
+        name: 'Acme e.V.',
+        contact: 'Erika Musterfrau',
+        resourcesRequirements: [],
+      },
     });
 
     expect(query<HTMLInputElement>('input#name').value).toBe('Acme e.V.');
@@ -153,6 +164,7 @@ describe('MemberQuestionsComponent', () => {
     expect(req.request.body).toEqual({
       name: 'Acme e.V.',
       contact: 'Erika Musterfrau',
+      resourcesRequirements: emptyResourcesRequirements,
     });
     req.flush(req.request.body);
 
@@ -172,7 +184,11 @@ describe('MemberQuestionsComponent', () => {
     query<HTMLButtonElement>('button.member-questions__submit').click();
 
     const req = httpTesting.expectOne('/api/members/by-token/some-token');
-    expect(req.request.body).toEqual({ name: 'Acme e.V.', contact: null });
+    expect(req.request.body).toEqual({
+      name: 'Acme e.V.',
+      contact: null,
+      resourcesRequirements: emptyResourcesRequirements,
+    });
     req.flush(req.request.body);
   });
 
@@ -219,5 +235,92 @@ describe('MemberQuestionsComponent', () => {
     expect(
       query<HTMLButtonElement>('button.member-questions__submit').disabled,
     ).toBe(true);
+  });
+  it('shows a resources and a requirements textarea with description for each of the 7 categories', async () => {
+    await loadInvitation({ email: 'nt@example.com', member: null });
+
+    const categories = (fixture.nativeElement as HTMLElement).querySelectorAll(
+      'fieldset.member-questions__category',
+    );
+
+    expect(
+      Array.from(categories).map((c) =>
+        c.querySelector('legend')?.textContent?.trim(),
+      ),
+    ).toEqual([
+      'Kompetenzen',
+      'Finanzielle Mittel',
+      'Räumlichkeiten',
+      'Flächen',
+      'Geräte / physische Ausstattung',
+      'Netzwerke / Beziehungen',
+      'Helfende Hände',
+    ]);
+
+    for (const category of Array.from(categories)) {
+      expect(
+        category
+          .querySelector('.member-questions__category-description')
+          ?.textContent?.trim(),
+      ).toBeTruthy();
+      expect(category.querySelectorAll('textarea').length).toBe(2);
+    }
+
+    expect(
+      query<HTMLTextAreaElement>('textarea#competencies-resources').placeholder,
+    ).toBe('Beschreibe alle deine Ressourcen möglichst präzise');
+    expect(
+      query<HTMLTextAreaElement>('textarea#competencies-requirements')
+        .placeholder,
+    ).toBe('Beschreibe alle deine Bedarfe möglichst präzise');
+  });
+
+  it('prefills the textareas with previously saved resources and requirements', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      member: {
+        name: 'Acme e.V.',
+        contact: null,
+        resourcesRequirements: [
+          {
+            category: 'premises',
+            resources: 'Seminarraum für 20 Personen',
+            requirements: null,
+          },
+        ],
+      },
+    });
+
+    expect(
+      query<HTMLTextAreaElement>('textarea#premises-resources').value,
+    ).toBe('Seminarraum für 20 Personen');
+    expect(
+      query<HTMLTextAreaElement>('textarea#premises-requirements').value,
+    ).toBe('');
+  });
+
+  it('saves the resources and requirements of all categories', async () => {
+    await loadInvitation({ email: 'nt@example.com', member: null });
+
+    typeInto('input#name', 'Acme e.V.');
+    typeInto('textarea#competencies-resources', 'Moderation');
+    typeInto('textarea#land-requirements', 'Ackerfläche');
+    fixture.detectChanges();
+
+    query<HTMLButtonElement>('button.member-questions__submit').click();
+
+    const req = httpTesting.expectOne('/api/members/by-token/some-token');
+    expect(req.request.body.resourcesRequirements).toEqual(
+      emptyResourcesRequirements.map((item) => {
+        if (item.category === 'competencies') {
+          return { ...item, resources: 'Moderation' };
+        }
+        if (item.category === 'land') {
+          return { ...item, requirements: 'Ackerfläche' };
+        }
+        return item;
+      }),
+    );
+    req.flush(req.request.body);
   });
 });
