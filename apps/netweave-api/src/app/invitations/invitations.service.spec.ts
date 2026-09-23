@@ -1,5 +1,5 @@
 import { InvitationCreateDTO } from '@netweave/api-types';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { MailerService } from '../mailer/mailer.service';
 import { Invitation } from './invitation.entity';
 import { InvitationsService } from './invitations.service';
@@ -103,6 +103,28 @@ describe('InvitationsService', () => {
         'dispatched',
         'expired',
       ]);
+    });
+  });
+
+  describe('findValidByToken', () => {
+    it('queries for a non-expired invitation with the given token', async () => {
+      const invitation = { id: 1, email: 'nt@example.com', token: 'abc' };
+      repository.findOne?.mockResolvedValue(invitation);
+
+      const result = await service.findValidByToken('abc');
+
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { token: 'abc', expireDate: MoreThan(expect.any(Date)) },
+      });
+      expect(result).toEqual(invitation);
+    });
+
+    it('returns null when no matching, non-expired invitation exists', async () => {
+      repository.findOne?.mockResolvedValue(null);
+
+      const result = await service.findValidByToken('unknown');
+
+      expect(result).toBeNull();
     });
   });
 

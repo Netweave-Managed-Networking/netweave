@@ -6,43 +6,61 @@ import { unauthenticatedGuard } from './guards/unauthenticated/unauthenticated.g
 
 export const appRoutes: Routes = [
   {
-    path: 'login',
-    canActivate: [unauthenticatedGuard],
-    loadComponent: () =>
-      import('./components/login/login.component').then(
-        (m) => m.LoginComponent,
-      ),
-  },
-  {
-    path: 'register',
-    canActivate: [unauthenticatedGuard],
-    loadComponent: () =>
-      import('./components/register/register.component').then(
-        (m) => m.RegisterComponent,
-      ),
-  },
-  {
-    path: 'home',
-    canActivate: [authenticatedGuard],
-    loadComponent: () =>
-      import('./components/home/home.component').then((m) => m.HomeComponent),
-  },
-  {
-    path: 'invitation-dashboard',
-    canActivate: [authenticatedGuard],
+    path: 'member-questions/:token',
     loadComponent: () =>
       import(
-        './components/invitation-dashboard/invitation-dashboard.component'
-      ).then((m) => m.InvitationDashboardComponent),
+        './components/member-questions/member-questions.component'
+      ).then((m) => m.MemberQuestionsComponent),
   },
   {
-    path: 'settings',
-    canActivate: [adminGuard],
+    path: '',
     loadComponent: () =>
-      import('./components/settings/settings.component').then(
-        (m) => m.SettingsComponent,
+      import('./components/main-layout/main-layout.component').then(
+        (m) => m.MainLayoutComponent,
       ),
+    children: [
+      {
+        path: 'login',
+        canActivate: [unauthenticatedGuard],
+        loadComponent: () =>
+          import('./components/login/login.component').then(
+            (m) => m.LoginComponent,
+          ),
+      },
+      {
+        path: 'register',
+        canActivate: [unauthenticatedGuard],
+        loadComponent: () =>
+          import('./components/register/register.component').then(
+            (m) => m.RegisterComponent,
+          ),
+      },
+      {
+        path: 'home',
+        canActivate: [authenticatedGuard],
+        loadComponent: () =>
+          import('./components/home/home.component').then(
+            (m) => m.HomeComponent,
+          ),
+      },
+      {
+        path: 'invitation-dashboard',
+        canActivate: [authenticatedGuard],
+        loadComponent: () =>
+          import(
+            './components/invitation-dashboard/invitation-dashboard.component'
+          ).then((m) => m.InvitationDashboardComponent),
+      },
+      {
+        path: 'settings',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./components/settings/settings.component').then(
+            (m) => m.SettingsComponent,
+          ),
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+    ],
   },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -8,7 +8,7 @@ import {
   InvitationListItemDTO,
   InvitationStatus,
 } from '@netweave/api-types';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { MailerService } from '../mailer/mailer.service';
 import { Invitation } from './invitation.entity';
 
@@ -48,6 +48,13 @@ export class InvitationsService {
         (a, b) =>
           STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
       );
+  }
+
+  /** returns the invitation for a token, or null if the token is unknown or expired */
+  public async findValidByToken(token: string): Promise<Invitation | null> {
+    return this.repository.findOne({
+      where: { token, expireDate: MoreThan(new Date()) },
+    });
   }
 
   public async save(
