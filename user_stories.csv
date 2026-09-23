@@ -1,4 +1,4 @@
-"Vorgangstyp","Zusammenfassung","Übergeordnet","Epic-Name","Priorität","Stichwort","Beschreibung"
+"Issue Type","Summary","Parent","Epic Name","Priority","Labels","Description"
 "Development","LM1:NB können sich ins System einloggen","NETW-2","NETW-2","High","Frontend Backend","_Als Netzwerkberater NB möchte ich mich einloggen, damit ich Zugang zum System habe._
 
 h3. Akzeptanzkriterien
