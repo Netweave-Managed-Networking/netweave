@@ -1,0 +1,89 @@
+<div class="user-roles w-full max-w-6xl">
+  <div class="user-roles__title w-full flex flex-col items-center pb-4 gap-2">
+    <h2 class="text-lg font-bold">Netzwerkberater</h2>
+  </div>
+
+  <div
+    class="user-roles__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
+  >
+    @let userList = users();
+
+    @if (userList) {
+      <table class="user-roles__table table">
+        <thead>
+          <tr>
+            <th class="user-roles__email-th">Email</th>
+            <th class="user-roles__created-at-th">Registriert am</th>
+            <th class="user-roles__role-th">Rolle</th>
+            <th class="user-roles__save-th w-1"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of userList; track user.id) {
+            @let isMe = user.id === currentUserId();
+            @let isPending = pendingUserId() === user.id;
+            @let isLocked = isMe || isPending;
+
+            <tr class="user-roles__row">
+              <td class="user-roles__email-td">
+                {{ user.email }}
+                @if (isMe) {
+                  <span class="badge badge-ghost badge-sm ml-2">Du</span>
+                }
+              </td>
+              <td class="user-roles__created-at-td">
+                {{ user.createdAt | date: 'dd.MM.yyyy' }}
+              </td>
+              <td class="user-roles__role-td">
+                <select
+                  #roleSelect
+                  class="user-roles__select select select-sm"
+                  [attr.aria-label]="'Rolle von ' + user.email"
+                  [disabled]="isLocked"
+                  [title]="
+                    isMe ? 'Die eigene Rolle kann nicht geändert werden.' : ''
+                  "
+                  (change)="selectRole(user, roleSelect.value)"
+                >
+                  @for (role of roles; track role) {
+                    <option
+                      [value]="role"
+                      [selected]="role === selectedRole(user)"
+                    >
+                      {{ roleLabels[role] }}
+                    </option>
+                  }
+                </select>
+              </td>
+              <td class="user-roles__save-td w-1">
+                <button
+                  class="user-roles__save btn btn-sm btn-accent"
+                  [disabled]="isLocked || !isDirty(user)"
+                  (click)="save(user)"
+                >
+                  @if (isPending) {
+                    <span class="loading loading-spinner loading-xs"></span>
+                  }
+                  Speichern
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  @if (toast(); as t) {
+    <div class="user-roles__toast toast toast-end">
+      <div
+        role="alert"
+        class="alert"
+        [class.alert-success]="t.kind === 'success'"
+        [class.alert-error]="t.kind === 'error'"
+      >
+        <span>{{ t.message }}</span>
+      </div>
+    </div>
+  }
+</div>

@@ -28,7 +28,10 @@
 
   <div class="settings__panel py-2">
     @if (activeTab() === 'manager') {
-      <app-user-invitations />
+      <div class="flex flex-col gap-8">
+        <app-user-roles />
+        <app-user-invitations />
+      </div>
     } @else {
       <app-mail-settings />
     }
