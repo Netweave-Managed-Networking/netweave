@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { MailerService } from '../../mailer/mailer.service';
+import { MailService } from '../../mail/mail.service';
 import { MembersService } from '../../members/members.service';
 import { QuoteService } from '../quote.service/quote.service';
 
@@ -9,7 +9,7 @@ export class SequentialTestMailerService {
   private readonly logger = new Logger(SequentialTestMailerService.name);
 
   public constructor(
-    private readonly mailerService: MailerService,
+    private readonly mailService: MailService,
     private quoteService: QuoteService,
     private membersService: MembersService,
   ) {
@@ -50,7 +50,7 @@ export class SequentialTestMailerService {
     const orgCount = await this.membersService.getMemberCount();
     const latestOrg = await this.membersService.getLatestMember();
 
-    const sent = await this.mailerService.sendMail({
+    const sent = await this.mailService.sendMail({
       to: process.env.SEQUENTIAL_TEST_MAIL_RECEIVER as string,
       subject: `Netweave (${deployInfo}): message from ${quote?.author ?? '<em>nobody</em>'}`,
       html: `

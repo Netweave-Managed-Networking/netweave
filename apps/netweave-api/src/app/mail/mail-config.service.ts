@@ -4,7 +4,7 @@ import { MailConfigDTO, MailConfigUpdateDTO } from '@netweave/api-types';
 import { Repository } from 'typeorm';
 import { encryptSecret } from './crypto.util';
 import { MailConfig } from './mail-config.entity';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 @Injectable()
 export class MailConfigService {
@@ -13,7 +13,7 @@ export class MailConfigService {
   public constructor(
     @InjectRepository(MailConfig)
     private readonly repository: Repository<MailConfig>,
-    private readonly mailerService: MailerService,
+    private readonly mailService: MailService,
   ) {
     this.logger.log(`MailConfigService initialized`);
   }
@@ -48,7 +48,7 @@ export class MailConfigService {
       };
     }
 
-    const effective = await this.mailerService.getEffectiveConfig();
+    const effective = await this.mailService.getEffectiveConfig();
     return {
       host: effective.host,
       port: effective.port,
@@ -90,7 +90,7 @@ export class MailConfigService {
       updatedBy: { id: updatedById },
     });
 
-    this.mailerService.reload();
+    this.mailService.reload();
 
     return this.get();
   }

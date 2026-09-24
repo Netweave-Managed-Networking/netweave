@@ -2,7 +2,7 @@ import { createTransport } from 'nodemailer';
 import { Repository } from 'typeorm';
 import { encryptSecret } from './crypto.util';
 import { MailConfig } from './mail-config.entity';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn(),
@@ -17,17 +17,15 @@ const createMockRepository = (): MockRepo => ({
   findOne: jest.fn(),
 });
 
-describe('MailerService', () => {
-  let service: MailerService;
+describe('MailService', () => {
+  let service: MailService;
   let repository: MockRepo;
 
   const originalEnv = process.env;
 
   beforeEach(() => {
     repository = createMockRepository();
-    service = new MailerService(
-      repository as unknown as Repository<MailConfig>,
-    );
+    service = new MailService(repository as unknown as Repository<MailConfig>);
 
     process.env = {
       ...originalEnv,

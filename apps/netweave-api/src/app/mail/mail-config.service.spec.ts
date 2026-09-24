@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { decryptSecret } from './crypto.util';
 import { MailConfig } from './mail-config.entity';
 import { MailConfigService } from './mail-config.service';
-import { MailerService } from './mailer.service';
+import { MailService } from './mail.service';
 
 type MockRepo = Partial<Record<keyof Repository<MailConfig>, jest.Mock>>;
 
@@ -12,27 +12,27 @@ const createMockRepository = (): MockRepo => ({
   save: jest.fn(),
 });
 
-const createMockMailerService = () =>
+const createMockMailService = () =>
   ({
     getEffectiveConfig: jest.fn(),
     reload: jest.fn(),
   }) as unknown as jest.Mocked<
-    Pick<MailerService, 'getEffectiveConfig' | 'reload'>
+    Pick<MailService, 'getEffectiveConfig' | 'reload'>
   >;
 
 describe('MailConfigService', () => {
   let service: MailConfigService;
   let repository: MockRepo;
-  let mailerService: ReturnType<typeof createMockMailerService>;
+  let mailService: ReturnType<typeof createMockMailService>;
 
   const originalEnv = process.env;
 
   beforeEach(() => {
     repository = createMockRepository();
-    mailerService = createMockMailerService();
+    mailService = createMockMailService();
     service = new MailConfigService(
       repository as unknown as Repository<MailConfig>,
-      mailerService as unknown as MailerService,
+      mailService as unknown as MailService,
     );
 
     process.env = { ...originalEnv, JWT_SECRET: 'test_jwt_secret' };
@@ -74,7 +74,7 @@ describe('MailConfigService', () => {
 
     it('falls back to the effective (env-derived) config when there is no DB row', async () => {
       repository.findOne?.mockResolvedValue(null);
-      mailerService.getEffectiveConfig.mockResolvedValue({
+      mailService.getEffectiveConfig.mockResolvedValue({
         host: 'localhost',
         port: 1025,
         secure: false,
@@ -110,7 +110,7 @@ describe('MailConfigService', () => {
       fromAddress: 'info@netweave.de',
     };
 
-    it('creates the singleton row, encrypts the password, and reloads the mailer', async () => {
+    it('creates the singleton row, encrypts the password, and reloads the mailService', async () => {
       repository.findOne
         ?.mockResolvedValueOnce(undefined) // existing lookup
         .mockResolvedValueOnce({
@@ -133,7 +133,7 @@ describe('MailConfigService', () => {
       expect(decryptSecret(saved.authPassEncrypted)).toBe('new-secret');
       expect(saved.updatedBy).toEqual({ id: 7 });
 
-      expect(mailerService.reload).toHaveBeenCalledTimes(1);
+      expect(mailService.reload).toHaveBeenCalledTimes(1);
     });
 
     it('keeps the existing encrypted password when authPass is omitted', async () => {

@@ -9,7 +9,7 @@ import {
   InvitationStatus,
 } from '@netweave/api-types';
 import { MoreThan, Repository } from 'typeorm';
-import { MailerService } from '../mailer/mailer.service';
+import { MailService } from '../mail/mail.service';
 import { Invitation } from './invitation.entity';
 
 const STATUS_ORDER: InvitationDisplayStatus[] = [
@@ -27,7 +27,7 @@ export class InvitationsService {
   public constructor(
     @InjectRepository(Invitation)
     private repository: Repository<Invitation>,
-    private readonly mailerService: MailerService,
+    private readonly mailService: MailService,
   ) {
     this.logger.log(`InvitationsService initialized`);
   }
@@ -83,7 +83,7 @@ export class InvitationsService {
   ): Promise<InvitationStatus> {
     const link = `${process.env.WEB_APP_URL}/member-questions/${token}`;
 
-    const sent = await this.mailerService.sendMail({
+    const sent = await this.mailService.sendMail({
       to: email,
       subject: 'Einladung zu Netweave',
       html: `<p>Hallo,</p><p>du wurdest zu Netweave eingeladen. Über folgenden Link kannst du fortfahren:</p><p><a href="${link}">${link}</a></p>`,

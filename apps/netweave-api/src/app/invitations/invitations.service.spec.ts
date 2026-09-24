@@ -1,6 +1,6 @@
 import { InvitationCreateDTO } from '@netweave/api-types';
 import { MoreThan, Repository } from 'typeorm';
-import { MailerService } from '../mailer/mailer.service';
+import { MailService } from '../mail/mail.service';
 import { Invitation } from './invitation.entity';
 import { InvitationsService } from './invitations.service';
 
@@ -13,27 +13,27 @@ const createMockRepository = (): MockRepo => ({
   update: jest.fn(),
 });
 
-const createMockMailerService = () =>
+const createMockMailService = () =>
   ({
     sendMail: jest.fn(),
-  }) as unknown as jest.Mocked<Pick<MailerService, 'sendMail'>>;
+  }) as unknown as jest.Mocked<Pick<MailService, 'sendMail'>>;
 
 describe('InvitationsService', () => {
   let service: InvitationsService;
   let repository: MockRepo;
-  let mailerService: ReturnType<typeof createMockMailerService>;
+  let mailService: ReturnType<typeof createMockMailService>;
 
   const originalEnv = process.env;
 
   beforeEach(() => {
     repository = createMockRepository();
-    mailerService = createMockMailerService();
-    mailerService.sendMail.mockResolvedValue(true);
+    mailService = createMockMailService();
+    mailService.sendMail.mockResolvedValue(true);
     process.env = { ...originalEnv, WEB_APP_URL: 'https://dev.netweave.de' };
 
     service = new InvitationsService(
       repository as unknown as Repository<Invitation>,
-      mailerService as unknown as MailerService,
+      mailService as unknown as MailService,
     );
   });
 
@@ -151,7 +151,7 @@ describe('InvitationsService', () => {
 
       repository.save?.mockResolvedValue(savedEntity);
       repository.findOne?.mockResolvedValue(fullEntity);
-      mailerService.sendMail.mockResolvedValue(true);
+      mailService.sendMail.mockResolvedValue(true);
 
       const result = await service.save(dto, invitedById);
 
@@ -162,10 +162,10 @@ describe('InvitationsService', () => {
       expect(typeof saveArg.token).toBe('string');
       expect(saveArg.token.length).toBeGreaterThanOrEqual(32);
 
-      expect(mailerService.sendMail).toHaveBeenCalledWith(
+      expect(mailService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({ to: dto.email }),
       );
-      const mailArg = mailerService.sendMail.mock.calls[0][0];
+      const mailArg = mailService.sendMail.mock.calls[0][0];
       expect(mailArg.html).toContain(saveArg.token);
       expect(mailArg.html).toContain('Hallo');
 
@@ -187,7 +187,7 @@ describe('InvitationsService', () => {
 
       repository.save?.mockResolvedValue({ id: 10, email: dto.email });
       repository.findOne?.mockResolvedValue({ id: 10, status: 'failed' });
-      mailerService.sendMail.mockResolvedValue(false);
+      mailService.sendMail.mockResolvedValue(false);
 
       await service.save(dto, invitedById);
 
