@@ -107,7 +107,7 @@ describe('InvitationsService', () => {
   });
 
   describe('findValidByToken', () => {
-    it('queries for a non-expired invitation with the given token, including its member', async () => {
+    it('queries for a non-expired invitation with the given token, including its member and their resources and requirements', async () => {
       const invitation = { id: 1, email: 'nt@example.com', token: 'abc' };
       repository.findOne?.mockResolvedValue(invitation);
 
@@ -115,7 +115,7 @@ describe('InvitationsService', () => {
 
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { token: 'abc', expireDate: MoreThan(expect.any(Date)) },
-        relations: { member: true },
+        relations: { member: { resourcesRequirements: true } },
       });
       expect(result).toEqual(invitation);
     });

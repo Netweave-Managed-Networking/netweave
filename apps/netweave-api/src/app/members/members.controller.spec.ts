@@ -8,6 +8,9 @@ import { MembersService } from './members.service';
 const dto: MemberUpsertDTO = {
   name: 'Acme e.V.',
   contact: 'Erika Musterfrau',
+  resourcesRequirements: [
+    { category: 'competencies', resources: 'Moderation', requirements: null },
+  ],
 };
 
 describe('MemberController', () => {
@@ -21,7 +24,15 @@ describe('MemberController', () => {
   beforeEach(async () => {
     membersService = {
       getLatestMember: jest.fn().mockResolvedValue(null),
-      saveForInvitation: jest.fn().mockResolvedValue({ id: 7, ...dto }),
+      saveForInvitation: jest.fn().mockResolvedValue({
+        id: 7,
+        ...dto,
+        resourcesRequirements: dto.resourcesRequirements.map((item) => ({
+          id: 1,
+          memberId: 7,
+          ...item,
+        })),
+      }),
     };
     invitationsService = {
       findValidByToken: jest.fn().mockResolvedValue({ id: 123 }),

@@ -1,7 +1,8 @@
 import { MemberDTO } from '@netweave/api-types';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 import { Invitation } from '../invitations/invitation.entity';
+import { MemberResourceRequirement } from './member-resource-requirement.entity';
 
 @Entity({ name: 'members' })
 export class Member extends BaseEntity implements MemberDTO {
@@ -18,4 +19,10 @@ export class Member extends BaseEntity implements MemberDTO {
   })
   @JoinColumn({ name: 'invitation_id' })
   declare public invitation: Invitation | null;
+
+  @OneToMany(
+    () => MemberResourceRequirement,
+    (resourceRequirement) => resourceRequirement.member,
+  )
+  declare public resourcesRequirements?: MemberResourceRequirement[]; // only set when loaded as relation
 }
