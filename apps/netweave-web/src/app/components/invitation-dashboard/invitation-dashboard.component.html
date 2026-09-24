@@ -26,14 +26,31 @@
   <div
     class="invitation-dashboard__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
   >
-    @let items = invitations();
+    @let items = sortedInvitations();
 
     @if (items) {
       <table class="invitation-dashboard__table table table-zebra">
         <thead>
           <tr>
-            <th class="invitation-dashboard__email-th">Email</th>
-            <th class="invitation-dashboard__status-th">Status</th>
+            @for (column of columns; track column.key) {
+              <th
+                [class]="column.thClass"
+                [attr.aria-sort]="ariaSort(column.key)"
+              >
+                <button
+                  type="button"
+                  class="invitation-dashboard__sort-button flex items-center gap-1 cursor-pointer"
+                  (click)="toggleSort(column.key)"
+                >
+                  {{ column.label }}
+                  @if (sort().column === column.key) {
+                    <span aria-hidden="true">{{
+                      sort().direction === 'asc' ? '▲' : '▼'
+                    }}</span>
+                  }
+                </button>
+              </th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -46,28 +63,23 @@
               </td>
               <td class="invitation-dashboard__status-td">
                 <div
-                  class="invitation-dashboard__status-tooltip tooltip tooltip-right"
-                  [attr.data-tip]="
-                    'Erstellt am ' +
-                    (invitation.createdAt | date: 'dd.MM.yyyy HH:mm')
-                  "
+                  class="invitation-dashboard__status-badge flex items-center gap-2"
                 >
-                  <div
-                    class="invitation-dashboard__status-badge flex items-center gap-2"
-                  >
-                    <div class="inline-grid *:[grid-area:1/1]">
-                      @if (config.ping) {
-                        <div
-                          [class]="
-                            'status ' + config.colorClass + ' animate-ping'
-                          "
-                        ></div>
-                      }
-                      <div [class]="'status ' + config.colorClass"></div>
-                    </div>
-                    <span>{{ config.label }}</span>
+                  <div class="inline-grid *:[grid-area:1/1]">
+                    @if (config.ping) {
+                      <div
+                        [class]="
+                          'status ' + config.colorClass + ' animate-ping'
+                        "
+                      ></div>
+                    }
+                    <div [class]="'status ' + config.colorClass"></div>
                   </div>
+                  <span>{{ config.label }}</span>
                 </div>
+              </td>
+              <td class="invitation-dashboard__created-at-td">
+                {{ invitation.createdAt | date: 'dd.MM.yyyy HH:mm' }}
               </td>
             </tr>
           }
