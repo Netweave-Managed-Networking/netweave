@@ -3,6 +3,8 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
 import { MailConfig } from '../mail/mail-config.entity';
+import { MatchingRun } from '../matchings/matching-run.entity';
+import { Matching } from '../matchings/matching.entity';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
@@ -24,6 +26,8 @@ export default new DataSource({
   entities: [
     Invitation,
     MailConfig,
+    Matching,
+    MatchingRun,
     Member,
     MemberResourceRequirement,
     User,

@@ -34,6 +34,12 @@ export class MembersService {
     }
   }
 
+  public async getAllWithResourcesRequirements(): Promise<Member[]> {
+    return this.membersRepository.find({
+      relations: { resourcesRequirements: true },
+    });
+  }
+
   /** creates or updates the member of an invitation, including its resources and requirements, and marks the invitation as answered */
   public async saveForInvitation(
     invitationId: number,
