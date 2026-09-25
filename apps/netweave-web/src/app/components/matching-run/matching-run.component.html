@@ -1,0 +1,39 @@
+<fieldset
+  class="matching-run fieldset bg-base-100 border border-base-content/5 rounded-box p-4 flex flex-col gap-3"
+>
+  <legend class="fieldset-legend">Matching</legend>
+
+  <p class="text-sm">
+    Berechnet die Matching-Scores aller Netzwerkteilnehmer sofort, unabhängig
+    vom automatischen Zeitplan.
+  </p>
+
+  <div class="flex items-center gap-2">
+    <button
+      class="matching-run__button btn btn-accent"
+      [disabled]="runState() === 'pending'"
+      (click)="run()"
+    >
+      @if (runState() === 'pending') {
+        <span class="loading loading-spinner loading-sm"></span>
+      }
+      Matching jetzt berechnen
+    </button>
+
+    @if (runState() === 'success' && lastRun(); as lastRun) {
+      <span class="matching-run__result text-success text-sm"
+        >Durchlauf #{{ lastRun.id }}: {{ lastRun.matchingCount }} Matchings
+        berechnet.</span
+      >
+    }
+    @if (runState() === 'error') {
+      <span class="matching-run__result text-error text-sm">
+        @if (alreadyRunning()) {
+          Es läuft bereits eine Berechnung.
+        } @else {
+          Berechnung fehlgeschlagen.
+        }
+      </span>
+    }
+  </div>
+</fieldset>
