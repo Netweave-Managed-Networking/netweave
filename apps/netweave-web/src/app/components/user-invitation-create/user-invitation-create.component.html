@@ -69,6 +69,25 @@
             }
           </div>
         </div>
+
+        <div class="w-full pt-4 pb-4 flex justify-between gap-2">
+          <label class="label" for="user-invitation-create-role">Rolle</label>
+          <select
+            id="user-invitation-create-role"
+            class="user-invitation-create__role select"
+            [formField]="emailToAddForm.role"
+          >
+            @for (role of roles; track role) {
+              <!-- [selected] needed: options render after the select's value is set -->
+              <option
+                [value]="role"
+                [selected]="role === emailToAddForm.role().value()"
+              >
+                {{ roleLabels[role] }}
+              </option>
+            }
+          </select>
+        </div>
       </fieldset>
 
       <div class="flex items-center gap-2 w-full">
@@ -83,7 +102,8 @@
           <span [class]="!isMail ? highlight : 'px-1'"
             >alle Emails einer Domäne (<code>&#64;domain.com</code>)</span
           >
-          zugelassen werden.
+          zugelassen werden. Neu registrierte Netzwerkberater erhalten die
+          gewählte Rolle.
         </p>
       </div>
 

@@ -1,17 +1,50 @@
 <div class="register">
-  <app-auth-form
-    class="register__auth-form"
-    [errorMessage]="error()"
-    [loading]="loading() === 'pending'"
-    (submitted)="onSubmit($event)"
-  >
-    <p ngProjectAs="top-label">Account anlegen</p>
-    <p ngProjectAs="bottom-text">
-      Du hast schon einen Account?
-      <a routerLink="/login" class="link">Jetzt anmelden</a>
-    </p>
-    <p ngProjectAs="button-text">
-      {{ loading() === 'pending' ? 'Bitte warten…' : 'Account anlegen' }}
-    </p>
-  </app-auth-form>
+  <form class="register__form" novalidate (submit)="onSubmit($event)">
+    <fieldset
+      class="register__fieldset fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+      [disabled]="registerForm().submitting()"
+    >
+      <legend class="fieldset-legend">Registrieren</legend>
+
+      @for (field of fields; track field.id) {
+        @let state = field.tree();
+        @let hasError = state.touched() && state.errors().length > 0;
+
+        <label class="label" [for]="field.id">{{ field.label }}</label>
+        <input
+          class="input"
+          [class.input-error]="hasError"
+          [id]="field.id"
+          [type]="field.type"
+          [autocomplete]="field.autocomplete"
+          [placeholder]="field.placeholder"
+          [attr.aria-invalid]="hasError"
+          [formField]="field.tree"
+        />
+        @if (hasError) {
+          @for (error of state.errors(); track error.kind) {
+            <p class="register__error text-error">{{ error.message }}</p>
+          }
+        }
+      }
+
+      @for (error of registerForm().errors(); track error.kind) {
+        <div role="alert" class="register__form-error alert alert-error mt-2">
+          <span>{{ error.message }}</span>
+        </div>
+      }
+
+      <button class="register__submit btn btn-neutral mt-4" type="submit">
+        @if (registerForm().submitting()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        }
+        Registrieren
+      </button>
+
+      <p class="mt-2">
+        Du hast schon einen Account?
+        <a routerLink="/login" class="link">Jetzt anmelden</a>
+      </p>
+    </fieldset>
+  </form>
 </div>

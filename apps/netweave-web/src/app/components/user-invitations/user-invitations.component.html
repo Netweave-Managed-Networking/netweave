@@ -17,6 +17,7 @@
           <tr>
             <th class="user-invitations__type-th w-1"></th>
             <th class="user-invitations__email-or-domain-th"></th>
+            <th class="user-invitations__role-th">Rolle</th>
             <th class="user-invitations__created-by-th">Erstellt von</th>
             <th class="user-invitations__create-button-th w-1">
               <app-user-invitation-create
@@ -65,6 +66,10 @@
               </td>
               <td class="user-invitations__email-or-domain-td">
                 <span>{{ invitation.emailOrDomain }}</span>
+              </td>
+
+              <td class="user-invitations__role-td">
+                {{ roleLabels[invitation.role] }}
               </td>
 
               <td class="user-invitations__created-by-td">

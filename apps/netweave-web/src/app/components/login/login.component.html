@@ -1,17 +1,49 @@
 <div class="login">
-  <app-auth-form
-    class="login__auth-form"
-    [errorMessage]="error()"
-    [loading]="loading() === 'pending'"
-    (submitted)="onSubmit($event)"
-  >
-    <p ngProjectAs="top-label">Anmelden</p>
-    <p ngProjectAs="bottom-text">
-      Noch keinen Account angelegt?
-      <a routerLink="/register" class="link">Account anlegen</a>
-    </p>
-    <p ngProjectAs="button-text">
-      {{ loading() === 'pending' ? 'Bitte warten…' : 'Anmelden' }}
-    </p>
-  </app-auth-form>
+  <form class="login__form" novalidate (submit)="onSubmit($event)">
+    <fieldset
+      class="login__fieldset fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+      [disabled]="loginForm().submitting()"
+    >
+      <legend class="fieldset-legend">Anmelden</legend>
+
+      @for (field of fields; track field.id) {
+        @let state = field.tree();
+        @let hasError = state.touched() && state.errors().length > 0;
+
+        <label class="label" [for]="field.id">{{ field.label }}</label>
+        <input
+          class="input"
+          [class.input-error]="hasError"
+          [id]="field.id"
+          [type]="field.type"
+          [autocomplete]="field.autocomplete"
+          [attr.aria-invalid]="hasError"
+          [formField]="field.tree"
+        />
+        @if (hasError) {
+          @for (error of state.errors(); track error.kind) {
+            <p class="login__error text-error">{{ error.message }}</p>
+          }
+        }
+      }
+
+      @for (error of loginForm().errors(); track error.kind) {
+        <div role="alert" class="login__form-error alert alert-error mt-2">
+          <span>{{ error.message }}</span>
+        </div>
+      }
+
+      <button class="login__submit btn btn-neutral mt-4" type="submit">
+        @if (loginForm().submitting()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        }
+        Anmelden
+      </button>
+
+      <p class="mt-2">
+        Noch keinen Account angelegt?
+        <a routerLink="/register" class="link">Jetzt registrieren</a>
+      </p>
+    </fieldset>
+  </form>
 </div>

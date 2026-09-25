@@ -11,6 +11,7 @@ import { UserEmailWhitelistDTO } from '@netweave/api-types';
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { UserInvitationCreateComponent } from '../user-invitation-create/user-invitation-create.component';
 import { UserInvitationDeleteComponent } from '../user-invitation-delete/user-invitation-delete.component';
+import { USER_ROLE_LABELS } from '../../types/user-role-labels';
 
 @Component({
   selector: 'app-user-invitations',
@@ -20,6 +21,8 @@ import { UserInvitationDeleteComponent } from '../user-invitation-delete/user-in
 })
 export class UserInvitationsComponent {
   private http = inject(HttpClient);
+
+  protected readonly roleLabels = USER_ROLE_LABELS;
 
   protected userEmailWhitelists = computed(() =>
     this.userEmailWhitelistsResponse.value(),
