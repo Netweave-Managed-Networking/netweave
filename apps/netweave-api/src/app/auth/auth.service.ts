@@ -1,14 +1,16 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserAuthDTO } from '@netweave/api-types';
+import { DEFAULT_USER_ROLE, UserAuthDTO } from '@netweave/api-types';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
+import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 export type AccessToken = string;
 
@@ -32,6 +34,7 @@ export class AuthService {
   public constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private jwtService: JwtService,
+    private registrationWhitelist: RegistrationWhitelistService,
   ) {}
 
   public static readonly COOKIE_CONSTS: CookieConsts = {
@@ -49,11 +52,17 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<AccessToken> {
+    // checked before the existence check so non-whitelisted emails can't probe for accounts
+    const whitelistedRole = await this.registrationWhitelist.findRoleFor(email);
+    if (whitelistedRole === null)
+      throw new ForbiddenException('Email or domain is not whitelisted');
+
     const existing = await this.userRepo.findOneBy({ email });
     if (existing) throw new ConflictException('Email already in use');
 
+    const role = whitelistedRole ?? DEFAULT_USER_ROLE;
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = this.userRepo.create({ email, passwordHash, role: 'editor' });
+    const user = this.userRepo.create({ email, passwordHash, role });
     await this.userRepo.save({ ...user, passwordHash });
     return this.sign(user);
   }
@@ -62,8 +71,8 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<AccessToken> {
-    const user: Pick<User, 'id' | 'email' | 'passwordHash'> =
-      await this.userRepo.findOneOrFail({
+    const user: Pick<User, 'id' | 'email' | 'passwordHash'> | null =
+      await this.userRepo.findOne({
         where: { email },
         select: ['id', 'email', 'passwordHash'],
       });
