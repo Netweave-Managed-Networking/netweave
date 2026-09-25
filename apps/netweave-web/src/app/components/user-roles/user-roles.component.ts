@@ -17,14 +17,9 @@ import {
 
 import { catchError, finalize, firstValueFrom, of, take, tap } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
+import { USER_ROLE_LABELS } from '../../types/user-role-labels';
 
 type Toast = { kind: 'success' | 'error'; message: string };
-
-const ROLE_LABELS: Record<UserRole, string> = {
-  admin: 'Admin',
-  editor: 'Editor',
-  viewer: 'Viewer',
-};
 
 const TOAST_DURATION_MS = 3000;
 
@@ -38,7 +33,7 @@ export class UserRolesComponent {
   private authService = inject(AuthService);
 
   protected readonly roles = USER_ROLES;
-  protected readonly roleLabels = ROLE_LABELS;
+  protected readonly roleLabels = USER_ROLE_LABELS;
 
   protected users = computed(() => this.usersResponse.value());
 
@@ -91,7 +86,7 @@ export class UserRolesComponent {
           this.discardUnsavedRole(user.id);
           this.showToast({
             kind: 'success',
-            message: `Rolle von ${updated.email} auf ${ROLE_LABELS[updated.role]} geändert.`,
+            message: `Rolle von ${updated.email} auf ${USER_ROLE_LABELS[updated.role]} geändert.`,
           });
         }),
         catchError(() => {

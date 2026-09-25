@@ -32,6 +32,12 @@ reload. Use Docker Compose when you want to run the deployment-like stack.
    to `false` when you do not want the application to send mail during local
    development.
 
+4. Only whitelisted emails can register. On a fresh instance, set
+   `REGISTRATION_WHITELIST` (e.g. `you@example.com:admin`) so the first admin
+   can register. More emails and domains, each with an optional role, can then
+   be allowed from the settings page. New users get the role `viewer` unless
+   their whitelist entry says otherwise.
+
 ### 2A. Recommended: run from source
 
 This workflow requires a PostgreSQL server running on the local machine. The

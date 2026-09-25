@@ -1,10 +1,15 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
+import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 const mockJwtService = {
   sign: jest.fn().mockReturnValue('signed-token'),
@@ -12,10 +17,14 @@ const mockJwtService = {
 };
 
 const mockUserRepository = {
-  findOneOrFail: jest.fn(),
+  findOne: jest.fn(),
   findOneBy: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
+};
+
+const mockRegistrationWhitelist = {
+  findRoleFor: jest.fn(),
 };
 
 describe('AuthService', () => {
@@ -24,7 +33,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     userRepo = {
-      findOneOrFail: mockUserRepository.findOneOrFail,
+      findOne: mockUserRepository.findOne,
       findOneBy: mockUserRepository.findOneBy,
       create: mockUserRepository.create,
       save: mockUserRepository.save,
@@ -35,6 +44,10 @@ describe('AuthService', () => {
         AuthService,
         { provide: getRepositoryToken(User), useValue: userRepo },
         { provide: JwtService, useValue: mockJwtService },
+        {
+          provide: RegistrationWhitelistService,
+          useValue: mockRegistrationWhitelist,
+        },
       ],
     }).compile();
 
@@ -51,7 +64,8 @@ describe('AuthService', () => {
   });
 
   describe('registerOrFail', () => {
-    it('creates a new user as editor and returns an access token', async () => {
+    it('creates a new user as viewer by default and returns an access token', async () => {
+      mockRegistrationWhitelist.findRoleFor.mockResolvedValue(undefined);
       userRepo.findOneBy.mockResolvedValue(undefined);
       const savedUser = {
         id: 1,
@@ -72,7 +86,7 @@ describe('AuthService', () => {
       expect(userRepo.create).toHaveBeenCalledWith({
         email: 'test@example.com',
         passwordHash: expect.any(String),
-        role: 'editor',
+        role: 'viewer',
       });
       expect(userRepo.save).toHaveBeenCalledWith({
         ...savedUser,
@@ -85,7 +99,35 @@ describe('AuthService', () => {
       expect(result).toEqual('signed-token');
     });
 
+    it('creates the user with the role of the matching whitelist entry', async () => {
+      mockRegistrationWhitelist.findRoleFor.mockResolvedValue('admin');
+      userRepo.findOneBy.mockResolvedValue(undefined);
+      const savedUser = { id: 1, email: 'boss@example.com' } as User;
+      userRepo.create.mockReturnValue(savedUser);
+      userRepo.save.mockResolvedValue(savedUser);
+
+      await service.registerOrFail('boss@example.com', 'password');
+
+      expect(mockRegistrationWhitelist.findRoleFor).toHaveBeenCalledWith(
+        'boss@example.com',
+      );
+      expect(userRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ role: 'admin' }),
+      );
+    });
+
+    it('throws ForbiddenException when email is not whitelisted', async () => {
+      mockRegistrationWhitelist.findRoleFor.mockResolvedValue(null);
+
+      await expect(
+        service.registerOrFail('test@example.com', 'password'),
+      ).rejects.toBeInstanceOf(ForbiddenException);
+      expect(userRepo.findOneBy).not.toHaveBeenCalled();
+      expect(userRepo.create).not.toHaveBeenCalled();
+    });
+
     it('throws ConflictException when email already exists', async () => {
+      mockRegistrationWhitelist.findRoleFor.mockResolvedValue(undefined);
       userRepo.findOneBy.mockResolvedValue({
         id: 1,
         email: 'test@example.com',
@@ -108,11 +150,11 @@ describe('AuthService', () => {
         email: 'test@example.com',
         passwordHash: await bcrypt.hash('password', 10),
       } as User;
-      userRepo.findOneOrFail.mockResolvedValue(existingUser);
+      userRepo.findOne.mockResolvedValue(existingUser);
 
       const result = await service.loginOrFail('test@example.com', 'password');
 
-      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+      expect(userRepo.findOne).toHaveBeenCalledWith({
         where: { email: 'test@example.com' },
         select: expect.any(Array),
       });
@@ -124,12 +166,12 @@ describe('AuthService', () => {
     });
 
     it('throws UnauthorizedException when user is not found', async () => {
-      userRepo.findOneOrFail.mockResolvedValue(undefined);
+      userRepo.findOne.mockResolvedValue(null);
 
       await expect(
         service.loginOrFail('test@example.com', 'password'),
       ).rejects.toBeInstanceOf(UnauthorizedException);
-      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+      expect(userRepo.findOne).toHaveBeenCalledWith({
         where: { email: 'test@example.com' },
         select: expect.any(Array),
       });
@@ -142,12 +184,12 @@ describe('AuthService', () => {
         email: 'test@example.com',
         passwordHash,
       } as User;
-      userRepo.findOneOrFail.mockResolvedValue(existingUser);
+      userRepo.findOne.mockResolvedValue(existingUser);
 
       await expect(
         service.loginOrFail('test@example.com', 'wrong-password'),
       ).rejects.toBeInstanceOf(UnauthorizedException);
-      expect(userRepo.findOneOrFail).toHaveBeenCalledWith({
+      expect(userRepo.findOne).toHaveBeenCalledWith({
         where: { email: 'test@example.com' },
         select: expect.any(Array),
       });

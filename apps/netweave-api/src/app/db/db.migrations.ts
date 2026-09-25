@@ -13,6 +13,7 @@ import { InvitationsCreate1790057195000 } from './migrations/1790057195000-invit
 import { MailConfigCreate1790200000000 } from './migrations/1790200000000-mail-config-create';
 import { MembersAddInvitation1790300000000 } from './migrations/1790300000000-members-add-invitation';
 import { MemberResourcesRequirementsCreate1790400000000 } from './migrations/1790400000000-member-resources-requirements-create';
+import { UserEmailWhitelistsAddRole1790500000000 } from './migrations/1790500000000-user-email-whitelists-add-role';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -30,4 +31,5 @@ export const Migrations = [
   MailConfigCreate1790200000000,
   MembersAddInvitation1790300000000,
   MemberResourcesRequirementsCreate1790400000000,
+  UserEmailWhitelistsAddRole1790500000000,
 ];

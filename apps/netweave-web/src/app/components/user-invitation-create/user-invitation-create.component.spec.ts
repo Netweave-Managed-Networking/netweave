@@ -143,6 +143,35 @@ describe('UserInvitationCreateComponent', () => {
     expect(input.nativeElement.value).toEqual('');
   });
 
+  it('sends the selected role, defaulting to viewer', () => {
+    const fixture = create();
+
+    const httpSpy = vi
+      .spyOn(http, 'post')
+      .mockReturnValue(of({ id: 1, emailOrDomain: 'boss@example.com' }));
+
+    const select = fixture.nativeElement.querySelector(
+      '.user-invitation-create__role',
+    ) as HTMLSelectElement;
+    expect(select.value).toBe('viewer');
+
+    const input = fixture.debugElement.query(By.css('input'));
+    input.nativeElement.value = 'boss@example.com';
+    input.nativeElement.dispatchEvent(new Event('input'));
+    select.value = 'admin';
+    select.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    fixture.nativeElement
+      .querySelector('.user-invitation-create__confirm')
+      .click();
+
+    expect(httpSpy).toHaveBeenCalledWith('/api/user-email-whitelists', {
+      emailOrDomain: 'boss@example.com',
+      role: 'admin',
+    });
+  });
+
   it('cancel resets form state (verified via UI reset, not input.value)', () => {
     const fixture = create();
 
