@@ -6,9 +6,9 @@ export interface MatchingResult {
   details: MatchingDetailsDTO | null;
 }
 
-/** calculates how well the target matches the source; must not assume symmetry */
+/** calculates how well the potential match fits the seeker; must not assume symmetry */
 export interface MatchingStrategy {
-  score(source: Member, target: Member): Promise<MatchingResult>;
+  score(seeker: Member, potentialMatch: Member): Promise<MatchingResult>;
 }
 
 export const MATCHING_STRATEGY = Symbol('MATCHING_STRATEGY');

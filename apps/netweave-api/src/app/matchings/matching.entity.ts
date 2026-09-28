@@ -12,12 +12,12 @@ import { BaseEntity } from '../db/entity/base/base.entity';
 import { Member } from '../members/member.entity';
 import { MatchingRun } from './matching-run.entity';
 
-/** unidirectional: how well the target member matches the source member (0-100) */
+/** unidirectional: how well the potential match fits the seeker (0-100) */
 @Entity({ name: 'matchings' })
-@Unique('UQ_matchings_run_source_target', [
+@Unique('UQ_matchings_run_seeker_potential_match', [
   'matchingRunId',
-  'sourceMemberId',
-  'targetMemberId',
+  'memberSeekerId',
+  'memberPotentialMatchId',
 ])
 @Check('CHK_matchings_score', '"score" BETWEEN 0 AND 100')
 export class Matching extends BaseEntity implements MatchingDTO {
@@ -32,29 +32,29 @@ export class Matching extends BaseEntity implements MatchingDTO {
   @JoinColumn({ name: 'matching_run_id' })
   declare public matchingRun?: MatchingRun;
 
-  @Index('IDX_matchings_source_member_id')
-  @Column({ name: 'source_member_id' })
-  declare public sourceMemberId: number;
+  @Index('IDX_matchings_member_seeker_id')
+  @Column({ name: 'member_seeker_id' })
+  declare public memberSeekerId: number;
 
   @ManyToOne(() => Member, {
     nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'source_member_id' })
-  declare public sourceMember?: Member;
+  @JoinColumn({ name: 'member_seeker_id' })
+  declare public memberSeeker?: Member;
 
-  @Index('IDX_matchings_target_member_id')
-  @Column({ name: 'target_member_id' })
-  declare public targetMemberId: number;
+  @Index('IDX_matchings_member_potential_match_id')
+  @Column({ name: 'member_potential_match_id' })
+  declare public memberPotentialMatchId: number;
 
   @ManyToOne(() => Member, {
     nullable: false,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'target_member_id' })
-  declare public targetMember?: Member;
+  @JoinColumn({ name: 'member_potential_match_id' })
+  declare public memberPotentialMatch?: Member;
 
   @Column({ type: 'smallint' })
   declare public score: number;

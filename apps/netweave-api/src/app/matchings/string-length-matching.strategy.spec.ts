@@ -69,7 +69,7 @@ describe('StringLengthMatchingStrategy', () => {
     });
   });
 
-  it('averages over the categories the source has requirements in', async () => {
+  it('averages over the categories the seeker has requirements in', async () => {
     const a = member(1, [
       { category: 'premises', requirements: chars(20) },
       { category: 'land', requirements: chars(10) },

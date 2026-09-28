@@ -6,11 +6,11 @@ export interface MatchingDetailsDTO {
   categories: { category: ResourceRequirementCategory; score: number }[];
 }
 
-/** unidirectional: how well the target member matches the source member (0-100) */
+/** unidirectional: how well the potential match fits the seeker (0-100) */
 export interface MatchingDTO extends EntityDTO {
   matchingRunId: number;
-  sourceMemberId: number;
-  targetMemberId: number;
+  memberSeekerId: number;
+  memberPotentialMatchId: number;
   score: number;
   details: MatchingDetailsDTO | null;
 }

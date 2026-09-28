@@ -51,8 +51,11 @@ describe('MatchingsService', () => {
     };
     strategy = {
       // encodes the direction, so wrong pairings would show up in the rows
-      score: jest.fn((source: Member, target: Member) =>
-        Promise.resolve({ score: source.id * 10 + target.id, details: null }),
+      score: jest.fn((seeker: Member, potentialMatch: Member) =>
+        Promise.resolve({
+          score: seeker.id * 10 + potentialMatch.id,
+          details: null,
+        }),
       ),
     };
 
@@ -71,7 +74,9 @@ describe('MatchingsService', () => {
     (manager.insert?.mock.calls ?? []).flatMap(([, rows]) => rows);
 
   const pairs = () =>
-    insertedRows().map((r) => `${r.sourceMemberId}->${r.targetMemberId}`);
+    insertedRows().map(
+      (r) => `${r.memberSeekerId}->${r.memberPotentialMatchId}`,
+    );
 
   describe('calculateAll', () => {
     it('stores a score from every member to every other member, but not to itself', async () => {
@@ -86,10 +91,10 @@ describe('MatchingsService', () => {
           [2, 3, 23],
           [3, 1, 31],
           [3, 2, 32],
-        ].map(([sourceMemberId, targetMemberId, score]) => ({
+        ].map(([memberSeekerId, memberPotentialMatchId, score]) => ({
           matchingRunId: 42,
-          sourceMemberId,
-          targetMemberId,
+          memberSeekerId,
+          memberPotentialMatchId,
           score,
           details: null,
         })),

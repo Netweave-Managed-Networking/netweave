@@ -86,18 +86,18 @@ export class MatchingsService {
 
       const rows: Pick<
         Matching,
-        'sourceMemberId' | 'targetMemberId' | 'score' | 'details'
+        'memberSeekerId' | 'memberPotentialMatchId' | 'score' | 'details'
       >[] = [];
-      for (const source of members) {
-        for (const target of members) {
-          if (source.id === target.id) continue;
+      for (const seeker of members) {
+        for (const potentialMatch of members) {
+          if (seeker.id === potentialMatch.id) continue;
           const { score, details } = await this.matchingStrategy.score(
-            source,
-            target,
+            seeker,
+            potentialMatch,
           );
           rows.push({
-            sourceMemberId: source.id,
-            targetMemberId: target.id,
+            memberSeekerId: seeker.id,
+            memberPotentialMatchId: potentialMatch.id,
             score,
             details,
           });

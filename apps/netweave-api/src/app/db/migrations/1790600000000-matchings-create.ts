@@ -18,21 +18,21 @@ export class MatchingsCreate1790600000000 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "matching_run_id" integer NOT NULL,
-                "source_member_id" integer NOT NULL,
-                "target_member_id" integer NOT NULL,
+                "member_seeker_id" integer NOT NULL,
+                "member_potential_match_id" integer NOT NULL,
                 "score" smallint NOT NULL,
                 "details" jsonb,
-                CONSTRAINT "UQ_matchings_run_source_target" UNIQUE ("matching_run_id", "source_member_id", "target_member_id"),
+                CONSTRAINT "UQ_matchings_run_seeker_potential_match" UNIQUE ("matching_run_id", "member_seeker_id", "member_potential_match_id"),
                 CONSTRAINT "CHK_matchings_score" CHECK ("score" BETWEEN 0 AND 100),
                 CONSTRAINT "PK_matchings_id" PRIMARY KEY ("id")
             )
         `);
     // the unique constraint only covers lookups by run, these keep member lookups and cascading deletes fast
     await queryRunner.query(`
-            CREATE INDEX "IDX_matchings_source_member_id" ON "matchings" ("source_member_id")
+            CREATE INDEX "IDX_matchings_member_seeker_id" ON "matchings" ("member_seeker_id")
         `);
     await queryRunner.query(`
-            CREATE INDEX "IDX_matchings_target_member_id" ON "matchings" ("target_member_id")
+            CREATE INDEX "IDX_matchings_member_potential_match_id" ON "matchings" ("member_potential_match_id")
         `);
     await queryRunner.query(`
             ALTER TABLE "matchings"
@@ -40,20 +40,20 @@ export class MatchingsCreate1790600000000 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "matchings"
-            ADD CONSTRAINT "FK_matchings_source_member_id" FOREIGN KEY ("source_member_id") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ADD CONSTRAINT "FK_matchings_member_seeker_id" FOREIGN KEY ("member_seeker_id") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
     await queryRunner.query(`
             ALTER TABLE "matchings"
-            ADD CONSTRAINT "FK_matchings_target_member_id" FOREIGN KEY ("target_member_id") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ADD CONSTRAINT "FK_matchings_member_potential_match_id" FOREIGN KEY ("member_potential_match_id") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            ALTER TABLE "matchings" DROP CONSTRAINT "FK_matchings_target_member_id"
+            ALTER TABLE "matchings" DROP CONSTRAINT "FK_matchings_member_potential_match_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "matchings" DROP CONSTRAINT "FK_matchings_source_member_id"
+            ALTER TABLE "matchings" DROP CONSTRAINT "FK_matchings_member_seeker_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "matchings" DROP CONSTRAINT "FK_matchings_matching_run_id"

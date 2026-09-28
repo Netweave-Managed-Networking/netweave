@@ -5,20 +5,23 @@ import { MatchingResult, MatchingStrategy } from './matching-strategy';
 
 /**
  * dummy algorithm until the real matching exists:
- * per category, the closer the length of the target's resources is to the length of the source's requirements, the higher the score.
- * categories without a requirement of the source are ignored, the overall score is the average of the remaining ones.
+ * per category, the closer the length of the potential match's resources is to the length of the seeker's requirements, the higher the score.
+ * categories without a requirement of the seeker are ignored, the overall score is the average of the remaining ones.
  */
 @Injectable()
 export class StringLengthMatchingStrategy implements MatchingStrategy {
-  public async score(source: Member, target: Member): Promise<MatchingResult> {
+  public async score(
+    seeker: Member,
+    potentialMatch: Member,
+  ): Promise<MatchingResult> {
     const categories: MatchingDetailsDTO['categories'] = [];
 
-    for (const { category, requirements } of source.resourcesRequirements ??
+    for (const { category, requirements } of seeker.resourcesRequirements ??
       []) {
       const requirementLength = requirements?.trim().length ?? 0;
       if (requirementLength === 0) continue; // nothing needed, nothing to match
 
-      const resources = target.resourcesRequirements?.find(
+      const resources = potentialMatch.resourcesRequirements?.find(
         (rr) => rr.category === category,
       )?.resources;
       const resourceLength = resources?.trim().length ?? 0;
