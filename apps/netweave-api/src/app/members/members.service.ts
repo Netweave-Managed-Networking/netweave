@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { MemberUpsertDTO } from '@netweave/api-types';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
@@ -37,6 +37,15 @@ export class MembersService {
   public async getAllWithResourcesRequirements(): Promise<Member[]> {
     return this.membersRepository.find({
       relations: { resourcesRequirements: true },
+    });
+  }
+
+  /** whether any resource or requirement changed after `since`, e.g. to skip matching runs that would not change anything */
+  public async haveResourcesRequirementsChangedSince(
+    since: Date,
+  ): Promise<boolean> {
+    return this.membersRepository.manager.exists(MemberResourceRequirement, {
+      where: { updatedAt: MoreThan(since) },
     });
   }
 
@@ -92,9 +101,9 @@ export class MembersService {
       }),
     );
 
-    await manager.upsert(MemberResourceRequirement, rows, [
-      'memberId',
-      'category',
-    ]);
+    await manager.upsert(MemberResourceRequirement, rows, {
+      conflictPaths: ['memberId', 'category'],
+      skipUpdateIfNoValuesChanged: true, // keeps updated_at of unchanged categories, see haveResourcesRequirementsChangedSince
+    });
   }
 }

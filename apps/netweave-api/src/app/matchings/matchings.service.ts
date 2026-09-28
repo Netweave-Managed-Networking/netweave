@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MatchingRunDTO } from '@netweave/api-types';
 import { EntityManager, Repository } from 'typeorm';
 import { MembersService } from '../members/members.service';
-import { hasAnswers, hashMatchingInput } from './matching-input';
+import { hasAnswers } from './matching-input';
 import { MatchingRun } from './matching-run.entity';
 import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
@@ -48,7 +48,7 @@ export class MatchingsService {
 
   /**
    * calculates the score from every member to every other member and stores them as a new run.
-   * members without any answers are left out. unless forced, nothing is calculated when the input did not change since the last run.
+   * members without any answers are left out. unless forced, nothing is calculated when no resource or requirement changed since the last run.
    * returns null if a run is already in progress (in any api instance) or was skipped.
    */
   public async calculateAll({
@@ -70,8 +70,14 @@ export class MatchingsService {
         await this.membersService.getAllWithResourcesRequirements()
       ).filter(hasAnswers);
 
-      const inputHash = hashMatchingInput(members);
-      if (!force && (await findLatestRun(manager))?.inputHash === inputHash) {
+      const latest = await findLatestRun(manager);
+      if (
+        !force &&
+        latest &&
+        !(await this.membersService.haveResourcesRequirementsChangedSince(
+          latest.createdAt,
+        ))
+      ) {
         this.logger.log(
           'Nothing changed since the last matching run, skipping',
         );
@@ -98,9 +104,7 @@ export class MatchingsService {
         }
       }
 
-      const run = await manager.save(
-        manager.create(MatchingRun, { inputHash }),
-      );
+      const run = await manager.save(manager.create(MatchingRun));
       for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
         await manager.insert(
           Matching,

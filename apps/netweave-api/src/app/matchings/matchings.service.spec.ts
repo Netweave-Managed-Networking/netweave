@@ -2,7 +2,6 @@ import { EntityManager, Repository } from 'typeorm';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { MembersService } from '../members/members.service';
-import { hashMatchingInput } from './matching-input';
 import { MatchingRun } from './matching-run.entity';
 import { MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
@@ -31,7 +30,11 @@ describe('MatchingsService', () => {
   let service: MatchingsService;
   let manager: MockManager;
   let membersService: jest.Mocked<
-    Pick<MembersService, 'getAllWithResourcesRequirements'>
+    Pick<
+      MembersService,
+      | 'getAllWithResourcesRequirements'
+      | 'haveResourcesRequirementsChangedSince'
+    >
   >;
   let strategy: jest.Mocked<MatchingStrategy>;
 
@@ -44,6 +47,7 @@ describe('MatchingsService', () => {
       getAllWithResourcesRequirements: jest
         .fn()
         .mockResolvedValue([answered(1), answered(2), answered(3)]),
+      haveResourcesRequirementsChangedSince: jest.fn().mockResolvedValue(true),
     };
     strategy = {
       // encodes the direction, so wrong pairings would show up in the rows
@@ -105,50 +109,44 @@ describe('MatchingsService', () => {
       expect(pairs()).toEqual(['1->4', '4->1']);
     });
 
-    it('stores the input hash with the run', async () => {
+    it('does not ask for changes on the first run', async () => {
       await service.calculateAll();
 
-      expect(manager.create).toHaveBeenCalledWith(MatchingRun, {
-        inputHash: hashMatchingInput([answered(1), answered(2), answered(3)]),
-      });
+      expect(
+        membersService.haveResourcesRequirementsChangedSince,
+      ).not.toHaveBeenCalled();
+      expect(manager.save).toHaveBeenCalledTimes(1);
     });
 
-    it('skips when nothing changed since the last run', async () => {
-      manager.find?.mockResolvedValue([
-        {
-          id: 41,
-          // order does not matter
-          inputHash: hashMatchingInput([answered(3), answered(2), answered(1)]),
-        },
-      ]);
+    it('skips when no resource or requirement changed since the last run', async () => {
+      const lastRunAt = new Date('2026-09-28T10:00:00Z');
+      manager.find?.mockResolvedValue([{ id: 41, createdAt: lastRunAt }]);
+      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
+        false,
+      );
 
       expect(await service.calculateAll()).toBeNull();
+      expect(
+        membersService.haveResourcesRequirementsChangedSince,
+      ).toHaveBeenCalledWith(lastRunAt);
       expect(strategy.score).not.toHaveBeenCalled();
       expect(manager.save).not.toHaveBeenCalled();
     });
 
-    it('runs when the answers changed since the last run', async () => {
-      manager.find?.mockResolvedValue([
-        {
-          id: 41,
-          inputHash: hashMatchingInput([
-            answered(1),
-            answered(2),
-            answered(3, 'another need'),
-          ]),
-        },
-      ]);
+    it('runs when resources or requirements changed since the last run', async () => {
+      manager.find?.mockResolvedValue([{ id: 41, createdAt: new Date() }]);
+      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
+        true,
+      );
 
       expect(await service.calculateAll()).not.toBeNull();
     });
 
     it('runs even without changes when forced', async () => {
-      manager.find?.mockResolvedValue([
-        {
-          id: 41,
-          inputHash: hashMatchingInput([answered(1), answered(2), answered(3)]),
-        },
-      ]);
+      manager.find?.mockResolvedValue([{ id: 41, createdAt: new Date() }]);
+      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
+        false,
+      );
 
       expect(await service.calculateAll({ force: true })).not.toBeNull();
     });
@@ -213,7 +211,7 @@ describe('MatchingsService', () => {
     it('returns a summary of the newest run without loading its matchings', async () => {
       const createdAt = new Date();
       manager.find?.mockResolvedValue([
-        { id: 9, createdAt, updatedAt: createdAt, inputHash: 'abc' },
+        { id: 9, createdAt, updatedAt: createdAt },
       ]);
       manager.count?.mockResolvedValue(12);
 
