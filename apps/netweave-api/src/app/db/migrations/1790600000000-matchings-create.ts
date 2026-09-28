@@ -9,6 +9,7 @@ export class MatchingsCreate1790600000000 implements MigrationInterface {
                 "id" SERIAL NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "finished_at" TIMESTAMP,
                 CONSTRAINT "PK_matching_runs_id" PRIMARY KEY ("id")
             )
         `);

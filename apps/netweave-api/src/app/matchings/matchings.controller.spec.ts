@@ -12,6 +12,7 @@ const mockRun: MatchingRunDTO = {
   id: 3,
   createdAt,
   updatedAt: createdAt,
+  finishedAt: createdAt,
   matchingCount: 6,
 };
 

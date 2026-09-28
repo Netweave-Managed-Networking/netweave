@@ -82,7 +82,11 @@ describe('MatchingsService', () => {
     it('stores a score from every member to every other member, but not to itself', async () => {
       const run = await service.calculateAll();
 
-      expect(run).toMatchObject({ id: 42, matchingCount: 6 });
+      expect(run).toMatchObject({
+        id: 42,
+        finishedAt: expect.any(Date),
+        matchingCount: 6,
+      });
       expect(insertedRows()).toEqual(
         [
           [1, 2, 12],
@@ -120,7 +124,7 @@ describe('MatchingsService', () => {
       expect(
         membersService.haveResourcesRequirementsChangedSince,
       ).not.toHaveBeenCalled();
-      expect(manager.save).toHaveBeenCalledTimes(1);
+      expect(manager.save).toHaveBeenCalledTimes(2); // created, then marked finished
     });
 
     it('skips when no resource or requirement changed since the last run', async () => {
@@ -163,7 +167,7 @@ describe('MatchingsService', () => {
 
       await service.calculateAll();
 
-      expect(manager.save).toHaveBeenCalledTimes(1);
+      expect(manager.save).toHaveBeenCalledTimes(2);
       expect(manager.insert).not.toHaveBeenCalled();
     });
 
@@ -216,7 +220,7 @@ describe('MatchingsService', () => {
     it('returns a summary of the newest run without loading its matchings', async () => {
       const createdAt = new Date();
       manager.find?.mockResolvedValue([
-        { id: 9, createdAt, updatedAt: createdAt },
+        { id: 9, createdAt, updatedAt: createdAt, finishedAt: createdAt },
       ]);
       manager.count?.mockResolvedValue(12);
 
@@ -224,6 +228,7 @@ describe('MatchingsService', () => {
         id: 9,
         createdAt,
         updatedAt: createdAt,
+        finishedAt: createdAt,
         matchingCount: 12,
       });
       expect(manager.find).toHaveBeenCalledWith(MatchingRun, {

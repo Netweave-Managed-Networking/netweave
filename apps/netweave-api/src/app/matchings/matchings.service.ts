@@ -113,6 +113,8 @@ export class MatchingsService {
             .map((row) => ({ ...row, matchingRunId: run.id })),
         );
       }
+      run.finishedAt = new Date();
+      await manager.save(run);
 
       this.logger.log(
         `Matching run ${run.id}: ${rows.length} matchings for ${members.length} members`,
@@ -133,6 +135,6 @@ const findLatestRun = async (
 };
 
 const toMatchingRunDTO = (
-  { id, createdAt, updatedAt }: MatchingRun,
+  { id, createdAt, updatedAt, finishedAt }: MatchingRun,
   matchingCount: number,
-): MatchingRunDTO => ({ id, createdAt, updatedAt, matchingCount });
+): MatchingRunDTO => ({ id, createdAt, updatedAt, finishedAt, matchingCount });
