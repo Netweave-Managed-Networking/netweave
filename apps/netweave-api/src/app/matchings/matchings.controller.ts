@@ -7,12 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MatchingRunDTO } from '@netweave/api-types';
-import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsService } from './matchings.service';
 
 @Controller('matchings')
-@UseGuards(AuthGuard, AdminGuard)
+@UseGuards(AuthGuard)
 export class MatchingsController {
   public constructor(private readonly matchingsService: MatchingsService) {}
 

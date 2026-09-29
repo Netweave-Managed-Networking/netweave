@@ -1,7 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MatchingRunDTO } from '@netweave/api-types';
-import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
@@ -33,8 +32,6 @@ describe('MatchingsController', () => {
       providers: [{ provide: MatchingsService, useValue: matchingsService }],
     })
       .overrideGuard(AuthGuard)
-      .useValue({ canActivate: jest.fn(() => true) })
-      .overrideGuard(AdminGuard)
       .useValue({ canActivate: jest.fn(() => true) })
       .compile();
 
