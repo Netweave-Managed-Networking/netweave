@@ -24,15 +24,6 @@
       <icon-mail />
       Mail-Einstellungen
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="settings__tab tab gap-2"
-      [class.tab-active]="activeTab() === 'matching'"
-      (click)="activeTab.set('matching')"
-    >
-      Matching
-    </button>
   </div>
 
   <div class="settings__panel py-2">
@@ -41,10 +32,8 @@
         <app-user-roles />
         <app-user-invitations />
       </div>
-    } @else if (activeTab() === 'mail') {
-      <app-mail-settings />
     } @else {
-      <app-matching-run />
+      <app-mail-settings />
     }
   </div>
 </div>
