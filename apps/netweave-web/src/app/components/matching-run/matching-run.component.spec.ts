@@ -23,12 +23,16 @@ describe('MatchingRunComponent', () => {
     httpTesting
       .expectOne({ method: 'GET', url: '/api/matchings/runs/latest' })
       .flush(null, { status: 404, statusText: 'Not Found' });
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/newest' })
+      .flush(null, { status: 404, statusText: 'Not Found' });
 
     fixture.detectChanges();
   });
 
   afterEach(() => {
     httpTesting.verify();
+    vi.useRealTimers();
   });
 
   const button = () =>
@@ -58,17 +62,99 @@ describe('MatchingRunComponent', () => {
     });
   };
 
-  it('starts a run and shows how many matchings were calculated', async () => {
-    clickAndExpectRequest().flush({
-      id: 7,
-      matchingCount: 3,
-    } as MatchingRunDTO);
-    await fixture.whenStable();
+  // the request only starts the run; it flushes as soon as it's created, well before it finishes
+  const startedRun: MatchingRunDTO = {
+    id: 7,
+    createdAt: new Date('2026-09-30T10:00:00Z'),
+    updatedAt: new Date('2026-09-30T10:00:00Z'),
+    finishedAt: null,
+    failedAt: null,
+    matchingCount: 0,
+  };
+
+  const pollAndFlush = async (run: MatchingRunDTO) => {
+    await vi.advanceTimersByTimeAsync(2000);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/7' })
+      .flush(run);
+    await vi.advanceTimersByTimeAsync(0);
     fixture.detectChanges();
+  };
+
+  it('starts a run and shows how many matchings were calculated once it finishes', async () => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    });
+
+    clickAndExpectRequest().flush(startedRun, {
+      status: 202,
+      statusText: 'Accepted',
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true); // still computing in the background
+
+    await pollAndFlush({
+      ...startedRun,
+      finishedAt: new Date('2026-09-30T10:00:05Z'),
+      matchingCount: 3,
+    });
 
     expect(button().disabled).toBe(false);
     expect(result()).toContain('#7');
     expect(result()).toContain('3 Matchings');
+  });
+
+  it('keeps polling after a single transient error, instead of showing a false failure', async () => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    });
+
+    clickAndExpectRequest().flush(startedRun, {
+      status: 202,
+      statusText: 'Accepted',
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+
+    // e.g. a 502 during a deploy on a single poll must not stop polling or show a failure
+    await vi.advanceTimersByTimeAsync(2000);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/7' })
+      .flush(null, { status: 502, statusText: 'Bad Gateway' });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true);
+    expect(result()).not.toBe('Berechnung fehlgeschlagen.');
+
+    await pollAndFlush({
+      ...startedRun,
+      finishedAt: new Date('2026-09-30T10:00:05Z'),
+      matchingCount: 3,
+    });
+
+    expect(button().disabled).toBe(false);
+    expect(result()).toContain('3 Matchings');
+  });
+
+  it('shows an error when the background computation fails', async () => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    });
+
+    clickAndExpectRequest().flush(startedRun, {
+      status: 202,
+      statusText: 'Accepted',
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+
+    await pollAndFlush({
+      ...startedRun,
+      failedAt: new Date('2026-09-30T10:00:05Z'),
+    });
+
+    expect(result()).toBe('Berechnung fehlgeschlagen.');
   });
 
   it('tells when a run is already in progress', async () => {
@@ -82,7 +168,7 @@ describe('MatchingRunComponent', () => {
     expect(result()).toBe('Es läuft bereits eine Berechnung.');
   });
 
-  it('shows an error when the run fails', async () => {
+  it('shows an error when the run fails to start', async () => {
     clickAndExpectRequest().flush(null, {
       status: 500,
       statusText: 'Server Error',
@@ -106,8 +192,12 @@ describe('MatchingRunComponent', () => {
         createdAt: new Date('2026-09-29T10:00:00Z'),
         updatedAt: new Date('2026-09-29T10:00:00Z'),
         finishedAt: new Date('2026-09-29T10:00:00Z'),
+        failedAt: null,
         matchingCount: 42,
       } satisfies MatchingRunDTO);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/newest' })
+      .flush(null, { status: 404, statusText: 'Not Found' });
     await localFixture.whenStable();
     localFixture.detectChanges();
 
@@ -118,5 +208,55 @@ describe('MatchingRunComponent', () => {
     ).textContent?.trim();
     expect(lastRunText).toContain('29.09.2026');
     expect(lastRunText).toContain('42 Matchings');
+  });
+
+  it('shows the button as busy on load when a run is already in progress (e.g. after a page reload)', async () => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    });
+
+    const localFixture = TestBed.createComponent(MatchingRunComponent);
+    const localButton = () =>
+      localFixture.nativeElement.querySelector(
+        '.matching-run__button',
+      ) as HTMLButtonElement;
+
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/latest' })
+      .flush(null, { status: 404, statusText: 'Not Found' });
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/newest' })
+      .flush({
+        id: 9,
+        createdAt: new Date('2026-09-30T10:00:00Z'),
+        updatedAt: new Date('2026-09-30T10:00:00Z'),
+        finishedAt: null,
+        failedAt: null,
+        matchingCount: 0,
+      } satisfies MatchingRunDTO);
+    await vi.advanceTimersByTimeAsync(0);
+    localFixture.detectChanges();
+
+    expect(localButton().disabled).toBe(true);
+    expect(
+      localFixture.nativeElement.querySelector('.loading-spinner'),
+    ).toBeTruthy();
+
+    // it finishes shortly after: polling should still pick it up and re-enable the button
+    await vi.advanceTimersByTimeAsync(2000);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/9' })
+      .flush({
+        id: 9,
+        createdAt: new Date('2026-09-30T10:00:00Z'),
+        updatedAt: new Date('2026-09-30T10:00:00Z'),
+        finishedAt: new Date('2026-09-30T10:00:05Z'),
+        failedAt: null,
+        matchingCount: 5,
+      } satisfies MatchingRunDTO);
+    await vi.advanceTimersByTimeAsync(0);
+    localFixture.detectChanges();
+
+    expect(localButton().disabled).toBe(false);
   });
 });

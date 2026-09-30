@@ -1,4 +1,5 @@
-import { EntityManager, Repository } from 'typeorm';
+import { Logger } from '@nestjs/common';
+import { EntityManager, IsNull, Repository } from 'typeorm';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { MembersService } from '../members/members.service';
@@ -9,13 +10,19 @@ import { MatchingsService } from './matchings.service';
 
 type MockManager = Partial<Record<keyof EntityManager, jest.Mock>>;
 
+const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
+
 const createMockManager = (): MockManager => ({
   query: jest.fn().mockResolvedValue([{ locked: true }]),
   find: jest.fn().mockResolvedValue([]),
+  findOneBy: jest.fn().mockResolvedValue(null), // no run in progress by default
   count: jest.fn(),
   create: jest.fn((_target, entity) => ({ ...entity })),
-  save: jest.fn((entity) => Promise.resolve({ id: 42, ...entity })),
+  save: jest.fn((entity) =>
+    Promise.resolve({ id: 42, finishedAt: null, failedAt: null, ...entity }),
+  ),
   insert: jest.fn(),
+  update: jest.fn().mockResolvedValue({ affected: 1 }),
 });
 
 const answered = (id: number, requirements = 'a need'): Member =>
@@ -78,15 +85,15 @@ describe('MatchingsService', () => {
       (r) => `${r.memberSeekerId}->${r.memberPotentialMatchId}`,
     );
 
-  describe('calculateAll', () => {
+  describe('calculateScheduled', () => {
     it('stores a score from every member to every other member, but not to itself', async () => {
-      const run = await service.calculateAll();
+      await service.calculateScheduled();
 
-      expect(run).toMatchObject({
-        id: 42,
-        finishedAt: expect.any(Date),
-        matchingCount: 6,
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
       expect(insertedRows()).toEqual(
         [
           [1, 2, 12],
@@ -113,28 +120,32 @@ describe('MatchingsService', () => {
         answered(4),
       ]);
 
-      await service.calculateAll();
+      await service.calculateScheduled();
 
       expect(pairs()).toEqual(['1->4', '4->1']);
     });
 
     it('does not ask for changes on the first run', async () => {
-      await service.calculateAll();
+      await service.calculateScheduled();
 
       expect(
         membersService.haveResourcesRequirementsChangedSince,
       ).not.toHaveBeenCalled();
-      expect(manager.save).toHaveBeenCalledTimes(2); // created, then marked finished
+      expect(manager.save).toHaveBeenCalledTimes(1); // the new, empty run
+      expect(manager.update).toHaveBeenCalledTimes(1); // marked finished
     });
 
     it('skips when no resource or requirement changed since the last run', async () => {
       const lastRunAt = new Date('2026-09-28T10:00:00Z');
-      manager.find?.mockResolvedValue([{ id: 41, createdAt: lastRunAt }]);
+      manager.find?.mockResolvedValue([
+        { id: 41, createdAt: lastRunAt, finishedAt: lastRunAt },
+      ]);
       membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
         false,
       );
 
-      expect(await service.calculateAll()).toBeNull();
+      await service.calculateScheduled();
+
       expect(
         membersService.haveResourcesRequirementsChangedSince,
       ).toHaveBeenCalledWith(lastRunAt);
@@ -143,21 +154,17 @@ describe('MatchingsService', () => {
     });
 
     it('runs when resources or requirements changed since the last run', async () => {
-      manager.find?.mockResolvedValue([{ id: 41, createdAt: new Date() }]);
+      const lastRunAt = new Date();
+      manager.find?.mockResolvedValue([
+        { id: 41, createdAt: lastRunAt, finishedAt: lastRunAt },
+      ]);
       membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
         true,
       );
 
-      expect(await service.calculateAll()).not.toBeNull();
-    });
+      await service.calculateScheduled();
 
-    it('runs even without changes when forced', async () => {
-      manager.find?.mockResolvedValue([{ id: 41, createdAt: new Date() }]);
-      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
-        false,
-      );
-
-      expect(await service.calculateAll({ force: true })).not.toBeNull();
+      expect(manager.save).toHaveBeenCalledTimes(1);
     });
 
     it('creates an empty run when there are fewer than two members', async () => {
@@ -165,9 +172,14 @@ describe('MatchingsService', () => {
         answered(1),
       ]);
 
-      await service.calculateAll();
+      await service.calculateScheduled();
 
-      expect(manager.save).toHaveBeenCalledTimes(2);
+      expect(manager.save).toHaveBeenCalledTimes(1);
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
       expect(manager.insert).not.toHaveBeenCalled();
     });
 
@@ -176,7 +188,7 @@ describe('MatchingsService', () => {
         Array.from({ length: 40 }, (_, i) => answered(i + 1)),
       );
 
-      await service.calculateAll();
+      await service.calculateScheduled();
 
       expect(insertedRows()).toHaveLength(40 * 39);
       expect(manager.insert).toHaveBeenCalledTimes(2);
@@ -185,15 +197,49 @@ describe('MatchingsService', () => {
     it('skips when another run holds the lock', async () => {
       manager.query?.mockResolvedValue([{ locked: false }]);
 
-      expect(await service.calculateAll({ force: true })).toBeNull();
+      await service.calculateScheduled();
+
       expect(
         membersService.getAllWithResourcesRequirements,
       ).not.toHaveBeenCalled();
       expect(manager.save).not.toHaveBeenCalled();
     });
 
+    it('skips when a run is already in progress', async () => {
+      manager.findOneBy?.mockResolvedValue({
+        id: 41,
+        createdAt: new Date(), // just started, not stale
+        finishedAt: null,
+        failedAt: null,
+      });
+
+      await service.calculateScheduled();
+
+      expect(
+        membersService.getAllWithResourcesRequirements,
+      ).not.toHaveBeenCalled();
+      expect(manager.save).not.toHaveBeenCalled();
+    });
+
+    it('recovers from a stale in-progress run (e.g. its process crashed) and starts a new one', async () => {
+      manager.findOneBy?.mockResolvedValue({
+        id: 41,
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2h ago: way past any realistic run duration
+        finishedAt: null,
+        failedAt: null,
+      });
+
+      await service.calculateScheduled();
+
+      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 41, {
+        failedAt: expect.any(Date),
+      });
+      expect(membersService.getAllWithResourcesRequirements).toHaveBeenCalled();
+      expect(manager.save).toHaveBeenCalledTimes(1); // the new run
+    });
+
     it('takes the lock inside the transaction before anything else', async () => {
-      await service.calculateAll();
+      await service.calculateScheduled();
 
       expect(manager.query).toHaveBeenCalledWith(
         'SELECT pg_try_advisory_xact_lock($1) AS locked',
@@ -204,23 +250,128 @@ describe('MatchingsService', () => {
           .invocationCallOrder[0],
       );
     });
-  });
 
-  describe('calculateScheduled', () => {
-    it('logs instead of throwing when the run fails', async () => {
+    it('marks the run as failed instead of throwing when the computation fails', async () => {
       membersService.getAllWithResourcesRequirements.mockRejectedValue(
         new Error('db down'),
       );
 
       await expect(service.calculateScheduled()).resolves.toBeUndefined();
+
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+    });
+  });
+
+  describe('triggerRun', () => {
+    it('creates a run and returns it immediately, before the computation finishes', async () => {
+      const result = await service.triggerRun();
+
+      expect(result).toMatchObject({
+        id: 42,
+        finishedAt: null,
+        failedAt: null,
+        matchingCount: 0,
+      });
+      // the actual computation only happens afterwards, in the background
+      expect(manager.insert).not.toHaveBeenCalled();
+
+      await flushPromises();
+
+      expect(manager.insert).toHaveBeenCalled();
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
+    });
+
+    it('never checks for changes, even without any', async () => {
+      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
+        false,
+      );
+
+      const result = await service.triggerRun();
+      await flushPromises();
+
+      expect(result).not.toBeNull();
+      expect(
+        membersService.haveResourcesRequirementsChangedSince,
+      ).not.toHaveBeenCalled();
+      expect(manager.insert).toHaveBeenCalled();
+    });
+
+    it('returns null when another run holds the lock', async () => {
+      manager.query?.mockResolvedValue([{ locked: false }]);
+
+      expect(await service.triggerRun()).toBeNull();
+      await flushPromises();
+
+      expect(
+        membersService.getAllWithResourcesRequirements,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('returns null when a run is already in progress', async () => {
+      manager.findOneBy?.mockResolvedValue({
+        id: 41,
+        createdAt: new Date(), // just started, not stale
+        finishedAt: null,
+        failedAt: null,
+      });
+
+      expect(await service.triggerRun()).toBeNull();
+      await flushPromises();
+
+      expect(
+        membersService.getAllWithResourcesRequirements,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('marks the run as failed instead of throwing when the background computation fails', async () => {
+      membersService.getAllWithResourcesRequirements.mockRejectedValue(
+        new Error('db down'),
+      );
+
+      const result = await service.triggerRun();
+      expect(result).not.toBeNull();
+
+      await flushPromises();
+
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+    });
+
+    it('does not overwrite a run already reaped as stale by a concurrent begin, and warns instead', async () => {
+      // the finishedAt update matches no row because the run was reaped (failedAt set) while it was computing
+      manager.update?.mockResolvedValue({ affected: 0 });
+      const warn = jest.spyOn(Logger.prototype, 'warn');
+
+      await service.calculateScheduled();
+
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('already reaped as stale'),
+      );
     });
   });
 
   describe('getLatestRun', () => {
-    it('returns a summary of the newest run without loading its matchings', async () => {
+    it('returns a summary of the newest successfully finished run without loading its matchings', async () => {
       const createdAt = new Date();
       manager.find?.mockResolvedValue([
-        { id: 9, createdAt, updatedAt: createdAt, finishedAt: createdAt },
+        {
+          id: 9,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: createdAt,
+          failedAt: null,
+        },
       ]);
       manager.count?.mockResolvedValue(12);
 
@@ -229,36 +380,107 @@ describe('MatchingsService', () => {
         createdAt,
         updatedAt: createdAt,
         finishedAt: createdAt,
+        failedAt: null,
         matchingCount: 12,
       });
-      expect(manager.find).toHaveBeenCalledWith(MatchingRun, {
-        order: { id: 'DESC' },
-        take: 1,
-      });
+      expect(manager.find).toHaveBeenCalledWith(
+        MatchingRun,
+        expect.objectContaining({ order: { id: 'DESC' }, take: 1 }),
+      );
       expect(manager.count).toHaveBeenCalledWith(Matching, {
         where: { matchingRunId: 9 },
       });
     });
 
-    it('returns null when there is no run yet', async () => {
+    it('returns null when there is no successfully finished run yet', async () => {
       expect(await service.getLatestRun()).toBeNull();
       expect(manager.count).not.toHaveBeenCalled();
     });
   });
 
+  describe('getNewestRun', () => {
+    it('returns the newest run, whatever its status', async () => {
+      const createdAt = new Date();
+      manager.find?.mockResolvedValue([
+        {
+          id: 9,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: null,
+          failedAt: null,
+        },
+      ]);
+      manager.count?.mockResolvedValue(0);
+
+      expect(await service.getNewestRun()).toEqual({
+        id: 9,
+        createdAt,
+        updatedAt: createdAt,
+        finishedAt: null,
+        failedAt: null,
+        matchingCount: 0,
+      });
+      expect(manager.find).toHaveBeenCalledWith(
+        MatchingRun,
+        expect.objectContaining({ order: { id: 'DESC' }, take: 1 }),
+      );
+    });
+
+    it('returns null when there is no run yet', async () => {
+      expect(await service.getNewestRun()).toBeNull();
+      expect(manager.count).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getRun', () => {
+    it('returns a run by id, whatever its status', async () => {
+      const createdAt = new Date();
+      manager.find?.mockResolvedValue([
+        {
+          id: 7,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: null,
+          failedAt: null,
+        },
+      ]);
+      manager.count?.mockResolvedValue(3);
+
+      expect(await service.getRun(7)).toEqual({
+        id: 7,
+        createdAt,
+        updatedAt: createdAt,
+        finishedAt: null,
+        failedAt: null,
+        matchingCount: 3,
+      });
+      expect(manager.find).toHaveBeenCalledWith(
+        MatchingRun,
+        expect.objectContaining({ where: { id: 7 } }),
+      );
+    });
+
+    it('returns null when no run exists with that id', async () => {
+      expect(await service.getRun(7)).toBeNull();
+      expect(manager.count).not.toHaveBeenCalled();
+    });
+  });
+
   describe('getRunHistory', () => {
-    it('returns the timestamps of past runs, newest first', async () => {
+    it('returns the timestamps and status of past runs, newest first', async () => {
       const repository = {
         find: jest.fn().mockResolvedValue([
           {
             id: 9,
             createdAt: new Date('2026-09-29T10:00:00Z'),
             finishedAt: new Date('2026-09-29T10:05:00Z'),
+            failedAt: null,
           },
           {
             id: 8,
             createdAt: new Date('2026-09-28T10:00:00Z'),
-            finishedAt: new Date('2026-09-28T10:05:00Z'),
+            finishedAt: null,
+            failedAt: new Date('2026-09-28T10:05:00Z'),
           },
         ]),
       };
@@ -273,11 +495,13 @@ describe('MatchingsService', () => {
           id: 9,
           createdAt: new Date('2026-09-29T10:00:00Z'),
           finishedAt: new Date('2026-09-29T10:05:00Z'),
+          failedAt: null,
         },
         {
           id: 8,
           createdAt: new Date('2026-09-28T10:00:00Z'),
-          finishedAt: new Date('2026-09-28T10:05:00Z'),
+          finishedAt: null,
+          failedAt: new Date('2026-09-28T10:05:00Z'),
         },
       ]);
       expect(repository.find).toHaveBeenCalledWith({ order: { id: 'DESC' } });

@@ -1,9 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchingRunDTO } from '@netweave/api-types';
-import { catchError, of, take, tap } from 'rxjs';
+import { catchError, filter, interval, of, switchMap, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
+
+const POLL_INTERVAL_MS = 2000; // how often to check whether a triggered run has finished
 
 @Component({
   selector: 'app-matching-run',
@@ -13,6 +16,7 @@ import { LoadingState } from '../../types/loading-state.type';
 })
 export class MatchingRunComponent {
   private http = inject(HttpClient);
+  private destroyRef = inject(DestroyRef);
 
   protected runState = signal<LoadingState>('initial');
   protected alreadyRunning = signal(false);
@@ -28,6 +32,20 @@ export class MatchingRunComponent {
         catchError(() => of(null)), // no run yet, or a transient error: leave the section empty
       )
       .subscribe();
+
+    // a run (triggered manually or by the cron) may still be in progress from before this page was (re)loaded
+    this.http
+      .get<MatchingRunDTO>('/api/matchings/runs/newest')
+      .pipe(
+        take(1),
+        catchError(() => of(null)), // no run yet, or a transient error: nothing to resume polling for
+      )
+      .subscribe((newest) => {
+        if (newest && newest.finishedAt === null && newest.failedAt === null) {
+          this.runState.set('pending');
+          this.pollUntilDone(newest.id);
+        }
+      });
   }
 
   protected run() {
@@ -38,16 +56,37 @@ export class MatchingRunComponent {
       .post<MatchingRunDTO>('/api/matchings/runs', {})
       .pipe(
         take(1),
-        tap((run) => {
-          this.lastRun.set(run);
-          this.runState.set('success');
-        }),
         catchError((error: HttpErrorResponse) => {
           this.alreadyRunning.set(error.status === 409);
           this.runState.set('error');
           return of(null);
         }),
       )
-      .subscribe();
+      .subscribe((started) => {
+        if (started) this.pollUntilDone(started.id);
+      });
+  }
+
+  // the run was only just created when triggered, so poll for it to actually finish (or fail) in the background
+  private pollUntilDone(runId: number) {
+    interval(POLL_INTERVAL_MS)
+      .pipe(
+        switchMap(() =>
+          this.http.get<MatchingRunDTO>(`/api/matchings/runs/${runId}`).pipe(
+            // a single transient failure (e.g. a 502 during a deploy) shouldn't stop polling for the run itself
+            catchError(() => of(null)),
+          ),
+        ),
+        filter(
+          (run): run is MatchingRunDTO =>
+            run !== null && (run.finishedAt !== null || run.failedAt !== null),
+        ),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((run) => {
+        if (run.finishedAt) this.lastRun.set(run);
+        this.runState.set(run.failedAt ? 'error' : 'success');
+      });
   }
 }

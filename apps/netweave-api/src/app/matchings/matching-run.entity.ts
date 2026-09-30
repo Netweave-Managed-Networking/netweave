@@ -8,6 +8,9 @@ export class MatchingRun extends BaseEntity {
   @Column({ name: 'finished_at', type: 'timestamp', nullable: true })
   declare public finishedAt: Date | null; // null while the run is still calculating
 
+  @Column({ name: 'failed_at', type: 'timestamp', nullable: true })
+  declare public failedAt: Date | null; // set instead of finishedAt if the run errored out
+
   @OneToMany(() => Matching, (matching) => matching.matchingRun)
   declare public matchings?: Matching[]; // only set when loaded as relation
 }

@@ -4,4 +4,5 @@ import { EntityDTO } from '../entity/entity.dto.interface';
 export interface MatchingRunListItemDTO
   extends Pick<EntityDTO, 'id' | 'createdAt'> {
   finishedAt: Date | null;
+  failedAt: Date | null;
 }

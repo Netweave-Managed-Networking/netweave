@@ -2,7 +2,11 @@ import {
   ConflictException,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   NotFoundException,
+  Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -15,10 +19,14 @@ import { MatchingsService } from './matchings.service';
 export class MatchingsController {
   public constructor(private readonly matchingsService: MatchingsService) {}
 
-  /** calculates all matchings right away, independent of the cron schedule and even if nothing changed */
+  /**
+   * starts calculating all matchings in the background, independent of the cron schedule and even if
+   * nothing changed; returns as soon as the run is created, well before it finishes, see runs/:id
+   */
   @Post('runs')
-  public async calculate(): Promise<MatchingRunDTO> {
-    const run = await this.matchingsService.calculateAll({ force: true });
+  @HttpCode(HttpStatus.ACCEPTED)
+  public async run(): Promise<MatchingRunDTO> {
+    const run = await this.matchingsService.triggerRun();
     if (!run) {
       throw new ConflictException('A matching run is already in progress');
     }
@@ -28,6 +36,28 @@ export class MatchingsController {
   @Get('runs/latest')
   public async getLatest(): Promise<MatchingRunDTO> {
     const run = await this.matchingsService.getLatestRun();
+    if (!run) {
+      throw new NotFoundException('No matching run found');
+    }
+    return run;
+  }
+
+  /** the newest run whatever its status, so a client can tell a run is still in progress right after loading the page */
+  @Get('runs/newest')
+  public async getNewest(): Promise<MatchingRunDTO> {
+    const run = await this.matchingsService.getNewestRun();
+    if (!run) {
+      throw new NotFoundException('No matching run found');
+    }
+    return run;
+  }
+
+  /** a single run, for polling one that was just started until it finishes or fails */
+  @Get('runs/:id')
+  public async getRun(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<MatchingRunDTO> {
+    const run = await this.matchingsService.getRun(id);
     if (!run) {
       throw new NotFoundException('No matching run found');
     }
