@@ -2,7 +2,13 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
-import { EntityManager, IsNull, Not, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsWhere,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 import { MembersService } from '../members/members.service';
 import { hasAnswers } from './matching-input';
 import { MatchingRun } from './matching-run.entity';
@@ -33,9 +39,7 @@ export class MatchingsService {
       const run = await this.beginRun(false);
       if (!run) return;
       const matchingCount = await this.computeAndPersist(run);
-      this.logger.log(
-        `Matching run ${run.id}: ${matchingCount} matchings`,
-      );
+      this.logger.log(`Matching run ${run.id}: ${matchingCount} matchings`);
     } catch (error) {
       this.logger.error('Failed to calculate matchings', error);
     }
@@ -62,39 +66,28 @@ export class MatchingsService {
 
   /** the most recently *successfully finished* run; in-progress or failed runs never show up here */
   public async getLatestRun(): Promise<MatchingRunDTO | null> {
-    const manager = this.matchingRunsRepository.manager;
-    const [latest] = await manager.find(MatchingRun, {
-      where: { finishedAt: Not(IsNull()) },
-      order: { id: 'DESC' },
-      take: 1,
-    });
-    if (!latest) return null;
-
-    const matchingCount = await manager.count(Matching, {
-      where: { matchingRunId: latest.id },
-    });
-    return toMatchingRunDTO(latest, matchingCount);
+    return this.findMatchingRunDTO({ finishedAt: Not(IsNull()) });
   }
 
   /** the newest run, whatever its status; used to detect an in-progress run, e.g. right after a page reload */
   public async getNewestRun(): Promise<MatchingRunDTO | null> {
-    const manager = this.matchingRunsRepository.manager;
-    const [newest] = await manager.find(MatchingRun, {
-      order: { id: 'DESC' },
-      take: 1,
-    });
-    if (!newest) return null;
-
-    const matchingCount = await manager.count(Matching, {
-      where: { matchingRunId: newest.id },
-    });
-    return toMatchingRunDTO(newest, matchingCount);
+    return this.findMatchingRunDTO({});
   }
 
   /** a single run by id, whatever its status, for polling a run that was just triggered */
   public async getRun(id: number): Promise<MatchingRunDTO | null> {
+    return this.findMatchingRunDTO({ id });
+  }
+
+  private async findMatchingRunDTO(
+    where: FindOptionsWhere<MatchingRun>,
+  ): Promise<MatchingRunDTO | null> {
     const manager = this.matchingRunsRepository.manager;
-    const run = await manager.findOneBy(MatchingRun, { id });
+    const [run] = await manager.find(MatchingRun, {
+      where,
+      order: { id: 'DESC' },
+      take: 1,
+    });
     if (!run) return null;
 
     const matchingCount = await manager.count(Matching, {
@@ -141,8 +134,7 @@ export class MatchingsService {
       });
       if (inProgress) {
         const isStale =
-          Date.now() - inProgress.createdAt.getTime() >
-          STALE_RUN_THRESHOLD_MS;
+          Date.now() - inProgress.createdAt.getTime() > STALE_RUN_THRESHOLD_MS;
         if (!isStale) {
           this.logger.warn('Another matching run is in progress, skipping');
           return null;
@@ -215,11 +207,35 @@ export class MatchingsService {
             .map((row) => ({ ...row, matchingRunId: run.id })),
         );
       }
-      await manager.update(MatchingRun, run.id, { finishedAt: new Date() });
+
+      await this.markRunDone(manager, run.id, { finishedAt: new Date() });
       return rows.length;
     } catch (error) {
-      await manager.update(MatchingRun, run.id, { failedAt: new Date() });
+      await this.markRunDone(manager, run.id, { failedAt: new Date() });
       throw error;
+    }
+  }
+
+  /**
+   * marks a run finished or failed, but never overwrites a run that beginRun already reaped as stale (and
+   * possibly replaced with a new run) while this computation was still going: that would otherwise leave the
+   * row with both finishedAt and failedAt set, from two computations that ran concurrently against it.
+   */
+  private async markRunDone(
+    manager: EntityManager,
+    runId: number,
+    patch: Pick<MatchingRun, 'finishedAt'> | Pick<MatchingRun, 'failedAt'>,
+  ): Promise<void> {
+    const { affected } = await manager.update(
+      MatchingRun,
+      { id: runId, failedAt: IsNull() },
+      patch,
+    );
+
+    if (!affected) {
+      this.logger.warn(
+        `Matching run ${runId} was already reaped as stale before it finished; discarding its result`,
+      );
     }
   }
 }

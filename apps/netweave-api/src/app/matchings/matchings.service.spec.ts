@@ -1,4 +1,5 @@
-import { EntityManager, Repository } from 'typeorm';
+import { Logger } from '@nestjs/common';
+import { EntityManager, IsNull, Repository } from 'typeorm';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { MembersService } from '../members/members.service';
@@ -21,7 +22,7 @@ const createMockManager = (): MockManager => ({
     Promise.resolve({ id: 42, finishedAt: null, failedAt: null, ...entity }),
   ),
   insert: jest.fn(),
-  update: jest.fn(),
+  update: jest.fn().mockResolvedValue({ affected: 1 }),
 });
 
 const answered = (id: number, requirements = 'a need'): Member =>
@@ -88,9 +89,11 @@ describe('MatchingsService', () => {
     it('stores a score from every member to every other member, but not to itself', async () => {
       await service.calculateScheduled();
 
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 42, {
-        finishedAt: expect.any(Date),
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
       expect(insertedRows()).toEqual(
         [
           [1, 2, 12],
@@ -172,9 +175,11 @@ describe('MatchingsService', () => {
       await service.calculateScheduled();
 
       expect(manager.save).toHaveBeenCalledTimes(1);
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 42, {
-        finishedAt: expect.any(Date),
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
       expect(manager.insert).not.toHaveBeenCalled();
     });
 
@@ -253,9 +258,11 @@ describe('MatchingsService', () => {
 
       await expect(service.calculateScheduled()).resolves.toBeUndefined();
 
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 42, {
-        failedAt: expect.any(Date),
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
     });
   });
 
@@ -275,9 +282,11 @@ describe('MatchingsService', () => {
       await flushPromises();
 
       expect(manager.insert).toHaveBeenCalled();
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 42, {
-        finishedAt: expect.any(Date),
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { finishedAt: expect.any(Date) },
+      );
     });
 
     it('never checks for changes, even without any', async () => {
@@ -332,9 +341,23 @@ describe('MatchingsService', () => {
 
       await flushPromises();
 
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 42, {
-        failedAt: expect.any(Date),
-      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+    });
+
+    it('does not overwrite a run already reaped as stale by a concurrent begin, and warns instead', async () => {
+      // the finishedAt update matches no row because the run was reaped (failedAt set) while it was computing
+      manager.update?.mockResolvedValue({ affected: 0 });
+      const warn = jest.spyOn(Logger.prototype, 'warn');
+
+      await service.calculateScheduled();
+
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('already reaped as stale'),
+      );
     });
   });
 
@@ -379,7 +402,13 @@ describe('MatchingsService', () => {
     it('returns the newest run, whatever its status', async () => {
       const createdAt = new Date();
       manager.find?.mockResolvedValue([
-        { id: 9, createdAt, updatedAt: createdAt, finishedAt: null, failedAt: null },
+        {
+          id: 9,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: null,
+          failedAt: null,
+        },
       ]);
       manager.count?.mockResolvedValue(0);
 
@@ -406,13 +435,15 @@ describe('MatchingsService', () => {
   describe('getRun', () => {
     it('returns a run by id, whatever its status', async () => {
       const createdAt = new Date();
-      manager.findOneBy?.mockResolvedValue({
-        id: 7,
-        createdAt,
-        updatedAt: createdAt,
-        finishedAt: null,
-        failedAt: null,
-      });
+      manager.find?.mockResolvedValue([
+        {
+          id: 7,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: null,
+          failedAt: null,
+        },
+      ]);
       manager.count?.mockResolvedValue(3);
 
       expect(await service.getRun(7)).toEqual({
@@ -423,12 +454,13 @@ describe('MatchingsService', () => {
         failedAt: null,
         matchingCount: 3,
       });
-      expect(manager.findOneBy).toHaveBeenCalledWith(MatchingRun, { id: 7 });
+      expect(manager.find).toHaveBeenCalledWith(
+        MatchingRun,
+        expect.objectContaining({ where: { id: 7 } }),
+      );
     });
 
     it('returns null when no run exists with that id', async () => {
-      manager.findOneBy?.mockResolvedValue(null);
-
       expect(await service.getRun(7)).toBeNull();
       expect(manager.count).not.toHaveBeenCalled();
     });
