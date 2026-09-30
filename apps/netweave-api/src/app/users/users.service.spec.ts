@@ -17,6 +17,7 @@ describe('UsersService', () => {
 
   beforeEach(() => {
     repository = createMockRepository();
+    repository.remove = jest.fn();
     service = new UsersService(repository as unknown as Repository<User>);
   });
 
@@ -64,6 +65,36 @@ describe('UsersService', () => {
       );
       expect(repository.findOneBy).not.toHaveBeenCalled();
       expect(repository.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('remove', () => {
+    it('removes the user', async () => {
+      const user = { id: 2, email: 'b@example.de', role: 'editor' };
+      repository.findOneBy?.mockResolvedValue(user);
+
+      const result = await service.remove(2, 1);
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({ id: 2 });
+      expect(repository.remove).toHaveBeenCalledWith(user);
+      expect(result).toBe(true);
+    });
+
+    it('throws NotFoundException when the user does not exist', async () => {
+      repository.findOneBy?.mockResolvedValue(null);
+
+      await expect(service.remove(99, 1)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(repository.remove).not.toHaveBeenCalled();
+    });
+
+    it('throws ForbiddenException when the acting user removes their own account', async () => {
+      await expect(service.remove(1, 1)).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+      expect(repository.findOneBy).not.toHaveBeenCalled();
+      expect(repository.remove).not.toHaveBeenCalled();
     });
   });
 });

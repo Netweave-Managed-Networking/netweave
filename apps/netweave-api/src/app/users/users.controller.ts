@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -30,5 +31,13 @@ export class UsersController {
     @Body() { role }: UserRoleUpdateDTO,
   ): Promise<UserDTO> {
     return await this.usersService.updateRole(id, role, user.id);
+  }
+
+  @Delete(':id')
+  public async remove(
+    @Me() { user }: UserAuthDTO,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<true> {
+    return await this.usersService.remove(id, user.id);
   }
 }
