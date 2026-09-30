@@ -105,6 +105,38 @@ describe('MatchingRunComponent', () => {
     expect(result()).toContain('3 Matchings');
   });
 
+  it('keeps polling after a single transient error, instead of showing a false failure', async () => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    });
+
+    clickAndExpectRequest().flush(startedRun, {
+      status: 202,
+      statusText: 'Accepted',
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+
+    // e.g. a 502 during a deploy on a single poll must not stop polling or show a failure
+    await vi.advanceTimersByTimeAsync(2000);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/7' })
+      .flush(null, { status: 502, statusText: 'Bad Gateway' });
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true);
+    expect(result()).not.toBe('Berechnung fehlgeschlagen.');
+
+    await pollAndFlush({
+      ...startedRun,
+      finishedAt: new Date('2026-09-30T10:00:05Z'),
+      matchingCount: 3,
+    });
+
+    expect(button().disabled).toBe(false);
+    expect(result()).toContain('3 Matchings');
+  });
+
   it('shows an error when the background computation fails', async () => {
     vi.useFakeTimers({
       toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],

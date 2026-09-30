@@ -72,18 +72,21 @@ export class MatchingRunComponent {
     interval(POLL_INTERVAL_MS)
       .pipe(
         switchMap(() =>
-          this.http.get<MatchingRunDTO>(`/api/matchings/runs/${runId}`),
+          this.http.get<MatchingRunDTO>(`/api/matchings/runs/${runId}`).pipe(
+            // a single transient failure (e.g. a 502 during a deploy) shouldn't stop polling for the run itself
+            catchError(() => of(null)),
+          ),
         ),
-        filter((run) => run.finishedAt !== null || run.failedAt !== null),
+        filter(
+          (run): run is MatchingRunDTO =>
+            run !== null && (run.finishedAt !== null || run.failedAt !== null),
+        ),
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe({
-        next: (run) => {
-          if (run.finishedAt) this.lastRun.set(run);
-          this.runState.set(run.failedAt ? 'error' : 'success');
-        },
-        error: () => this.runState.set('error'),
+      .subscribe((run) => {
+        if (run.finishedAt) this.lastRun.set(run);
+        this.runState.set(run.failedAt ? 'error' : 'success');
       });
   }
 }
