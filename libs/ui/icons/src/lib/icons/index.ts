@@ -1,3 +1,4 @@
+export * from './clock/icon.clock';
 export * from './home/icon.home';
 export * from './info/icon.info';
 export * from './mail/icon.mail';
