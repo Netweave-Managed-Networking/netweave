@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { types } from 'pg';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
@@ -12,6 +13,12 @@ import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
 
 dotenv.config({ path: '.env', override: process.env.NODE_ENV === 'e2e.api' }); // necessary to load env vars here for typeorm CLI: `npm run typeorm migration:generate -- -d ./apps/netweave-api/src/app/db/db.data-source.ts init`
+
+// timestamp (no time zone) columns always hold a UTC instant, but pg's default parser reads them back using
+// the process' local timezone instead of UTC; force UTC so that's correct on a non-UTC host
+types.setTypeParser(1114 /* timestamp */, (value) =>
+  new Date(value.replace(' ', 'T') + 'Z'),
+);
 
 export default new DataSource({
   // main

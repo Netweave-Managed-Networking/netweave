@@ -467,9 +467,27 @@ describe('MatchingsService', () => {
   });
 
   describe('getRunHistory', () => {
-    it('returns the timestamps and status of past runs, newest first', async () => {
-      const repository = {
-        find: jest.fn().mockResolvedValue([
+    const createRepository = (
+      runs: unknown[],
+      total: number,
+      matchingCounts: Record<number, number> = {},
+    ) => ({
+      findAndCount: jest.fn().mockResolvedValue([runs, total]),
+      manager: {
+        count: jest.fn((_entity: unknown, options: unknown) =>
+          Promise.resolve(
+            matchingCounts[
+              (options as { where: { matchingRunId: number } }).where
+                .matchingRunId
+            ] ?? 0,
+          ),
+        ),
+      },
+    });
+
+    it('returns a page of the timestamps, status and matching count of past runs, newest first', async () => {
+      const repository = createRepository(
+        [
           {
             id: 9,
             createdAt: new Date('2026-09-29T10:00:00Z'),
@@ -482,40 +500,112 @@ describe('MatchingsService', () => {
             finishedAt: null,
             failedAt: new Date('2026-09-28T10:05:00Z'),
           },
-        ]),
-      };
+        ],
+        2,
+        { 9: 12, 8: 0 },
+      );
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
       );
 
-      expect(await service.getRunHistory()).toEqual([
-        {
-          id: 9,
-          createdAt: new Date('2026-09-29T10:00:00Z'),
-          finishedAt: new Date('2026-09-29T10:05:00Z'),
-          failedAt: null,
-        },
-        {
-          id: 8,
-          createdAt: new Date('2026-09-28T10:00:00Z'),
-          finishedAt: null,
-          failedAt: new Date('2026-09-28T10:05:00Z'),
-        },
-      ]);
-      expect(repository.find).toHaveBeenCalledWith({ order: { id: 'DESC' } });
+      expect(await service.getRunHistory(1, 20)).toEqual({
+        items: [
+          {
+            id: 9,
+            createdAt: new Date('2026-09-29T10:00:00Z'),
+            finishedAt: new Date('2026-09-29T10:05:00Z'),
+            failedAt: null,
+            matchingCount: 12,
+          },
+          {
+            id: 8,
+            createdAt: new Date('2026-09-28T10:00:00Z'),
+            finishedAt: null,
+            failedAt: new Date('2026-09-28T10:05:00Z'),
+            matchingCount: 0,
+          },
+        ],
+        page: 1,
+        pageSize: 20,
+        total: 2,
+      });
+      expect(repository.findAndCount).toHaveBeenCalledWith({
+        order: { id: 'DESC' },
+        skip: 0,
+        take: 20,
+      });
+      expect(repository.manager.count).toHaveBeenCalledWith(Matching, {
+        where: { matchingRunId: 9 },
+      });
+      expect(repository.manager.count).toHaveBeenCalledWith(Matching, {
+        where: { matchingRunId: 8 },
+      });
     });
 
-    it('returns an empty array when there is no run yet', async () => {
-      const repository = { find: jest.fn().mockResolvedValue([]) };
+    it('skips ahead for later pages', async () => {
+      const repository = createRepository([], 45);
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
       );
 
-      expect(await service.getRunHistory()).toEqual([]);
+      const result = await service.getRunHistory(3, 20);
+
+      expect(repository.findAndCount).toHaveBeenCalledWith({
+        order: { id: 'DESC' },
+        skip: 40,
+        take: 20,
+      });
+      expect(result).toMatchObject({ page: 3, pageSize: 20, total: 45 });
+    });
+
+    it('caps the page size regardless of what is requested', async () => {
+      const repository = createRepository([], 0);
+      service = new MatchingsService(
+        repository as unknown as Repository<MatchingRun>,
+        membersService as unknown as MembersService,
+        strategy,
+      );
+
+      await service.getRunHistory(1, 1000);
+
+      expect(repository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({ take: 100 }),
+      );
+    });
+
+    it('clamps a page below 1 up to the first page', async () => {
+      const repository = createRepository([], 0);
+      service = new MatchingsService(
+        repository as unknown as Repository<MatchingRun>,
+        membersService as unknown as MembersService,
+        strategy,
+      );
+
+      await service.getRunHistory(0, 20);
+
+      expect(repository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({ skip: 0 }),
+      );
+    });
+
+    it('returns an empty page when there is no run yet', async () => {
+      const repository = createRepository([], 0);
+      service = new MatchingsService(
+        repository as unknown as Repository<MatchingRun>,
+        membersService as unknown as MembersService,
+        strategy,
+      );
+
+      expect(await service.getRunHistory(1, 20)).toEqual({
+        items: [],
+        page: 1,
+        pageSize: 20,
+        total: 0,
+      });
     });
   });
 });

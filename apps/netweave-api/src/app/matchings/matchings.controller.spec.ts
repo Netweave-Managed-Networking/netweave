@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
+import { MatchingRunDTO } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
@@ -108,13 +108,25 @@ describe('MatchingsController', () => {
   });
 
   describe('getHistory', () => {
-    it('returns the run history', async () => {
-      const history: MatchingRunListItemDTO[] = [
-        { id: 3, createdAt, finishedAt: createdAt, failedAt: null },
-      ];
+    it('returns a page of run history', async () => {
+      const history = {
+        items: [
+          {
+            id: 3,
+            createdAt,
+            finishedAt: createdAt,
+            failedAt: null,
+            matchingCount: 6,
+          },
+        ],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      };
       matchingsService.getRunHistory?.mockResolvedValue(history);
 
-      expect(await controller.getHistory()).toEqual(history);
+      expect(await controller.getHistory(1, 20)).toEqual(history);
+      expect(matchingsService.getRunHistory).toHaveBeenCalledWith(1, 20);
     });
   });
 });
