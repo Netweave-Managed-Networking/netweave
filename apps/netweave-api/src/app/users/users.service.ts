@@ -35,4 +35,22 @@ export class UsersService {
 
     return await this.repository.save({ ...user, role });
   }
+
+  /**
+   * @throws ForbiddenException when an admin tries to remove their own account (prevents admin lockout)
+   * @throws NotFoundException when no user with the given id exists
+   */
+  public async remove(
+    id: UserDTO['id'],
+    actingUserId: UserDTO['id'],
+  ): Promise<true> {
+    if (id === actingUserId)
+      throw new ForbiddenException('You cannot remove your own account');
+
+    const user = await this.repository.findOneBy({ id });
+    if (!user) throw new NotFoundException(`User ${id} not found`);
+
+    await this.repository.remove(user);
+    return true;
+  }
 }

@@ -25,6 +25,10 @@ describe('UserRolesComponent', () => {
   let http: HttpClient;
 
   beforeEach(async () => {
+    // JSDOM does not support dialog APIs
+    HTMLDialogElement.prototype.showModal = vi.fn();
+    HTMLDialogElement.prototype.close = vi.fn();
+
     await TestBed.configureTestingModule({
       imports: [UserRolesComponent],
       providers: [provideHttpClient()],
@@ -56,6 +60,10 @@ describe('UserRolesComponent', () => {
 
   function saveButton(row: HTMLElement) {
     return row.querySelector('.user-roles__save') as HTMLButtonElement;
+  }
+
+  function removeButton(row: HTMLElement) {
+    return row.querySelector('.user-remove__open') as HTMLButtonElement;
   }
 
   it('shows the current role of every user', async () => {
@@ -125,5 +133,31 @@ describe('UserRolesComponent', () => {
 
     const toast = fixture.nativeElement.querySelector('.user-roles__toast');
     expect(toast.querySelector('.alert-error')).toBeTruthy();
+  });
+
+  it('does not allow removing yourself', async () => {
+    const fixture = await create();
+
+    const [adminRow] = rows(fixture);
+    expect(removeButton(adminRow).disabled).toBe(true);
+  });
+
+  it('removes the user from the list and shows a success toast', async () => {
+    const fixture = await create();
+    vi.spyOn(http, 'delete').mockReturnValue(of(true));
+    const [, editorRow] = rows(fixture);
+
+    removeButton(editorRow).click();
+    fixture.detectChanges();
+    editorRow
+      .querySelector('.user-remove__confirm')
+      ?.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    expect(rows(fixture)).toHaveLength(1);
+
+    const toast = fixture.nativeElement.querySelector('.user-roles__toast');
+    expect(toast.querySelector('.alert-success')).toBeTruthy();
+    expect(toast.textContent).toContain(editor.email);
   });
 });

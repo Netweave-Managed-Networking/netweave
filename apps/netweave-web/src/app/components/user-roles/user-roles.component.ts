@@ -18,6 +18,7 @@ import {
 import { catchError, finalize, firstValueFrom, of, take, tap } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { USER_ROLE_LABELS } from '../../types/user-role-labels';
+import { UserRemoveComponent } from '../user-remove/user-remove.component';
 
 type Toast = { kind: 'success' | 'error'; message: string };
 
@@ -25,7 +26,7 @@ const TOAST_DURATION_MS = 3000;
 
 @Component({
   selector: 'app-user-roles',
-  imports: [DatePipe],
+  imports: [DatePipe, UserRemoveComponent],
   templateUrl: './user-roles.component.html',
 })
 export class UserRolesComponent {
@@ -99,6 +100,16 @@ export class UserRolesComponent {
         finalize(() => this.pendingUserId.set(null)),
       )
       .subscribe();
+  }
+
+  protected removeUser(user: UserDTO) {
+    this.usersResponse.update((items) =>
+      items?.filter((i) => i.id !== user.id),
+    );
+    this.showToast({
+      kind: 'success',
+      message: `${user.email} wurde entfernt.`,
+    });
   }
 
   private discardUnsavedRole(userId: UserDTO['id']) {

@@ -21,12 +21,13 @@ const mockEditor: UserDTO = {
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let usersService: Partial<Record<'all' | 'updateRole', jest.Mock>>;
+  let usersService: Partial<Record<'all' | 'updateRole' | 'remove', jest.Mock>>;
 
   beforeEach(async () => {
     usersService = {
       all: jest.fn().mockResolvedValue([mockAdmin, mockEditor]),
       updateRole: jest.fn().mockResolvedValue({ ...mockEditor, role: 'admin' }),
+      remove: jest.fn().mockResolvedValue(true),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -59,6 +60,15 @@ describe('UsersController', () => {
 
       expect(usersService.updateRole).toHaveBeenCalledWith(8, 'admin', 7);
       expect(result.role).toBe('admin');
+    });
+  });
+
+  describe('remove', () => {
+    it('removes the user using the service with the acting user id', async () => {
+      const result = await controller.remove(mockAuthUser, 8);
+
+      expect(usersService.remove).toHaveBeenCalledWith(8, 7);
+      expect(result).toBe(true);
     });
   });
 });
