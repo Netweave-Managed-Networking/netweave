@@ -1,0 +1,67 @@
+<div class="user-remove">
+  <div class="tooltip tooltip-left tooltip-error">
+    <div class="tooltip-content font-bold">
+      {{
+        disabled() ? 'Eigener Account kann nicht entfernt werden' : 'Entfernen'
+      }}
+    </div>
+    <button
+      class="user-remove__open btn btn-square"
+      [disabled]="disabled()"
+      (click)="urModalRemove.showModal()"
+    >
+      <icon-trash />
+    </button>
+  </div>
+
+  <dialog #urModalRemove class="user-remove__modal modal whitespace-normal">
+    <div class="user-remove__modal-box modal-box">
+      <h3 class="text-lg font-bold">Netzwerkberater entfernen</h3>
+
+      <div class="flex flex-col justify-center gap-2 p-4 w-full">
+        @let user = toRemove();
+
+        <p class="text-justify">
+          Soll der Netzwerkberater
+          <strong
+            ><em>{{ user.email }}</em></strong
+          >
+          entfernt werden?
+        </p>
+        <p class="text-justify">
+          Der Zugang wird sofort entzogen und
+          <strong
+            ><em>{{ user.email }}</em></strong
+          >
+          kann sich nicht mehr einloggen.
+        </p>
+
+        @if (loadingState() === 'error') {
+          <div role="alert" class="alert alert-error">
+            <span
+              >Der Netzwerkberater konnte nicht entfernt werden. Bitte versuche
+              es erneut.</span
+            >
+          </div>
+        }
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="user-remove__cancel btn">Abbrechen</button>
+        </form>
+        <button
+          class="user-remove__confirm btn btn-error"
+          [disabled]="loadingState() === 'pending'"
+          (click)="submit(urModalRemove)"
+        >
+          @if (loadingState() === 'pending') {
+            <span class="loading loading-spinner loading-xs"></span>
+          }
+          Entfernen
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>

@@ -16,6 +16,7 @@
             <th class="user-roles__created-at-th">Registriert am</th>
             <th class="user-roles__role-th">Rolle</th>
             <th class="user-roles__save-th w-1"></th>
+            <th class="user-roles__remove-th w-1"></th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +67,13 @@
                   }
                   Speichern
                 </button>
+              </td>
+              <td class="user-roles__remove-td w-1">
+                <app-user-remove
+                  [toRemove]="user"
+                  [disabled]="isMe"
+                  (removed)="removeUser($event)"
+                />
               </td>
             </tr>
           }

@@ -13,6 +13,7 @@ import {
 } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { authExpiredInterceptor } from './interceptors/auth-expired.interceptor';
 import { ssrCookieInterceptor } from './interceptors/ssr-cookie.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -20,6 +21,9 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
-    provideHttpClient(withFetch(), withInterceptors([ssrCookieInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([ssrCookieInterceptor, authExpiredInterceptor]),
+    ),
   ],
 };
