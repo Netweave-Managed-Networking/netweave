@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MatchingRunDTO } from '@netweave/api-types';
+import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
 import { EntityManager, Repository } from 'typeorm';
 import { MembersService } from '../members/members.service';
 import { hasAnswers } from './matching-input';
@@ -44,6 +44,18 @@ export class MatchingsService {
       where: { matchingRunId: latest.id },
     });
     return toMatchingRunDTO(latest, matchingCount);
+  }
+
+  /** timestamps of past runs, newest first; a run only exists here once it has completed, see calculateAll */
+  public async getRunHistory(): Promise<MatchingRunListItemDTO[]> {
+    const runs = await this.matchingRunsRepository.find({
+      order: { id: 'DESC' },
+    });
+    return runs.map(({ id, createdAt, finishedAt }) => ({
+      id,
+      createdAt,
+      finishedAt,
+    }));
   }
 
   /**

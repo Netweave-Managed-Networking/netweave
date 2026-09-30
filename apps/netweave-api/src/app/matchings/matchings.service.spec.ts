@@ -245,4 +245,53 @@ describe('MatchingsService', () => {
       expect(manager.count).not.toHaveBeenCalled();
     });
   });
+
+  describe('getRunHistory', () => {
+    it('returns the timestamps of past runs, newest first', async () => {
+      const repository = {
+        find: jest.fn().mockResolvedValue([
+          {
+            id: 9,
+            createdAt: new Date('2026-09-29T10:00:00Z'),
+            finishedAt: new Date('2026-09-29T10:05:00Z'),
+          },
+          {
+            id: 8,
+            createdAt: new Date('2026-09-28T10:00:00Z'),
+            finishedAt: new Date('2026-09-28T10:05:00Z'),
+          },
+        ]),
+      };
+      service = new MatchingsService(
+        repository as unknown as Repository<MatchingRun>,
+        membersService as unknown as MembersService,
+        strategy,
+      );
+
+      expect(await service.getRunHistory()).toEqual([
+        {
+          id: 9,
+          createdAt: new Date('2026-09-29T10:00:00Z'),
+          finishedAt: new Date('2026-09-29T10:05:00Z'),
+        },
+        {
+          id: 8,
+          createdAt: new Date('2026-09-28T10:00:00Z'),
+          finishedAt: new Date('2026-09-28T10:05:00Z'),
+        },
+      ]);
+      expect(repository.find).toHaveBeenCalledWith({ order: { id: 'DESC' } });
+    });
+
+    it('returns an empty array when there is no run yet', async () => {
+      const repository = { find: jest.fn().mockResolvedValue([]) };
+      service = new MatchingsService(
+        repository as unknown as Repository<MatchingRun>,
+        membersService as unknown as MembersService,
+        strategy,
+      );
+
+      expect(await service.getRunHistory()).toEqual([]);
+    });
+  });
 });

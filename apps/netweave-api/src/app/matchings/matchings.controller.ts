@@ -6,7 +6,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { MatchingRunDTO } from '@netweave/api-types';
+import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsService } from './matchings.service';
 
@@ -32,5 +32,11 @@ export class MatchingsController {
       throw new NotFoundException('No matching run found');
     }
     return run;
+  }
+
+  /** history of past runs, newest first */
+  @Get('runs')
+  public async getHistory(): Promise<MatchingRunListItemDTO[]> {
+    return this.matchingsService.getRunHistory();
   }
 }
