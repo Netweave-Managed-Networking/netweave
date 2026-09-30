@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatchingRunDTO } from '@netweave/api-types';
+import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
@@ -18,13 +18,14 @@ const mockRun: MatchingRunDTO = {
 describe('MatchingsController', () => {
   let controller: MatchingsController;
   let matchingsService: Partial<
-    Record<'calculateAll' | 'getLatestRun', jest.Mock>
+    Record<'calculateAll' | 'getLatestRun' | 'getRunHistory', jest.Mock>
   >;
 
   beforeEach(async () => {
     matchingsService = {
       calculateAll: jest.fn().mockResolvedValue(mockRun),
       getLatestRun: jest.fn().mockResolvedValue(mockRun),
+      getRunHistory: jest.fn().mockResolvedValue([]),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -66,6 +67,17 @@ describe('MatchingsController', () => {
       await expect(controller.getLatest()).rejects.toBeInstanceOf(
         NotFoundException,
       );
+    });
+  });
+
+  describe('getHistory', () => {
+    it('returns the run history', async () => {
+      const history: MatchingRunListItemDTO[] = [
+        { id: 3, createdAt, finishedAt: createdAt },
+      ];
+      matchingsService.getRunHistory?.mockResolvedValue(history);
+
+      expect(await controller.getHistory()).toEqual(history);
     });
   });
 });

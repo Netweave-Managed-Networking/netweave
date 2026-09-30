@@ -19,6 +19,11 @@ describe('MatchingRunComponent', () => {
 
     fixture = TestBed.createComponent(MatchingRunComponent);
     httpTesting = TestBed.inject(HttpTestingController);
+
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/latest' })
+      .flush(null, { status: 404, statusText: 'Not Found' });
+
     fixture.detectChanges();
   });
 
@@ -33,6 +38,12 @@ describe('MatchingRunComponent', () => {
   const result = () =>
     (
       fixture.nativeElement.querySelector('.matching-run__result') as
+        | HTMLElement
+        | undefined
+    )?.textContent?.trim();
+  const lastRun = () =>
+    (
+      fixture.nativeElement.querySelector('.matching-run__last-run') as
         | HTMLElement
         | undefined
     )?.textContent?.trim();
@@ -80,5 +91,32 @@ describe('MatchingRunComponent', () => {
     fixture.detectChanges();
 
     expect(result()).toBe('Berechnung fehlgeschlagen.');
+  });
+
+  it('shows nothing when no run has happened yet', () => {
+    expect(lastRun()).toBeUndefined();
+  });
+
+  it('shows the last persisted run on load, before anyone clicks the button', async () => {
+    const localFixture = TestBed.createComponent(MatchingRunComponent);
+    httpTesting
+      .expectOne({ method: 'GET', url: '/api/matchings/runs/latest' })
+      .flush({
+        id: 5,
+        createdAt: new Date('2026-09-29T10:00:00Z'),
+        updatedAt: new Date('2026-09-29T10:00:00Z'),
+        finishedAt: new Date('2026-09-29T10:00:00Z'),
+        matchingCount: 42,
+      } satisfies MatchingRunDTO);
+    await localFixture.whenStable();
+    localFixture.detectChanges();
+
+    const lastRunText = (
+      localFixture.nativeElement.querySelector(
+        '.matching-run__last-run',
+      ) as HTMLElement
+    ).textContent?.trim();
+    expect(lastRunText).toContain('29.09.2026');
+    expect(lastRunText).toContain('42 Matchings');
   });
 });
