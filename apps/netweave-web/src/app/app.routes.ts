@@ -52,6 +52,14 @@ export const appRoutes: Routes = [
           ).then((m) => m.InvitationDashboardComponent),
       },
       {
+        path: 'matching-history',
+        canActivate: [authenticatedGuard],
+        loadComponent: () =>
+          import(
+            './components/matching-history/matching-history.component'
+          ).then((m) => m.MatchingHistoryComponent),
+      },
+      {
         path: 'settings',
         canActivate: [adminGuard],
         loadComponent: () =>

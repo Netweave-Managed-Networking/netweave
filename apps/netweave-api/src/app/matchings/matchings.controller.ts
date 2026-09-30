@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Controller,
+  DefaultValuePipe,
   Get,
   HttpCode,
   HttpStatus,
@@ -8,11 +9,18 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
+import {
+  MatchingRunDTO,
+  MatchingRunListItemDTO,
+  PaginatedDTO,
+} from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { MatchingsService } from './matchings.service';
+
+const DEFAULT_HISTORY_PAGE_SIZE = 20;
 
 @Controller('matchings')
 @UseGuards(AuthGuard)
@@ -64,9 +72,13 @@ export class MatchingsController {
     return run;
   }
 
-  /** history of past runs, newest first */
+  /** history of past runs, newest first, paginated */
   @Get('runs')
-  public async getHistory(): Promise<MatchingRunListItemDTO[]> {
-    return this.matchingsService.getRunHistory();
+  public async getHistory(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('pageSize', new DefaultValuePipe(DEFAULT_HISTORY_PAGE_SIZE), ParseIntPipe)
+    pageSize: number,
+  ): Promise<PaginatedDTO<MatchingRunListItemDTO>> {
+    return this.matchingsService.getRunHistory(page, pageSize);
   }
 }

@@ -5,10 +5,12 @@ import { Matching } from './matching.entity';
 /** one calculation of all matchings; older runs are kept as history */
 @Entity({ name: 'matching_runs' })
 export class MatchingRun extends BaseEntity {
-  @Column({ name: 'finished_at', type: 'timestamp', nullable: true })
+  // timestamptz, not timestamp: these are set from application code, and a plain timestamp column silently
+  // drops the timezone offset on write
+  @Column({ name: 'finished_at', type: 'timestamptz', nullable: true })
   declare public finishedAt: Date | null; // null while the run is still calculating
 
-  @Column({ name: 'failed_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'failed_at', type: 'timestamptz', nullable: true })
   declare public failedAt: Date | null; // set instead of finishedAt if the run errored out
 
   @OneToMany(() => Matching, (matching) => matching.matchingRun)

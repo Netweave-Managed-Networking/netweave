@@ -1,7 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MatchingRunDTO, MatchingRunListItemDTO } from '@netweave/api-types';
+import {
+  MatchingRunDTO,
+  MatchingRunListItemDTO,
+  PaginatedDTO,
+} from '@netweave/api-types';
 import {
   EntityManager,
   FindOptionsWhere,
@@ -18,6 +22,7 @@ import { Matching } from './matching.entity';
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
 const STALE_RUN_THRESHOLD_MS = 60 * 60 * 1000; // generously longer than any realistic run; recovers from a run whose process crashed/restarted mid-computation, which would otherwise stay "in progress" forever and block every future run
+const MAX_HISTORY_PAGE_SIZE = 100; // caps what a client can request per page, regardless of the requested pageSize
 
 @Injectable()
 export class MatchingsService {
@@ -96,17 +101,45 @@ export class MatchingsService {
     return toMatchingRunDTO(run, matchingCount);
   }
 
-  /** timestamps of past runs, newest first; includes in-progress and failed runs */
-  public async getRunHistory(): Promise<MatchingRunListItemDTO[]> {
-    const runs = await this.matchingRunsRepository.find({
+  /**
+   * timestamps of past runs, newest first, paginated; includes in-progress and failed runs.
+   * page is 1-based; pageSize is capped at MAX_HISTORY_PAGE_SIZE regardless of what is requested.
+   */
+  public async getRunHistory(
+    page: number,
+    pageSize: number,
+  ): Promise<PaginatedDTO<MatchingRunListItemDTO>> {
+    const clampedPage = Math.max(page, 1);
+    const clampedPageSize = Math.min(
+      Math.max(pageSize, 1),
+      MAX_HISTORY_PAGE_SIZE,
+    );
+
+    const [runs, total] = await this.matchingRunsRepository.findAndCount({
       order: { id: 'DESC' },
+      skip: (clampedPage - 1) * clampedPageSize,
+      take: clampedPageSize,
     });
-    return runs.map(({ id, createdAt, finishedAt, failedAt }) => ({
-      id,
-      createdAt,
-      finishedAt,
-      failedAt,
-    }));
+
+    const manager = this.matchingRunsRepository.manager;
+    const items = await Promise.all(
+      runs.map(async ({ id, createdAt, finishedAt, failedAt }) => ({
+        id,
+        createdAt,
+        finishedAt,
+        failedAt,
+        matchingCount: await manager.count(Matching, {
+          where: { matchingRunId: id },
+        }),
+      })),
+    );
+
+    return {
+      items,
+      page: clampedPage,
+      pageSize: clampedPageSize,
+      total,
+    };
   }
 
   /**
