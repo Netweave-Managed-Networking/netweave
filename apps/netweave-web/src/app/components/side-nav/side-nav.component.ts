@@ -1,13 +1,14 @@
 import { Component, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IconHome, IconMail, IconSettings } from '@netweave/icons';
+import { IconClock, IconHome, IconMail, IconSettings } from '@netweave/icons';
 import { HasRoleDirective } from '../../directives/has-role/has-role.directive';
 import { HasSideNavId } from '../../interfaces/has-side-nav-id.interface';
 
 @Component({
   selector: 'app-side-nav',
   imports: [
+    IconClock,
     IconHome,
     IconMail,
     IconSettings,

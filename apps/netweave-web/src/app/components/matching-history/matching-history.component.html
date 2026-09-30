@@ -1,0 +1,97 @@
+<div class="matching-history w-full max-w-3xl m-auto">
+  <div
+    class="matching-history__title w-full flex flex-col items-center pb-4 gap-2"
+  >
+    <h1>Matching-Verlauf</h1>
+  </div>
+
+  <div
+    class="matching-history__container rounded-box border border-base-content/5 bg-base-100 p-4"
+  >
+    @if (loading()) {
+      <div class="matching-history__loading flex justify-center p-8">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else if (runs().length === 0) {
+      <p
+        class="matching-history__empty text-sm text-base-content/70 text-center p-8"
+      >
+        Es wurde noch keine Matching-Berechnung durchgeführt.
+      </p>
+    } @else {
+      <ul class="matching-history__timeline timeline timeline-vertical">
+        @for (run of runs(); track run.id; let first = $first, last = $last) {
+          @let status = statusConfig[statusOf(run)];
+
+          <li>
+            @if (!first) {
+              <hr />
+            }
+            <div class="timeline-start text-sm text-base-content/70">
+              {{ run.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+            </div>
+            <div class="timeline-middle">
+              <div [class]="'status status-lg ' + status.colorClass"></div>
+            </div>
+            <div class="matching-history__entry timeline-end timeline-box">
+              <div class="font-semibold">
+                Durchlauf #{{ run.id }}: {{ status.label }}
+              </div>
+              <div class="matching-history__matching-count text-xs text-base-content/70">
+                {{ run.matchingCount }} Matchings
+              </div>
+              @let duration = durationOf(run);
+              @if (duration) {
+                <div class="matching-history__duration text-xs text-base-content/70">
+                  Dauer: {{ duration }}
+                </div>
+              } @else {
+                <div class="matching-history__duration text-xs text-base-content/70">
+                  Läuft noch...
+                </div>
+              }
+              @if (run.finishedAt) {
+                <div class="text-xs text-base-content/70">
+                  Beendet: {{ run.finishedAt | date: 'dd.MM.yyyy HH:mm' }}
+                </div>
+              }
+              @if (run.failedAt) {
+                <div class="text-xs text-error">
+                  Fehlgeschlagen:
+                  {{ run.failedAt | date: 'dd.MM.yyyy HH:mm' }}
+                </div>
+              }
+            </div>
+            @if (!last) {
+              <hr />
+            }
+          </li>
+        }
+      </ul>
+
+      <div class="matching-history__pagination flex justify-center pt-4">
+        <div class="join">
+          <button
+            type="button"
+            class="matching-history__prev-page join-item btn"
+            [disabled]="page() <= 1"
+            (click)="previousPage()"
+          >
+            «
+          </button>
+          <button type="button" class="join-item btn btn-disabled">
+            Seite {{ page() }} / {{ totalPages() }}
+          </button>
+          <button
+            type="button"
+            class="matching-history__next-page join-item btn"
+            [disabled]="page() >= totalPages()"
+            (click)="nextPage()"
+          >
+            »
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
