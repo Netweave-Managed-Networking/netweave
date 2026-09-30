@@ -8,6 +8,15 @@
     vom automatischen Zeitplan.
   </p>
 
+  @if (lastRun(); as lastRun) {
+    <p class="matching-run__last-run text-sm text-base-content/70">
+      Letzte Berechnung: {{ lastRun.finishedAt | date: 'dd.MM.yyyy HH:mm' }} ({{
+        lastRun.matchingCount
+      }}
+      Matchings)
+    </p>
+  }
+
   <div class="flex items-center gap-2">
     <button
       class="matching-run__button btn btn-accent"
