@@ -15,6 +15,7 @@ import { MembersAddInvitation1790300000000 } from './migrations/1790300000000-me
 import { MemberResourcesRequirementsCreate1790400000000 } from './migrations/1790400000000-member-resources-requirements-create';
 import { UserEmailWhitelistsAddRole1790500000000 } from './migrations/1790500000000-user-email-whitelists-add-role';
 import { MatchingsCreate1790600000000 } from './migrations/1790600000000-matchings-create';
+import { MatchingRunsAddFailedAt1790700000000 } from './migrations/1790700000000-matching-runs-add-failed-at';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -34,4 +35,5 @@ export const Migrations = [
   MemberResourcesRequirementsCreate1790400000000,
   UserEmailWhitelistsAddRole1790500000000,
   MatchingsCreate1790600000000,
+  MatchingRunsAddFailedAt1790700000000,
 ];
