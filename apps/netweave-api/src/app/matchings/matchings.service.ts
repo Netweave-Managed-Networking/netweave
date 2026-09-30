@@ -27,7 +27,7 @@ export class MatchingsService {
     this.logger.log(`MatchingsService initialized`);
   }
 
-  @Cron(process.env.MATCHING_COMPUTATION_CRON_SCHEDULE ?? '0 * * * *') // MATCHING_COMPUTATION_CRON_SCHEDULE or default: every hour
+  @Cron(process.env.MATCHING_COMPUTATION_CRON_SCHEDULE ?? '0 0 * * 0') // MATCHING_COMPUTATION_CRON_SCHEDULE or default: once a week, Sunday midnight
   public async calculateScheduled(): Promise<void> {
     try {
       const run = await this.beginRun(false);
