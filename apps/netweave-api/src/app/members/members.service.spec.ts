@@ -1,5 +1,5 @@
 import { MemberUpsertDTO } from '@netweave/api-types';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
@@ -8,6 +8,7 @@ import { MembersService } from './members.service';
 type MockManager = Partial<Record<keyof EntityManager, jest.Mock>>;
 
 const createMockManager = (): MockManager => ({
+  exists: jest.fn(),
   findOne: jest.fn(),
   save: jest.fn((_target, entity) => Promise.resolve({ id: 7, ...entity })),
   upsert: jest.fn(),
@@ -29,6 +30,7 @@ describe('MembersService', () => {
     manager = createMockManager();
     const repository = {
       manager: {
+        exists: manager.exists,
         transaction: jest.fn((work) => work(manager)),
       },
     };
@@ -114,7 +116,10 @@ describe('MembersService', () => {
             requirements: 'Ackerfläche',
           },
         ],
-        ['memberId', 'category'],
+        {
+          conflictPaths: ['memberId', 'category'],
+          skipUpdateIfNoValuesChanged: true,
+        },
       );
     });
 
@@ -150,6 +155,20 @@ describe('MembersService', () => {
         { id: 123, answeredDate: IsNull() },
         { answeredDate: expect.any(Date) },
       );
+    });
+  });
+
+  describe('haveResourcesRequirementsChangedSince', () => {
+    it('checks for resources or requirements updated after the given date', async () => {
+      const since = new Date('2026-09-28T10:00:00Z');
+      manager.exists?.mockResolvedValue(true);
+
+      expect(await service.haveResourcesRequirementsChangedSince(since)).toBe(
+        true,
+      );
+      expect(manager.exists).toHaveBeenCalledWith(MemberResourceRequirement, {
+        where: { updatedAt: MoreThan(since) },
+      });
     });
   });
 });
