@@ -1,5 +1,13 @@
 {
-  "cSpell.words": ["netweave"],
+  "cSpell.language": "en,de",
+  "cSpell.words": ["adhocracy", "netweave", "selectables"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "css.lint.unknownAtRules": "ignore" // // allow tailwind syntax "@plugin" as css rule for daisyui
+  "css.lint.unknownAtRules": "ignore", // allow tailwind syntax "@plugin" as css rule for daisyui
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.proseWrap": "never",
+  "html.format.wrapLineLength": 1200,
+  "tailwindCSS.experimental.configFile": "apps/netweave-web/src/styles.css",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
