@@ -7,12 +7,12 @@ import { catchError, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
 
 @Component({
-  selector: 'app-user-invitation-delete',
+  selector: 'app-manager-invitation-delete',
   imports: [IconTrash],
-  templateUrl: './user-invitation-delete.component.html',
-  styleUrls: ['./user-invitation-delete.component.scss'],
+  templateUrl: './manager-invitation-delete.component.html',
+  styleUrls: ['./manager-invitation-delete.component.scss'],
 })
-export class UserInvitationDeleteComponent {
+export class ManagerInvitationDeleteComponent {
   private http = inject(HttpClient);
 
   public toDelete = input.required<UserEmailWhitelistDTO>();

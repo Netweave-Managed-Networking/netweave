@@ -3,9 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
 import { of } from 'rxjs';
-import { UserInvitationDeleteComponent } from './user-invitation-delete.component';
+import { ManagerInvitationDeleteComponent } from './manager-invitation-delete.component';
 
-describe('UserInvitationDeleteComponent', () => {
+describe('ManagerInvitationDeleteComponent', () => {
   let http: HttpClient;
   const mockToDelete = {
     id: 1,
@@ -18,7 +18,7 @@ describe('UserInvitationDeleteComponent', () => {
     HTMLDialogElement.prototype.close = vi.fn();
 
     await TestBed.configureTestingModule({
-      imports: [UserInvitationDeleteComponent],
+      imports: [ManagerInvitationDeleteComponent],
       providers: [provideHttpClient()],
     }).compileComponents();
 
@@ -26,7 +26,7 @@ describe('UserInvitationDeleteComponent', () => {
   });
 
   function create() {
-    const fixture = TestBed.createComponent(UserInvitationDeleteComponent);
+    const fixture = TestBed.createComponent(ManagerInvitationDeleteComponent);
 
     fixture.componentRef.setInput('toDelete', mockToDelete);
     fixture.detectChanges();
@@ -37,12 +37,12 @@ describe('UserInvitationDeleteComponent', () => {
     const fixture = create();
 
     const dialog: HTMLDialogElement = fixture.nativeElement.querySelector(
-      '.user-invitation-delete__modal',
+      '.manager-invitation-delete__modal',
     );
     const showModalSpy = vi.spyOn(dialog, 'showModal');
 
     const button = fixture.debugElement.query(
-      By.css('.user-invitation-delete__open'),
+      By.css('.manager-invitation-delete__open'),
     );
 
     button.nativeElement.click();
@@ -54,11 +54,11 @@ describe('UserInvitationDeleteComponent', () => {
     const fixture = create();
 
     const modalWarnText = fixture.nativeElement.querySelector(
-      '.user-invitation-delete__modal p strong',
+      '.manager-invitation-delete__modal p strong',
     );
 
     const button = fixture.debugElement.query(
-      By.css('.user-invitation-delete__open'),
+      By.css('.manager-invitation-delete__open'),
     );
 
     button.nativeElement.click();
@@ -73,14 +73,14 @@ describe('UserInvitationDeleteComponent', () => {
     const component = fixture.componentInstance;
 
     const dialog = fixture.nativeElement.querySelector(
-      '.user-invitation-delete__modal',
+      '.manager-invitation-delete__modal',
     );
     const httpSpy = vi.spyOn(http, 'delete').mockReturnValue(of(true));
     const emitSpy = vi.spyOn(component.deleted, 'emit');
     const closeSpy = vi.spyOn(dialog, 'close');
 
     const deleteBtn = fixture.nativeElement.querySelector(
-      '.user-invitation-delete__confirm',
+      '.manager-invitation-delete__confirm',
     );
     deleteBtn.click();
     fixture.detectChanges();
