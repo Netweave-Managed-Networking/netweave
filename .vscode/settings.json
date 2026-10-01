@@ -1,5 +1,5 @@
 {
   "cSpell.words": ["netweave"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "scss.lint.unknownAtRules": "ignore" // allow @plugin as scss rule for daisyui
+  "css.lint.unknownAtRules": "ignore" // // allow tailwind syntax "@plugin" as css rule for daisyui
 }
