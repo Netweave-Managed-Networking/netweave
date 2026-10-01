@@ -26,7 +26,7 @@ describe('SettingsComponent', () => {
     const fixture = create();
 
     expect(
-      fixture.nativeElement.querySelector('app-user-invitations'),
+      fixture.nativeElement.querySelector('app-manager-invitations'),
     ).toBeTruthy();
     expect(
       fixture.nativeElement.querySelector('app-mail-settings'),
@@ -44,7 +44,7 @@ describe('SettingsComponent', () => {
       fixture.nativeElement.querySelector('app-mail-settings'),
     ).toBeTruthy();
     expect(
-      fixture.nativeElement.querySelector('app-user-invitations'),
+      fixture.nativeElement.querySelector('app-manager-invitations'),
     ).toBeFalsy();
   });
 });

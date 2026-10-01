@@ -5,11 +5,11 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InvitationListItemDTO } from '@netweave/api-types';
-import { InvitationDashboardComponent } from './invitation-dashboard.component';
+import { MemberInvitationsComponent } from './member-invitations.component';
 
-describe('InvitationDashboardComponent', () => {
-  let component: InvitationDashboardComponent;
-  let fixture: ComponentFixture<InvitationDashboardComponent>;
+describe('MemberInvitationsComponent', () => {
+  let component: MemberInvitationsComponent;
+  let fixture: ComponentFixture<MemberInvitationsComponent>;
   let httpTesting: HttpTestingController;
 
   const mockInvitations: InvitationListItemDTO[] = [
@@ -47,11 +47,11 @@ describe('InvitationDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InvitationDashboardComponent],
+      imports: [MemberInvitationsComponent],
       providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InvitationDashboardComponent);
+    fixture = TestBed.createComponent(MemberInvitationsComponent);
     component = fixture.componentInstance;
     httpTesting = TestBed.inject(HttpTestingController);
   });
@@ -76,19 +76,19 @@ describe('InvitationDashboardComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(
-      compiled.querySelectorAll('.invitation-dashboard__email-td').length,
+      compiled.querySelectorAll('.member-invitations__email-td').length,
     ).toBe(5);
 
     expect(
-      compiled.querySelector('.invitation-dashboard__stat-awaiting .stat-value')
+      compiled.querySelector('.member-invitations__stat-awaiting .stat-value')
         ?.textContent,
     ).toContain('2');
     expect(
-      compiled.querySelector('.invitation-dashboard__stat-answered .stat-value')
+      compiled.querySelector('.member-invitations__stat-answered .stat-value')
         ?.textContent,
     ).toContain('1');
     expect(
-      compiled.querySelector('.invitation-dashboard__stat-failed .stat-value')
+      compiled.querySelector('.member-invitations__stat-failed .stat-value')
         ?.textContent,
     ).toContain('2');
   });
@@ -105,14 +105,14 @@ describe('InvitationDashboardComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(
-      compiled.querySelectorAll('.invitation-dashboard__email-td').length,
+      compiled.querySelectorAll('.member-invitations__email-td').length,
     ).toBe(0);
   });
 
   describe('sorting', () => {
     const emails = (compiled: HTMLElement) =>
       Array.from(
-        compiled.querySelectorAll('.invitation-dashboard__email-td'),
+        compiled.querySelectorAll('.member-invitations__email-td'),
       ).map((td) => td.textContent?.trim());
 
     const clickHeader = async (compiled: HTMLElement, thClass: string) => {
@@ -144,25 +144,25 @@ describe('InvitationDashboardComponent', () => {
       ]);
       expect(
         compiled
-          .querySelector('.invitation-dashboard__status-th')
+          .querySelector('.member-invitations__status-th')
           ?.getAttribute('aria-sort'),
       ).toBe('ascending');
     });
 
     it('renders the creation date as its own column', () => {
       expect(
-        compiled.querySelector('.invitation-dashboard__created-at-td')
+        compiled.querySelector('.member-invitations__created-at-td')
           ?.textContent,
       ).toContain('01.01.2026');
     });
 
     it('toggles the direction when the active column is clicked again', async () => {
-      await clickHeader(compiled, 'invitation-dashboard__status-th');
+      await clickHeader(compiled, 'member-invitations__status-th');
       expect(emails(compiled)[0]).toBe('expired@example.com');
     });
 
     it('sorts by email and creation date', async () => {
-      await clickHeader(compiled, 'invitation-dashboard__email-th');
+      await clickHeader(compiled, 'member-invitations__email-th');
       expect(emails(compiled)).toEqual([
         'answered@example.com',
         'dispatched@example.com',
@@ -171,9 +171,9 @@ describe('InvitationDashboardComponent', () => {
         'pending@example.com',
       ]);
 
-      await clickHeader(compiled, 'invitation-dashboard__created-at-th');
+      await clickHeader(compiled, 'member-invitations__created-at-th');
       expect(emails(compiled)[0]).toBe('failed@example.com');
-      await clickHeader(compiled, 'invitation-dashboard__created-at-th');
+      await clickHeader(compiled, 'member-invitations__created-at-th');
       expect(emails(compiled)[0]).toBe('expired@example.com');
     });
   });

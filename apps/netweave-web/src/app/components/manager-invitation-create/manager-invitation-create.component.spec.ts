@@ -2,9 +2,9 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { UserInvitationCreateComponent } from './user-invitation-create.component';
+import { ManagerInvitationCreateComponent } from './manager-invitation-create.component';
 
-describe('UserInvitationCreateComponent', () => {
+describe('ManagerInvitationCreateComponent', () => {
   let http: HttpClient;
 
   beforeEach(async () => {
@@ -13,7 +13,7 @@ describe('UserInvitationCreateComponent', () => {
     HTMLDialogElement.prototype.close = vi.fn();
 
     await TestBed.configureTestingModule({
-      imports: [UserInvitationCreateComponent],
+      imports: [ManagerInvitationCreateComponent],
       providers: [provideHttpClient()],
     }).compileComponents();
 
@@ -21,7 +21,7 @@ describe('UserInvitationCreateComponent', () => {
   });
 
   function create() {
-    const fixture = TestBed.createComponent(UserInvitationCreateComponent);
+    const fixture = TestBed.createComponent(ManagerInvitationCreateComponent);
     fixture.detectChanges();
     return fixture;
   }
@@ -30,12 +30,12 @@ describe('UserInvitationCreateComponent', () => {
     const fixture = create();
 
     const dialog = fixture.nativeElement.querySelector(
-      '.user-invitation-create__modal',
+      '.manager-invitation-create__modal',
     );
     const showModalSpy = vi.spyOn(dialog, 'showModal');
 
     const button = fixture.debugElement.query(
-      By.css('.user-invitation-create__open'),
+      By.css('.manager-invitation-create__open'),
     );
 
     button.nativeElement.click();
@@ -88,7 +88,7 @@ describe('UserInvitationCreateComponent', () => {
     fixture.detectChanges();
 
     const submit = fixture.nativeElement.querySelector(
-      '.user-invitation-create__confirm',
+      '.manager-invitation-create__confirm',
     );
     expect(submit.disabled).toBe(true);
   });
@@ -105,7 +105,7 @@ describe('UserInvitationCreateComponent', () => {
     fixture.detectChanges();
 
     const submit = fixture.nativeElement.querySelector(
-      '.user-invitation-create__confirm',
+      '.manager-invitation-create__confirm',
     );
     expect(submit.disabled).toBe(false);
   });
@@ -115,7 +115,7 @@ describe('UserInvitationCreateComponent', () => {
     const component = fixture.componentInstance;
 
     const dialog = fixture.nativeElement.querySelector(
-      '.user-invitation-create__modal',
+      '.manager-invitation-create__modal',
     );
     const closeSpy = vi.spyOn(dialog, 'close');
 
@@ -131,7 +131,7 @@ describe('UserInvitationCreateComponent', () => {
     fixture.detectChanges();
 
     const submit = fixture.nativeElement.querySelector(
-      '.user-invitation-create__confirm',
+      '.manager-invitation-create__confirm',
     );
     submit.click();
 
@@ -151,7 +151,7 @@ describe('UserInvitationCreateComponent', () => {
       .mockReturnValue(of({ id: 1, emailOrDomain: 'boss@example.com' }));
 
     const select = fixture.nativeElement.querySelector(
-      '.user-invitation-create__role',
+      '.manager-invitation-create__role',
     ) as HTMLSelectElement;
     expect(select.value).toBe('viewer');
 
@@ -163,7 +163,7 @@ describe('UserInvitationCreateComponent', () => {
     fixture.detectChanges();
 
     fixture.nativeElement
-      .querySelector('.user-invitation-create__confirm')
+      .querySelector('.manager-invitation-create__confirm')
       .click();
 
     expect(httpSpy).toHaveBeenCalledWith('/api/user-email-whitelists', {
@@ -183,7 +183,7 @@ describe('UserInvitationCreateComponent', () => {
     fixture.detectChanges();
 
     const cancel = fixture.nativeElement.querySelector(
-      '.user-invitation-create__cancel',
+      '.manager-invitation-create__cancel',
     );
     cancel.click();
 

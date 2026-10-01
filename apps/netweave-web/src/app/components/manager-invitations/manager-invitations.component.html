@@ -1,26 +1,26 @@
-<div class="user-invitations w-full max-w-6xl">
+<div class="manager-invitations w-full max-w-6xl">
   <div
-    class="user-invitations__title w-full flex flex-col items-center pb-4 gap-2"
+    class="manager-invitations__title w-full flex flex-col items-center pb-4 gap-2"
   >
     <h2 class="text-lg font-bold">Zugelassene Emails und Domänen</h2>
   </div>
 
   <div
-    class="user-invitations__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
+    class="manager-invitations__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
   >
     @let invitations = userEmailWhitelists();
 
     @if (invitations) {
-      <table class="user-invitations__table table">
+      <table class="manager-invitations__table table">
         <!-- head -->
         <thead>
           <tr>
-            <th class="user-invitations__type-th w-1"></th>
-            <th class="user-invitations__email-or-domain-th"></th>
-            <th class="user-invitations__role-th">Rolle</th>
-            <th class="user-invitations__created-by-th">Erstellt von</th>
-            <th class="user-invitations__create-button-th w-1">
-              <app-user-invitation-create
+            <th class="manager-invitations__type-th w-1"></th>
+            <th class="manager-invitations__email-or-domain-th"></th>
+            <th class="manager-invitations__role-th">Rolle</th>
+            <th class="manager-invitations__created-by-th">Erstellt von</th>
+            <th class="manager-invitations__create-button-th w-1">
+              <app-manager-invitation-create
                 (entity)="addToUserEmailWhitelistsResponse($event)"
               />
             </th>
@@ -31,7 +31,7 @@
             @let isDomain = invitation.emailOrDomain.startsWith('@');
 
             <tr>
-              <td class="user-invitations__type-td w-1">
+              <td class="manager-invitations__type-td w-1">
                 <div class="tooltip tooltip-right tooltip-secondary">
                   <div class="tooltip-content">
                     @if (isDomain) {
@@ -64,19 +64,19 @@
                   </div>
                 </div>
               </td>
-              <td class="user-invitations__email-or-domain-td">
+              <td class="manager-invitations__email-or-domain-td">
                 <span>{{ invitation.emailOrDomain }}</span>
               </td>
 
-              <td class="user-invitations__role-td">
+              <td class="manager-invitations__role-td">
                 {{ roleLabels[invitation.role] }}
               </td>
 
-              <td class="user-invitations__created-by-td">
+              <td class="manager-invitations__created-by-td">
                 {{ invitation.createdBy.email.split('@')[0] }}
               </td>
-              <td class="user-invitations__delete-button-td w-1">
-                <app-user-invitation-delete
+              <td class="manager-invitations__delete-button-td w-1">
+                <app-manager-invitation-delete
                   [toDelete]="invitation"
                   (deleted)="removeFromUserEmailWhitelistsResponse($event)"
                 />

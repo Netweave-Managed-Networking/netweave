@@ -8,9 +8,9 @@ export const appRoutes: Routes = [
   {
     path: 'member-questions/:token',
     loadComponent: () =>
-      import(
-        './components/member-questions/member-questions.component'
-      ).then((m) => m.MemberQuestionsComponent),
+      import('./components/member-questions/member-questions.component').then(
+        (m) => m.MemberQuestionsComponent,
+      ),
   },
   {
     path: '',
@@ -44,12 +44,12 @@ export const appRoutes: Routes = [
           ),
       },
       {
-        path: 'invitation-dashboard',
+        path: 'member-invitations',
         canActivate: [authenticatedGuard],
         loadComponent: () =>
           import(
-            './components/invitation-dashboard/invitation-dashboard.component'
-          ).then((m) => m.InvitationDashboardComponent),
+            './components/member-invitations/member-invitations.component'
+          ).then((m) => m.MemberInvitationsComponent),
       },
       {
         path: 'matching-history',
