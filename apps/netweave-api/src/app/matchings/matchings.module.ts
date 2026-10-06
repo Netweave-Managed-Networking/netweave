@@ -11,7 +11,7 @@ import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
 import { StringLengthMatchingStrategy } from './string-length-matching.strategy';
 
-/** the llm matching if an LLM_PROVIDER is configured, otherwise the dummy algorithm (e.g. for local dev and e2e tests) */
+/** falls back to the dummy algorithm without LLM_PROVIDER */
 const createMatchingStrategy = (): MatchingStrategy => {
   const logger = new Logger('MatchingStrategy');
   const config = readLlmConfig(process.env);

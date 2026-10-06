@@ -8,12 +8,11 @@ export const LLM_PROVIDERS = [
   'openai',
   'anthropic',
   'mistral',
-  'openai-compatible', // any server speaking the openai chat api, e.g. ollama or vllm
+  'openai-compatible', // e.g. ollama, vllm
 ] as const;
 
 export type LlmProvider = (typeof LLM_PROVIDERS)[number];
 
-/** how much a reasoning model may think before answering; the scores do not need it, but it costs a lot of time */
 export const LLM_REASONING_LEVELS = [
   'provider-default',
   'none',
@@ -30,19 +29,16 @@ export interface LlmConfig {
   provider: LlmProvider;
   model: string;
   apiKey: string | undefined;
-  baseUrl: string | undefined; // required for openai-compatible, optional override for the others
-  concurrency: number; // max parallel llm calls of a matching run
-  timeoutMs: number; // per llm call, so a hanging request cannot stall a run forever
-  reasoning: LlmReasoning; // only sent to the provider if not provider-default, as non reasoning models may reject it
+  baseUrl: string | undefined; // required for openai-compatible
+  concurrency: number;
+  timeoutMs: number; // per call
+  reasoning: LlmReasoning;
 }
 
 const DEFAULT_CONCURRENCY = 5;
 const DEFAULT_TIMEOUT_MS = 60_000;
 
-/**
- * the llm configuration from the environment, or null if no LLM_PROVIDER is set (the matching then falls back to
- * the dummy algorithm). throws on an incomplete or invalid configuration, so it fails at startup instead of mid-run.
- */
+/** null if LLM_PROVIDER is unset; throws on invalid config */
 export const readLlmConfig = (env: NodeJS.ProcessEnv): LlmConfig | null => {
   const provider = env['LLM_PROVIDER']?.trim();
   if (!provider) return null;
@@ -95,7 +91,7 @@ export const createLanguageModel = ({
       return createOpenAICompatible({
         name: 'openai-compatible',
         apiKey,
-        baseURL: baseUrl as string, // checked in readLlmConfig
+        baseURL: baseUrl as string,
       })(model);
   }
 };

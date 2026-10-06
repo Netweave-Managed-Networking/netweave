@@ -14,20 +14,13 @@ import { coveragePrompt, parseCoverageScore } from './llm/coverage-prompt';
 import { LlmConfig, LlmReasoning } from './llm/llm-config';
 import { MatchingResult, MatchingStrategy } from './matching-strategy';
 
-/** networks are matched differently (out of scope of the llm matching) */
 export const LLM_MATCHING_CATEGORIES = RESOURCE_REQUIREMENT_CATEGORIES.filter(
   (category) => category !== 'networks',
 );
 
-const MAX_RETRIES = 3; // per llm call, on top of the first attempt; covers rate limits and transient provider errors
+const MAX_RETRIES = 3;
 
-/**
- * asks an llm, per category, how well the resources of the potential match cover the requirements of the seeker.
- * categories without a requirement of the seeker are left out (nothing needed, nothing to match); a missing resource
- * scores 0 without asking. an unusable answer is stored as null (not assessable) and logged, instead of failing the
- * whole (long, expensive) run. the overall score is the average of the assessable category scores for now, see NETW-35.
- * llm calls are limited to `concurrency` at once across all concurrent score() calls of this instance.
- */
+/** per category: how well the potential match's resources cover the seeker's requirements, scored by an llm */
 export class LlmMatchingStrategy implements MatchingStrategy {
   private readonly logger = new Logger(LlmMatchingStrategy.name);
   private readonly limit: ConcurrencyLimit;
@@ -92,7 +85,6 @@ export class LlmMatchingStrategy implements MatchingStrategy {
     return { score, details: { categories } };
   }
 
-  /** the raw answer of the llm; queued calls are dropped once `signal` is aborted, running ones are cancelled */
   private askCoverage(
     requirement: string,
     resource: string,

@@ -22,8 +22,8 @@ import { Matching } from './matching.entity';
 
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
-const HEARTBEAT_INTERVAL_MS = 30 * 1000; // how often a run touches its row while its process is alive, see computeAndPersist
-const STALE_RUN_THRESHOLD_MS = 3 * 60 * 1000; // several missed heartbeats: the process that ran it crashed or restarted mid-computation, so the run would otherwise stay "in progress" forever and block every future run
+const HEARTBEAT_INTERVAL_MS = 30 * 1000;
+const STALE_RUN_THRESHOLD_MS = 3 * 60 * 1000; // run without heartbeat counts as crashed
 const MAX_HISTORY_PAGE_SIZE = 100; // caps what a client can request per page, regardless of the requested pageSize
 
 @Injectable()
@@ -90,7 +90,7 @@ export class MatchingsService {
     where: FindOptionsWhere<MatchingRun>,
   ): Promise<MatchingRunDTO | null> {
     const manager = this.matchingRunsRepository.manager;
-    await this.reapStaleRuns(manager); // so clients polling a run of a crashed process see it fail instead of running forever
+    await this.reapStaleRuns(manager);
     const [run] = await manager.find(MatchingRun, {
       where,
       order: { id: 'DESC' },
@@ -194,19 +194,10 @@ export class MatchingsService {
     });
   }
 
-  /**
-   * calculates the score from every member to every other member and stores them against the given run.
-   * members without any answers are left out. the scores of one seeker are calculated concurrently (the strategy
-   * limits how many of them actually run at once, e.g. llm calls) and inserted right after, in chunks, each committed
-   * on its own: a failure midway keeps the (possibly expensive) scores of completed seekers and marks the run as failed
-   * instead of rolling everything back. while it computes, the run's row is touched as heartbeat, see reapStaleRuns.
-   * on failure (or when the run was reaped meanwhile), the strategy is told to drop the work still pending for the
-   * run (e.g. queued llm calls).
-   */
+  /** scores every member against every other one; scores are persisted per seeker, so a failure keeps completed ones */
   private async computeAndPersist(run: MatchingRun): Promise<number> {
     const manager = this.matchingRunsRepository.manager;
     const abort = new AbortController();
-    // time based instead of per seeker: a single seeker may take longer than the stale threshold (e.g. slow llm)
     const heartbeat = setInterval(
       () => void this.heartbeat(manager, run.id, abort),
       HEARTBEAT_INTERVAL_MS,
@@ -250,11 +241,7 @@ export class MatchingsService {
     }
   }
 
-  /**
-   * shows that the process computing the run is still alive, so it is not reaped as stale.
-   * if it was reaped anyway (e.g. the database was unreachable for too long), aborts the computation, as nobody
-   * would keep its scores. a failing heartbeat is only logged: the next one may well succeed.
-   */
+  /** aborts the computation if the run was reaped meanwhile */
   private async heartbeat(
     manager: EntityManager,
     runId: number,
@@ -278,10 +265,7 @@ export class MatchingsService {
     }
   }
 
-  /**
-   * marks in-progress runs without a recent heartbeat as failed: their process crashed or was restarted.
-   * runs computed by a live process (in any api instance) keep beating and are never affected.
-   */
+  /** marks in-progress runs without a recent heartbeat as failed */
   private async reapStaleRuns(manager: EntityManager): Promise<void> {
     const { affected } = await manager.update(
       MatchingRun,

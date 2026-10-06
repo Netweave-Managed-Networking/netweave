@@ -1,4 +1,4 @@
-/** the prompt as specified in NETW-35; the same for every category */
+/** prompt as specified in NETW-35 */
 export const coveragePrompt = (requirement: string, resource: string) =>
   `Du bist ein Match-Scoring-Algorithmus.
 
@@ -20,12 +20,9 @@ ${requirement}
 Ressource:
 ${resource}`;
 
-/**
- * the score from the model's answer, or null if it is not usable; tolerates noise around a single number
- * (e.g. "85%" or a trailing newline), but never guesses from anything ambiguous or out of range
- */
+/** null if the answer is not a single integer between 0 and 100 */
 export const parseCoverageScore = (answer: string): number | null => {
-  const numbers = answer.match(/-?\d+(?:[.,]\d+)?/g) ?? []; // signs and decimals included, so they get rejected below
+  const numbers = answer.match(/-?\d+(?:[.,]\d+)?/g) ?? [];
   const score = numbers.length === 1 ? Number(numbers[0]) : NaN;
   return Number.isInteger(score) && score >= 0 && score <= 100 ? score : null;
 };

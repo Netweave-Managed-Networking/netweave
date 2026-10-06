@@ -1,6 +1,5 @@
 export type ConcurrencyLimit = <T>(task: () => Promise<T>) => Promise<T>;
 
-/** runs at most `max` of the given tasks at once, queueing the rest in order */
 export const createConcurrencyLimit = (max: number): ConcurrencyLimit => {
   let active = 0;
   const queue: (() => void)[] = [];

@@ -6,10 +6,7 @@ export interface MatchingResult {
   details: MatchingDetailsDTO | null;
 }
 
-/**
- * calculates how well the potential match fits the seeker; must not assume symmetry.
- * once `signal` is aborted (e.g. the run already failed), pending work should be dropped instead of finished.
- */
+/** unidirectional: how well the potential match fits the seeker */
 export interface MatchingStrategy {
   score(
     seeker: Member,
