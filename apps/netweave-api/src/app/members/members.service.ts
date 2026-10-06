@@ -2,9 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  CultureItemId,
   CultureTopic,
   MemberUpsertDTO,
-  toCultureTopic,
+  parseCultureItemId,
 } from '@netweave/api-types';
 import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
@@ -113,7 +114,6 @@ export class MembersService {
     });
   }
 
-  /** one row per member and statement; the topic total is stored with each weight, so it can be normalized exactly */
   private async upsertCultureWeights(
     manager: EntityManager,
     memberId: number,
@@ -121,17 +121,17 @@ export class MembersService {
   ): Promise<void> {
     if (cultureWeights.length === 0) return; // typeorm rejects an empty upsert
 
-    const topicTotals = new Map<CultureTopic, number>();
-    for (const { itemId, weight } of cultureWeights) {
-      const topic = toCultureTopic(itemId);
-      topicTotals.set(topic, (topicTotals.get(topic) ?? 0) + weight);
-    }
+    const topicOf = (itemId: CultureItemId) => parseCultureItemId(itemId).topic;
+    const totalOf = (topic: CultureTopic) =>
+      cultureWeights
+        .filter(({ itemId }) => topicOf(itemId) === topic)
+        .reduce((sum, { weight }) => sum + weight, 0);
 
     const rows = cultureWeights.map(({ itemId, weight }) => ({
       memberId,
       itemId,
       weight,
-      topicTotal: topicTotals.get(toCultureTopic(itemId)) ?? 0,
+      topicTotal: totalOf(topicOf(itemId)),
     }));
 
     await manager.upsert(MemberCultureWeight, rows, {
