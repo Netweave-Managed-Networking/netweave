@@ -6,9 +6,13 @@ export interface MatchingResult {
   details: MatchingDetailsDTO | null;
 }
 
-/** calculates how well the potential match fits the seeker; must not assume symmetry */
+/** unidirectional: how well the potential match fits the seeker */
 export interface MatchingStrategy {
-  score(seeker: Member, potentialMatch: Member): Promise<MatchingResult>;
+  score(
+    seeker: Member,
+    potentialMatch: Member,
+    signal?: AbortSignal,
+  ): Promise<MatchingResult>;
 }
 
 export const MATCHING_STRATEGY = Symbol('MATCHING_STRATEGY');

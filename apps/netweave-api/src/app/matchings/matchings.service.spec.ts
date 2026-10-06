@@ -132,7 +132,7 @@ describe('MatchingsService', () => {
         membersService.haveResourcesRequirementsChangedSince,
       ).not.toHaveBeenCalled();
       expect(manager.save).toHaveBeenCalledTimes(1); // the new, empty run
-      expect(manager.update).toHaveBeenCalledTimes(1); // marked finished
+      expect(manager.update).toHaveBeenCalledTimes(2); // stale runs reaped, marked finished
     });
 
     it('skips when no resource or requirement changed since the last run', async () => {
@@ -183,7 +183,7 @@ describe('MatchingsService', () => {
       expect(manager.insert).not.toHaveBeenCalled();
     });
 
-    it('inserts large runs in chunks', async () => {
+    it('inserts the scores of every seeker right after calculating them', async () => {
       membersService.getAllWithResourcesRequirements.mockResolvedValue(
         Array.from({ length: 40 }, (_, i) => answered(i + 1)),
       );
@@ -191,7 +191,145 @@ describe('MatchingsService', () => {
       await service.calculateScheduled();
 
       expect(insertedRows()).toHaveLength(40 * 39);
-      expect(manager.insert).toHaveBeenCalledTimes(2);
+      expect(manager.insert).toHaveBeenCalledTimes(40);
+    });
+
+    it('keeps the scores of completed seekers when a later seeker fails, and marks the run as failed', async () => {
+      strategy.score.mockImplementation((seeker: Member) =>
+        seeker.id === 3
+          ? Promise.reject(new Error('llm down'))
+          : Promise.resolve({ score: 50, details: null }),
+      );
+
+      await service.calculateScheduled();
+
+      expect(pairs()).toEqual(['1->2', '1->3', '2->1', '2->3']);
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+    });
+
+    it('tells the strategy to drop its pending work once the run failed', async () => {
+      const signals: AbortSignal[] = [];
+      strategy.score.mockImplementation((seeker, _potentialMatch, signal) => {
+        signals.push(signal as AbortSignal);
+        return seeker.id === 1
+          ? Promise.reject(new Error('llm down'))
+          : Promise.resolve({ score: 50, details: null });
+      });
+
+      await service.calculateScheduled();
+
+      expect(signals.length).toBeGreaterThan(0);
+      expect(signals.every((signal) => signal.aborted)).toBe(true);
+    });
+
+    it('does not abort the strategy when the run succeeds', async () => {
+      await service.calculateScheduled();
+
+      const [, , signal] = strategy.score.mock.calls[0];
+      expect(signal?.aborted).toBe(false);
+    });
+
+    describe('heartbeat', () => {
+      const heartbeats = () =>
+        manager.update?.mock.calls.filter(
+          ([, , patch]) => 'updatedAt' in patch,
+        ) ?? [];
+
+      /** lets the strategy hang until released, like a slow llm */
+      const slowStrategy = () => {
+        let release!: () => void;
+        const released = new Promise<void>((resolve) => (release = resolve));
+        strategy.score.mockImplementation(async () => {
+          await released;
+          return { score: 50, details: null };
+        });
+        return release;
+      };
+
+      beforeEach(() => {
+        jest.useFakeTimers({ doNotFake: ['setImmediate', 'nextTick'] });
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('touches the run every 30s while computing, also within a single slow seeker, and stops when done', async () => {
+        const release = slowStrategy();
+
+        const done = service.calculateScheduled();
+        await flushPromises();
+        await jest.advanceTimersByTimeAsync(65_000);
+
+        expect(heartbeats()).toHaveLength(2);
+        expect(heartbeats()[0]).toEqual([
+          MatchingRun,
+          { id: 42, finishedAt: IsNull(), failedAt: IsNull() },
+          { updatedAt: expect.any(Date) },
+        ]);
+
+        release();
+        await done;
+        await jest.advanceTimersByTimeAsync(60_000);
+
+        expect(heartbeats()).toHaveLength(2); // none after the run ended
+      });
+
+      it('aborts the computation when the run was reaped as stale meanwhile', async () => {
+        const release = slowStrategy();
+        manager.update?.mockImplementation(
+          (_entity, _where, patch) =>
+            Promise.resolve({ affected: 'updatedAt' in patch ? 0 : 1 }), // the heartbeat finds the run already failed
+        );
+        const signals: AbortSignal[] = [];
+        const score = strategy.score.getMockImplementation();
+        strategy.score.mockImplementation((seeker, potentialMatch, signal) => {
+          signals.push(signal as AbortSignal);
+          return score?.(seeker, potentialMatch, signal) as never;
+        });
+
+        const done = service.calculateScheduled();
+        await flushPromises();
+        await jest.advanceTimersByTimeAsync(30_000);
+
+        expect(signals[0].aborted).toBe(true); // the strategy drops its pending llm calls
+
+        release();
+        await done;
+
+        expect(pairs()).toEqual(['1->2', '1->3']); // the seeker in flight, but no further ones
+        expect(manager.update).not.toHaveBeenCalledWith(
+          MatchingRun,
+          expect.anything(),
+          { finishedAt: expect.any(Date) },
+        );
+      });
+
+      it('keeps going when a single heartbeat fails, e.g. on a database hiccup', async () => {
+        const release = slowStrategy();
+        manager.update?.mockImplementation((_entity, _where, patch) =>
+          'updatedAt' in patch
+            ? Promise.reject(new Error('connection reset'))
+            : Promise.resolve({ affected: 1 }),
+        );
+        jest.spyOn(Logger.prototype, 'warn').mockImplementation();
+
+        const done = service.calculateScheduled();
+        await flushPromises();
+        await jest.advanceTimersByTimeAsync(30_000);
+        release();
+        await done;
+
+        expect(manager.update).toHaveBeenCalledWith(
+          MatchingRun,
+          { id: 42, failedAt: IsNull() },
+          { finishedAt: expect.any(Date) },
+        );
+      });
     });
 
     it('skips when another run holds the lock', async () => {
@@ -208,7 +346,8 @@ describe('MatchingsService', () => {
     it('skips when a run is already in progress', async () => {
       manager.findOneBy?.mockResolvedValue({
         id: 41,
-        createdAt: new Date(), // just started, not stale
+        createdAt: new Date(),
+        updatedAt: new Date(), // recent heartbeat, so not reaped
         finishedAt: null,
         failedAt: null,
       });
@@ -221,21 +360,27 @@ describe('MatchingsService', () => {
       expect(manager.save).not.toHaveBeenCalled();
     });
 
-    it('recovers from a stale in-progress run (e.g. its process crashed) and starts a new one', async () => {
-      manager.findOneBy?.mockResolvedValue({
-        id: 41,
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2h ago: way past any realistic run duration
-        finishedAt: null,
-        failedAt: null,
-      });
+    it('marks runs without a heartbeat for 3 minutes as failed (e.g. their process crashed or restarted) before checking for one in progress', async () => {
+      const now = Date.now();
 
       await service.calculateScheduled();
 
-      expect(manager.update).toHaveBeenCalledWith(MatchingRun, 41, {
-        failedAt: expect.any(Date),
+      const [, where, patch] = manager.update?.mock.calls[0] ?? [];
+      expect(where).toEqual({
+        finishedAt: IsNull(),
+        failedAt: IsNull(),
+        updatedAt: expect.anything(),
       });
-      expect(membersService.getAllWithResourcesRequirements).toHaveBeenCalled();
-      expect(manager.save).toHaveBeenCalledTimes(1); // the new run
+      expect(where.updatedAt.value.getTime()).toBeGreaterThanOrEqual(
+        now - 3 * 60 * 1000,
+      );
+      expect(where.updatedAt.value.getTime()).toBeLessThanOrEqual(
+        Date.now() - 3 * 60 * 1000,
+      );
+      expect(patch).toEqual({ failedAt: expect.any(Date) });
+      expect(manager.update?.mock.invocationCallOrder[0]).toBeLessThan(
+        manager.findOneBy?.mock.invocationCallOrder[0] ?? 0,
+      );
     });
 
     it('takes the lock inside the transaction before anything else', async () => {
@@ -318,7 +463,8 @@ describe('MatchingsService', () => {
     it('returns null when a run is already in progress', async () => {
       manager.findOneBy?.mockResolvedValue({
         id: 41,
-        createdAt: new Date(), // just started, not stale
+        createdAt: new Date(),
+        updatedAt: new Date(), // recent heartbeat, so not reaped
         finishedAt: null,
         failedAt: null,
       });
@@ -399,6 +545,23 @@ describe('MatchingsService', () => {
   });
 
   describe('getNewestRun', () => {
+    it('marks runs of a crashed or restarted process as failed first, so a polling client sees them fail', async () => {
+      await service.getNewestRun();
+
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        {
+          finishedAt: IsNull(),
+          failedAt: IsNull(),
+          updatedAt: expect.anything(),
+        },
+        { failedAt: expect.any(Date) },
+      );
+      expect(manager.update?.mock.invocationCallOrder[0]).toBeLessThan(
+        manager.find?.mock.invocationCallOrder[0] ?? 0,
+      );
+    });
+
     it('returns the newest run, whatever its status', async () => {
       const createdAt = new Date();
       manager.find?.mockResolvedValue([
@@ -474,6 +637,7 @@ describe('MatchingsService', () => {
     ) => ({
       findAndCount: jest.fn().mockResolvedValue([runs, total]),
       manager: {
+        update: jest.fn().mockResolvedValue({ affected: 0 }),
         count: jest.fn((_entity: unknown, options: unknown) =>
           Promise.resolve(
             matchingCounts[

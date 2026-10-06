@@ -10,6 +10,7 @@ import {
   EntityManager,
   FindOptionsWhere,
   IsNull,
+  LessThan,
   Not,
   Repository,
 } from 'typeorm';
@@ -21,7 +22,8 @@ import { Matching } from './matching.entity';
 
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
-const STALE_RUN_THRESHOLD_MS = 60 * 60 * 1000; // generously longer than any realistic run; recovers from a run whose process crashed/restarted mid-computation, which would otherwise stay "in progress" forever and block every future run
+const HEARTBEAT_INTERVAL_MS = 30 * 1000;
+const STALE_RUN_THRESHOLD_MS = 3 * 60 * 1000; // run without heartbeat counts as crashed
 const MAX_HISTORY_PAGE_SIZE = 100; // caps what a client can request per page, regardless of the requested pageSize
 
 @Injectable()
@@ -88,6 +90,7 @@ export class MatchingsService {
     where: FindOptionsWhere<MatchingRun>,
   ): Promise<MatchingRunDTO | null> {
     const manager = this.matchingRunsRepository.manager;
+    await this.reapStaleRuns(manager);
     const [run] = await manager.find(MatchingRun, {
       where,
       order: { id: 'DESC' },
@@ -115,6 +118,7 @@ export class MatchingsService {
       MAX_HISTORY_PAGE_SIZE,
     );
 
+    await this.reapStaleRuns(this.matchingRunsRepository.manager);
     const [runs, total] = await this.matchingRunsRepository.findAndCount({
       order: { id: 'DESC' },
       skip: (clampedPage - 1) * clampedPageSize,
@@ -161,24 +165,14 @@ export class MatchingsService {
         return null;
       }
 
+      await this.reapStaleRuns(manager);
       const inProgress = await manager.findOneBy(MatchingRun, {
         finishedAt: IsNull(),
         failedAt: IsNull(),
       });
       if (inProgress) {
-        const isStale =
-          Date.now() - inProgress.createdAt.getTime() > STALE_RUN_THRESHOLD_MS;
-        if (!isStale) {
-          this.logger.warn('Another matching run is in progress, skipping');
-          return null;
-        }
-        // the process that ran it presumably crashed or restarted before finishing; never leave it stuck forever
-        this.logger.warn(
-          `Matching run ${inProgress.id} has been in progress since ${inProgress.createdAt.toISOString()}, treating it as failed`,
-        );
-        await manager.update(MatchingRun, inProgress.id, {
-          failedAt: new Date(),
-        });
+        this.logger.warn('Another matching run is in progress, skipping');
+        return null;
       }
 
       if (!force) {
@@ -200,52 +194,92 @@ export class MatchingsService {
     });
   }
 
-  /**
-   * calculates the score from every member to every other member and stores them against the given run.
-   * members without any answers are left out. inserted in chunks, each committed on its own, so a failure
-   * midway leaves the completed chunks in place and marks the run as failed instead of rolling everything back.
-   */
+  /** scores every member against every other one; scores are persisted per seeker, so a failure keeps completed ones */
   private async computeAndPersist(run: MatchingRun): Promise<number> {
     const manager = this.matchingRunsRepository.manager;
+    const abort = new AbortController();
+    const heartbeat = setInterval(
+      () => void this.heartbeat(manager, run.id, abort),
+      HEARTBEAT_INTERVAL_MS,
+    );
     try {
       const members = (
         await this.membersService.getAllWithResourcesRequirements()
       ).filter(hasAnswers);
 
-      const rows: Pick<
-        Matching,
-        'memberSeekerId' | 'memberPotentialMatchId' | 'score' | 'details'
-      >[] = [];
+      let matchingCount = 0;
       for (const seeker of members) {
-        for (const potentialMatch of members) {
-          if (seeker.id === potentialMatch.id) continue;
-          const { score, details } = await this.matchingStrategy.score(
-            seeker,
-            potentialMatch,
-          );
-          rows.push({
-            memberSeekerId: seeker.id,
-            memberPotentialMatchId: potentialMatch.id,
-            score,
-            details,
-          });
-        }
-      }
-
-      for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
-        await manager.insert(
-          Matching,
-          rows
-            .slice(i, i + INSERT_CHUNK_SIZE)
-            .map((row) => ({ ...row, matchingRunId: run.id })),
+        abort.signal.throwIfAborted();
+        const potentialMatches = members.filter((m) => m.id !== seeker.id);
+        const results = await Promise.all(
+          potentialMatches.map((potentialMatch) =>
+            this.matchingStrategy.score(seeker, potentialMatch, abort.signal),
+          ),
         );
+        const rows = potentialMatches.map((potentialMatch, i) => ({
+          matchingRunId: run.id,
+          memberSeekerId: seeker.id,
+          memberPotentialMatchId: potentialMatch.id,
+          score: results[i].score,
+          details: results[i].details,
+        }));
+
+        for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
+          await manager.insert(Matching, rows.slice(i, i + INSERT_CHUNK_SIZE));
+        }
+        matchingCount += rows.length;
       }
 
       await this.markRunDone(manager, run.id, { finishedAt: new Date() });
-      return rows.length;
+      return matchingCount;
     } catch (error) {
+      abort.abort(error);
       await this.markRunDone(manager, run.id, { failedAt: new Date() });
       throw error;
+    } finally {
+      clearInterval(heartbeat);
+    }
+  }
+
+  /** aborts the computation if the run was reaped meanwhile */
+  private async heartbeat(
+    manager: EntityManager,
+    runId: number,
+    abort: AbortController,
+  ): Promise<void> {
+    try {
+      const { affected } = await manager.update(
+        MatchingRun,
+        { id: runId, finishedAt: IsNull(), failedAt: IsNull() },
+        { updatedAt: new Date() },
+      );
+      if (!affected) {
+        abort.abort(
+          new Error(
+            `Matching run ${runId} was reaped as stale while still calculating; aborting it`,
+          ),
+        );
+      }
+    } catch (error) {
+      this.logger.warn(`Heartbeat of matching run ${runId} failed`, error);
+    }
+  }
+
+  /** marks in-progress runs without a recent heartbeat as failed */
+  private async reapStaleRuns(manager: EntityManager): Promise<void> {
+    const { affected } = await manager.update(
+      MatchingRun,
+      {
+        finishedAt: IsNull(),
+        failedAt: IsNull(),
+        updatedAt: LessThan(new Date(Date.now() - STALE_RUN_THRESHOLD_MS)),
+      },
+      { failedAt: new Date() },
+    );
+    if (affected) {
+      this.logger.warn(
+        `Marked ${affected} matching run(s) without heartbeat for ${STALE_RUN_THRESHOLD_MS / 1000}s as failed`,
+      );
     }
   }
 
