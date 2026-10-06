@@ -105,6 +105,9 @@ describe('InvitationsController', () => {
               requirements: null,
             },
           ],
+          cultureWeights: [
+            { id: 1, memberId: 7, itemId: 'Z2-S', weight: 70, topicTotal: 130 },
+          ],
         },
       });
 
@@ -122,6 +125,7 @@ describe('InvitationsController', () => {
               requirements: null,
             },
           ],
+          cultureWeights: [{ itemId: 'Z2-S', weight: 70 }],
         },
       });
     });

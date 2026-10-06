@@ -54,7 +54,9 @@ export class InvitationsService {
   public async findValidByToken(token: string): Promise<Invitation | null> {
     return this.repository.findOne({
       where: { token, expireDate: MoreThan(new Date()) },
-      relations: { member: { resourcesRequirements: true } },
+      relations: {
+        member: { resourcesRequirements: true, cultureWeights: true },
+      },
     });
   }
 
