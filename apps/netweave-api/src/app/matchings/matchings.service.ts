@@ -10,6 +10,7 @@ import {
   EntityManager,
   FindOptionsWhere,
   IsNull,
+  LessThan,
   Not,
   Repository,
 } from 'typeorm';
@@ -21,7 +22,8 @@ import { Matching } from './matching.entity';
 
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
-const STALE_RUN_THRESHOLD_MS = 60 * 60 * 1000; // generously longer than any realistic run; recovers from a run whose process crashed/restarted mid-computation, which would otherwise stay "in progress" forever and block every future run
+const HEARTBEAT_INTERVAL_MS = 30 * 1000; // how often a run touches its row while its process is alive, see computeAndPersist
+const STALE_RUN_THRESHOLD_MS = 3 * 60 * 1000; // several missed heartbeats: the process that ran it crashed or restarted mid-computation, so the run would otherwise stay "in progress" forever and block every future run
 const MAX_HISTORY_PAGE_SIZE = 100; // caps what a client can request per page, regardless of the requested pageSize
 
 @Injectable()
@@ -88,6 +90,7 @@ export class MatchingsService {
     where: FindOptionsWhere<MatchingRun>,
   ): Promise<MatchingRunDTO | null> {
     const manager = this.matchingRunsRepository.manager;
+    await this.reapStaleRuns(manager); // so clients polling a run of a crashed process see it fail instead of running forever
     const [run] = await manager.find(MatchingRun, {
       where,
       order: { id: 'DESC' },
@@ -115,6 +118,7 @@ export class MatchingsService {
       MAX_HISTORY_PAGE_SIZE,
     );
 
+    await this.reapStaleRuns(this.matchingRunsRepository.manager);
     const [runs, total] = await this.matchingRunsRepository.findAndCount({
       order: { id: 'DESC' },
       skip: (clampedPage - 1) * clampedPageSize,
@@ -161,24 +165,14 @@ export class MatchingsService {
         return null;
       }
 
+      await this.reapStaleRuns(manager);
       const inProgress = await manager.findOneBy(MatchingRun, {
         finishedAt: IsNull(),
         failedAt: IsNull(),
       });
       if (inProgress) {
-        const isStale =
-          Date.now() - inProgress.createdAt.getTime() > STALE_RUN_THRESHOLD_MS;
-        if (!isStale) {
-          this.logger.warn('Another matching run is in progress, skipping');
-          return null;
-        }
-        // the process that ran it presumably crashed or restarted before finishing; never leave it stuck forever
-        this.logger.warn(
-          `Matching run ${inProgress.id} has been in progress since ${inProgress.createdAt.toISOString()}, treating it as failed`,
-        );
-        await manager.update(MatchingRun, inProgress.id, {
-          failedAt: new Date(),
-        });
+        this.logger.warn('Another matching run is in progress, skipping');
+        return null;
       }
 
       if (!force) {
@@ -202,50 +196,106 @@ export class MatchingsService {
 
   /**
    * calculates the score from every member to every other member and stores them against the given run.
-   * members without any answers are left out. inserted in chunks, each committed on its own, so a failure
-   * midway leaves the completed chunks in place and marks the run as failed instead of rolling everything back.
+   * members without any answers are left out. the scores of one seeker are calculated concurrently (the strategy
+   * limits how many of them actually run at once, e.g. llm calls) and inserted right after, in chunks, each committed
+   * on its own: a failure midway keeps the (possibly expensive) scores of completed seekers and marks the run as failed
+   * instead of rolling everything back. while it computes, the run's row is touched as heartbeat, see reapStaleRuns.
+   * on failure (or when the run was reaped meanwhile), the strategy is told to drop the work still pending for the
+   * run (e.g. queued llm calls).
    */
   private async computeAndPersist(run: MatchingRun): Promise<number> {
     const manager = this.matchingRunsRepository.manager;
+    const abort = new AbortController();
+    // time based instead of per seeker: a single seeker may take longer than the stale threshold (e.g. slow llm)
+    const heartbeat = setInterval(
+      () => void this.heartbeat(manager, run.id, abort),
+      HEARTBEAT_INTERVAL_MS,
+    );
     try {
       const members = (
         await this.membersService.getAllWithResourcesRequirements()
       ).filter(hasAnswers);
 
-      const rows: Pick<
-        Matching,
-        'memberSeekerId' | 'memberPotentialMatchId' | 'score' | 'details'
-      >[] = [];
+      let matchingCount = 0;
       for (const seeker of members) {
-        for (const potentialMatch of members) {
-          if (seeker.id === potentialMatch.id) continue;
-          const { score, details } = await this.matchingStrategy.score(
-            seeker,
-            potentialMatch,
-          );
-          rows.push({
-            memberSeekerId: seeker.id,
-            memberPotentialMatchId: potentialMatch.id,
-            score,
-            details,
-          });
-        }
-      }
-
-      for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
-        await manager.insert(
-          Matching,
-          rows
-            .slice(i, i + INSERT_CHUNK_SIZE)
-            .map((row) => ({ ...row, matchingRunId: run.id })),
+        abort.signal.throwIfAborted();
+        const potentialMatches = members.filter((m) => m.id !== seeker.id);
+        const results = await Promise.all(
+          potentialMatches.map((potentialMatch) =>
+            this.matchingStrategy.score(seeker, potentialMatch, abort.signal),
+          ),
         );
+        const rows = potentialMatches.map((potentialMatch, i) => ({
+          matchingRunId: run.id,
+          memberSeekerId: seeker.id,
+          memberPotentialMatchId: potentialMatch.id,
+          score: results[i].score,
+          details: results[i].details,
+        }));
+
+        for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
+          await manager.insert(Matching, rows.slice(i, i + INSERT_CHUNK_SIZE));
+        }
+        matchingCount += rows.length;
       }
 
       await this.markRunDone(manager, run.id, { finishedAt: new Date() });
-      return rows.length;
+      return matchingCount;
     } catch (error) {
+      abort.abort(error);
       await this.markRunDone(manager, run.id, { failedAt: new Date() });
       throw error;
+    } finally {
+      clearInterval(heartbeat);
+    }
+  }
+
+  /**
+   * shows that the process computing the run is still alive, so it is not reaped as stale.
+   * if it was reaped anyway (e.g. the database was unreachable for too long), aborts the computation, as nobody
+   * would keep its scores. a failing heartbeat is only logged: the next one may well succeed.
+   */
+  private async heartbeat(
+    manager: EntityManager,
+    runId: number,
+    abort: AbortController,
+  ): Promise<void> {
+    try {
+      const { affected } = await manager.update(
+        MatchingRun,
+        { id: runId, finishedAt: IsNull(), failedAt: IsNull() },
+        { updatedAt: new Date() },
+      );
+      if (!affected) {
+        abort.abort(
+          new Error(
+            `Matching run ${runId} was reaped as stale while still calculating; aborting it`,
+          ),
+        );
+      }
+    } catch (error) {
+      this.logger.warn(`Heartbeat of matching run ${runId} failed`, error);
+    }
+  }
+
+  /**
+   * marks in-progress runs without a recent heartbeat as failed: their process crashed or was restarted.
+   * runs computed by a live process (in any api instance) keep beating and are never affected.
+   */
+  private async reapStaleRuns(manager: EntityManager): Promise<void> {
+    const { affected } = await manager.update(
+      MatchingRun,
+      {
+        finishedAt: IsNull(),
+        failedAt: IsNull(),
+        updatedAt: LessThan(new Date(Date.now() - STALE_RUN_THRESHOLD_MS)),
+      },
+      { failedAt: new Date() },
+    );
+    if (affected) {
+      this.logger.warn(
+        `Marked ${affected} matching run(s) without heartbeat for ${STALE_RUN_THRESHOLD_MS / 1000}s as failed`,
+      );
     }
   }
 

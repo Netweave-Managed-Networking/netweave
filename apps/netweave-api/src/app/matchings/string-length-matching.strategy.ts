@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MatchingDetailsDTO } from '@netweave/api-types';
+import { ResourceRequirementCategory } from '@netweave/api-types';
 import { Member } from '../members/member.entity';
 import { MatchingResult, MatchingStrategy } from './matching-strategy';
 
@@ -14,7 +14,10 @@ export class StringLengthMatchingStrategy implements MatchingStrategy {
     seeker: Member,
     potentialMatch: Member,
   ): Promise<MatchingResult> {
-    const categories: MatchingDetailsDTO['categories'] = [];
+    const categories: {
+      category: ResourceRequirementCategory;
+      score: number;
+    }[] = [];
 
     for (const { category, requirements } of seeker.resourcesRequirements ??
       []) {
