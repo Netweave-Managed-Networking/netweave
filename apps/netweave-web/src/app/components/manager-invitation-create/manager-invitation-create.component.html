@@ -1,19 +1,19 @@
-<div class="user-invitation-create">
+<div class="manager-invitation-create">
   <div class="tooltip tooltip-left tooltip-accent">
     <div class="tooltip-content font-bold">Dialog öffnen</div>
     <button
-      class="user-invitation-create__open btn btn-square"
-      (click)="uewModalCreate.showModal()"
+      class="manager-invitation-create__open btn btn-square"
+      (click)="managerInvitationModalCreate.showModal()"
     >
       <icon-plus />
     </button>
   </div>
 
   <dialog
-    #uewModalCreate
-    class="user-invitation-create__modal modal whitespace-normal"
+    #managerInvitationModalCreate
+    class="manager-invitation-create__modal modal whitespace-normal"
   >
-    <div class="user-invitation-create__modal-box modal-box">
+    <div class="manager-invitation-create__modal-box modal-box">
       <h3 class="text-lg font-bold">Zugelassene Email / Domäne hinzufügen</h3>
 
       <fieldset class="p-4">
@@ -71,10 +71,12 @@
         </div>
 
         <div class="w-full pt-4 pb-4 flex justify-between gap-2">
-          <label class="label" for="user-invitation-create-role">Rolle</label>
+          <label class="label" for="manager-invitation-create-role"
+            >Rolle</label
+          >
           <select
-            id="user-invitation-create-role"
-            class="user-invitation-create__role select"
+            id="manager-invitation-create-role"
+            class="manager-invitation-create__role select"
             [formField]="emailToAddForm.role"
           >
             @for (role of roles; track role) {
@@ -110,14 +112,17 @@
       <div class="modal-action">
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
-          <button class="user-invitation-create__cancel btn" (click)="cancel()">
+          <button
+            class="manager-invitation-create__cancel btn"
+            (click)="cancel()"
+          >
             Abbrechen
           </button>
         </form>
         <button
-          class="user-invitation-create__confirm btn btn-accent"
+          class="manager-invitation-create__confirm btn btn-accent"
           [disabled]="errors.length > 0"
-          (click)="submit(uewModalCreate)"
+          (click)="submit(managerInvitationModalCreate)"
         >
           Speichern
         </button>

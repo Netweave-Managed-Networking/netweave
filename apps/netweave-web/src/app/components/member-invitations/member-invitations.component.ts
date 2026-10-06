@@ -4,9 +4,9 @@ import {
   Component,
   computed,
   inject,
-  signal,
   resource,
   ResourceRef,
+  signal,
 } from '@angular/core';
 import {
   InvitationDisplayStatus,
@@ -77,11 +77,11 @@ const COMPARATORS: Record<
 };
 
 @Component({
-  selector: 'app-invitation-dashboard',
+  selector: 'app-member-invitations',
   imports: [DatePipe],
-  templateUrl: './invitation-dashboard.component.html',
+  templateUrl: './member-invitations.component.html',
 })
-export class InvitationDashboardComponent {
+export class MemberInvitationsComponent {
   private http = inject(HttpClient);
 
   protected readonly statusConfig = STATUS_CONFIG;
@@ -91,16 +91,16 @@ export class InvitationDashboardComponent {
     label: string;
     thClass: string;
   }[] = [
-    { key: 'email', label: 'Email', thClass: 'invitation-dashboard__email-th' },
+    { key: 'email', label: 'Email', thClass: 'member-invitations__email-th' },
     {
       key: 'status',
       label: 'Status',
-      thClass: 'invitation-dashboard__status-th',
+      thClass: 'member-invitations__status-th',
     },
     {
       key: 'createdAt',
       label: 'Erstellt am',
-      thClass: 'invitation-dashboard__created-at-th',
+      thClass: 'member-invitations__created-at-th',
     },
   ];
 

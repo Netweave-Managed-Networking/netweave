@@ -1,12 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  Component,
-  ElementRef,
-  inject,
-  linkedSignal,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, inject, linkedSignal, output, signal } from '@angular/core';
 import { form, FormField, required, validate } from '@angular/forms/signals';
 import {
   DEFAULT_USER_ROLE,
@@ -24,14 +17,13 @@ import { LoadingState } from '../../types/loading-state.type';
 import { USER_ROLE_LABELS } from '../../types/user-role-labels';
 
 @Component({
-  selector: 'app-user-invitation-create',
+  selector: 'app-manager-invitation-create',
   imports: [FormField, IconInfo, IconPlus],
-  templateUrl: './user-invitation-create.component.html',
-  styleUrls: ['./user-invitation-create.component.scss'],
+  templateUrl: './manager-invitation-create.component.html',
+  styleUrls: ['./manager-invitation-create.component.scss'],
 })
-export class UserInvitationCreateComponent {
+export class ManagerInvitationCreateComponent {
   private http = inject(HttpClient);
-  private elementRef = inject(ElementRef);
 
   public entity = output<UserEmailWhitelistDTO>();
   private loadingState = signal<LoadingState>('initial');

@@ -9,17 +9,17 @@ import {
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
 
 import { catchError, firstValueFrom, of } from 'rxjs';
-import { UserInvitationCreateComponent } from '../user-invitation-create/user-invitation-create.component';
-import { UserInvitationDeleteComponent } from '../user-invitation-delete/user-invitation-delete.component';
 import { USER_ROLE_LABELS } from '../../types/user-role-labels';
+import { ManagerInvitationCreateComponent } from '../manager-invitation-create/manager-invitation-create.component';
+import { ManagerInvitationDeleteComponent } from '../manager-invitation-delete/manager-invitation-delete.component';
 
 @Component({
-  selector: 'app-user-invitations',
-  imports: [UserInvitationCreateComponent, UserInvitationDeleteComponent],
-  templateUrl: './user-invitations.component.html',
-  styleUrls: ['./user-invitations.component.scss'],
+  selector: 'app-manager-invitations',
+  imports: [ManagerInvitationCreateComponent, ManagerInvitationDeleteComponent],
+  templateUrl: './manager-invitations.component.html',
+  styleUrls: ['./manager-invitations.component.scss'],
 })
-export class UserInvitationsComponent {
+export class ManagerInvitationsComponent {
   private http = inject(HttpClient);
 
   protected readonly roleLabels = USER_ROLE_LABELS;
