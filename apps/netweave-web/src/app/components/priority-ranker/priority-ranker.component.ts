@@ -12,6 +12,7 @@ import { FormValueControl } from '@angular/forms/signals';
 import {
   dragTo,
   nudge,
+  pointsToPx,
   priorityOf,
   PriorityWeights,
   RankerStatement,
@@ -25,20 +26,13 @@ import {
 
 const SIZE: TrackSize = { trackHeight: 560, boxHeight: 88 };
 
-/** priority points a keyboard step moves, with and without shift */
-const KEY_STEP = 1;
-const KEY_STEP_LARGE = 10;
-
-const sameWeights = (a: PriorityWeights, b: PriorityWeights) =>
-  Object.keys(a).length === Object.keys(b).length &&
-  Object.entries(a).every(([id, weight]) => b[id] === weight);
+const KEY_DIRECTIONS: Record<string, number> = { ArrowUp: -1, ArrowDown: 1 };
+const KEY_STEP_POINTS = 1;
+const KEY_STEP_POINTS_SHIFT = 10;
 
 /**
- * Vertical track to prioritize statements relative to each other: dragging a box up or down sets both its rank and
- * its weight (0–100). Boxes cannot overlap, so they stick to a neighbour, and swap with it when dragged past its
- * midpoint. The value stays null until the first move, as the initial stack in the middle is no answer.
- *
- * Statement ids are only used internally and never rendered, so they may carry meaning the user must not see.
+ * Drag statements up or down to set their priority relative to each other.
+ * The value stays null until the first move. Statement ids are never rendered.
  */
 @Component({
   selector: 'app-priority-ranker',
@@ -54,24 +48,21 @@ export class PriorityRankerComponent
 
   private readonly track = viewChild.required<ElementRef<HTMLElement>>('track');
 
-  /** follows the value, unless it only reflects the current layout (re-placing from rounded weights would make boxes jump) */
   protected readonly items = linkedSignal<
     { statements: readonly RankerStatement[]; value: PriorityWeights | null },
     RankItem[]
   >({
     source: () => ({ statements: this.statements(), value: this.value() }),
     computation: ({ statements, value }, previous) => {
-      if (
+      // our own commits must not re-place the boxes, rounding would make them jump
+      const showsValue =
         previous?.source.statements === statements &&
-        value &&
-        sameWeights(weightsOf(previous.value, SIZE), value)
-      ) {
-        return previous.value;
-      }
+        value !== null &&
+        sameWeights(weightsOf(previous.value, SIZE), value);
 
-      return value
-        ? weightedLayout(statements, value, SIZE)
-        : stackedLayout(shuffle(statements), SIZE);
+      if (showsValue) return previous.value;
+      if (value) return weightedLayout(statements, value, SIZE);
+      return stackedLayout(shuffle(statements), SIZE);
     },
   });
 
@@ -81,6 +72,7 @@ export class PriorityRankerComponent
   );
 
   private grabOffset = 0;
+  private itemsBeforeDrag: RankItem[] = [];
 
   protected priorityOf(item: RankItem): number {
     return priorityOf(item.top, SIZE);
@@ -91,6 +83,7 @@ export class PriorityRankerComponent
 
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
     this.grabOffset = this.pointerY(event) - item.top;
+    this.itemsBeforeDrag = this.items();
     this.draggingId.set(item.id);
   }
 
@@ -108,18 +101,18 @@ export class PriorityRankerComponent
     if (!this.draggingId()) return;
 
     this.draggingId.set(null);
-    this.commit();
+
+    const moved = this.items() !== this.itemsBeforeDrag;
+    if (moved) this.commit();
   }
 
   protected onKeydown(event: KeyboardEvent, item: RankItem) {
-    const direction =
-      event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0;
+    const direction = KEY_DIRECTIONS[event.key];
     if (!direction) return;
 
     event.preventDefault();
-    const points = event.shiftKey ? KEY_STEP_LARGE : KEY_STEP;
-    const delta =
-      (direction * points * (SIZE.trackHeight - SIZE.boxHeight)) / 100;
+    const points = event.shiftKey ? KEY_STEP_POINTS_SHIFT : KEY_STEP_POINTS;
+    const delta = pointsToPx(direction * points, SIZE);
 
     this.items.update((items) => nudge(items, item.id, delta, SIZE));
     this.commit();
@@ -130,8 +123,11 @@ export class PriorityRankerComponent
   }
 
   private pointerY(event: PointerEvent): number {
-    return (
-      event.clientY - this.track().nativeElement.getBoundingClientRect().top
-    );
+    const trackTop = this.track().nativeElement.getBoundingClientRect().top;
+    return event.clientY - trackTop;
   }
 }
+
+const sameWeights = (a: PriorityWeights, b: PriorityWeights) =>
+  Object.keys(a).length === Object.keys(b).length &&
+  Object.entries(a).every(([id, weight]) => b[id] === weight);

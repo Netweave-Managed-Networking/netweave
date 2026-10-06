@@ -84,6 +84,21 @@ describe('PriorityRankerComponent', () => {
     ).toBe(4);
   });
 
+  it('keeps the value null when a box is only clicked, not moved', async () => {
+    await create();
+    const target = box('Klare Verfahren');
+    target.setPointerCapture = vi.fn();
+
+    for (const type of ['pointerdown', 'pointerup']) {
+      target.dispatchEvent(
+        new PointerEvent(type, { isPrimary: true, button: 0, bubbles: true }),
+      );
+    }
+    fixture.detectChanges();
+
+    expect(component.value()).toBeNull();
+  });
+
   it('places the statements by a given value, highest priority on top', async () => {
     await create({ G: 20, I: 100, W: 0, S: 65 });
 

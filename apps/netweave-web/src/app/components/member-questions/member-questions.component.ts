@@ -15,6 +15,7 @@ import {
   CultureTopic,
   InvitationTokenDTO,
   MemberUpsertDTO,
+  parseCultureItemId,
   RESOURCE_REQUIREMENT_CATEGORIES,
   ResourceRequirementCategory,
   toCultureItemId,
@@ -33,7 +34,7 @@ interface MemberFormModel {
     ResourceRequirementCategory,
     { resources: string; requirements: string }
   >;
-  /** weights per orientation, null while a topic is unanswered */
+  /** null while unanswered */
   cultureWeights: Record<CultureTopic, PriorityWeights | null>;
 }
 
@@ -54,19 +55,21 @@ const toMemberFormModel = (member: MemberUpsertDTO | null): MemberFormModel => {
     ]),
   ) as MemberFormModel['resourcesRequirements']; // fromEntries loses the key type
 
-  const savedWeights = new Map(
-    member?.cultureWeights.map((item) => [item.itemId, item.weight]),
+  const savedWeights = (member?.cultureWeights ?? []).map(
+    ({ itemId, weight }) => ({ ...parseCultureItemId(itemId), weight }),
   );
 
+  const topicWeights = (topic: CultureTopic): PriorityWeights | null => {
+    const saved = savedWeights.filter((item) => item.topic === topic);
+    if (saved.length === 0) return null;
+
+    return Object.fromEntries(
+      saved.map(({ orientation, weight }) => [orientation, weight]),
+    );
+  };
+
   const cultureWeights = Object.fromEntries(
-    CULTURE_TOPICS.map((topic) => {
-      const weights = CULTURE_ORIENTATIONS.map((orientation) => [
-        orientation,
-        savedWeights.get(toCultureItemId(topic, orientation)),
-      ]);
-      const complete = weights.every(([, weight]) => weight !== undefined);
-      return [topic, complete ? Object.fromEntries(weights) : null];
-    }),
+    CULTURE_TOPICS.map((topic) => [topic, topicWeights(topic)]),
   ) as MemberFormModel['cultureWeights']; // fromEntries loses the key type
 
   return {
@@ -90,7 +93,7 @@ const toMemberUpsertDTO = ({
     resources: resourcesRequirements[category].resources || null,
     requirements: resourcesRequirements[category].requirements || null,
   })),
-  // unanswered topics are left out, so they keep whatever is stored
+  // unanswered topics are left out, so their stored weights are kept
   cultureWeights: CULTURE_TOPICS.flatMap((topic) => {
     const weights = cultureWeights[topic];
     if (!weights) return [];
@@ -116,7 +119,6 @@ export class MemberQuestionsComponent {
   protected readonly categories = RESOURCE_REQUIREMENT_CATEGORIES;
   protected readonly categoryTexts = RESOURCE_REQUIREMENT_CATEGORY_TEXTS;
 
-  // ids are orientations, which the ranker never renders
   protected readonly cultureTopics = CULTURE_TOPICS.map((topic) => ({
     topic,
     label: CULTURE_TOPIC_TEXTS[topic].label,
