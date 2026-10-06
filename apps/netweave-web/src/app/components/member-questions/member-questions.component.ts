@@ -10,13 +10,20 @@ import {
 import { form, FormField, required } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
 import {
+  CULTURE_ORIENTATIONS,
+  CULTURE_TOPICS,
+  CultureTopic,
   InvitationTokenDTO,
   MemberUpsertDTO,
   RESOURCE_REQUIREMENT_CATEGORIES,
   ResourceRequirementCategory,
+  toCultureItemId,
 } from '@netweave/api-types';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
+import { PriorityRankerComponent } from '../priority-ranker/priority-ranker.component';
+import { PriorityWeights } from '../priority-ranker/priority-ranker.layout';
+import { CULTURE_TOPIC_TEXTS } from './culture-topics';
 import { RESOURCE_REQUIREMENT_CATEGORY_TEXTS } from './resource-requirement-categories';
 
 interface MemberFormModel {
@@ -26,6 +33,8 @@ interface MemberFormModel {
     ResourceRequirementCategory,
     { resources: string; requirements: string }
   >;
+  /** weights per orientation, null while a topic is unanswered */
+  cultureWeights: Record<CultureTopic, PriorityWeights | null>;
 }
 
 // form fields need strings, while the API uses null for empty values
@@ -45,10 +54,26 @@ const toMemberFormModel = (member: MemberUpsertDTO | null): MemberFormModel => {
     ]),
   ) as MemberFormModel['resourcesRequirements']; // fromEntries loses the key type
 
+  const savedWeights = new Map(
+    member?.cultureWeights.map((item) => [item.itemId, item.weight]),
+  );
+
+  const cultureWeights = Object.fromEntries(
+    CULTURE_TOPICS.map((topic) => {
+      const weights = CULTURE_ORIENTATIONS.map((orientation) => [
+        orientation,
+        savedWeights.get(toCultureItemId(topic, orientation)),
+      ]);
+      const complete = weights.every(([, weight]) => weight !== undefined);
+      return [topic, complete ? Object.fromEntries(weights) : null];
+    }),
+  ) as MemberFormModel['cultureWeights']; // fromEntries loses the key type
+
   return {
     name: member?.name ?? '',
     contact: member?.contact ?? '',
     resourcesRequirements,
+    cultureWeights,
   };
 };
 
@@ -56,6 +81,7 @@ const toMemberUpsertDTO = ({
   name,
   contact,
   resourcesRequirements,
+  cultureWeights,
 }: MemberFormModel): MemberUpsertDTO => ({
   name,
   contact: contact || null,
@@ -64,11 +90,21 @@ const toMemberUpsertDTO = ({
     resources: resourcesRequirements[category].resources || null,
     requirements: resourcesRequirements[category].requirements || null,
   })),
+  // unanswered topics are left out, so they keep whatever is stored
+  cultureWeights: CULTURE_TOPICS.flatMap((topic) => {
+    const weights = cultureWeights[topic];
+    if (!weights) return [];
+
+    return CULTURE_ORIENTATIONS.map((orientation) => ({
+      itemId: toCultureItemId(topic, orientation),
+      weight: weights[orientation],
+    }));
+  }),
 });
 
 @Component({
   selector: 'app-member-questions',
-  imports: [FormField],
+  imports: [FormField, PriorityRankerComponent],
   templateUrl: './member-questions.component.html',
 })
 export class MemberQuestionsComponent {
@@ -79,6 +115,16 @@ export class MemberQuestionsComponent {
 
   protected readonly categories = RESOURCE_REQUIREMENT_CATEGORIES;
   protected readonly categoryTexts = RESOURCE_REQUIREMENT_CATEGORY_TEXTS;
+
+  // ids are orientations, which the ranker never renders
+  protected readonly cultureTopics = CULTURE_TOPICS.map((topic) => ({
+    topic,
+    label: CULTURE_TOPIC_TEXTS[topic].label,
+    statements: CULTURE_ORIENTATIONS.map((orientation) => ({
+      id: orientation,
+      text: CULTURE_TOPIC_TEXTS[topic].statements[orientation],
+    })),
+  }));
 
   protected saveState = signal<LoadingState>('initial');
 

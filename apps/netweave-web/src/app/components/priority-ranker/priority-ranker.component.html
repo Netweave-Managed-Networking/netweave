@@ -1,0 +1,65 @@
+<div class="priority-ranker flex flex-col gap-2">
+  <span
+    class="priority-ranker__label priority-ranker__label--high text-xs font-medium text-base-content/60"
+  >
+    Hohe Priorität
+  </span>
+
+  <div
+    #track
+    class="priority-ranker__track relative w-full rounded-box border border-base-content/10 bg-linear-to-b from-base-300/70 to-base-200/40"
+    [style.height.px]="size.trackHeight"
+  >
+    @for (item of items(); track item.id) {
+      @let dragging = draggingId() === item.id;
+
+      <div
+        class="priority-ranker__box absolute left-2 right-2 flex cursor-grab touch-none select-none items-center gap-3 rounded-field border bg-base-100 px-3 py-2 shadow-sm outline-offset-2 focus-visible:outline-2 focus-visible:outline-neutral active:cursor-grabbing"
+        [class]="
+          dragging
+            ? 'priority-ranker__box--dragging z-10 border-neutral shadow-lg transition-shadow duration-150'
+            : 'border-base-content/10 transition-[top,box-shadow] duration-150'
+        "
+        [style.top.px]="item.top"
+        [style.height.px]="size.boxHeight"
+        tabindex="0"
+        role="slider"
+        aria-orientation="vertical"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="showPriorities() ? priorityOf(item) : null"
+        [attr.aria-valuetext]="
+          showPriorities()
+            ? 'Priorität ' + priorityOf(item) + ' von 100'
+            : 'Noch nicht priorisiert'
+        "
+        [attr.aria-label]="item.text"
+        (pointerdown)="startDrag($event, item)"
+        (pointermove)="drag($event)"
+        (pointerup)="endDrag()"
+        (pointercancel)="endDrag()"
+        (keydown)="onKeydown($event, item)"
+      >
+        <span
+          class="priority-ranker__text flex-1 text-sm leading-snug line-clamp-4"
+        >
+          {{ item.text }}
+        </span>
+
+        @if (showPriorities()) {
+          <span
+            class="priority-ranker__priority badge badge-neutral shrink-0 tabular-nums"
+          >
+            {{ priorityOf(item) }}
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <span
+    class="priority-ranker__label priority-ranker__label--low text-xs font-medium text-base-content/60"
+  >
+    Niedrige Priorität
+  </span>
+</div>
