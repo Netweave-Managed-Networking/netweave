@@ -13,6 +13,9 @@ export class MatchingRun extends BaseEntity {
   @Column({ name: 'failed_at', type: 'timestamptz', nullable: true })
   declare public failedAt: Date | null; // set instead of finishedAt if the run errored out
 
+  @Column({ name: 'cancelled_at', type: 'timestamptz', nullable: true })
+  declare public cancelledAt: Date | null; // set instead of finishedAt if a user cancelled the run
+
   @OneToMany(() => Matching, (matching) => matching.matchingRun)
   declare public matchings?: Matching[]; // only set when loaded as relation
 }
