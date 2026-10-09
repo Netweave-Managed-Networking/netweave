@@ -5,5 +5,6 @@ export interface MatchingRunListItemDTO
   extends Pick<EntityDTO, 'id' | 'createdAt'> {
   finishedAt: Date | null;
   failedAt: Date | null;
+  cancelledAt: Date | null;
   matchingCount: number;
 }
