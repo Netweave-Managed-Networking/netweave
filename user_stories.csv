@@ -479,3 +479,43 @@ h3. Out of Scope
 * Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
 * Anzeige der Vernetzungsempfehlungen im Frontend
 * Erinnerungs-Emails"
+"Development","Vernetzungsempfehlungen zeigen die für NT relevanten Ressourcen","NETW-10","NETW-10","High","3 Backend","_Als Netzwerkteilnehmer NT möchte ich zu meinen Vernetzungsempfehlungen die Ressourcen sehen, die mir weiterhelfen könnten, damit ich nachvollziehen kann, warum mir genau diese Netzwerkteilnehmer empfohlen werden._
+
+h3. Akzeptanzkriterien
+* Zu jedem empfohlenen NT (siehe NETW-43) wird zusätzlich die Information bereitgestellt, über welche Ressourcen dieser NT verfügt
+  * dabei hängt es von der Ranking Strategy (siehe NETW-42), ob es reicht nur das Resourcenfeld einer einzigen Kategorie oder aller Kategorien darzustellen
+  * die beiden Strategien Maximal-Kategorie-Strategie und Kategorie-Trennungs-Strategie basieren pro Vorschlag NT_potential_match immer nur auf einer einzigen Kategorie und deshalb, sollte auch nur diese angegeben werden
+* Alle dargestellten Ressourcen werden zusammen mit ihrer Kategorie dargestellt
+
+
+h3. Out of Scope
+* Anzeige der Ressourcen im Frontend
+* Anzeige der Bedarfe des NT_potential_match in der E-Mail mit Vernetzungsempfehlungen
+* Verbesserung der Auswahl- bzw. Relevanzlogik (zunächst)
+* Besondere optische Darstellung der Mail
+
+h3. Developer Notes
+* Die bereitgestellte Information macht nachvollziehbar, warum der adressierte NT genau diese Empfehlungen erhält
+* Die Mail kann einfach als unsorted list auch mit viel Text rausgehen"
+"Development","Vernetzungsempfehlungen enthalten Hinweise zur kulturellen Stimmigkeit","NETW-10","NETW-10","High","5 Backend","_Als Netzwerkteilnehmer NT möchte ich zu meinen Vernetzungsempfehlungen Hinweise zur kulturellen Stimmigkeit der Organisationen erhalten, damit mir transparent wird, wenn es in Bezug auf die Organisationskultur Probleme in der Zusammenarbeit geben könnte._
+
+h3. Hintergrund
+* Wenn es in Bezug auf die Organisationskultur Probleme geben könnte, wird dies dem adressierten NT A transparent gemacht
+  * Beispiel: „Du als Clan solltest bei B als XY besonders darauf achten …„
+
+h3. Akzeptanzkriterien
+* Für die Empfehlungen ist es nötig, dass für jeden NT die OrgKultur bestimmt wird. Dazu wird einfach die dominanteste Kultur, also die mit der höchsten Summe aus den vier Kategorien Z1 bis Z4 als Kultur angenommen.
+* Für alle Kombinationen von Organisationskulturen existieren 16 vorgefertigte Texte (z.B. Clan -> Adhokratie, Clan -> Markt, Adhokratie -> Clan usw.)
+  * Auch Kombinationen gleicher Kulturen (z.B. Clan <-> Clan) erhalten einen Hinweistext
+  * Die Texte sind richtungsabhängig (A als Clan bei B als Markt ≠ A als Markt bei B als Clan)
+  * Der Text wird aus Sicht des adressierten NT A formuliert und passend zur Kombination aus Kultur von A und Kultur von B ausgewählt
+  * Die genauen Texte können leicht nachträglich ergänzt werden. Für diese Aufgabe, nimm bitte die Texte von oben an: „Clan -> Adhokratie„, usw.
+* Die Hinweise zur kulturellen Stimmigkeit sind Bestandteil der E-Mail mit Vernetzungsempfehlungen und werden unten in der Mail für jeden erwähnten NT mit aufgeführt
+
+h3. Out of Scope
+* Anzeige der Hinweise im Frontend
+* Dynamisch generierte (z.B. per LLM) oder individualisierte Hinweistexte
+
+h3. Developer Notes
+* Die Hinweistexte sind vorgefertigt und pro Kombination hinterlegt
+* Die Organisationskultur eines NTs ist einfach die dominanteste Orientierung "
