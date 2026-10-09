@@ -420,3 +420,62 @@ Ressource:
 {'{'}Ressourcentext der Kategorie k von NT B{'}'}
 {quote}
 * Pro NT-Paar und Kategorie ist ein eigener LLM-Call nötig; Ergebnisse werden granular pro Kategorie gespeichert, um spätere Auswertungen/Gewichtungen zu ermöglichen"
+"Development","Kultur-Aussagen sind farblich markiert","NETW-7","NETW-7","Low","7 Frontend","_Als Netzwerkteilnehmer NT möchte ich nach dem Verschieben/Tauschen von Kultur-Aussagen (siehe NETW-7/4) klar erkennen können, welche Aussage welche ist, damit ich die bereits gelesenen Aussagen besser wiedererkenne._
+
+h3. Akzeptanzkriterien
+* Jede Drag-and-Drop-Aussage erhält eine kleine farbliche Markierung (z.B. die obere rechte Ecke ist im Dreieck gefärbt)
+* Farbliche Markierung bleibt der jeweiligen Aussage dauerhaft zugeordnet, auch nach Verschieben/Tauschen
+* Farblichen Markeirung wird anhand der Startreigenfolge festgelegt und darf kein Hinweis auf die Kultur sein
+* Es werden ausschließlich folgende Farben verwendet (keine Signalfarben wie Rot/Grün):
+  * Altrosa #C78A8F
+  * Petrol #4A8C8C
+  * Ocker #C2A36B
+  * Flieder #8F7BA8
+
+h3. Out of Scope
+* Farbliche Markierung außerhalb der Kultur-Aussagen
+
+h3. Developer Notes"
+"Development","System ermittelt Top-3-Matching-Empfehlungen pro NT über konfigurierbare Strategie","NETW-9","NETW-9","High","1 Backend","_Als System muss ich anhand der Matching-Ergebnisse (siehe NETW-9) in einer bestimmten Gewichtung zu einem Matching-Score gelangen, sodass für jeden Netzwerkteilnehmer NT eine Top-3-Liste (bzw. Top-3 pro Kategorie) an Matching-Empfehlungen erstellt werden kann._
+
+h3. Akzeptanzkriterien
+* Berechnung der Matching-Empfehlungen erfolgt nach dem Strategy Pattern, sodass die verwendete Strategie zukünftig austauschbar ist (ggf. auch pro Deployment/Netzwerk via .env Variable)
+* Eine Strategie besteht aus drei Bestandteilen:
+  * Kategorien-Strategie (z.B. Maximal-Kategorie-Strategie oder Kategorie-Trennungs-Strategie)
+  * Kulturengewichtung: Formel zur Berechnung eines Distanzwerts von NT_seeker zu NT_pm (siehe Developer Notes)
+  * Gesamtgewichtung: dreigeteilter Zahlenschlüssel zur Gewichtung von Ressourcen/Bedarfs-Matching-Result, Kultur-Differenz (GWIS) und NEP (z.B. 80% / 20% / 0%)
+* Es sind zwei Kategorien-Strategien implementiert: Kategorie-Trennungs-Strategie und Maximal-Kategorie-Strategie
+* Als aktive Strategie ist die Kategorie-Trennungs-Strategie ausgewählt
+* Kategorie-Trennungs-Strategie:
+  * Matching-Results verschiedener Kategorien werden nicht summiert
+  * Pro Kategorie wird der Gesamtscore als Matching-Result in dieser Kategorie +/- Kulturdifferenz berechnet
+  * Ergebnis ist pro NT_seeker eine Auflistung der Kategorien mit jeweils einer Top-3-Liste an NT_pm
+* Maximal-Kategorie-Strategie:
+  * Matching-Results verschiedener Kategorien werden nicht summiert
+  * Pro NT_A wird für jeden NT_B der Maximalwert aus dessen Kategorien 1-7 herangezogen
+  * Ergebnis ist pro NT_seeker eine Top-3-Liste an NT_pm, jeweils mit der Kategorie, die den Maximalwert lieferte
+
+h3. Out of Scope
+* Absenden der E-Mail mit Vernetzungsempfehlungen (Namen und Email der Top 3 Matches)
+* Konfigurierbarkeit der Gesamtgewichtung über UI
+* Anzeige der Empfehlungen im Frontend
+* Lösung von Randfällen bei Gleichständen in der Maximal-Kategorie-Strategie (z.B. mehrere Top-Platzierungen desselben NT_B wegen gleichem Maximalwert in mehreren Kategorien) – wird zunächst toleriert
+* Konfiguration der Strategie über UI
+* Gesamtgewichtung kann als Teil der Strategie hardcoded sein, später wird diese eventuell als gesonderter Teil nochmal extra konfigurierbar sein
+
+h3. Developer Notes
+* System muss die berechneten Top-3-Empfehlungen nicht im Backend abspeichern. (Diese werden nur für die Email die in einer anderen Story abgesendet wird direkt genutzt)
+  * Alternativ kann das System die berechneten Top-3-Empfehlungen inkl. der genutzen Strategie im Backend abspeichern
+* Die Dreiteilung der Gesamtgewichtung ist in Zukunft eventuell nicht mehr gegeben, falls ein viertes Segment zum Fragebogen hinzukommt
+* Kulturengewichtung (Distanzformel NT_seeker zu NT_pm) lautet:"
+"Development","Organisationen erhalten Email mit Vernetzungsempfehlungen (Top 3 Matches)","NETW-10","NETW-10","High","2 Backend","_Als Organisation (Netzwerkteilnehmer NT) möchte ich eine Email mit Vernetzungsempfehlungen (Namen und Email der Top 3 Matches) erhalten, um gezielt Kontakt aufnehmen zu können._
+
+h3. Akzeptanzkriterien
+* System versendet an NT eine Email mit Namen und Email-Adresse der Top 3 Matches (ggf. pro Kategorie)
+* Versand erfolgt im Anschluss an eine abgeschlossene Matching-Score-Berechnung (siehe NETW-9)
+
+h3. Out of Scope
+* Errechnung des Matching-Scores aus einzelnen abgespeicherten Matching Results
+* Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
+* Anzeige der Vernetzungsempfehlungen im Frontend
+* Erinnerungs-Emails"
