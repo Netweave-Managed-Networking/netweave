@@ -18,7 +18,7 @@ export class MemberCultureComponent {
     label: CULTURE_TOPIC_TEXTS[topic].label,
     statements: CULTURE_ORIENTATIONS.map((orientation) => ({
       id: orientation,
-      text: CULTURE_TOPIC_TEXTS[topic].statements[orientation],
+      html: CULTURE_TOPIC_TEXTS[topic].statements[orientation],
     })),
   }));
 }

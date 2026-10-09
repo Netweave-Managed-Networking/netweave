@@ -39,6 +39,9 @@ const KEY_DIRECTIONS: Record<string, number> = { ArrowUp: -1, ArrowDown: 1 };
 const KEY_STEP_POINTS = 1;
 const KEY_STEP_POINTS_SHIFT = 10;
 
+/** several rankers can be on one page, their text ids must not clash */
+let nextInstance = 0;
+
 /**
  * Drag statements up or down to set their priority relative to each other.
  * The value stays null until the first move. Statement ids are never rendered.
@@ -52,6 +55,9 @@ export class PriorityRankerComponent
 {
   public readonly statements = input.required<readonly RankerStatement[]>();
   public readonly value = model<PriorityWeights | null>(null);
+
+  /** the texts label their boxes, as aria-label cannot hold HTML */
+  protected readonly idPrefix = `priority-ranker-${nextInstance++}-`;
 
   /** boxes are as high as the longest text needs, so more of the track is left for weighting */
   protected readonly size = signal<TrackSize>(

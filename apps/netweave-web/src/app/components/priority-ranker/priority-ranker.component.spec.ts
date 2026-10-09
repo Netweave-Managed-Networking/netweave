@@ -3,10 +3,10 @@ import { PriorityRankerComponent } from './priority-ranker.component';
 import { PriorityWeights } from './priority-ranker.layout';
 
 const statements = [
-  { id: 'G', text: 'Gemeinsam entscheiden' },
-  { id: 'I', text: 'Neues ausprobieren' },
-  { id: 'W', text: 'Ziele erreichen' },
-  { id: 'S', text: 'Klare Verfahren' },
+  { id: 'G', html: 'Gemeinsam entscheiden' },
+  { id: 'I', html: 'Neues ausprobieren' },
+  { id: 'W', html: 'Ziele erreichen' },
+  { id: 'S', html: 'Klare Verfahren' },
 ];
 
 describe('PriorityRankerComponent', () => {
@@ -48,7 +48,7 @@ describe('PriorityRankerComponent', () => {
       boxes()
         .map((b) => b.textContent?.trim())
         .sort(),
-    ).toEqual(statements.map(({ text }) => text).sort());
+    ).toEqual(statements.map(({ html }) => html).sort());
     expect(element().textContent).toContain('Hohe Priorität');
     expect(element().textContent).toContain('Niedrige Priorität');
   });
@@ -60,6 +60,21 @@ describe('PriorityRankerComponent', () => {
     for (const { id } of statements) {
       expect(html).not.toMatch(new RegExp(`\\b${id}\\b`));
     }
+  });
+
+  it('renders the statements as HTML and names the boxes by their text', async () => {
+    await create();
+    fixture.componentRef.setInput('statements', [
+      { id: 'G', html: 'Gemeinsam <strong>entscheiden</strong>' },
+    ]);
+    fixture.detectChanges();
+
+    const [only] = boxes();
+    expect(only.querySelector('strong')?.textContent).toBe('entscheiden');
+    const label = element().querySelector(
+      `#${only.getAttribute('aria-labelledby')}`,
+    );
+    expect(label?.textContent).toBe('Gemeinsam entscheiden');
   });
 
   it('has no value and shows no priorities until the first move', async () => {

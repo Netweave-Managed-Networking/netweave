@@ -13,7 +13,7 @@ import {
 // travel = 500, so 1 priority point = 5px
 const size: TrackSize = { trackHeight: 600, boxHeight: 100 };
 
-const statements = ['a', 'b', 'c', 'd'].map((id) => ({ id, text: id }));
+const statements = ['a', 'b', 'c', 'd'].map((id) => ({ id, html: id }));
 
 const items = (tops: Record<string, number>): RankItem[] =>
   statements.map((statement) => ({ ...statement, top: tops[statement.id] }));

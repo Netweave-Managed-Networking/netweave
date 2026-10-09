@@ -1,6 +1,7 @@
 export interface RankerStatement {
   id: string;
-  text: string;
+  /** rendered via innerHTML, so Angular sanitizes it */
+  html: string;
 }
 
 /** 0 (bottom) to 100 (top) per statement id */

@@ -33,7 +33,7 @@
             ? 'Priorität ' + priorityOf(item) + ' von 100'
             : 'Noch nicht priorisiert'
         "
-        [attr.aria-label]="item.text"
+        [attr.aria-labelledby]="idPrefix + $index"
         (pointerdown)="startDrag($event, item)"
         (pointermove)="drag($event)"
         (pointerup)="endDrag()"
@@ -42,10 +42,10 @@
       >
         <span
           #text
+          [id]="idPrefix + $index"
           class="priority-ranker__text flex-1 text-sm leading-snug line-clamp-4"
-        >
-          {{ item.text }}
-        </span>
+          [innerHTML]="item.html"
+        ></span>
 
         @if (showPriorities()) {
           <span

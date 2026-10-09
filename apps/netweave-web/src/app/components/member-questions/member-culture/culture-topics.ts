@@ -2,6 +2,7 @@ import { CultureOrientation, CultureTopic } from '@netweave/api-types';
 
 interface CultureTopicText {
   label: string;
+  /** HTML, so texts can be highlighted or carry images */
   statements: Record<CultureOrientation, string>;
 }
 
