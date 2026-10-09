@@ -13,7 +13,7 @@ import { MemberCultureWeightUpsertDTO } from './member-culture-weight.upsert.dto
 import { MemberResourceRequirementUpsertDTO } from './member-resource-requirement.upsert.dto.class';
 
 // weights are normalized by their topic's total, so a topic needs all of them and must not total 0
-const hasCompleteCultureTopics = (items: unknown): boolean =>
+const hasCompleteOrientationsPerTopic = (items: unknown): boolean =>
   Array.isArray(items) &&
   CULTURE_TOPICS.every((topic) => {
     const weights = items
@@ -45,9 +45,9 @@ export class MemberUpsertDTO {
   @IsArray()
   @ArrayUnique((item: MemberCultureWeightUpsertDTO) => item.itemId)
   @ValidateBy({
-    name: 'hasCompleteCultureTopics',
+    name: 'hasCompleteOrientationsPerTopic',
     validator: {
-      validate: hasCompleteCultureTopics,
+      validate: hasCompleteOrientationsPerTopic,
       defaultMessage: () =>
         'each culture topic needs either no weights or all four, not all of them 0',
     },
