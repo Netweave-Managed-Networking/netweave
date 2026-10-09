@@ -5,9 +5,26 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateBy,
   ValidateNested,
 } from 'class-validator';
+import { CULTURE_ORIENTATIONS, CULTURE_TOPICS } from './culture.type';
+import { MemberCultureWeightUpsertDTO } from './member-culture-weight.upsert.dto.class';
 import { MemberResourceRequirementUpsertDTO } from './member-resource-requirement.upsert.dto.class';
+
+// weights are normalized by their topic's total, so a topic needs all of them and must not total 0
+const hasCompleteOrientationsPerTopic = (items: unknown): boolean =>
+  Array.isArray(items) &&
+  CULTURE_TOPICS.every((topic) => {
+    const weights = items
+      .filter((item) => String(item?.itemId).startsWith(`${topic}-`))
+      .map((item) => Number(item.weight));
+    const total = weights.reduce((sum, weight) => sum + weight, 0);
+
+    const unanswered = weights.length === 0;
+    const complete = weights.length === CULTURE_ORIENTATIONS.length;
+    return unanswered || (complete && total > 0);
+  });
 
 export class MemberUpsertDTO {
   @IsNotEmpty()
@@ -24,4 +41,18 @@ export class MemberUpsertDTO {
   @ValidateNested({ each: true })
   @Type(() => MemberResourceRequirementUpsertDTO)
   declare public resourcesRequirements: MemberResourceRequirementUpsertDTO[];
+
+  @IsArray()
+  @ArrayUnique((item: MemberCultureWeightUpsertDTO) => item.itemId)
+  @ValidateBy({
+    name: 'hasCompleteOrientationsPerTopic',
+    validator: {
+      validate: hasCompleteOrientationsPerTopic,
+      defaultMessage: () =>
+        'each culture topic needs either no weights or all four, not all of them 0',
+    },
+  })
+  @ValidateNested({ each: true })
+  @Type(() => MemberCultureWeightUpsertDTO)
+  declare public cultureWeights: MemberCultureWeightUpsertDTO[];
 }

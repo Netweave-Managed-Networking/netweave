@@ -1,9 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { MemberUpsertDTO } from '@netweave/api-types';
+import {
+  CultureItemId,
+  CultureTopic,
+  MemberUpsertDTO,
+  parseCultureItemId,
+} from '@netweave/api-types';
 import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
+import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
 
@@ -49,7 +55,7 @@ export class MembersService {
     });
   }
 
-  /** creates or updates the member of an invitation, including its resources and requirements, and marks the invitation as answered */
+  /** creates or updates the member of an invitation, including its resources, requirements and culture weights, and marks the invitation as answered */
   public async saveForInvitation(
     invitationId: number,
     dto: MemberUpsertDTO,
@@ -68,6 +74,7 @@ export class MembersService {
       });
 
       await this.upsertResourcesRequirements(manager, member.id, dto);
+      await this.upsertCultureWeights(manager, member.id, dto);
 
       // only the first save counts as answer date, later edits keep it
       await manager.update(
@@ -79,7 +86,7 @@ export class MembersService {
       // re-read, so the caller gets what is actually stored
       return manager.findOneOrFail(Member, {
         where: { id: member.id },
-        relations: { resourcesRequirements: true },
+        relations: { resourcesRequirements: true, cultureWeights: true },
       });
     });
   }
@@ -104,6 +111,32 @@ export class MembersService {
     await manager.upsert(MemberResourceRequirement, rows, {
       conflictPaths: ['memberId', 'category'],
       skipUpdateIfNoValuesChanged: true, // keeps updated_at of unchanged categories, see haveResourcesRequirementsChangedSince
+    });
+  }
+
+  private async upsertCultureWeights(
+    manager: EntityManager,
+    memberId: number,
+    { cultureWeights }: MemberUpsertDTO,
+  ): Promise<void> {
+    if (cultureWeights.length === 0) return; // typeorm rejects an empty upsert
+
+    const topicOf = (itemId: CultureItemId) => parseCultureItemId(itemId).topic;
+    const totalOf = (topic: CultureTopic) =>
+      cultureWeights
+        .filter(({ itemId }) => topicOf(itemId) === topic)
+        .reduce((sum, { weight }) => sum + weight, 0);
+
+    const rows = cultureWeights.map(({ itemId, weight }) => ({
+      memberId,
+      itemId,
+      weight,
+      topicTotal: totalOf(topicOf(itemId)),
+    }));
+
+    await manager.upsert(MemberCultureWeight, rows, {
+      conflictPaths: ['memberId', 'itemId'],
+      skipUpdateIfNoValuesChanged: true,
     });
   }
 }

@@ -11,6 +11,12 @@ const dto: MemberUpsertDTO = {
   resourcesRequirements: [
     { category: 'competencies', resources: 'Moderation', requirements: null },
   ],
+  cultureWeights: [
+    { itemId: 'Z1-G', weight: 80 },
+    { itemId: 'Z1-I', weight: 60 },
+    { itemId: 'Z1-W', weight: 40 },
+    { itemId: 'Z1-S', weight: 20 },
+  ],
 };
 
 describe('MemberController', () => {
@@ -31,6 +37,12 @@ describe('MemberController', () => {
           id: 1,
           memberId: 7,
           ...item,
+        })),
+        cultureWeights: dto.cultureWeights.map((item) => ({
+          id: 1,
+          memberId: 7,
+          ...item,
+          topicTotal: 200,
         })),
       }),
     };

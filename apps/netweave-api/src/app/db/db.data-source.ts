@@ -5,6 +5,7 @@ import { Invitation } from '../invitations/invitation.entity';
 import { MailConfig } from '../mail/mail-config.entity';
 import { MatchingRun } from '../matchings/matching-run.entity';
 import { Matching } from '../matchings/matching.entity';
+import { MemberCultureWeight } from '../members/member-culture-weight.entity';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
@@ -29,6 +30,7 @@ export default new DataSource({
     Matching,
     MatchingRun,
     Member,
+    MemberCultureWeight,
     MemberResourceRequirement,
     User,
     UserEmailWhitelist,

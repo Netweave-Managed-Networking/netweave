@@ -11,4 +11,8 @@ export const toMemberUpsertDTO = (member: Member): MemberUpsertDTO => ({
       requirements,
     }),
   ),
+  cultureWeights: (member.cultureWeights ?? []).map(({ itemId, weight }) => ({
+    itemId,
+    weight,
+  })),
 });

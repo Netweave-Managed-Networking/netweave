@@ -1,0 +1,28 @@
+<section
+  class="member-culture bg-base-100 border border-base-content/5 rounded-box p-6"
+>
+  <h2 class="text-lg font-semibold">Organisationskultur</h2>
+  <p class="text-sm text-base-content/60 mt-1">
+    Organisationen setzen in ihrer Arbeit unterschiedliche Schwerpunkte. In den
+    folgenden Themenfeldern stehen jeweils vier grundsätzlich sinnvolle
+    Orientierungen zur Auswahl. Ziehe die Aussagen in jedem Themenfeld nach oben
+    oder unten: Je wichtiger eine Aussage aus Sicht deiner Organisation ist,
+    desto weiter oben sollte sie stehen. Auch die Abstände zwischen den Aussagen
+    zählen. Es gibt kein richtiges oder falsches Profil.
+  </p>
+
+  @for (cultureTopic of cultureTopics; track cultureTopic.topic) {
+    <div class="divider my-4"></div>
+
+    <fieldset class="member-culture__topic fieldset p-0">
+      <legend class="fieldset-legend text-base pb-2">
+        {{ cultureTopic.label }}
+      </legend>
+
+      <app-priority-ranker
+        [statements]="cultureTopic.statements"
+        [formField]="fields()[cultureTopic.topic]"
+      />
+    </fieldset>
+  }
+</section>

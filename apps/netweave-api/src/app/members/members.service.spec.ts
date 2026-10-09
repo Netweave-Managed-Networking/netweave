@@ -1,6 +1,7 @@
 import { MemberUpsertDTO } from '@netweave/api-types';
 import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
+import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
 import { MembersService } from './members.service';
@@ -20,6 +21,7 @@ const dto: MemberUpsertDTO = {
   name: 'Acme e.V.',
   contact: 'Erika Musterfrau',
   resourcesRequirements: [],
+  cultureWeights: [],
 };
 
 describe('MembersService', () => {
@@ -123,7 +125,7 @@ describe('MembersService', () => {
       );
     });
 
-    it('does not upsert when no resources and requirements are given', async () => {
+    it('does not upsert when no resources, requirements and culture weights are given', async () => {
       manager.findOne?.mockResolvedValue(null);
 
       await service.saveForInvitation(123, dto);
@@ -131,8 +133,49 @@ describe('MembersService', () => {
       expect(manager.upsert).not.toHaveBeenCalled();
     });
 
-    it('returns the saved member including its resources and requirements', async () => {
-      const saved = { id: 7, ...dto, resourcesRequirements: [] };
+    it('upserts the culture weights of the member with the total of their topic', async () => {
+      manager.findOne?.mockResolvedValue(null);
+
+      await service.saveForInvitation(123, {
+        ...dto,
+        cultureWeights: [
+          { itemId: 'Z1-G', weight: 100 },
+          { itemId: 'Z1-I', weight: 90 },
+          { itemId: 'Z1-W', weight: 80 },
+          { itemId: 'Z1-S', weight: 70 },
+          { itemId: 'Z3-G', weight: 0 },
+          { itemId: 'Z3-I', weight: 10 },
+          { itemId: 'Z3-W', weight: 20 },
+          { itemId: 'Z3-S', weight: 30 },
+        ],
+      });
+
+      expect(manager.upsert).toHaveBeenCalledWith(
+        MemberCultureWeight,
+        [
+          { memberId: 7, itemId: 'Z1-G', weight: 100, topicTotal: 340 },
+          { memberId: 7, itemId: 'Z1-I', weight: 90, topicTotal: 340 },
+          { memberId: 7, itemId: 'Z1-W', weight: 80, topicTotal: 340 },
+          { memberId: 7, itemId: 'Z1-S', weight: 70, topicTotal: 340 },
+          { memberId: 7, itemId: 'Z3-G', weight: 0, topicTotal: 60 },
+          { memberId: 7, itemId: 'Z3-I', weight: 10, topicTotal: 60 },
+          { memberId: 7, itemId: 'Z3-W', weight: 20, topicTotal: 60 },
+          { memberId: 7, itemId: 'Z3-S', weight: 30, topicTotal: 60 },
+        ],
+        {
+          conflictPaths: ['memberId', 'itemId'],
+          skipUpdateIfNoValuesChanged: true,
+        },
+      );
+    });
+
+    it('returns the saved member including its resources, requirements and culture weights', async () => {
+      const saved = {
+        id: 7,
+        ...dto,
+        resourcesRequirements: [],
+        cultureWeights: [],
+      };
       manager.findOne?.mockResolvedValue(null);
       manager.findOneOrFail?.mockResolvedValue(saved);
 
@@ -140,7 +183,7 @@ describe('MembersService', () => {
 
       expect(manager.findOneOrFail).toHaveBeenCalledWith(Member, {
         where: { id: 7 },
-        relations: { resourcesRequirements: true },
+        relations: { resourcesRequirements: true, cultureWeights: true },
       });
       expect(result).toBe(saved);
     });

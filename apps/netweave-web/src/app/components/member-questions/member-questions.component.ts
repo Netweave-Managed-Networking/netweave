@@ -7,68 +7,27 @@ import {
   resource,
   signal,
 } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { form, required } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
-import {
-  InvitationTokenDTO,
-  MemberUpsertDTO,
-  RESOURCE_REQUIREMENT_CATEGORIES,
-  ResourceRequirementCategory,
-} from '@netweave/api-types';
+import { InvitationTokenDTO, MemberUpsertDTO } from '@netweave/api-types';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
-import { RESOURCE_REQUIREMENT_CATEGORY_TEXTS } from './resource-requirement-categories';
-
-interface MemberFormModel {
-  name: string;
-  contact: string;
-  resourcesRequirements: Record<
-    ResourceRequirementCategory,
-    { resources: string; requirements: string }
-  >;
-}
-
-// form fields need strings, while the API uses null for empty values
-
-const toMemberFormModel = (member: MemberUpsertDTO | null): MemberFormModel => {
-  const saved = new Map(
-    member?.resourcesRequirements.map((item) => [item.category, item]),
-  );
-
-  const resourcesRequirements = Object.fromEntries(
-    RESOURCE_REQUIREMENT_CATEGORIES.map((category) => [
-      category,
-      {
-        resources: saved.get(category)?.resources ?? '',
-        requirements: saved.get(category)?.requirements ?? '',
-      },
-    ]),
-  ) as MemberFormModel['resourcesRequirements']; // fromEntries loses the key type
-
-  return {
-    name: member?.name ?? '',
-    contact: member?.contact ?? '',
-    resourcesRequirements,
-  };
-};
-
-const toMemberUpsertDTO = ({
-  name,
-  contact,
-  resourcesRequirements,
-}: MemberFormModel): MemberUpsertDTO => ({
-  name,
-  contact: contact || null,
-  resourcesRequirements: RESOURCE_REQUIREMENT_CATEGORIES.map((category) => ({
-    category,
-    resources: resourcesRequirements[category].resources || null,
-    requirements: resourcesRequirements[category].requirements || null,
-  })),
-});
+import {
+  MemberFormModel,
+  toMemberFormModel,
+  toMemberUpsertDTO,
+} from './member-form.model';
+import { MemberCultureComponent } from './member-culture/member-culture.component';
+import { MemberGeneralDataComponent } from './member-general-data/member-general-data.component';
+import { MemberResourcesRequirementsComponent } from './member-resources-requirements/member-resources-requirements.component';
 
 @Component({
   selector: 'app-member-questions',
-  imports: [FormField],
+  imports: [
+    MemberGeneralDataComponent,
+    MemberResourcesRequirementsComponent,
+    MemberCultureComponent,
+  ],
   templateUrl: './member-questions.component.html',
 })
 export class MemberQuestionsComponent {
@@ -76,9 +35,6 @@ export class MemberQuestionsComponent {
   private route = inject(ActivatedRoute);
 
   private token = this.route.snapshot.paramMap.get('token') ?? '';
-
-  protected readonly categories = RESOURCE_REQUIREMENT_CATEGORIES;
-  protected readonly categoryTexts = RESOURCE_REQUIREMENT_CATEGORY_TEXTS;
 
   protected saveState = signal<LoadingState>('initial');
 

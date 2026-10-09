@@ -139,6 +139,7 @@ describe('MemberQuestionsComponent', () => {
         name: 'Acme e.V.',
         contact: 'Erika Musterfrau',
         resourcesRequirements: [],
+        cultureWeights: [],
       },
     });
 
@@ -165,6 +166,7 @@ describe('MemberQuestionsComponent', () => {
       name: 'Acme e.V.',
       contact: 'Erika Musterfrau',
       resourcesRequirements: emptyResourcesRequirements,
+      cultureWeights: [],
     });
     req.flush(req.request.body);
 
@@ -188,6 +190,7 @@ describe('MemberQuestionsComponent', () => {
       name: 'Acme e.V.',
       contact: null,
       resourcesRequirements: emptyResourcesRequirements,
+      cultureWeights: [],
     });
     req.flush(req.request.body);
   });
@@ -240,7 +243,7 @@ describe('MemberQuestionsComponent', () => {
     await loadInvitation({ email: 'nt@example.com', member: null });
 
     const categories = (fixture.nativeElement as HTMLElement).querySelectorAll(
-      'fieldset.member-questions__category',
+      'fieldset.member-resources-requirements__category',
     );
 
     expect(
@@ -260,7 +263,7 @@ describe('MemberQuestionsComponent', () => {
     for (const category of Array.from(categories)) {
       expect(
         category
-          .querySelector('.member-questions__category-description')
+          .querySelector('.member-resources-requirements__category-description')
           ?.textContent?.trim(),
       ).toBeTruthy();
       expect(category.querySelectorAll('textarea').length).toBe(2);
@@ -288,6 +291,7 @@ describe('MemberQuestionsComponent', () => {
             requirements: null,
           },
         ],
+        cultureWeights: [],
       },
     });
 
@@ -321,6 +325,83 @@ describe('MemberQuestionsComponent', () => {
         return item;
       }),
     );
+    req.flush(req.request.body);
+  });
+
+  const cultureTopics = () =>
+    Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll(
+        'fieldset.member-culture__topic',
+      ),
+    );
+
+  it('shows a priority ranker with four statements for each of the 4 culture topics', async () => {
+    await loadInvitation({ email: 'nt@example.com', member: null });
+
+    expect(
+      cultureTopics().map((t) =>
+        t.querySelector('legend')?.textContent?.trim(),
+      ),
+    ).toEqual([
+      'Zusammenarbeit und Entscheidungen',
+      'Umgang mit Veränderungen und Unsicherheit',
+      'Einsatz von Zeit und Ressourcen',
+      'Gelungene organisationsübergreifende Kooperation',
+    ]);
+
+    for (const topic of cultureTopics()) {
+      expect(topic.querySelectorAll('[role="slider"]').length).toBe(4);
+    }
+  });
+
+  it('saves the culture weights of answered topics only, keeping saved ones', async () => {
+    const savedZ3 = [
+      { itemId: 'Z3-G', weight: 10 },
+      { itemId: 'Z3-I', weight: 100 },
+      { itemId: 'Z3-W', weight: 45 },
+      { itemId: 'Z3-S', weight: 0 },
+    ] as const;
+
+    await loadInvitation({
+      email: 'nt@example.com',
+      member: {
+        name: 'Acme e.V.',
+        contact: null,
+        resourcesRequirements: [],
+        cultureWeights: [...savedZ3],
+      },
+    });
+
+    const firstTopic = cultureTopics()[0];
+    firstTopic
+      .querySelector<HTMLElement>('[role="slider"]')
+      ?.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
+      );
+    fixture.detectChanges();
+
+    query<HTMLButtonElement>('button.member-questions__submit').click();
+
+    const req = httpTesting.expectOne('/api/members/by-token/some-token');
+    const sent: { itemId: string; weight: number }[] =
+      req.request.body.cultureWeights;
+
+    expect(sent.map(({ itemId }) => itemId)).toEqual([
+      'Z1-G',
+      'Z1-I',
+      'Z1-W',
+      'Z1-S',
+      'Z3-G',
+      'Z3-I',
+      'Z3-W',
+      'Z3-S',
+    ]);
+    expect(sent.slice(4)).toEqual(savedZ3);
+    for (const { weight } of sent) {
+      expect(Number.isInteger(weight) && weight >= 0 && weight <= 100).toBe(
+        true,
+      );
+    }
     req.flush(req.request.body);
   });
 });

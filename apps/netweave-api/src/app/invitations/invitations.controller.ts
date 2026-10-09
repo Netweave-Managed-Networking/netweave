@@ -33,7 +33,8 @@ export class InvitationsController {
   public async findByToken(
     @Param('token') token: string,
   ): Promise<InvitationTokenDTO> {
-    const invitation = await this.invitationsService.findValidByToken(token);
+    const invitation =
+      await this.invitationsService.findValidByTokenWithMember(token);
 
     if (!invitation) {
       throw new NotFoundException();
