@@ -8,7 +8,7 @@
   <div
     #track
     class="priority-ranker__track relative w-full rounded-box border border-base-content/10 bg-linear-to-b from-base-300/70 to-base-200/40"
-    [style.height.px]="size.trackHeight"
+    [style.height.px]="size().trackHeight"
   >
     @for (item of items(); track item.id) {
       @let dragging = draggingId() === item.id;
@@ -21,7 +21,7 @@
             : 'border-base-content/10 transition-[top,box-shadow] duration-150'
         "
         [style.top.px]="item.top"
-        [style.height.px]="size.boxHeight"
+        [style.height.px]="size().boxHeight"
         tabindex="0"
         role="slider"
         aria-orientation="vertical"
@@ -41,6 +41,7 @@
         (keydown)="onKeydown($event, item)"
       >
         <span
+          #text
           class="priority-ranker__text flex-1 text-sm leading-snug line-clamp-4"
         >
           {{ item.text }}

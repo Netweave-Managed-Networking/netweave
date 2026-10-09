@@ -1,4 +1,5 @@
 import {
+  afterRenderEffect,
   Component,
   computed,
   ElementRef,
@@ -7,6 +8,7 @@ import {
   model,
   signal,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import {
@@ -24,7 +26,14 @@ import {
   weightsOf,
 } from './priority-ranker.layout';
 
-const SIZE: TrackSize = { trackHeight: 560, boxHeight: 88 };
+const TRACK_HEIGHT = 560;
+/** used until the texts are measured, e.g. during SSR */
+const FALLBACK_BOX_HEIGHT = 88;
+/** py-2 and border of the box */
+const BOX_PADDING_Y = 8;
+const BOX_BORDER = 1;
+/** the priority badge must fit even next to a one-line text */
+const MIN_CONTENT_HEIGHT = 24;
 
 const KEY_DIRECTIONS: Record<string, number> = { ArrowUp: -1, ArrowDown: 1 };
 const KEY_STEP_POINTS = 1;
@@ -44,25 +53,43 @@ export class PriorityRankerComponent
   public readonly statements = input.required<readonly RankerStatement[]>();
   public readonly value = model<PriorityWeights | null>(null);
 
-  protected readonly size = SIZE;
+  /** boxes are as high as the longest text needs, so more of the track is left for weighting */
+  protected readonly size = signal<TrackSize>(
+    { trackHeight: TRACK_HEIGHT, boxHeight: FALLBACK_BOX_HEIGHT },
+    { equal: (a, b) => a.boxHeight === b.boxHeight },
+  );
 
   private readonly track = viewChild.required<ElementRef<HTMLElement>>('track');
+  private readonly texts = viewChildren<ElementRef<HTMLElement>>('text');
 
   protected readonly items = linkedSignal<
-    { statements: readonly RankerStatement[]; value: PriorityWeights | null },
+    {
+      statements: readonly RankerStatement[];
+      value: PriorityWeights | null;
+      size: TrackSize;
+    },
     RankItem[]
   >({
-    source: () => ({ statements: this.statements(), value: this.value() }),
-    computation: ({ statements, value }, previous) => {
+    source: () => ({
+      statements: this.statements(),
+      value: this.value(),
+      size: this.size(),
+    }),
+    computation: ({ statements, value, size }, previous) => {
+      const sameStatements = previous?.source.statements === statements;
+
       // our own commits must not re-place the boxes, rounding would make them jump
       const showsValue =
-        previous?.source.statements === statements &&
+        sameStatements &&
+        previous.source.size === size &&
         value !== null &&
-        sameWeights(weightsOf(previous.value, SIZE), value);
+        sameWeights(weightsOf(previous.value, size), value);
 
       if (showsValue) return previous.value;
-      if (value) return weightedLayout(statements, value, SIZE);
-      return stackedLayout(shuffle(statements), SIZE);
+      if (value) return weightedLayout(statements, value, size);
+      // a resize must not reshuffle the unranked boxes
+      if (sameStatements) return stackedLayout(byTop(previous.value), size);
+      return stackedLayout(shuffle(statements), size);
     },
   });
 
@@ -74,8 +101,20 @@ export class PriorityRankerComponent
   private grabOffset = 0;
   private itemsBeforeDrag: RankItem[] = [];
 
+  public constructor() {
+    // texts wrap differently with the width, so their height is observed
+    afterRenderEffect((onCleanup) => {
+      const texts = this.texts().map((text) => text.nativeElement);
+      if (typeof ResizeObserver === 'undefined') return;
+
+      const observer = new ResizeObserver(() => this.fitBoxHeight(texts));
+      texts.forEach((text) => observer.observe(text));
+      onCleanup(() => observer.disconnect());
+    });
+  }
+
   protected priorityOf(item: RankItem): number {
-    return priorityOf(item.top, SIZE);
+    return priorityOf(item.top, this.size());
   }
 
   protected startDrag(event: PointerEvent, item: RankItem) {
@@ -93,7 +132,7 @@ export class PriorityRankerComponent
 
     const pointerY = this.pointerY(event);
     this.items.update((items) =>
-      dragTo(items, id, pointerY - this.grabOffset, pointerY, SIZE),
+      dragTo(items, id, pointerY - this.grabOffset, pointerY, this.size()),
     );
   }
 
@@ -112,14 +151,25 @@ export class PriorityRankerComponent
 
     event.preventDefault();
     const points = event.shiftKey ? KEY_STEP_POINTS_SHIFT : KEY_STEP_POINTS;
-    const delta = pointsToPx(direction * points, SIZE);
+    const delta = pointsToPx(direction * points, this.size());
 
-    this.items.update((items) => nudge(items, item.id, delta, SIZE));
+    this.items.update((items) => nudge(items, item.id, delta, this.size()));
     this.commit();
   }
 
   private commit() {
-    this.value.set(weightsOf(this.items(), SIZE));
+    this.value.set(weightsOf(this.items(), this.size()));
+  }
+
+  private fitBoxHeight(texts: readonly HTMLElement[]) {
+    const textHeight = Math.max(
+      ...texts.map((text) => text.getBoundingClientRect().height),
+    );
+    if (!textHeight) return; // not rendered yet
+
+    const contentHeight = Math.max(Math.ceil(textHeight), MIN_CONTENT_HEIGHT);
+    const boxHeight = contentHeight + 2 * (BOX_PADDING_Y + BOX_BORDER);
+    this.size.set({ trackHeight: TRACK_HEIGHT, boxHeight });
   }
 
   private pointerY(event: PointerEvent): number {
@@ -127,6 +177,9 @@ export class PriorityRankerComponent
     return event.clientY - trackTop;
   }
 }
+
+const byTop = (items: readonly RankItem[]) =>
+  [...items].sort((a, b) => a.top - b.top);
 
 const sameWeights = (a: PriorityWeights, b: PriorityWeights) =>
   Object.keys(a).length === Object.keys(b).length &&
