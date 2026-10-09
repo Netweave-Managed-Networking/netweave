@@ -9,147 +9,17 @@
       </p>
     </header>
 
-    <div
-      class="member-questions__card bg-base-100 border border-base-content/5 rounded-box p-6"
-    >
-      <fieldset
-        class="member-questions__general fieldset grid gap-x-4 gap-y-1 md:grid-cols-2 p-0"
-      >
-        <legend class="fieldset-legend text-lg pt-0">Allgemeine Daten</legend>
+    <app-member-general-data
+      [name]="memberForm.name"
+      [contact]="memberForm.contact"
+      [email]="invitation.value()?.email ?? ''"
+    />
 
-        @let nameErrors = memberForm.name().errors();
-        @let hasNameError =
-          memberForm.name().touched() && nameErrors.length > 0;
+    <app-member-resources-requirements
+      [fields]="memberForm.resourcesRequirements"
+    />
 
-        <div class="flex flex-col gap-1">
-          <label class="label" for="name">Name der Organisation</label>
-          <input
-            class="input w-full"
-            [class.border-error]="hasNameError"
-            id="name"
-            type="text"
-            autocomplete="organization"
-            [formField]="memberForm.name"
-          />
-          <div class="member-questions__error text-error text-xs min-h-4">
-            @if (hasNameError) {
-              @for (error of nameErrors; track error) {
-                {{ error.message }}
-              }
-            }
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label class="label" for="contact">Name des Ansprechpartners</label>
-          <input
-            class="input w-full"
-            id="contact"
-            type="text"
-            autocomplete="name"
-            [formField]="memberForm.contact"
-          />
-        </div>
-      </fieldset>
-
-      <fieldset
-        class="member-questions__email fieldset p-0 mt-3 md:mt-0 md:w-1/2 md:pr-2"
-      >
-        <label class="label" for="email">Email</label>
-        <input
-          class="input w-full"
-          id="email"
-          type="email"
-          [value]="invitation.value()?.email ?? ''"
-          disabled
-        />
-      </fieldset>
-    </div>
-
-    <section
-      class="member-questions__resources-requirements member-questions__card bg-base-100 border border-base-content/5 rounded-box p-6"
-    >
-      <h2 class="text-lg font-semibold">Ressourcen & Bedarfe</h2>
-      <p class="text-sm text-base-content/60 mt-1">
-        Beschreibe pro Kategorie, was deine Organisation einbringen kann und was
-        sie benötigt.
-      </p>
-
-      @for (category of categories; track category) {
-        @let fields = memberForm.resourcesRequirements[category];
-        @let text = categoryTexts[category];
-
-        <div class="divider my-4"></div>
-
-        <fieldset class="member-questions__category fieldset p-0">
-          <legend class="fieldset-legend text-base pb-0">
-            {{ text.label }}
-          </legend>
-          <p
-            class="member-questions__category-description text-sm text-base-content/60"
-          >
-            {{ text.description }}
-          </p>
-
-          <div class="grid gap-4 md:grid-cols-2 mt-3">
-            <div class="flex flex-col gap-1">
-              <label class="label" [for]="category + '-resources'">
-                Ressourcen
-              </label>
-              <textarea
-                class="textarea w-full"
-                [id]="category + '-resources'"
-                rows="3"
-                placeholder="Beschreibe alle deine Ressourcen möglichst präzise"
-                [formField]="fields.resources"
-              ></textarea>
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <label class="label" [for]="category + '-requirements'">
-                Bedarfe
-              </label>
-              <textarea
-                class="textarea w-full"
-                [id]="category + '-requirements'"
-                rows="3"
-                placeholder="Beschreibe alle deine Bedarfe möglichst präzise"
-                [formField]="fields.requirements"
-              ></textarea>
-            </div>
-          </div>
-        </fieldset>
-      }
-    </section>
-
-    <section
-      class="member-questions__culture member-questions__card bg-base-100 border border-base-content/5 rounded-box p-6"
-    >
-      <h2 class="text-lg font-semibold">Organisationskultur</h2>
-      <p class="text-sm text-base-content/60 mt-1">
-        Organisationen setzen in ihrer Arbeit unterschiedliche Schwerpunkte. In
-        den folgenden Themenfeldern stehen jeweils vier grundsätzlich sinnvolle
-        Orientierungen zur Auswahl. Ziehe die Aussagen in jedem Themenfeld nach
-        oben oder unten: Je wichtiger eine Aussage aus Sicht deiner Organisation
-        ist, desto weiter oben sollte sie stehen. Auch die Abstände zwischen den
-        Aussagen zählen. Es gibt kein richtiges oder falsches Profil.
-      </p>
-
-      @for (cultureTopic of cultureTopics; track cultureTopic.topic) {
-        <div class="divider my-4"></div>
-
-        <fieldset class="member-questions__culture-topic fieldset p-0">
-          <legend class="fieldset-legend text-base pb-2">
-            {{ cultureTopic.label }}
-          </legend>
-
-          <app-priority-ranker
-            [statements]="cultureTopic.statements"
-            [formField]="memberForm.cultureWeights[cultureTopic.topic]"
-          />
-        </fieldset>
-      }
-    </section>
+    <app-member-culture [fields]="memberForm.cultureWeights" />
   </div>
 
   <div

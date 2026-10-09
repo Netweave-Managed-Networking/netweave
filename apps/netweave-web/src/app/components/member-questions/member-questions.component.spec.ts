@@ -243,7 +243,7 @@ describe('MemberQuestionsComponent', () => {
     await loadInvitation({ email: 'nt@example.com', member: null });
 
     const categories = (fixture.nativeElement as HTMLElement).querySelectorAll(
-      'fieldset.member-questions__category',
+      'fieldset.member-resources-requirements__category',
     );
 
     expect(
@@ -263,7 +263,7 @@ describe('MemberQuestionsComponent', () => {
     for (const category of Array.from(categories)) {
       expect(
         category
-          .querySelector('.member-questions__category-description')
+          .querySelector('.member-resources-requirements__category-description')
           ?.textContent?.trim(),
       ).toBeTruthy();
       expect(category.querySelectorAll('textarea').length).toBe(2);
@@ -331,7 +331,7 @@ describe('MemberQuestionsComponent', () => {
   const cultureTopics = () =>
     Array.from(
       (fixture.nativeElement as HTMLElement).querySelectorAll(
-        'fieldset.member-questions__culture-topic',
+        'fieldset.member-culture__topic',
       ),
     );
 

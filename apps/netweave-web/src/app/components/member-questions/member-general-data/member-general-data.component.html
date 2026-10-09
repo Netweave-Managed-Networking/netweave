@@ -1,0 +1,56 @@
+<div
+  class="member-general-data bg-base-100 border border-base-content/5 rounded-box p-6"
+>
+  <fieldset
+    class="member-general-data__fields fieldset grid gap-x-4 gap-y-1 md:grid-cols-2 p-0"
+  >
+    <legend class="fieldset-legend text-lg pt-0">Allgemeine Daten</legend>
+
+    @let nameField = name();
+    @let nameErrors = nameField().errors();
+    @let hasNameError = nameField().touched() && nameErrors.length > 0;
+
+    <div class="flex flex-col gap-1">
+      <label class="label" for="name">Name der Organisation</label>
+      <input
+        class="input w-full"
+        [class.border-error]="hasNameError"
+        id="name"
+        type="text"
+        autocomplete="organization"
+        [formField]="nameField"
+      />
+      <div class="member-general-data__error text-error text-xs min-h-4">
+        @if (hasNameError) {
+          @for (error of nameErrors; track error) {
+            {{ error.message }}
+          }
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="label" for="contact">Name des Ansprechpartners</label>
+      <input
+        class="input w-full"
+        id="contact"
+        type="text"
+        autocomplete="name"
+        [formField]="contact()"
+      />
+    </div>
+  </fieldset>
+
+  <fieldset
+    class="member-general-data__email fieldset p-0 mt-3 md:mt-0 md:w-1/2 md:pr-2"
+  >
+    <label class="label" for="email">Email</label>
+    <input
+      class="input w-full"
+      id="email"
+      type="email"
+      [value]="email()"
+      disabled
+    />
+  </fieldset>
+</div>
