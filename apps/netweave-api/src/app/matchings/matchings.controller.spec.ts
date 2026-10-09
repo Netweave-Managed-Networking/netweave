@@ -13,6 +13,7 @@ const mockRun: MatchingRunDTO = {
   updatedAt: createdAt,
   finishedAt: createdAt,
   failedAt: null,
+  cancelledAt: null,
   matchingCount: 6,
 };
 
@@ -24,6 +25,7 @@ describe('MatchingsController', () => {
       | 'getLatestRun'
       | 'getNewestRun'
       | 'getRun'
+      | 'cancelRun'
       | 'getRunHistory',
       jest.Mock
     >
@@ -35,6 +37,13 @@ describe('MatchingsController', () => {
       getLatestRun: jest.fn().mockResolvedValue(mockRun),
       getNewestRun: jest.fn().mockResolvedValue(mockRun),
       getRun: jest.fn().mockResolvedValue(mockRun),
+      cancelRun: jest
+        .fn()
+        .mockResolvedValue({
+          ...mockRun,
+          finishedAt: null,
+          cancelledAt: createdAt,
+        }),
       getRunHistory: jest.fn().mockResolvedValue([]),
     };
 
@@ -58,9 +67,7 @@ describe('MatchingsController', () => {
     it('throws a conflict when a run is already in progress', async () => {
       matchingsService.triggerRun?.mockResolvedValue(null);
 
-      await expect(controller.run()).rejects.toBeInstanceOf(
-        ConflictException,
-      );
+      await expect(controller.run()).rejects.toBeInstanceOf(ConflictException);
     });
   });
 
@@ -107,6 +114,32 @@ describe('MatchingsController', () => {
     });
   });
 
+  describe('cancel', () => {
+    it('cancels the run and returns its summary', async () => {
+      expect(await controller.cancel(3)).toMatchObject({
+        id: 3,
+        cancelledAt: createdAt,
+      });
+      expect(matchingsService.cancelRun).toHaveBeenCalledWith(3);
+    });
+
+    it('throws not found when no run exists with that id', async () => {
+      matchingsService.cancelRun?.mockResolvedValue(null);
+
+      await expect(controller.cancel(3)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
+    it('throws a conflict when the run already finished or failed', async () => {
+      matchingsService.cancelRun?.mockResolvedValue(mockRun);
+
+      await expect(controller.cancel(3)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+    });
+  });
+
   describe('getHistory', () => {
     it('returns a page of run history', async () => {
       const history = {
@@ -116,6 +149,7 @@ describe('MatchingsController', () => {
             createdAt,
             finishedAt: createdAt,
             failedAt: null,
+            cancelledAt: null,
             matchingCount: 6,
           },
         ],

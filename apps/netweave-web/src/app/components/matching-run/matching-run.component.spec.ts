@@ -69,6 +69,7 @@ describe('MatchingRunComponent', () => {
     updatedAt: new Date('2026-09-30T10:00:00Z'),
     finishedAt: null,
     failedAt: null,
+    cancelledAt: null,
     matchingCount: 0,
   };
 
@@ -157,6 +158,89 @@ describe('MatchingRunComponent', () => {
     expect(result()).toBe('Berechnung fehlgeschlagen.');
   });
 
+  describe('cancel', () => {
+    const cancelButton = () =>
+      fixture.nativeElement.querySelector(
+        '.matching-run__cancel-button',
+      ) as HTMLButtonElement | null;
+
+    const startRun = async () => {
+      vi.useFakeTimers({
+        toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+      });
+      clickAndExpectRequest().flush(startedRun, {
+        status: 202,
+        statusText: 'Accepted',
+      });
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+    };
+
+    const clickCancelAndExpectRequest = () => {
+      cancelButton()?.click();
+      fixture.detectChanges();
+      expect(cancelButton()?.disabled).toBe(true);
+      return httpTesting.expectOne({
+        method: 'POST',
+        url: '/api/matchings/runs/7/cancel',
+      });
+    };
+
+    it('is only offered while a run is in progress', async () => {
+      expect(cancelButton()).toBeNull();
+
+      await startRun();
+      expect(cancelButton()).toBeTruthy();
+
+      await pollAndFlush({
+        ...startedRun,
+        finishedAt: new Date('2026-09-30T10:00:05Z'),
+      });
+      expect(cancelButton()).toBeNull();
+    });
+
+    it('cancels the run and tells so once polling sees it ended', async () => {
+      await startRun();
+
+      clickCancelAndExpectRequest().flush({
+        ...startedRun,
+        cancelledAt: new Date('2026-09-30T10:00:03Z'),
+      });
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+
+      await pollAndFlush({
+        ...startedRun,
+        cancelledAt: new Date('2026-09-30T10:00:03Z'),
+        matchingCount: 2,
+      });
+
+      expect(button().disabled).toBe(false);
+      expect(cancelButton()).toBeNull();
+      expect(result()).toBe('Berechnung abgebrochen.');
+    });
+
+    it('shows how the run really ended when it finished before the cancel arrived', async () => {
+      await startRun();
+
+      clickCancelAndExpectRequest().flush(null, {
+        status: 409,
+        statusText: 'Conflict',
+      });
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+      expect(cancelButton()?.disabled).toBe(false);
+
+      await pollAndFlush({
+        ...startedRun,
+        finishedAt: new Date('2026-09-30T10:00:05Z'),
+        matchingCount: 3,
+      });
+
+      expect(result()).toContain('3 Matchings');
+    });
+  });
+
   it('tells when a run is already in progress', async () => {
     clickAndExpectRequest().flush(null, {
       status: 409,
@@ -193,6 +277,7 @@ describe('MatchingRunComponent', () => {
         updatedAt: new Date('2026-09-29T10:00:00Z'),
         finishedAt: new Date('2026-09-29T10:00:00Z'),
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 42,
       } satisfies MatchingRunDTO);
     httpTesting
@@ -232,6 +317,7 @@ describe('MatchingRunComponent', () => {
         updatedAt: new Date('2026-09-30T10:00:00Z'),
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 0,
       } satisfies MatchingRunDTO);
     await vi.advanceTimersByTimeAsync(0);
@@ -252,6 +338,7 @@ describe('MatchingRunComponent', () => {
         updatedAt: new Date('2026-09-30T10:00:00Z'),
         finishedAt: new Date('2026-09-30T10:00:05Z'),
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 5,
       } satisfies MatchingRunDTO);
     await vi.advanceTimersByTimeAsync(0);

@@ -12,19 +12,54 @@
       <div class="matching-history__loading flex justify-center p-8">
         <span class="loading loading-spinner loading-lg"></span>
       </div>
-    } @else if (runs().length === 0) {
-      <p
-        class="matching-history__empty text-sm text-base-content/70 text-center p-8"
-      >
-        Es wurde noch keine Matching-Berechnung durchgeführt.
-      </p>
     } @else {
       <ul class="matching-history__timeline timeline timeline-vertical">
+        <!-- the newest run shows up right below, so starting one belongs on the first page only -->
+        @if (page() === 1) {
+          <li class="matching-history__start">
+            <div class="timeline-middle">
+              <div class="tooltip tooltip-accent">
+                <div class="tooltip-content font-bold">
+                  Matching jetzt berechnen
+                </div>
+                <button
+                  type="button"
+                  class="matching-history__start-button btn btn-circle btn-sm"
+                  aria-label="Matching jetzt berechnen"
+                  [disabled]="starting() || hasRunInProgress()"
+                  (click)="start()"
+                >
+                  @if (starting()) {
+                    <span class="loading loading-spinner loading-xs"></span>
+                  } @else {
+                    <icon-plus />
+                  }
+                </button>
+              </div>
+            </div>
+            <div class="timeline-end text-sm text-base-content/70">
+              @if (hasRunInProgress()) {
+                Es läuft bereits eine Berechnung.
+              } @else {
+                Neue Berechnung starten
+              }
+              @if (startFailed()) {
+                <div class="matching-history__start-error text-error">
+                  Berechnung konnte nicht gestartet werden.
+                </div>
+              }
+            </div>
+            @if (runs().length > 0) {
+              <hr />
+            }
+          </li>
+        }
+
         @for (run of runs(); track run.id; let first = $first, last = $last) {
           @let status = statusConfig[statusOf(run)];
 
           <li>
-            @if (!first) {
+            @if (!first || page() === 1) {
               <hr />
             }
             <div class="timeline-start text-sm text-base-content/70">
@@ -37,18 +72,35 @@
               <div class="font-semibold">
                 Durchlauf #{{ run.id }}: {{ status.label }}
               </div>
-              <div class="matching-history__matching-count text-xs text-base-content/70">
+              <div
+                class="matching-history__matching-count text-xs text-base-content/70"
+              >
                 {{ run.matchingCount }} Matchings
               </div>
               @let duration = durationOf(run);
               @if (duration) {
-                <div class="matching-history__duration text-xs text-base-content/70">
+                <div
+                  class="matching-history__duration text-xs text-base-content/70"
+                >
                   Dauer: {{ duration }}
                 </div>
               } @else {
-                <div class="matching-history__duration text-xs text-base-content/70">
+                <div
+                  class="matching-history__duration text-xs text-base-content/70"
+                >
                   Läuft noch...
                 </div>
+                <button
+                  type="button"
+                  class="matching-history__cancel-button btn btn-xs btn-outline btn-error mt-2"
+                  [disabled]="cancellingId() === run.id"
+                  (click)="cancel(run.id)"
+                >
+                  @if (cancellingId() === run.id) {
+                    <span class="loading loading-spinner loading-xs"></span>
+                  }
+                  Abbrechen
+                </button>
               }
               @if (run.finishedAt) {
                 <div class="text-xs text-base-content/70">
@@ -61,6 +113,14 @@
                   {{ run.failedAt | date: 'dd.MM.yyyy HH:mm' }}
                 </div>
               }
+              @if (run.cancelledAt) {
+                <div
+                  class="matching-history__cancelled text-xs text-base-content/70"
+                >
+                  Abgebrochen:
+                  {{ run.cancelledAt | date: 'dd.MM.yyyy HH:mm' }}
+                </div>
+              }
             </div>
             @if (!last) {
               <hr />
@@ -69,29 +129,37 @@
         }
       </ul>
 
-      <div class="matching-history__pagination flex justify-center pt-4">
-        <div class="join">
-          <button
-            type="button"
-            class="matching-history__prev-page join-item btn"
-            [disabled]="page() <= 1"
-            (click)="previousPage()"
-          >
-            «
-          </button>
-          <button type="button" class="join-item btn btn-disabled">
-            Seite {{ page() }} / {{ totalPages() }}
-          </button>
-          <button
-            type="button"
-            class="matching-history__next-page join-item btn"
-            [disabled]="page() >= totalPages()"
-            (click)="nextPage()"
-          >
-            »
-          </button>
+      @if (runs().length === 0) {
+        <p
+          class="matching-history__empty text-sm text-base-content/70 text-center p-8"
+        >
+          Es wurde noch keine Matching-Berechnung durchgeführt.
+        </p>
+      } @else {
+        <div class="matching-history__pagination flex justify-center pt-4">
+          <div class="join">
+            <button
+              type="button"
+              class="matching-history__prev-page join-item btn"
+              [disabled]="page() <= 1"
+              (click)="previousPage()"
+            >
+              «
+            </button>
+            <button type="button" class="join-item btn btn-disabled">
+              Seite {{ page() }} / {{ totalPages() }}
+            </button>
+            <button
+              type="button"
+              class="matching-history__next-page join-item btn"
+              [disabled]="page() >= totalPages()"
+              (click)="nextPage()"
+            >
+              »
+            </button>
+          </div>
         </div>
-      </div>
+      }
     }
   </div>
 </div>

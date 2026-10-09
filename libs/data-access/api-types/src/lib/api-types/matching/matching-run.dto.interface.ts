@@ -4,5 +4,6 @@ import { EntityDTO } from '../entity/entity.dto.interface';
 export interface MatchingRunDTO extends EntityDTO {
   finishedAt: Date | null;
   failedAt: Date | null;
+  cancelledAt: Date | null;
   matchingCount: number;
 }

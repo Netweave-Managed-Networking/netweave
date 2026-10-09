@@ -6,7 +6,10 @@ import { MembersService } from '../members/members.service';
 import { MatchingRun } from './matching-run.entity';
 import { MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
-import { MatchingsService } from './matchings.service';
+import {
+  MatchingRunCancelledError,
+  MatchingsService,
+} from './matchings.service';
 
 type MockManager = Partial<Record<keyof EntityManager, jest.Mock>>;
 
@@ -19,7 +22,13 @@ const createMockManager = (): MockManager => ({
   count: jest.fn(),
   create: jest.fn((_target, entity) => ({ ...entity })),
   save: jest.fn((entity) =>
-    Promise.resolve({ id: 42, finishedAt: null, failedAt: null, ...entity }),
+    Promise.resolve({
+      id: 42,
+      finishedAt: null,
+      failedAt: null,
+      cancelledAt: null,
+      ...entity,
+    }),
   ),
   insert: jest.fn(),
   update: jest.fn().mockResolvedValue({ affected: 1 }),
@@ -91,7 +100,7 @@ describe('MatchingsService', () => {
 
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { finishedAt: expect.any(Date) },
       );
       expect(insertedRows()).toEqual(
@@ -177,7 +186,7 @@ describe('MatchingsService', () => {
       expect(manager.save).toHaveBeenCalledTimes(1);
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { finishedAt: expect.any(Date) },
       );
       expect(manager.insert).not.toHaveBeenCalled();
@@ -206,7 +215,7 @@ describe('MatchingsService', () => {
       expect(pairs()).toEqual(['1->2', '1->3', '2->1', '2->3']);
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { failedAt: expect.any(Date) },
       );
     });
@@ -268,7 +277,12 @@ describe('MatchingsService', () => {
         expect(heartbeats()).toHaveLength(2);
         expect(heartbeats()[0]).toEqual([
           MatchingRun,
-          { id: 42, finishedAt: IsNull(), failedAt: IsNull() },
+          {
+            id: 42,
+            finishedAt: IsNull(),
+            failedAt: IsNull(),
+            cancelledAt: IsNull(),
+          },
           { updatedAt: expect.any(Date) },
         ]);
 
@@ -326,7 +340,7 @@ describe('MatchingsService', () => {
 
         expect(manager.update).toHaveBeenCalledWith(
           MatchingRun,
-          { id: 42, failedAt: IsNull() },
+          { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
           { finishedAt: expect.any(Date) },
         );
       });
@@ -350,6 +364,7 @@ describe('MatchingsService', () => {
         updatedAt: new Date(), // recent heartbeat, so not reaped
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
       });
 
       await service.calculateScheduled();
@@ -369,6 +384,7 @@ describe('MatchingsService', () => {
       expect(where).toEqual({
         finishedAt: IsNull(),
         failedAt: IsNull(),
+        cancelledAt: IsNull(),
         updatedAt: expect.anything(),
       });
       expect(where.updatedAt.value.getTime()).toBeGreaterThanOrEqual(
@@ -405,7 +421,7 @@ describe('MatchingsService', () => {
 
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { failedAt: expect.any(Date) },
       );
     });
@@ -419,6 +435,7 @@ describe('MatchingsService', () => {
         id: 42,
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 0,
       });
       // the actual computation only happens afterwards, in the background
@@ -429,7 +446,7 @@ describe('MatchingsService', () => {
       expect(manager.insert).toHaveBeenCalled();
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { finishedAt: expect.any(Date) },
       );
     });
@@ -467,6 +484,7 @@ describe('MatchingsService', () => {
         updatedAt: new Date(), // recent heartbeat, so not reaped
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
       });
 
       expect(await service.triggerRun()).toBeNull();
@@ -489,7 +507,7 @@ describe('MatchingsService', () => {
 
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
-        { id: 42, failedAt: IsNull() },
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
         { failedAt: expect.any(Date) },
       );
     });
@@ -502,8 +520,126 @@ describe('MatchingsService', () => {
       await service.calculateScheduled();
 
       expect(warn).toHaveBeenCalledWith(
-        expect.stringContaining('already reaped as stale'),
+        expect.stringContaining('already reaped as stale or cancelled'),
       );
+    });
+  });
+
+  describe('cancelRun', () => {
+    /** lets the strategy hang until released, like a slow llm, and records the signals it got */
+    const slowStrategy = () => {
+      let release!: () => void;
+      const released = new Promise<void>((resolve) => (release = resolve));
+      const signals: AbortSignal[] = [];
+      strategy.score.mockImplementation(async (_seeker, _match, signal) => {
+        signals.push(signal as AbortSignal);
+        await released;
+        return { score: 50, details: null };
+      });
+      return { release, signals };
+    };
+
+    it('marks only a run still in progress as cancelled, and returns it', async () => {
+      const createdAt = new Date();
+      manager.find?.mockResolvedValue([
+        {
+          id: 7,
+          createdAt,
+          updatedAt: createdAt,
+          finishedAt: null,
+          failedAt: null,
+          cancelledAt: createdAt,
+        },
+      ]);
+      manager.count?.mockResolvedValue(3);
+
+      expect(await service.cancelRun(7)).toMatchObject({
+        id: 7,
+        cancelledAt: createdAt,
+        matchingCount: 3,
+      });
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        {
+          id: 7,
+          finishedAt: IsNull(),
+          failedAt: IsNull(),
+          cancelledAt: IsNull(),
+        },
+        { cancelledAt: expect.any(Date) },
+      );
+    });
+
+    it('returns null when no run exists with that id', async () => {
+      manager.update?.mockResolvedValue({ affected: 0 });
+
+      expect(await service.cancelRun(7)).toBeNull();
+    });
+
+    it('stops a computation of this instance right away, keeps its matchings and does not mark it as failed', async () => {
+      const { release, signals } = slowStrategy();
+      const error = jest.spyOn(Logger.prototype, 'error');
+
+      const done = service.calculateScheduled();
+      await flushPromises();
+      await service.cancelRun(42);
+
+      expect(signals[0].aborted).toBe(true); // the strategy drops its pending llm calls
+      expect(signals[0].reason).toBeInstanceOf(MatchingRunCancelledError);
+
+      release();
+      await done;
+
+      expect(pairs()).toEqual(['1->2', '1->3']); // the seeker in flight, but no further ones
+      expect(manager.update).not.toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+      expect(manager.update).not.toHaveBeenCalledWith(
+        MatchingRun,
+        expect.anything(),
+        { finishedAt: expect.any(Date) },
+      );
+      expect(error).not.toHaveBeenCalled();
+    });
+
+    it('treats it as a cancel even when the strategy rejects with its own error on abort', async () => {
+      strategy.score.mockImplementation(
+        (_seeker, _match, signal) =>
+          new Promise((_resolve, reject) =>
+            signal?.addEventListener('abort', () =>
+              reject(new Error('request aborted')),
+            ),
+          ),
+      );
+      const error = jest.spyOn(Logger.prototype, 'error');
+
+      const run = await service.triggerRun();
+      await flushPromises();
+      await service.cancelRun(run?.id ?? 0);
+      await flushPromises();
+
+      expect(manager.update).not.toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
+      expect(error).not.toHaveBeenCalled();
+    });
+
+    it('does not abort a computation when the run was no longer in progress', async () => {
+      const { release, signals } = slowStrategy();
+
+      const done = service.calculateScheduled();
+      await flushPromises();
+      manager.update?.mockResolvedValueOnce({ affected: 0 }); // the cancel matches no row
+      await service.cancelRun(42);
+
+      expect(signals[0].aborted).toBe(false);
+
+      release();
+      await done;
     });
   });
 
@@ -517,6 +653,7 @@ describe('MatchingsService', () => {
           updatedAt: createdAt,
           finishedAt: createdAt,
           failedAt: null,
+          cancelledAt: null,
         },
       ]);
       manager.count?.mockResolvedValue(12);
@@ -527,6 +664,7 @@ describe('MatchingsService', () => {
         updatedAt: createdAt,
         finishedAt: createdAt,
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 12,
       });
       expect(manager.find).toHaveBeenCalledWith(
@@ -553,6 +691,7 @@ describe('MatchingsService', () => {
         {
           finishedAt: IsNull(),
           failedAt: IsNull(),
+          cancelledAt: IsNull(),
           updatedAt: expect.anything(),
         },
         { failedAt: expect.any(Date) },
@@ -571,6 +710,7 @@ describe('MatchingsService', () => {
           updatedAt: createdAt,
           finishedAt: null,
           failedAt: null,
+          cancelledAt: null,
         },
       ]);
       manager.count?.mockResolvedValue(0);
@@ -581,6 +721,7 @@ describe('MatchingsService', () => {
         updatedAt: createdAt,
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 0,
       });
       expect(manager.find).toHaveBeenCalledWith(
@@ -605,6 +746,7 @@ describe('MatchingsService', () => {
           updatedAt: createdAt,
           finishedAt: null,
           failedAt: null,
+          cancelledAt: null,
         },
       ]);
       manager.count?.mockResolvedValue(3);
@@ -615,6 +757,7 @@ describe('MatchingsService', () => {
         updatedAt: createdAt,
         finishedAt: null,
         failedAt: null,
+        cancelledAt: null,
         matchingCount: 3,
       });
       expect(manager.find).toHaveBeenCalledWith(
@@ -657,12 +800,14 @@ describe('MatchingsService', () => {
             createdAt: new Date('2026-09-29T10:00:00Z'),
             finishedAt: new Date('2026-09-29T10:05:00Z'),
             failedAt: null,
+            cancelledAt: null,
           },
           {
             id: 8,
             createdAt: new Date('2026-09-28T10:00:00Z'),
             finishedAt: null,
             failedAt: new Date('2026-09-28T10:05:00Z'),
+            cancelledAt: null,
           },
         ],
         2,
@@ -681,6 +826,7 @@ describe('MatchingsService', () => {
             createdAt: new Date('2026-09-29T10:00:00Z'),
             finishedAt: new Date('2026-09-29T10:05:00Z'),
             failedAt: null,
+            cancelledAt: null,
             matchingCount: 12,
           },
           {
@@ -688,6 +834,7 @@ describe('MatchingsService', () => {
             createdAt: new Date('2026-09-28T10:00:00Z'),
             finishedAt: null,
             failedAt: new Date('2026-09-28T10:05:00Z'),
+            cancelledAt: null,
             matchingCount: 0,
           },
         ],

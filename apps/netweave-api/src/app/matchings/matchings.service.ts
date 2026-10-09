@@ -26,9 +26,25 @@ const HEARTBEAT_INTERVAL_MS = 30 * 1000;
 const STALE_RUN_THRESHOLD_MS = 3 * 60 * 1000; // run without heartbeat counts as crashed
 const MAX_HISTORY_PAGE_SIZE = 100; // caps what a client can request per page, regardless of the requested pageSize
 
+/** where clause matching only runs that are still calculating */
+const IN_PROGRESS = {
+  finishedAt: IsNull(),
+  failedAt: IsNull(),
+  cancelledAt: IsNull(),
+} as const;
+
+/** abort reason of a run a user cancelled; ends the computation without counting as a failure */
+export class MatchingRunCancelledError extends Error {
+  public constructor(runId: number) {
+    super(`Matching run ${runId} was cancelled`);
+    this.name = MatchingRunCancelledError.name;
+  }
+}
+
 @Injectable()
 export class MatchingsService {
   private readonly logger = new Logger(MatchingsService.name);
+  private readonly runningAborts = new Map<number, AbortController>(); // runs computing in this api instance
 
   public constructor(
     @InjectRepository(MatchingRun)
@@ -48,7 +64,11 @@ export class MatchingsService {
       const matchingCount = await this.computeAndPersist(run);
       this.logger.log(`Matching run ${run.id}: ${matchingCount} matchings`);
     } catch (error) {
-      this.logger.error('Failed to calculate matchings', error);
+      if (error instanceof MatchingRunCancelledError) {
+        this.logger.log(error.message);
+      } else {
+        this.logger.error('Failed to calculate matchings', error);
+      }
     }
   }
 
@@ -64,11 +84,34 @@ export class MatchingsService {
       .then((matchingCount) =>
         this.logger.log(`Matching run ${run.id}: ${matchingCount} matchings`),
       )
-      .catch((error) =>
-        this.logger.error(`Matching run ${run.id} failed`, error),
-      );
+      .catch((error) => {
+        if (error instanceof MatchingRunCancelledError) {
+          this.logger.log(error.message);
+        } else {
+          this.logger.error(`Matching run ${run.id} failed`, error);
+        }
+      });
 
     return toMatchingRunDTO(run, 0);
+  }
+
+  /**
+   * cancels a run that is still calculating; matchings it already persisted are kept, like for a failed run.
+   * a run computing in this api instance stops right away, one in another instance on its next heartbeat.
+   * returns the run as it is afterwards, so an already ended run comes back without cancelledAt; null if
+   * there is no run with that id.
+   */
+  public async cancelRun(id: number): Promise<MatchingRunDTO | null> {
+    const { affected } = await this.matchingRunsRepository.manager.update(
+      MatchingRun,
+      { id, ...IN_PROGRESS },
+      { cancelledAt: new Date() },
+    );
+    if (affected) {
+      this.logger.log(`Cancelling matching run ${id}`);
+      this.runningAborts.get(id)?.abort(new MatchingRunCancelledError(id));
+    }
+    return this.getRun(id);
   }
 
   /** the most recently *successfully finished* run; in-progress or failed runs never show up here */
@@ -127,15 +170,18 @@ export class MatchingsService {
 
     const manager = this.matchingRunsRepository.manager;
     const items = await Promise.all(
-      runs.map(async ({ id, createdAt, finishedAt, failedAt }) => ({
-        id,
-        createdAt,
-        finishedAt,
-        failedAt,
-        matchingCount: await manager.count(Matching, {
-          where: { matchingRunId: id },
+      runs.map(
+        async ({ id, createdAt, finishedAt, failedAt, cancelledAt }) => ({
+          id,
+          createdAt,
+          finishedAt,
+          failedAt,
+          cancelledAt,
+          matchingCount: await manager.count(Matching, {
+            where: { matchingRunId: id },
+          }),
         }),
-      })),
+      ),
     );
 
     return {
@@ -166,10 +212,7 @@ export class MatchingsService {
       }
 
       await this.reapStaleRuns(manager);
-      const inProgress = await manager.findOneBy(MatchingRun, {
-        finishedAt: IsNull(),
-        failedAt: IsNull(),
-      });
+      const inProgress = await manager.findOneBy(MatchingRun, IN_PROGRESS);
       if (inProgress) {
         this.logger.warn('Another matching run is in progress, skipping');
         return null;
@@ -198,6 +241,7 @@ export class MatchingsService {
   private async computeAndPersist(run: MatchingRun): Promise<number> {
     const manager = this.matchingRunsRepository.manager;
     const abort = new AbortController();
+    this.runningAborts.set(run.id, abort);
     const heartbeat = setInterval(
       () => void this.heartbeat(manager, run.id, abort),
       HEARTBEAT_INTERVAL_MS,
@@ -233,15 +277,20 @@ export class MatchingsService {
       await this.markRunDone(manager, run.id, { finishedAt: new Date() });
       return matchingCount;
     } catch (error) {
+      // the strategy may wrap the abort reason in its own error, so the signal tells whether this was a cancel
+      if (abort.signal.reason instanceof MatchingRunCancelledError) {
+        throw abort.signal.reason;
+      }
       abort.abort(error);
       await this.markRunDone(manager, run.id, { failedAt: new Date() });
       throw error;
     } finally {
       clearInterval(heartbeat);
+      this.runningAborts.delete(run.id);
     }
   }
 
-  /** aborts the computation if the run was reaped meanwhile */
+  /** aborts the computation if the run was reaped or cancelled (possibly from another api instance) meanwhile */
   private async heartbeat(
     manager: EntityManager,
     runId: number,
@@ -250,13 +299,13 @@ export class MatchingsService {
     try {
       const { affected } = await manager.update(
         MatchingRun,
-        { id: runId, finishedAt: IsNull(), failedAt: IsNull() },
+        { id: runId, ...IN_PROGRESS },
         { updatedAt: new Date() },
       );
       if (!affected) {
         abort.abort(
           new Error(
-            `Matching run ${runId} was reaped as stale while still calculating; aborting it`,
+            `Matching run ${runId} was reaped as stale or cancelled while still calculating; aborting it`,
           ),
         );
       }
@@ -270,8 +319,7 @@ export class MatchingsService {
     const { affected } = await manager.update(
       MatchingRun,
       {
-        finishedAt: IsNull(),
-        failedAt: IsNull(),
+        ...IN_PROGRESS,
         updatedAt: LessThan(new Date(Date.now() - STALE_RUN_THRESHOLD_MS)),
       },
       { failedAt: new Date() },
@@ -287,6 +335,7 @@ export class MatchingsService {
    * marks a run finished or failed, but never overwrites a run that beginRun already reaped as stale (and
    * possibly replaced with a new run) while this computation was still going: that would otherwise leave the
    * row with both finishedAt and failedAt set, from two computations that ran concurrently against it.
+   * likewise never overwrites a run a user cancelled meanwhile.
    */
   private async markRunDone(
     manager: EntityManager,
@@ -295,13 +344,13 @@ export class MatchingsService {
   ): Promise<void> {
     const { affected } = await manager.update(
       MatchingRun,
-      { id: runId, failedAt: IsNull() },
+      { id: runId, failedAt: IsNull(), cancelledAt: IsNull() },
       patch,
     );
 
     if (!affected) {
       this.logger.warn(
-        `Matching run ${runId} was already reaped as stale before it finished; discarding its result`,
+        `Matching run ${runId} was already reaped as stale or cancelled before it finished; discarding its result`,
       );
     }
   }
@@ -319,7 +368,7 @@ const findLatestFinishedRun = async (
 };
 
 const toMatchingRunDTO = (
-  { id, createdAt, updatedAt, finishedAt, failedAt }: MatchingRun,
+  { id, createdAt, updatedAt, finishedAt, failedAt, cancelledAt }: MatchingRun,
   matchingCount: number,
 ): MatchingRunDTO => ({
   id,
@@ -327,5 +376,6 @@ const toMatchingRunDTO = (
   updatedAt,
   finishedAt,
   failedAt,
+  cancelledAt,
   matchingCount,
 });

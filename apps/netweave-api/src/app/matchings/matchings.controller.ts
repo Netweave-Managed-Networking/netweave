@@ -72,11 +72,34 @@ export class MatchingsController {
     return run;
   }
 
+  /**
+   * cancels a run that is still calculating; it stops right away or, if it runs in another api instance,
+   * within one heartbeat. matchings calculated up to then are kept.
+   */
+  @Post('runs/:id/cancel')
+  @HttpCode(HttpStatus.OK)
+  public async cancel(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<MatchingRunDTO> {
+    const run = await this.matchingsService.cancelRun(id);
+    if (!run) {
+      throw new NotFoundException('No matching run found');
+    }
+    if (!run.cancelledAt) {
+      throw new ConflictException('The matching run is no longer in progress');
+    }
+    return run;
+  }
+
   /** history of past runs, newest first, paginated */
   @Get('runs')
   public async getHistory(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('pageSize', new DefaultValuePipe(DEFAULT_HISTORY_PAGE_SIZE), ParseIntPipe)
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(DEFAULT_HISTORY_PAGE_SIZE),
+      ParseIntPipe,
+    )
     pageSize: number,
   ): Promise<PaginatedDTO<MatchingRunListItemDTO>> {
     return this.matchingsService.getRunHistory(page, pageSize);
