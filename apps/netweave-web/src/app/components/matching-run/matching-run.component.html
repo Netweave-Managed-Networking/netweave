@@ -29,10 +29,28 @@
       Matching jetzt berechnen
     </button>
 
+    @if (runState() === 'pending' && runningId() !== null) {
+      <button
+        class="matching-run__cancel-button btn btn-outline btn-error"
+        [disabled]="cancelling()"
+        (click)="cancel()"
+      >
+        @if (cancelling()) {
+          <span class="loading loading-spinner loading-sm"></span>
+        }
+        Abbrechen
+      </button>
+    }
+
     @if (runState() === 'success' && lastRun(); as lastRun) {
       <span class="matching-run__result text-success text-sm"
         >Durchlauf #{{ lastRun.id }}: {{ lastRun.matchingCount }} Matchings
         berechnet.</span
+      >
+    }
+    @if (cancelled()) {
+      <span class="matching-run__result text-warning text-sm"
+        >Berechnung abgebrochen.</span
       >
     }
     @if (runState() === 'error') {

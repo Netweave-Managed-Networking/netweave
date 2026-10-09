@@ -20,7 +20,10 @@ export class MatchingRunComponent {
 
   protected runState = signal<LoadingState>('initial');
   protected alreadyRunning = signal(false);
+  protected cancelled = signal(false);
+  protected cancelling = signal(false);
   protected lastRun = signal<MatchingRunDTO | null>(null);
+  protected runningId = signal<number | null>(null); // the run being polled, known once it was created
 
   public constructor() {
     // shows when the last run finished even before anyone clicks the button on this page load
@@ -41,7 +44,7 @@ export class MatchingRunComponent {
         catchError(() => of(null)), // no run yet, or a transient error: nothing to resume polling for
       )
       .subscribe((newest) => {
-        if (newest && newest.finishedAt === null && newest.failedAt === null) {
+        if (newest && isInProgress(newest)) {
           this.runState.set('pending');
           this.pollUntilDone(newest.id);
         }
@@ -51,6 +54,7 @@ export class MatchingRunComponent {
   protected run() {
     this.runState.set('pending');
     this.alreadyRunning.set(false);
+    this.cancelled.set(false);
 
     this.http
       .post<MatchingRunDTO>('/api/matchings/runs', {})
@@ -67,8 +71,27 @@ export class MatchingRunComponent {
       });
   }
 
+  // only asks the api to cancel; polling picks up that the run ended, also if it finished just before
+  protected cancel() {
+    const runId = this.runningId();
+    if (runId === null) return;
+    this.cancelling.set(true);
+
+    this.http
+      .post<MatchingRunDTO>(`/api/matchings/runs/${runId}/cancel`, {})
+      .pipe(
+        take(1),
+        catchError(() => {
+          this.cancelling.set(false); // e.g. a 409 if it ended meanwhile: polling shows how it ended
+          return of(null);
+        }),
+      )
+      .subscribe();
+  }
+
   // the run was only just created when triggered, so poll for it to actually finish (or fail) in the background
   private pollUntilDone(runId: number) {
+    this.runningId.set(runId);
     interval(POLL_INTERVAL_MS)
       .pipe(
         switchMap(() =>
@@ -78,15 +101,24 @@ export class MatchingRunComponent {
           ),
         ),
         filter(
-          (run): run is MatchingRunDTO =>
-            run !== null && (run.finishedAt !== null || run.failedAt !== null),
+          (run): run is MatchingRunDTO => run !== null && !isInProgress(run),
         ),
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((run) => {
+        this.runningId.set(null);
+        this.cancelling.set(false);
         if (run.finishedAt) this.lastRun.set(run);
-        this.runState.set(run.failedAt ? 'error' : 'success');
+        if (run.cancelledAt) {
+          this.cancelled.set(true);
+          this.runState.set('initial');
+        } else {
+          this.runState.set(run.failedAt ? 'error' : 'success');
+        }
       });
   }
 }
+
+const isInProgress = (run: MatchingRunDTO) =>
+  run.finishedAt === null && run.failedAt === null && run.cancelledAt === null;
