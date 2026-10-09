@@ -107,11 +107,33 @@ describe('InvitationsService', () => {
   });
 
   describe('findValidByToken', () => {
-    it('queries for a non-expired invitation with the given token, including its member and their resources, requirements and culture weights', async () => {
+    it('queries for a non-expired invitation with the given token, without relations', async () => {
       const invitation = { id: 1, email: 'nt@example.com', token: 'abc' };
       repository.findOne?.mockResolvedValue(invitation);
 
       const result = await service.findValidByToken('abc');
+
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { token: 'abc', expireDate: MoreThan(expect.any(Date)) },
+      });
+      expect(result).toEqual(invitation);
+    });
+
+    it('returns null when no matching, non-expired invitation exists', async () => {
+      repository.findOne?.mockResolvedValue(null);
+
+      const result = await service.findValidByToken('unknown');
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findValidByTokenWithMember', () => {
+    it('queries for a non-expired invitation with the given token, including its member and their resources, requirements and culture weights', async () => {
+      const invitation = { id: 1, email: 'nt@example.com', token: 'abc' };
+      repository.findOne?.mockResolvedValue(invitation);
+
+      const result = await service.findValidByTokenWithMember('abc');
 
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { token: 'abc', expireDate: MoreThan(expect.any(Date)) },
@@ -125,7 +147,7 @@ describe('InvitationsService', () => {
     it('returns null when no matching, non-expired invitation exists', async () => {
       repository.findOne?.mockResolvedValue(null);
 
-      const result = await service.findValidByToken('unknown');
+      const result = await service.findValidByTokenWithMember('unknown');
 
       expect(result).toBeNull();
     });

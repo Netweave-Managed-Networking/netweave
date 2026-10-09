@@ -32,13 +32,15 @@ const mockInvitation: InvitationDTO = {
 describe('InvitationsController', () => {
   let controller: InvitationsController;
 
-  let service: Partial<Record<'save' | 'all' | 'findValidByToken', jest.Mock>>;
+  let service: Partial<
+    Record<'save' | 'all' | 'findValidByTokenWithMember', jest.Mock>
+  >;
 
   beforeEach(async () => {
     service = {
       save: jest.fn().mockResolvedValue(mockInvitation),
       all: jest.fn().mockResolvedValue([]),
-      findValidByToken: jest.fn().mockResolvedValue(mockInvitation),
+      findValidByTokenWithMember: jest.fn().mockResolvedValue(mockInvitation),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -85,12 +87,14 @@ describe('InvitationsController', () => {
     it('returns the email and no member for a valid, unanswered token', async () => {
       const result = await controller.findByToken('valid-token');
 
-      expect(service.findValidByToken).toHaveBeenCalledWith('valid-token');
+      expect(service.findValidByTokenWithMember).toHaveBeenCalledWith(
+        'valid-token',
+      );
       expect(result).toEqual({ email: mockInvitation.email, member: null });
     });
 
     it('returns the saved member data for a valid token', async () => {
-      (service.findValidByToken as jest.Mock).mockResolvedValueOnce({
+      (service.findValidByTokenWithMember as jest.Mock).mockResolvedValueOnce({
         ...mockInvitation,
         member: {
           id: 7,
@@ -131,7 +135,9 @@ describe('InvitationsController', () => {
     });
 
     it('throws NotFoundException when the token is invalid or expired', async () => {
-      (service.findValidByToken as jest.Mock).mockResolvedValueOnce(null);
+      (service.findValidByTokenWithMember as jest.Mock).mockResolvedValueOnce(
+        null,
+      );
 
       await expect(controller.findByToken('unknown-token')).rejects.toThrow(
         NotFoundException,
