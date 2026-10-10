@@ -518,4 +518,59 @@ h3. Out of Scope
 
 h3. Developer Notes
 * Die Hinweistexte sind vorgefertigt und pro Kombination hinterlegt
-* Die Organisationskultur eines NTs ist einfach die dominanteste Orientierung "
+* Die Organisationskultur eines NTs ist einfach die dominanteste Orientierung"
+"Development","Ressourcen und Bedarfe werden durch Nudging detailliert abgefragt","NETW-7","NETW-7","High","7 Frontend","Als Netzwerkteilnehmer NT möchte ich beim Eintragen und Aktualisieren meiner Ressourcen und Bedarfe durch Beispiele, Erklärungen und Vorschläge zu möglichst detaillierten Angaben motiviert werden, damit meine Ressourcen und Bedarfe möglichst vollständig und präzise erfasst sind und das Matching bessere Ergebnisse liefert.
+
+h3. Akzeptanzkriterien
+
+Fragebogen motiviert NT zu möglichst umfangreichen und detaillierten Angaben bei Ressourcen und Bedarfen (siehe MDF3)
+Nudging ist auch beim Aktualisieren bereits hinterlegter Angaben sichtbar (siehe NETW-7/5)
+System macht NT Vorschläge, um die Detailtiefe der Eingaben zu erhöhen
+Beispiel: Schreibt NT „Ich kenne mich mit Wärmepumpen aus“, werden Vorschläge zur Konkretisierung gemacht (z.B. Marken wie Buderus oder andere Marken)
+Mindestens eine der folgenden Nudging-Maßnahmen ist umgesetzt: Beispiele, Erklärungen, Vorauswahlfelder (konkrete Auswahl gemäß UI/UX-Konzept, siehe Developer Notes)
+NT kann bereits erfüllte Bedarfe als erfüllt markieren bzw. entfernen
+Als erfüllt markierte bzw. entfernte Bedarfe werden im nächsten Matching-Durchlauf nicht mehr berücksichtigt, d.h. für diese werden keine Empfehlungen mehr berechnet
+
+h3. Out of Scope
+
+Generierung von Bedarfen aus einer Projektbeschreibung (siehe NETW-7/10, kann aber Teile dieser Story bereits abdecken)
+Nudging im Bereich der GWIS-Organisationskultur
+Verbesserung der Matching-Algorithmen
+
+h3. Developer Notes
+
+Ausgangsproblem: Angaben wie „Ich kenne mich mit Wärmepumpen aus“ sind zu unspezifisch, um zu erkennen, ob z.B. Buderus oder andere Marken gemeint sind. Netweave muss versuchen, aus den Eingaben eine höhere Detailtiefe zu erzeugen
+Die Story umfasst eine UI/UX-Diskussion. Das konkrete Nudging-Konzept muss gemeinsam erarbeitet und abgestimmt werden, bevor die Umsetzung beginnt
+Mögliche Ansätze: Beispiele, Erklärungen, Vorauswahlfelder
+Zu klären: Woher kommen die Vorschläge (statisch hinterlegt oder dynamisch generiert, z.B. per LLM)?
+Zu klären: Wie unterscheidet sich das Nudging beim Erstausfüllen vom Nudging beim Aktualisieren?
+Zu klären: Wie wird das Markieren/Entfernen erfüllter Bedarfe in der UI umgesetzt?
+Die Story „Bedarfe werden aus Projektbeschreibung generiert“ (NETW-7/10) löst eventuell bereits einen Teil dieser Story und sollte bei der Konzeption berücksichtigt werden
+use Daisy UI Textarea für die Eingabefelder https://daisyui.com/components/textarea/"
+"Development","Bedarfe werden aus Projektbeschreibung generiert","NETW-7","NETW-7","Low","10 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich im Fragebogen eine Projektbeschreibung eingeben können, aus der meine Bedarfe generiert werden, damit ich meine eigenen Bedarfe nicht genau kennen und manuell eintragen muss._
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält ein Feld für die Projektbeschreibung
+* NT kann eine Projektbeschreibung eingeben (z.B. „Wir wollen bestimmtes Projektziel erreichen“)
+* System generiert aus der Projektbeschreibung Bedarfe (z.B. „Wir brauchen xy“) in den gegebenen Kategorien
+* Die generierten Bedarfe werden in den jeweiligen Bedarfsfeldern vorausgefüllt angezeigt
+* NT kann die generierten Bedarfe dann wie gewohnt einsehen, bearbeiten und den Fragebogen Speichern
+
+h3. Out of Scope
+* Abspeichern der Projektbeschreibung (diese ist nämlich nur zur Generierung der Bedarfe)
+* Weitere Schritte über Schritt 1 hinaus (nur die Generierung der Bedarfe aus der Projektbeschreibung)
+* Generierung von Ressourcen aus der Projektbeschreibung
+* Verbesserung der Generierungslogik bzw. des Prompts (zunächst)
+* Ausgabe der verbrauchten Tokens
+
+h3. Developer Notes
+* use Daisy UI Textarea für die Projektbeschreibung https://daisyui.com/components/textarea/
+* @felix Es ist noch zu klären
+  * wie die Generierung ausgelöst wird, z.B. Button „Bedarfe generieren“
+  * wie mit bereits eingetragenen Bedarfen umgegangen wird (überschreiben oder ergänzen)
+  * soll es vllt vorab eine Auswahl geben aus der NT auswählen muss: 'Bedarfe manuell eintragen' oder 'aus Projektbeschreibung generieren'
+  * UI Idee:
+    * NT sieht auf dem Fragebigen zunächst NUR noch das Feld Projektbeschreibung, kann dann ausfüllen ODER überspringen 'überspringen und Bedarfe manuell eintragen'
+    * NT gelangt dann zu den gewohnten Bedarfsfeldern, dort kann er dann die Bedarfe bearbeiten und Ressourcen eintragen
+    * NT sieht dann oben einen Button, um erneut aus einer Projektbeschreibung Bedarfe zu generieren, welche dann bisherige überschreiben (das muss schon vor Tippen in Projektbeschreibung kommuniziert werden)
+"
