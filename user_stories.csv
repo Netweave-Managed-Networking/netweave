@@ -659,3 +659,38 @@ h3. Out of Scope
 
 h3. Developer Notes
 * als eigene Komponente umzusetzen"
+"Development","NT können ihre Email-Adresse ändern","NETW-7","NETW-7","Low","10 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich meine Email-Adresse ändern können, falls diese sich ändert, oder falls eine andere Kontaktperson aus meiner Organisatio die Kommunikation mit Netweave übernehmen soll_
+
+h3. Akzeptanzkriterien
+* Im Fragebogen kann NT seine Email-Adresse ändern (siehe NETW-23, dort wird die Email bisher nur als disabled Input angezeigt)
+* NT kann eine neue Email-Adresse eingeben
+* NT wird auf fehlerhafte Email-Adresse hingewiesen
+* System sendet eine Bestätigungsmail an die neue Email-Adresse
+* Erst nach Bestätigung der neuen Email-Adresse durch NT überschreibt das System die bisherige Email-Adresse im Backend
+  * Die vom NB eingegebene Email-Adresse (siehe IM1) wird dabei überschrieben
+  * Bis zur Bestätigung bleibt die bisherige Email-Adresse gültig
+
+h3. Out of Scope
+* Änderung der Email-Adresse durch NB
+* Gestaltung/Design der Email-Vorlage, Ausformulieren einer Email
+* Erinnerungs-Emails nach der initialen Bestätigungsmail
+
+h3. Developer Notes
+* Ich denke, es gibt Sinn die neue Email in der `members` Tabelle als Email des members zu speichern und in der Tabelle `invitations` die ursprüngliche Email an die die Einaldung rausging beizubehalten
+  * Speichert ein NT erstmals den Fragebogen wird dann also (sollte er nicht direkt die Email ändern) die Email doppetl abgespeichert, einaml unter `invitations` und einmal unter `members`"
+"Development","Neue und aktualisierte Organisationen seit dem letzten Matching Run werden auf /home angezeigt","NETW-5","NETW-5","Low","8 Frontend","_Als Netzwerkberater NB möchte ich auf /home sehen, wie viele Organisationen seit dem letzten Matching Run neu dazugekommen sind und wie viele ihre Daten aktualisiert haben, damit ich einschätzen kann, ob sich ein erneuter Matching Run lohnt._
+
+h3. Akzeptanzkriterien
+* Auf /home wird eine Info angezeigt, wie viele Organisationen seit dem letzten Matching Run neu dazugekommen sind
+* Auf /home wird eine Info angezeigt, wie viele Organisationen seit dem letzten Matching Run ihre Daten aktualisiert haben
+* Als Referenzzeitpunkt dient der Zeitpunkt der letzten Matching-Score-Berechnung (siehe NETW-34)
+* optional: Anzeige, um welche Organisationen es sich konkret handelt (Namen, Liste) entweder nur Anzahl, oder Anzahl und Auflistung
+
+h3. Out of Scope
+* Manuelles Starten des Matching Runs
+* Historie vergangener Matching Runs
+
+h3. Developer Notes
+* use Daisy UI Stat für die Darstellung der Zahlen, falls passend https://daisyui.com/components/stat/
+* „Daten aktualisiert“ einfach anahnd des Änderungszeitstempel am Member
+* Organisationen tauchen immer nur in einer Zahl auf; eine neu hinzugekommene Organisation, die danach auch ihre Daten aktualisiert hat, zählt nur als neu"
