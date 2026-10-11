@@ -574,3 +574,88 @@ h3. Developer Notes
     * NT gelangt dann zu den gewohnten Bedarfsfeldern, dort kann er dann die Bedarfe bearbeiten und Ressourcen eintragen
     * NT sieht dann oben einen Button, um erneut aus einer Projektbeschreibung Bedarfe zu generieren, welche dann bisherige überschreiben (das muss schon vor Tippen in Projektbeschreibung kommuniziert werden)
 "
+"Development","Umweltanschauung wird abgefragt (Teil 1 der Ökologischen Weltanschauung)","NETW-7","NETW-7","High","8 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich im Fragebogen Fragen zu meiner Umweltanschauung beantworten, sodass mein Umweltanschauungs-Score erfasst wird und im weiteren Verlauf für das Matching genutzt werden kann._
+
+h3. Hintergrund
+* Nach Basisdaten, Ressourcen und Bedarfen sowie der Organisationskultur soll der Fragebogen einen vierten Abschnitt zur Ökologische Weltanschauung enthalten
+* Der Abschnitt Ökologische Weltanschauung (engl. Ecological Worldview) setzt sich aus zwei Subkategorien zusammen
+  * Umweltanschauung (engl. View of Environemt)
+  * Naturanschauung (engl. View of Nature)
+* Diese Story behandelt die Umweltanschauung
+* Den Begriff NEP (New Ecological Paradigm) nutzen wir hier nicht mehr. Stattdessen sprechen wir von Umweltanschauung / View of Environemt
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält einen Abschnitt zur Ökologische Weltanschauung
+* Dieser Abschnitt enthält Umweltanschauung mit den 9 Umweltanschauungs-Fragen
+* Jede UA-Frage wird als Likert-Frage mit 5 festen Antwortstufen dargestellt („stimmt nicht“, „stimmt wenig“, „stimmt mittelmäßig“, „stimmt ziemlich“, „stimmt sehr“)
+* NT kann pro Frage eine Antwortstufe auswählen
+* NT kann eingegebene Antworten speichern
+  * System speichert alle 9 Antworten im Backend ab
+* Bereits hinterlegte Antworten werden beim erneuten Aufruf des Fragebogens geladen und können aktualisiert werden
+
+h3. Out of Scope
+* Naturanschauung / View of Nature (kommt in eigener Story)
+* System ermittelt aus den 9 Antworten den Gesamt-Umweltanschauungs-Score
+* Berücksichtigung des Umweltanschauungs-Scores im Matching-Score
+* Nudging zu bestimmten Antworten
+
+h3. Developer Notes
+* Die 9 Umweltanschauungs-Fragen sind alle Likert-Fragen und lauten:
+  * Wir nähern uns der absoluten Zahl von Menschen, die die Erde zu versorgen in der Lage ist.
+  * Die Menschen haben das Recht dazu, die natürliche Umwelt ihren Bedürfnissen entsprechend zu verändern.
+  * Wenn die Menschen in den Ablauf der Natur eingreifen, sind die Konsequenzen meistens katastrophal.
+  * Die Menschheit beutet ihre natürliche Umwelt aus.
+  * Die Erde verfügt über ausreichend natürliche Ressourcen, wenn wir nur lernen, wie sie zu vermehren sind.
+  * Tiere und Pflanzen haben das selbe Existenzrecht wie Menschen.
+  * Das Gleichgewicht der Natur ist stark genug, die Einflüsse moderner Industriegesellschaften zu bewältigen.
+  * Die sogenannte „ökologische Krise“, mit der die Menschheit konfrontiert sei, ist massiv übertrieben.
+  * Das Gleichgewicht der Natur ist empfindlich und kann leicht gestört werden.
+* Erstelle eine „LikertQuestion“-Komponente (Likert-Fragen haben hardcoded Antworten „stimmt nicht“ bis „stimmt sehr“)
+  * siehe code unten
+  * optional: clicking an answer text makes range input jump to that point
+
+{code:html}
+<div class=""flex-col min-w-80"">
+  <div class=""w-full max-w-xl"">
+    {{ likertText() }}
+  </div>
+  <div class=""w-full max-w-xl"">
+    <input type=""range"" min=""0"" max=""100"" value=""25"" class=""range w-full"" step=""25"" />
+    <div class=""flex justify-between px-2.5 mt-0 text-xs"">
+      <span>|</span><span>|</span><span>|</span><span>|</span><span>|</span>
+    </div>
+    <div class=""flex justify-between px-2.5 mt-2 text-xs"">
+      <span>stimmt<br /><strong>nicht</strong></span>
+      <span>stimmt<br /><strong>wenig</strong></span>
+      <span>stimmt<br /><strong>mittelmäßig</strong></span>
+      <span>stimmt<br /><strong>ziemlich</strong></span>
+      <span>stimmt<br /><strong>sehr</strong></span>
+    </div>
+  </div>
+</div>
+{code}"
+"Development","Naturanschauung wird abgefragt (Teil 1 der Ökologischen Weltanschauung)","NETW-7","NETW-7","Medium","9 Frontend Backend","_Als Netzwerkteilnehmer NT möchte ich im Fragebogen angeben, welche Naturdarstellung am ehesten meinem Blick auf die Natur entspricht, sodass meine Naturanschauung erfasst wird und im weiteren Verlauf für das Matching genutzt werden kann._
+
+h3. Hintergrund
+* Der Abschnitt Ökologische Weltanschauung (engl. Ecological Worldview) setzt sich aus zwei Subkategorien zusammen
+  * Umweltanschauung (engl. View of Environemt)
+  * Naturanschauung (engl. View of Nature)
+* Diese Story behandelt die Naturanschauung
+* Den Begriff MoN (Myth of Nature) nutzen wir hier nicht mehr. Stattdessen sprechen wir von Naturanschauung / View of Nature
+
+h3. Akzeptanzkriterien
+* Fragebogen enthält einen Abschnitt zur Ökologischen Weltanschauung
+* Dieser Abschnitt enthält die Naturanschauung mit der Frage „Entscheiden Sie, welche Naturdarstellung am ehesten Ihrem Blick auf die Natur entspricht.“
+* Die Frage hat 4 Antwortmöglichkeiten (siehe Anhang)
+* NT kann genau eine Antwortmöglichkeit auswählen
+* NT kann die eingegebene Antwort speichern
+  * System speichert die Antwort im Backend ab
+* Bereits hinterlegte Antworten werden beim erneuten Aufruf des Fragebogens geladen und können aktualisiert werden
+
+h3. Out of Scope
+* Umweltanschauung / View of Environment (kommt in eigener Story)
+* Berücksichtigung der Naturanschauung im Matching-Score
+* Nudging zu bestimmten Antworten
+
+h3. Developer Notes
+* als eigene Komponente umzusetzen"
