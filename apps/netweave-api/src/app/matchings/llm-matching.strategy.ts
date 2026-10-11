@@ -2,7 +2,9 @@ import { Logger } from '@nestjs/common';
 import {
   MatchingDetailsDTO,
   RESOURCE_REQUIREMENT_CATEGORIES,
+  RESOURCE_REQUIREMENT_CATEGORY_TEXTS,
   ResourceRequirementCategory,
+  ResourceRequirementCategoryText,
 } from '@netweave/api-types';
 import { generateText, LanguageModel } from 'ai';
 import { Member } from '../members/member.entity';
@@ -57,7 +59,12 @@ export class LlmMatchingStrategy implements MatchingStrategy {
     const categories: MatchingDetailsDTO['categories'] = await Promise.all(
       entries.map(async ({ category, requirement, resource }) => {
         if (!resource) return { category, score: 0 };
-        const answer = await this.askCoverage(requirement, resource, signal);
+        const answer = await this.askCoverage(
+          RESOURCE_REQUIREMENT_CATEGORY_TEXTS[category],
+          requirement,
+          resource,
+          signal,
+        );
         const score = parseCoverageScore(answer);
         if (score === null) {
           this.logger.warn(
@@ -86,6 +93,7 @@ export class LlmMatchingStrategy implements MatchingStrategy {
   }
 
   private askCoverage(
+    category: ResourceRequirementCategoryText,
     requirement: string,
     resource: string,
     signal: AbortSignal | undefined,
@@ -94,7 +102,7 @@ export class LlmMatchingStrategy implements MatchingStrategy {
       signal?.throwIfAborted();
       const { text } = await generateText({
         model: this.model,
-        prompt: coveragePrompt(requirement, resource),
+        prompt: coveragePrompt(category, requirement, resource),
         temperature: 0,
         maxRetries: MAX_RETRIES,
         timeout: this.timeoutMs,
