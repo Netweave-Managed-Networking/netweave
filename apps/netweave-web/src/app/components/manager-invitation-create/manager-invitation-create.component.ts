@@ -5,7 +5,7 @@ import {
   DEFAULT_USER_ROLE,
   USER_ROLES,
   UserEmailWhitelistCreateDTO,
-  UserEmailWhitelistDTO,
+  UserEmailWhitelistCreatedDTO,
   UserRole,
 } from '@netweave/api-types';
 import { isDomain } from '@netweave/utils';
@@ -25,7 +25,7 @@ import { USER_ROLE_LABELS } from '../../types/user-role-labels';
 export class ManagerInvitationCreateComponent {
   private http = inject(HttpClient);
 
-  public entity = output<UserEmailWhitelistDTO>();
+  public entity = output<UserEmailWhitelistCreatedDTO>();
   private loadingState = signal<LoadingState>('initial');
 
   protected readonly roles = USER_ROLES;
@@ -72,7 +72,7 @@ export class ManagerInvitationCreateComponent {
     };
 
     this.http
-      .post<UserEmailWhitelistDTO>(
+      .post<UserEmailWhitelistCreatedDTO>(
         '/api/user-email-whitelists',
         userEmailWhitelistCreateDTO,
       )
