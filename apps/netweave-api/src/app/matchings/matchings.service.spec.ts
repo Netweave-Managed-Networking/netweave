@@ -315,7 +315,14 @@ describe('MatchingsService', () => {
         release();
         await done;
 
-        expect(pairs()).toEqual(['1->2', '1->3']); // the seeker in flight, but no further ones
+        expect(pairs()).toEqual([
+          '1->2',
+          '1->3',
+          '2->1',
+          '2->3',
+          '3->1',
+          '3->2',
+        ]); // all seekers were in flight
         expect(manager.update).not.toHaveBeenCalledWith(
           MatchingRun,
           expect.anything(),
@@ -590,7 +597,7 @@ describe('MatchingsService', () => {
       release();
       await done;
 
-      expect(pairs()).toEqual(['1->2', '1->3']); // the seeker in flight, but no further ones
+      expect(pairs()).toEqual(['1->2', '1->3', '2->1', '2->3', '3->1', '3->2']); // all seekers were in flight
       expect(manager.update).not.toHaveBeenCalledWith(
         MatchingRun,
         { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
