@@ -1,7 +1,7 @@
-import 'reflect-metadata'; // the api-types (imported for the categories) contain decorated dto classes; nest loads it outside of tests
 import { Logger } from '@nestjs/common';
 import { ResourceRequirementCategory } from '@netweave/api-types';
 import { MockLanguageModelV4 } from 'ai/test';
+import 'reflect-metadata'; // the api-types (imported for the categories) contain decorated dto classes; nest loads it outside of tests
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import {
@@ -100,8 +100,12 @@ describe('LlmMatchingStrategy', () => {
     );
 
     const prompt = JSON.stringify(model.doGenerateCalls[0].prompt);
-    expect(prompt).toContain('Bedarf:\\nBohrmaschine');
-    expect(prompt).toContain('Ressource:\\nAkkuschrauber');
+    expect(prompt).toContain(
+      'Bedarf, den Netzwerteilnehmer A hat:\\nBohrmaschine',
+    );
+    expect(prompt).toContain(
+      'Ressource, über die Netzwerteilnehmer B verfügt:\\nAkkuschrauber',
+    );
     expect(prompt).not.toContain('Laptop');
     expect(prompt).not.toContain('Beamer');
   });

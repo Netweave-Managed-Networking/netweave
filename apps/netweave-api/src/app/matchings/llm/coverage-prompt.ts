@@ -1,5 +1,11 @@
+import { ResourceRequirementCategoryText } from '@netweave/api-types';
+
 /** prompt as specified in NETW-35 */
-export const coveragePrompt = (requirement: string, resource: string) =>
+export const coveragePrompt = (
+  category: ResourceRequirementCategoryText,
+  requirement: string,
+  resource: string,
+) =>
   `Du bist ein Match-Scoring-Algorithmus.
 
 Deine Aufgabe ist die streng objektive und ausschließliche Bewertung des inhaltlichen Deckungsgrads der Ressource für den Bedarf.
@@ -14,10 +20,13 @@ Skala 0-100 (Ganzer Wert):
 Ausgabeformat-Zwang:
 Gib als Ergebnis NUR die errechnete ganze Zahl zwischen 0 und 100 aus. KEIN anderer Text, KEINE Begründung, KEINE Umschreibung.
 
-Bedarf:
+Kontextinformation:
+Sowohl der folgende Bedarf als auch die folgende Ressource wurden durch die befragten Netzwerkteilnehmer in der Kategorie "${category.label}; ${category.description}" angegeben.
+
+Bedarf, den Netzwerteilnehmer A hat:
 ${requirement}
 
-Ressource:
+Ressource, über die Netzwerteilnehmer B verfügt:
 ${resource}`;
 
 /** null if the answer is not a single integer between 0 and 100 */

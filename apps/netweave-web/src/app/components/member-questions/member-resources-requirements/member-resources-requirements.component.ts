@@ -1,8 +1,10 @@
 import { Component, input } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
-import { RESOURCE_REQUIREMENT_CATEGORIES } from '@netweave/api-types';
+import {
+  RESOURCE_REQUIREMENT_CATEGORIES,
+  RESOURCE_REQUIREMENT_CATEGORY_TEXTS,
+} from '@netweave/api-types';
 import { ResourcesRequirementsModel } from '../member-form.model';
-import { RESOURCE_REQUIREMENT_CATEGORY_TEXTS } from './resource-requirement-categories';
 
 @Component({
   selector: 'app-member-resources-requirements',
