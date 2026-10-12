@@ -19,6 +19,7 @@ import { MatchingRunsAddFailedAt1790700000000 } from './migrations/1790700000000
 import { TimestampColumnsUseTimezone1790800000000 } from './migrations/1790800000000-timestamp-columns-use-timezone';
 import { MemberCultureWeightsCreate1790900000000 } from './migrations/1790900000000-member-culture-weights-create';
 import { MatchingRunsAddCancelledAt1791000000000 } from './migrations/1791000000000-matching-runs-add-cancelled-at';
+import { UsersAddEmailVerification1791100000000 } from './migrations/1791100000000-users-add-email-verification';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -42,4 +43,5 @@ export const Migrations = [
   TimestampColumnsUseTimezone1790800000000,
   MemberCultureWeightsCreate1790900000000,
   MatchingRunsAddCancelledAt1791000000000,
+  UsersAddEmailVerification1791100000000,
 ];
