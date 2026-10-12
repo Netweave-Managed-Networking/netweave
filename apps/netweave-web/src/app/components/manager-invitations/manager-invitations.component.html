@@ -87,4 +87,17 @@
       </table>
     }
   </div>
+
+  @if (toast(); as t) {
+    <div class="manager-invitations__toast toast toast-end">
+      <div
+        role="alert"
+        class="alert"
+        [class.alert-success]="t.kind === 'success'"
+        [class.alert-error]="t.kind === 'error'"
+      >
+        <span>{{ t.message }}</span>
+      </div>
+    </div>
+  }
 </div>
