@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailModule } from '../mail/mail.module';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 import { User } from '../users/user.entity';
 import { AuthController } from './auth.controller';
@@ -17,6 +18,8 @@ import { RegistrationWhitelistService } from './registration-whitelist.service';
         signOptions: { expiresIn: '7d' },
       }),
     }),
+    // MailModule imports AuthModule for its guards
+    forwardRef(() => MailModule),
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthGuard, RegistrationWhitelistService],

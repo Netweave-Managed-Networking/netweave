@@ -36,6 +36,22 @@ export const appRoutes: Routes = [
           ),
       },
       {
+        path: 'register/confirm',
+        canActivate: [unauthenticatedGuard],
+        loadComponent: () =>
+          import(
+            './components/register-confirm/register-confirm.component'
+          ).then((m) => m.RegisterConfirmComponent),
+      },
+      {
+        // no guard: the link from the confirmation mail must work regardless of who is logged in
+        path: 'verify-email/:token',
+        loadComponent: () =>
+          import('./components/verify-email/verify-email.component').then(
+            (m) => m.VerifyEmailComponent,
+          ),
+      },
+      {
         path: 'home',
         canActivate: [authenticatedGuard],
         loadComponent: () =>

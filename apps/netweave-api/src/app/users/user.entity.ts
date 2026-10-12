@@ -16,6 +16,28 @@ export class User extends BaseEntity implements UserDTO {
   @Column({ type: 'varchar' })
   declare public role: UserRole;
 
+  /** null until the user clicked the link in the confirmation mail; unverified users cannot log in */
+  @Column({ name: 'email_verified_at', type: 'timestamptz', nullable: true })
+  declare public emailVerifiedAt: Date | null;
+
+  /** sha256 of the token in the confirmation link, so a leaked db row cannot be used to log in */
+  @Column({
+    name: 'email_verification_token_hash',
+    type: 'varchar',
+    unique: true,
+    nullable: true,
+    select: false,
+  })
+  declare public emailVerificationTokenHash: string | null;
+
+  @Column({
+    name: 'email_verification_expires_at',
+    type: 'timestamptz',
+    nullable: true,
+    select: false,
+  })
+  declare public emailVerificationExpiresAt: Date | null;
+
   @OneToMany(
     () => UserEmailWhitelist,
     (userEmailWhitelist) => userEmailWhitelist.createdBy,

@@ -64,6 +64,13 @@ export class LoginComponent {
       return undefined;
     } catch (err) {
       const status = err instanceof HttpErrorResponse ? err.status : undefined;
+
+      if (status === HttpStatusCode.Forbidden)
+        return {
+          kind: 'emailNotVerified',
+          message: 'Bitte bestätige zuerst deine E-Mail-Adresse.',
+        };
+
       return {
         kind: 'server',
         message:

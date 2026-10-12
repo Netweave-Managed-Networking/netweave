@@ -13,14 +13,20 @@ describe('AuthController', () => {
   let controller: AuthController;
   let authService: Partial<
     Record<
-      'registerOrFail' | 'loginOrFail' | 'getAuthUserFromTokenOrFail',
+      | 'registerOrFail'
+      | 'loginOrFail'
+      | 'verifyEmailOrFail'
+      | 'resendVerificationMailOrFail'
+      | 'getAuthUserFromTokenOrFail',
       jest.Mock
     >
   >;
 
   beforeEach(async () => {
     authService = {
-      registerOrFail: jest.fn().mockResolvedValue('register-token'),
+      registerOrFail: jest.fn().mockResolvedValue(undefined),
+      verifyEmailOrFail: jest.fn().mockResolvedValue('verify-token'),
+      resendVerificationMailOrFail: jest.fn().mockResolvedValue(undefined),
       loginOrFail: jest.fn().mockResolvedValue('login-token'),
       getAuthUserFromTokenOrFail: jest.fn().mockReturnValue(mockUserAuthDTO),
     };
@@ -37,22 +43,41 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should set an HttpOnly cookie on register', async () => {
+  it('registers without logging in and returns the email the confirmation went to', async () => {
     const dto = { email: mockUserAuthDTO.user.email, password: 'password123' };
-    const res = { cookie: jest.fn() } as unknown as Response;
 
-    const result = await controller.register(dto, res);
+    const result = await controller.register(dto);
 
     expect(authService.registerOrFail).toHaveBeenCalledWith(
       dto.email,
       dto.password,
     );
+    expect(result).toEqual({ email: dto.email });
+  });
+
+  it('should set an HttpOnly cookie on email verification', async () => {
+    const res = { cookie: jest.fn() } as unknown as Response;
+
+    const result = await controller.verifyEmail({ token: 'abc' }, res);
+
+    expect(authService.verifyEmailOrFail).toHaveBeenCalledWith('abc');
     expect(res.cookie).toHaveBeenCalledWith(
       'netweave_auth_token',
-      'register-token',
+      'verify-token',
       AuthService.COOKIE_CONSTS.options,
     );
     expect(result).toEqual(mockUserAuthDTO);
+  });
+
+  it('resends the confirmation mail', async () => {
+    const result = await controller.resendVerificationMail({
+      email: 'nb@example.com',
+    });
+
+    expect(authService.resendVerificationMailOrFail).toHaveBeenCalledWith(
+      'nb@example.com',
+    );
+    expect(result).toEqual({ success: true });
   });
 
   it('should set an HttpOnly cookie on login', async () => {

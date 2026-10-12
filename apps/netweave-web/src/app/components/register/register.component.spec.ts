@@ -1,21 +1,23 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { UserAuthDTO, UserDTO } from '@netweave/api-types';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  provideRouter,
+  Router,
+} from '@angular/router';
+import { RegistrationDTO } from '@netweave/api-types';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { RegisterComponent } from './register.component';
 
-const mockUserAuthDTO: UserAuthDTO = {
-  sub: 1,
-  user: { email: 'nb@example.com', role: 'viewer' } as UserDTO,
-};
+const mockRegistrationDTO: RegistrationDTO = { email: 'nb@example.com' };
 
 describe('RegisterComponent', () => {
   let auth: { register: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    auth = { register: vi.fn().mockReturnValue(of(mockUserAuthDTO)) };
+    auth = { register: vi.fn().mockReturnValue(of(mockRegistrationDTO)) };
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
@@ -117,7 +119,7 @@ describe('RegisterComponent', () => {
     expect(auth.register).not.toHaveBeenCalled();
   });
 
-  it('registers and navigates home on valid input', async () => {
+  it('registers and navigates to the confirmation page on valid input', async () => {
     const fixture = create();
     const navigate = vi
       .spyOn(TestBed.inject(Router), 'navigate')
@@ -131,8 +133,24 @@ describe('RegisterComponent', () => {
     await submitForm(fixture);
 
     expect(auth.register).toHaveBeenCalledWith('nb@example.com', 'password123');
-    expect(navigate).toHaveBeenCalledWith(['/']);
+    expect(navigate).toHaveBeenCalledWith(['/register/confirm'], {
+      queryParams: { email: 'nb@example.com' },
+    });
     expect(errorTexts(fixture)).toEqual([]);
+  });
+
+  it('prefills the email from the query param', () => {
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {
+          queryParamMap: convertToParamMap({ email: 'typo@example.com' }),
+        },
+      },
+    });
+    const fixture = create();
+    fixture.detectChanges();
+
+    expect(input(fixture, 'register-email').value).toBe('typo@example.com');
   });
 
   it.each([
@@ -140,6 +158,10 @@ describe('RegisterComponent', () => {
     [
       HttpStatusCode.Forbidden,
       'Diese Email bzw. Domäne ist nicht für die Registrierung freigeschaltet.',
+    ],
+    [
+      HttpStatusCode.ServiceUnavailable,
+      'Die Bestätigungsmail konnte nicht gesendet werden. Bitte versuche es später erneut.',
     ],
     [
       HttpStatusCode.InternalServerError,
