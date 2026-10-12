@@ -101,4 +101,26 @@ describe('LoginComponent', () => {
 
     expect(errorTexts(fixture)).toEqual(['Email oder Passwort ist falsch.']);
   });
+
+  it('shows a hint with a resend link when the email is not verified yet', async () => {
+    auth.login.mockReturnValue(
+      throwError(
+        () => new HttpErrorResponse({ status: HttpStatusCode.Forbidden }),
+      ),
+    );
+    const fixture = create();
+    fill(fixture, 'nb@example.com', 'password123');
+
+    await submitForm(fixture);
+
+    expect(errorTexts(fixture)[0]).toContain(
+      'Bitte bestätige zuerst deine E-Mail-Adresse.',
+    );
+    const link = fixture.nativeElement.querySelector(
+      '.login__resend',
+    ) as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe(
+      '/register/confirm?email=nb@example.com',
+    );
+  });
 });

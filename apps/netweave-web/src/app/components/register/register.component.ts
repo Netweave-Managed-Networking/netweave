@@ -9,7 +9,7 @@ import {
   TreeValidationResult,
   validate,
 } from '@angular/forms/signals';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { isEmail } from 'class-validator';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
@@ -31,9 +31,11 @@ export const PASSWORD_MIN_LENGTH = 8;
 export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   protected registerModel = signal<RegisterFormValue>({
-    email: '',
+    // prefilled when coming back from the confirmation page to fix a typo
+    email: this.route.snapshot.queryParamMap.get('email') ?? '',
     password: '',
     passwordRepeat: '',
   });
@@ -101,7 +103,9 @@ export class RegisterComponent {
 
     try {
       await firstValueFrom(this.auth.register(email, password));
-      await this.router.navigate(['/']);
+      await this.router.navigate(['/register/confirm'], {
+        queryParams: { email },
+      });
       return undefined;
     } catch (err) {
       return this.toSubmissionError(err);
@@ -124,6 +128,13 @@ export class RegisterComponent {
         fieldTree: this.registerForm.email,
         message:
           'Diese Email bzw. Domäne ist nicht für die Registrierung freigeschaltet.',
+      };
+
+    if (status === HttpStatusCode.ServiceUnavailable)
+      return {
+        kind: 'mailFailed',
+        message:
+          'Die Bestätigungsmail konnte nicht gesendet werden. Bitte versuche es später erneut.',
       };
 
     return {

@@ -29,7 +29,17 @@
 
       @for (error of loginForm().errors(); track error.kind) {
         <div role="alert" class="login__form-error alert alert-error mt-2">
-          <span>{{ error.message }}</span>
+          <span>
+            {{ error.message }}
+            @if (error.kind === 'emailNotVerified') {
+              <a
+                class="login__resend link"
+                routerLink="/register/confirm"
+                [queryParams]="{ email: loginModel().email }"
+                >Bestätigungsmail erneut senden</a
+              >
+            }
+          </span>
         </div>
       }
 

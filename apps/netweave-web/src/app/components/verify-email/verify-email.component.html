@@ -1,0 +1,21 @@
+<div class="verify-email">
+  <div
+    class="verify-email__box bg-base-200 border-base-300 rounded-box w-sm border p-6 flex flex-col gap-4"
+  >
+    @if (state() === 'pending') {
+      <p class="verify-email__pending flex items-center gap-2">
+        <span class="loading loading-spinner loading-sm"></span>
+        E-Mail-Adresse wird bestätigt …
+      </p>
+    } @else {
+      <h2 class="text-lg font-bold">Link ungültig oder abgelaufen</h2>
+      <p class="verify-email__invalid">
+        Dieser Bestätigungslink ist ungültig oder bereits abgelaufen. Bitte
+        registriere dich erneut, um einen neuen Link zu erhalten.
+      </p>
+      <a class="verify-email__register btn btn-neutral" routerLink="/register"
+        >Erneut registrieren</a
+      >
+    }
+  </div>
+</div>

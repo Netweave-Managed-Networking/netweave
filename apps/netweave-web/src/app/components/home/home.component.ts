@@ -5,7 +5,11 @@ import { MatchingRunComponent } from '../matching-run/matching-run.component';
 
 @Component({
   selector: 'app-home',
-  imports: [InviteParticipantComponent, MatchingRunComponent, DevInfosComponent],
+  imports: [
+    InviteParticipantComponent,
+    MatchingRunComponent,
+    DevInfosComponent,
+  ],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {}
