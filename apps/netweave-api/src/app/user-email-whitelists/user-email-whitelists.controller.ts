@@ -10,6 +10,7 @@ import {
 import {
   UserAuthDTO,
   UserEmailWhitelistCreateDTO,
+  UserEmailWhitelistCreatedDTO,
   UserEmailWhitelistDTO,
 } from '@netweave/api-types';
 import { AdminGuard } from '../auth/admin.guard';
@@ -33,7 +34,7 @@ export class UserEmailWhitelistsController {
   public async create(
     @Me() { user }: UserAuthDTO,
     @Body() userEmailWhitelistDTO: UserEmailWhitelistCreateDTO,
-  ): Promise<UserEmailWhitelistDTO | null> {
+  ): Promise<UserEmailWhitelistCreatedDTO | null> {
     return await this.userEmailWhitelistsService.save(
       userEmailWhitelistDTO,
       user.id,
