@@ -252,27 +252,42 @@ export class MatchingsService {
       ).filter(hasAnswers);
 
       let matchingCount = 0;
-      for (const seeker of members) {
-        abort.signal.throwIfAborted();
-        const potentialMatches = members.filter((m) => m.id !== seeker.id);
-        const results = await Promise.all(
-          potentialMatches.map((potentialMatch) =>
-            this.matchingStrategy.score(seeker, potentialMatch, abort.signal),
-          ),
-        );
-        const rows = potentialMatches.map((potentialMatch, i) => ({
-          matchingRunId: run.id,
-          memberSeekerId: seeker.id,
-          memberPotentialMatchId: potentialMatch.id,
-          score: results[i].score,
-          details: results[i].details,
-        }));
+      // all seekers at once keeps the llm concurrency limit saturated
+      await Promise.allSettled(
+        members.map(async (seeker) => {
+          try {
+            const potentialMatches = members.filter((m) => m.id !== seeker.id);
+            const results = await Promise.all(
+              potentialMatches.map((potentialMatch) =>
+                this.matchingStrategy.score(
+                  seeker,
+                  potentialMatch,
+                  abort.signal,
+                ),
+              ),
+            );
+            const rows = potentialMatches.map((potentialMatch, i) => ({
+              matchingRunId: run.id,
+              memberSeekerId: seeker.id,
+              memberPotentialMatchId: potentialMatch.id,
+              score: results[i].score,
+              details: results[i].details,
+            }));
 
-        for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
-          await manager.insert(Matching, rows.slice(i, i + INSERT_CHUNK_SIZE));
-        }
-        matchingCount += rows.length;
-      }
+            for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
+              await manager.insert(
+                Matching,
+                rows.slice(i, i + INSERT_CHUNK_SIZE),
+              );
+            }
+            matchingCount += rows.length;
+          } catch (error) {
+            abort.abort(error); // drops the other seekers' pending work
+            throw error;
+          }
+        }),
+      );
+      abort.signal.throwIfAborted();
 
       await this.markRunDone(manager, run.id, { finishedAt: new Date() });
       return matchingCount;
