@@ -1,3 +1,4 @@
+export * from './lib/api-types/auth';
 export * from './lib/api-types/invitation';
 export * from './lib/api-types/mail-config';
 export * from './lib/api-types/matching';
