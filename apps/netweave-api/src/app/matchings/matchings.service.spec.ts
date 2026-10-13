@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { RecommendationsDTO } from '@netweave/api-types';
 import { EntityManager, IsNull, Not, Repository } from 'typeorm';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
@@ -6,6 +7,7 @@ import { MembersService } from '../members/members.service';
 import { MatchingRun } from './matching-run.entity';
 import { MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
+import { RankingStrategy } from './ranking/ranking-strategy';
 import {
   MatchingRunCancelledError,
   MatchingsService,
@@ -42,18 +44,23 @@ const answered = (id: number, requirements = 'a need'): Member =>
     ] as MemberResourceRequirement[],
   }) as Member;
 
+const recommendations: RecommendationsDTO = {
+  strategy: 'test-ranking',
+  weights: { matching: 80, culture: 20, nep: 0 },
+  members: [],
+};
+
 describe('MatchingsService', () => {
   let service: MatchingsService;
   let manager: MockManager;
   let membersService: jest.Mocked<
     Pick<
       MembersService,
-      | 'getAllWithResourcesRequirements'
-      | 'haveResourcesRequirementsChangedSince'
-      | 'getChangedSince'
+      'getAllForMatching' | 'haveAnswersChangedSince' | 'getChangedSince'
     >
   >;
   let strategy: jest.Mocked<MatchingStrategy>;
+  let rankingStrategy: jest.Mocked<RankingStrategy>;
 
   beforeEach(() => {
     manager = createMockManager();
@@ -61,10 +68,10 @@ describe('MatchingsService', () => {
       manager: { ...manager, transaction: jest.fn((work) => work(manager)) },
     };
     membersService = {
-      getAllWithResourcesRequirements: jest
+      getAllForMatching: jest
         .fn()
         .mockResolvedValue([answered(1), answered(2), answered(3)]),
-      haveResourcesRequirementsChangedSince: jest.fn().mockResolvedValue(true),
+      haveAnswersChangedSince: jest.fn().mockResolvedValue(true),
       getChangedSince: jest
         .fn()
         .mockResolvedValue({ created: [], updated: [] }),
@@ -79,10 +86,16 @@ describe('MatchingsService', () => {
       ),
     };
 
+    rankingStrategy = {
+      name: 'test-ranking',
+      rank: jest.fn().mockReturnValue(recommendations),
+    };
+
     service = new MatchingsService(
       repository as unknown as Repository<MatchingRun>,
       membersService as unknown as MembersService,
       strategy,
+      rankingStrategy,
     );
   });
 
@@ -105,7 +118,7 @@ describe('MatchingsService', () => {
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
         { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
-        { finishedAt: expect.any(Date) },
+        expect.objectContaining({ finishedAt: expect.any(Date) }),
       );
       expect(insertedRows()).toEqual(
         [
@@ -125,8 +138,30 @@ describe('MatchingsService', () => {
       );
     });
 
+    it('ranks the top matches from all scores and stores them with the finished run', async () => {
+      await service.calculateScheduled();
+
+      expect(rankingStrategy.rank).toHaveBeenCalledTimes(1);
+      const [{ members, matchings }] = rankingStrategy.rank.mock.calls[0];
+      expect(members.map((m) => m.id)).toEqual([1, 2, 3]);
+      expect(matchings).toEqual(insertedRows());
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
+        { finishedAt: expect.any(Date), recommendations },
+      );
+    });
+
+    it('records the ranking strategy on the run right when it starts', async () => {
+      await service.calculateScheduled();
+
+      expect(manager.create).toHaveBeenCalledWith(MatchingRun, {
+        rankingStrategy: 'test-ranking',
+      });
+    });
+
     it('leaves out members without any answers', async () => {
-      membersService.getAllWithResourcesRequirements.mockResolvedValue([
+      membersService.getAllForMatching.mockResolvedValue([
         answered(1),
         { id: 2 } as Member, // no resources/requirements at all
         answered(3, '   '), // whitespace only
@@ -141,9 +176,7 @@ describe('MatchingsService', () => {
     it('does not ask for changes on the first run', async () => {
       await service.calculateScheduled();
 
-      expect(
-        membersService.haveResourcesRequirementsChangedSince,
-      ).not.toHaveBeenCalled();
+      expect(membersService.haveAnswersChangedSince).not.toHaveBeenCalled();
       expect(manager.save).toHaveBeenCalledTimes(1); // the new, empty run
       expect(manager.update).toHaveBeenCalledTimes(2); // stale runs reaped, marked finished
     });
@@ -153,15 +186,13 @@ describe('MatchingsService', () => {
       manager.find?.mockResolvedValue([
         { id: 41, createdAt: lastRunAt, finishedAt: lastRunAt },
       ]);
-      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
-        false,
-      );
+      membersService.haveAnswersChangedSince.mockResolvedValue(false);
 
       await service.calculateScheduled();
 
-      expect(
-        membersService.haveResourcesRequirementsChangedSince,
-      ).toHaveBeenCalledWith(lastRunAt);
+      expect(membersService.haveAnswersChangedSince).toHaveBeenCalledWith(
+        lastRunAt,
+      );
       expect(strategy.score).not.toHaveBeenCalled();
       expect(manager.save).not.toHaveBeenCalled();
     });
@@ -171,9 +202,7 @@ describe('MatchingsService', () => {
       manager.find?.mockResolvedValue([
         { id: 41, createdAt: lastRunAt, finishedAt: lastRunAt },
       ]);
-      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
-        true,
-      );
+      membersService.haveAnswersChangedSince.mockResolvedValue(true);
 
       await service.calculateScheduled();
 
@@ -181,9 +210,7 @@ describe('MatchingsService', () => {
     });
 
     it('creates an empty run when there are fewer than two members', async () => {
-      membersService.getAllWithResourcesRequirements.mockResolvedValue([
-        answered(1),
-      ]);
+      membersService.getAllForMatching.mockResolvedValue([answered(1)]);
 
       await service.calculateScheduled();
 
@@ -191,13 +218,13 @@ describe('MatchingsService', () => {
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
         { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
-        { finishedAt: expect.any(Date) },
+        expect.objectContaining({ finishedAt: expect.any(Date) }),
       );
       expect(manager.insert).not.toHaveBeenCalled();
     });
 
     it('inserts the scores of every seeker right after calculating them', async () => {
-      membersService.getAllWithResourcesRequirements.mockResolvedValue(
+      membersService.getAllForMatching.mockResolvedValue(
         Array.from({ length: 40 }, (_, i) => answered(i + 1)),
       );
 
@@ -330,7 +357,7 @@ describe('MatchingsService', () => {
         expect(manager.update).not.toHaveBeenCalledWith(
           MatchingRun,
           expect.anything(),
-          { finishedAt: expect.any(Date) },
+          expect.objectContaining({ finishedAt: expect.any(Date) }),
         );
       });
 
@@ -352,7 +379,7 @@ describe('MatchingsService', () => {
         expect(manager.update).toHaveBeenCalledWith(
           MatchingRun,
           { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
-          { finishedAt: expect.any(Date) },
+          expect.objectContaining({ finishedAt: expect.any(Date) }),
         );
       });
     });
@@ -362,9 +389,7 @@ describe('MatchingsService', () => {
 
       await service.calculateScheduled();
 
-      expect(
-        membersService.getAllWithResourcesRequirements,
-      ).not.toHaveBeenCalled();
+      expect(membersService.getAllForMatching).not.toHaveBeenCalled();
       expect(manager.save).not.toHaveBeenCalled();
     });
 
@@ -380,9 +405,7 @@ describe('MatchingsService', () => {
 
       await service.calculateScheduled();
 
-      expect(
-        membersService.getAllWithResourcesRequirements,
-      ).not.toHaveBeenCalled();
+      expect(membersService.getAllForMatching).not.toHaveBeenCalled();
       expect(manager.save).not.toHaveBeenCalled();
     });
 
@@ -418,15 +441,12 @@ describe('MatchingsService', () => {
         [expect.any(Number)],
       );
       expect(manager.query?.mock.invocationCallOrder[0]).toBeLessThan(
-        membersService.getAllWithResourcesRequirements.mock
-          .invocationCallOrder[0],
+        membersService.getAllForMatching.mock.invocationCallOrder[0],
       );
     });
 
     it('marks the run as failed instead of throwing when the computation fails', async () => {
-      membersService.getAllWithResourcesRequirements.mockRejectedValue(
-        new Error('db down'),
-      );
+      membersService.getAllForMatching.mockRejectedValue(new Error('db down'));
 
       await expect(service.calculateScheduled()).resolves.toBeUndefined();
 
@@ -458,22 +478,18 @@ describe('MatchingsService', () => {
       expect(manager.update).toHaveBeenCalledWith(
         MatchingRun,
         { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
-        { finishedAt: expect.any(Date) },
+        expect.objectContaining({ finishedAt: expect.any(Date) }),
       );
     });
 
     it('never checks for changes, even without any', async () => {
-      membersService.haveResourcesRequirementsChangedSince.mockResolvedValue(
-        false,
-      );
+      membersService.haveAnswersChangedSince.mockResolvedValue(false);
 
       const result = await service.triggerRun();
       await flushPromises();
 
       expect(result).not.toBeNull();
-      expect(
-        membersService.haveResourcesRequirementsChangedSince,
-      ).not.toHaveBeenCalled();
+      expect(membersService.haveAnswersChangedSince).not.toHaveBeenCalled();
       expect(manager.insert).toHaveBeenCalled();
     });
 
@@ -483,9 +499,7 @@ describe('MatchingsService', () => {
       expect(await service.triggerRun()).toBeNull();
       await flushPromises();
 
-      expect(
-        membersService.getAllWithResourcesRequirements,
-      ).not.toHaveBeenCalled();
+      expect(membersService.getAllForMatching).not.toHaveBeenCalled();
     });
 
     it('returns null when a run is already in progress', async () => {
@@ -501,15 +515,11 @@ describe('MatchingsService', () => {
       expect(await service.triggerRun()).toBeNull();
       await flushPromises();
 
-      expect(
-        membersService.getAllWithResourcesRequirements,
-      ).not.toHaveBeenCalled();
+      expect(membersService.getAllForMatching).not.toHaveBeenCalled();
     });
 
     it('marks the run as failed instead of throwing when the background computation fails', async () => {
-      membersService.getAllWithResourcesRequirements.mockRejectedValue(
-        new Error('db down'),
-      );
+      membersService.getAllForMatching.mockRejectedValue(new Error('db down'));
 
       const result = await service.triggerRun();
       expect(result).not.toBeNull();
@@ -610,7 +620,7 @@ describe('MatchingsService', () => {
       expect(manager.update).not.toHaveBeenCalledWith(
         MatchingRun,
         expect.anything(),
-        { finishedAt: expect.any(Date) },
+        expect.objectContaining({ finishedAt: expect.any(Date) }),
       );
       expect(error).not.toHaveBeenCalled();
     });
@@ -851,6 +861,7 @@ describe('MatchingsService', () => {
             finishedAt: new Date('2026-09-29T10:05:00Z'),
             failedAt: null,
             cancelledAt: null,
+            rankingStrategy: 'category-separation',
           },
           {
             id: 8,
@@ -858,6 +869,7 @@ describe('MatchingsService', () => {
             finishedAt: null,
             failedAt: new Date('2026-09-28T10:05:00Z'),
             cancelledAt: null,
+            rankingStrategy: 'category-separation',
           },
         ],
         2,
@@ -867,6 +879,7 @@ describe('MatchingsService', () => {
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
+        rankingStrategy,
       );
 
       expect(await service.getRunHistory(1, 20)).toEqual({
@@ -877,6 +890,7 @@ describe('MatchingsService', () => {
             finishedAt: new Date('2026-09-29T10:05:00Z'),
             failedAt: null,
             cancelledAt: null,
+            rankingStrategy: 'category-separation',
             matchingCount: 12,
           },
           {
@@ -885,6 +899,7 @@ describe('MatchingsService', () => {
             finishedAt: null,
             failedAt: new Date('2026-09-28T10:05:00Z'),
             cancelledAt: null,
+            rankingStrategy: 'category-separation',
             matchingCount: 0,
           },
         ],
@@ -911,6 +926,7 @@ describe('MatchingsService', () => {
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
+        rankingStrategy,
       );
 
       const result = await service.getRunHistory(3, 20);
@@ -929,6 +945,7 @@ describe('MatchingsService', () => {
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
+        rankingStrategy,
       );
 
       await service.getRunHistory(1, 1000);
@@ -944,6 +961,7 @@ describe('MatchingsService', () => {
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
+        rankingStrategy,
       );
 
       await service.getRunHistory(0, 20);
@@ -959,6 +977,7 @@ describe('MatchingsService', () => {
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
         strategy,
+        rankingStrategy,
       );
 
       expect(await service.getRunHistory(1, 20)).toEqual({

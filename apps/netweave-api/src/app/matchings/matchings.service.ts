@@ -20,6 +20,7 @@ import { hasAnswers } from './matching-input';
 import { MatchingRun } from './matching-run.entity';
 import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
+import { RANKING_STRATEGY, RankingStrategy } from './ranking/ranking-strategy';
 
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
@@ -53,6 +54,8 @@ export class MatchingsService {
     private membersService: MembersService,
     @Inject(MATCHING_STRATEGY)
     private matchingStrategy: MatchingStrategy,
+    @Inject(RANKING_STRATEGY)
+    private rankingStrategy: RankingStrategy,
   ) {
     this.logger.log(`MatchingsService initialized`);
   }
@@ -190,12 +193,20 @@ export class MatchingsService {
     const manager = this.matchingRunsRepository.manager;
     const items = await Promise.all(
       runs.map(
-        async ({ id, createdAt, finishedAt, failedAt, cancelledAt }) => ({
+        async ({
           id,
           createdAt,
           finishedAt,
           failedAt,
           cancelledAt,
+          rankingStrategy,
+        }) => ({
+          id,
+          createdAt,
+          finishedAt,
+          failedAt,
+          cancelledAt,
+          rankingStrategy,
           matchingCount: await manager.count(Matching, {
             where: { matchingRunId: id },
           }),
@@ -241,9 +252,7 @@ export class MatchingsService {
         const latest = await findLatestFinishedRun(manager);
         if (
           latest &&
-          !(await this.membersService.haveResourcesRequirementsChangedSince(
-            latest.createdAt,
-          ))
+          !(await this.membersService.haveAnswersChangedSince(latest.createdAt))
         ) {
           this.logger.log(
             'Nothing changed since the last matching run, skipping',
@@ -252,7 +261,11 @@ export class MatchingsService {
         }
       }
 
-      return manager.save(manager.create(MatchingRun));
+      return manager.save(
+        manager.create(MatchingRun, {
+          rankingStrategy: this.rankingStrategy.name,
+        }),
+      );
     });
   }
 
@@ -266,11 +279,14 @@ export class MatchingsService {
       HEARTBEAT_INTERVAL_MS,
     );
     try {
-      const members = (
-        await this.membersService.getAllWithResourcesRequirements()
-      ).filter(hasAnswers);
+      const members = (await this.membersService.getAllForMatching()).filter(
+        hasAnswers,
+      );
 
-      let matchingCount = 0;
+      const allRows: Pick<
+        Matching,
+        'memberSeekerId' | 'memberPotentialMatchId' | 'details'
+      >[] = [];
       // all seekers at once keeps the llm concurrency limit saturated
       await Promise.allSettled(
         members.map(async (seeker) => {
@@ -299,7 +315,7 @@ export class MatchingsService {
                 rows.slice(i, i + INSERT_CHUNK_SIZE),
               );
             }
-            matchingCount += rows.length;
+            allRows.push(...rows);
           } catch (error) {
             abort.abort(error); // drops the other seekers' pending work
             throw error;
@@ -308,8 +324,15 @@ export class MatchingsService {
       );
       abort.signal.throwIfAborted();
 
-      await this.markRunDone(manager, run.id, { finishedAt: new Date() });
-      return matchingCount;
+      const recommendations = this.rankingStrategy.rank({
+        members,
+        matchings: allRows,
+      });
+      await this.markRunDone(manager, run.id, {
+        finishedAt: new Date(),
+        recommendations,
+      });
+      return allRows.length;
     } catch (error) {
       // the strategy may wrap the abort reason in its own error, so the signal tells whether this was a cancel
       if (abort.signal.reason instanceof MatchingRunCancelledError) {
@@ -374,7 +397,9 @@ export class MatchingsService {
   private async markRunDone(
     manager: EntityManager,
     runId: number,
-    patch: Pick<MatchingRun, 'finishedAt'> | Pick<MatchingRun, 'failedAt'>,
+    patch:
+      | Pick<MatchingRun, 'finishedAt' | 'recommendations'>
+      | Pick<MatchingRun, 'failedAt'>,
   ): Promise<void> {
     const { affected } = await manager.update(
       MatchingRun,
