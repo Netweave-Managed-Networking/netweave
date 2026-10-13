@@ -44,13 +44,34 @@
   <fieldset
     class="member-general-data__email fieldset p-0 mt-3 md:mt-0 md:w-1/2 md:pr-2"
   >
+    @let emailField = email();
+    @let emailErrors = emailField().errors();
+    @let hasEmailError = emailField().touched() && emailErrors.length > 0;
+
     <label class="label" for="email">Email</label>
     <input
       class="input w-full"
+      [class.border-error]="hasEmailError"
       id="email"
       type="email"
-      [value]="email()"
-      disabled
+      autocomplete="email"
+      [formField]="emailField"
     />
+    <div class="member-general-data__error text-error text-xs min-h-4">
+      @if (hasEmailError) {
+        @for (error of emailErrors; track error) {
+          {{ error.message }}
+        }
+      }
+    </div>
+    @if (pendingEmail(); as pending) {
+      <p
+        class="member-general-data__pending-email text-xs text-base-content/60"
+      >
+        Wir haben eine Bestätigungsmail an {{ pending }} gesendet. Bis du die
+        neue Email über den Link darin bestätigst, bleibt
+        {{ confirmedEmail() }} gültig.
+      </p>
+    }
   </fieldset>
 </div>

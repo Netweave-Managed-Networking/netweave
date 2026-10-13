@@ -2,6 +2,7 @@ import {
   CULTURE_ORIENTATIONS,
   CULTURE_TOPICS,
   CultureTopic,
+  InvitationTokenDTO,
   MemberUpsertDTO,
   parseCultureItemId,
   RESOURCE_REQUIREMENT_CATEGORIES,
@@ -21,6 +22,7 @@ export type CultureWeightsModel = Record<CultureTopic, PriorityWeights | null>;
 export interface MemberFormModel {
   name: string;
   contact: string;
+  email: string;
   resourcesRequirements: ResourcesRequirementsModel;
   cultureWeights: CultureWeightsModel;
 }
@@ -28,8 +30,9 @@ export interface MemberFormModel {
 // form fields need strings, while the API uses null for empty values
 
 export const toMemberFormModel = (
-  member: MemberUpsertDTO | null,
+  invitation: InvitationTokenDTO | null,
 ): MemberFormModel => {
+  const member = invitation?.member ?? null;
   const saved = new Map(
     member?.resourcesRequirements.map((item) => [item.category, item]),
   );
@@ -64,6 +67,8 @@ export const toMemberFormModel = (
   return {
     name: member?.name ?? '',
     contact: member?.contact ?? '',
+    // a pending email is shown as it was entered, so saving again does not cancel it
+    email: invitation?.pendingEmail ?? invitation?.email ?? '',
     resourcesRequirements,
     cultureWeights,
   };
@@ -72,11 +77,13 @@ export const toMemberFormModel = (
 export const toMemberUpsertDTO = ({
   name,
   contact,
+  email,
   resourcesRequirements,
   cultureWeights,
 }: MemberFormModel): MemberUpsertDTO => ({
   name,
   contact: contact || null,
+  email: email.trim(),
   resourcesRequirements: RESOURCE_REQUIREMENT_CATEGORIES.map((category) => ({
     category,
     resources: resourcesRequirements[category].resources || null,

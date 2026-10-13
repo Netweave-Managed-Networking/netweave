@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   ArrayUnique,
   IsArray,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -34,6 +35,10 @@ export class MemberUpsertDTO {
   @IsOptional()
   @IsString()
   declare public contact: string | null;
+
+  /** a different email than the stored one is only taken over once confirmed via the link mailed to it */
+  @IsEmail()
+  declare public email: string;
 
   @IsArray()
   // each category at most once, as it is stored as one row per category

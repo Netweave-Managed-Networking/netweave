@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'crypto';
+import { randomBytes } from 'crypto';
 
 import {
   BadRequestException,
@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { MoreThan, Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { User } from '../users/user.entity';
+import { hashToken } from '../utils/hash-token';
 import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 export type AccessToken = string;
@@ -218,10 +219,6 @@ export class AuthService {
         'Verification mail could not be sent',
       );
   }
-}
-
-function hashToken(token: string): string {
-  return createHash('sha256').update(token).digest('hex');
 }
 
 function verificationMailHtml(link: string): string {

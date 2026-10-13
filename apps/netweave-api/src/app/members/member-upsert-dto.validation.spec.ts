@@ -9,16 +9,34 @@ const topicWeights = (topic: string, weights: number[]) =>
     weight: weights[i],
   }));
 
-const validateCultureWeights = async (cultureWeights: unknown) => {
+const validateDTO = async (overrides: Record<string, unknown>) => {
   const dto = plainToInstance(MemberUpsertDTO, {
     name: 'Acme e.V.',
     contact: null,
+    email: 'nt@example.com',
     resourcesRequirements: [],
-    cultureWeights,
+    cultureWeights: [],
+    ...overrides,
   });
   const errors = await validate(dto);
   return errors.map((error) => error.property);
 };
+
+const validateCultureWeights = (cultureWeights: unknown) =>
+  validateDTO({ cultureWeights });
+
+describe('MemberUpsertDTO email validation', () => {
+  it('accepts a valid email', async () => {
+    expect(await validateDTO({ email: 'neu@example.com' })).toEqual([]);
+  });
+
+  it.each([[''], ['keine-email'], ['nt@'], [undefined]])(
+    'rejects %p',
+    async (email) => {
+      expect(await validateDTO({ email })).toEqual(['email']);
+    },
+  );
+});
 
 describe('MemberUpsertDTO culture weights validation', () => {
   it('accepts no culture weights at all', async () => {
