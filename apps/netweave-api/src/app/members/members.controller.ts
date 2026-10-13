@@ -4,11 +4,17 @@ import {
   Get,
   NotFoundException,
   Param,
+  Post,
   Put,
 } from '@nestjs/common';
-import { MemberDTO, MemberUpsertDTO } from '@netweave/api-types';
+import {
+  InvitationTokenDTO,
+  MemberDTO,
+  MemberEmailConfirmationDTO,
+  MemberUpsertDTO,
+} from '@netweave/api-types';
 import { InvitationsService } from '../invitations/invitations.service';
-import { toMemberUpsertDTO } from './member-upsert-dto.mapper';
+import { toInvitationTokenDTO } from './member-upsert-dto.mapper';
 import { MembersService } from './members.service';
 
 @Controller('members')
@@ -19,15 +25,20 @@ export class MemberController {
   ) {}
 
   @Get('/latest')
-  public getLatest(): Promise<MemberDTO | null> {
-    return this.membersService.getLatestMember();
+  public async getLatest(): Promise<MemberDTO | null> {
+    const member = await this.membersService.getLatestMember();
+    if (!member) return null;
+
+    // public endpoint: only the general data, never the emails
+    const { id, name, contact, createdAt, updatedAt } = member;
+    return { id, name, contact, createdAt, updatedAt };
   }
 
   @Put('by-token/:token')
   public async saveByToken(
     @Param('token') token: string,
     @Body() memberUpsertDTO: MemberUpsertDTO,
-  ): Promise<MemberUpsertDTO> {
+  ): Promise<InvitationTokenDTO> {
     const invitation = await this.invitationsService.findValidByToken(token);
 
     if (!invitation) {
@@ -35,10 +46,19 @@ export class MemberController {
     }
 
     const member = await this.membersService.saveForInvitation(
-      invitation.id,
+      invitation,
       memberUpsertDTO,
     );
 
-    return toMemberUpsertDTO(member);
+    return toInvitationTokenDTO(invitation, member);
+  }
+
+  /** no auth: the link from the confirmation mail must work for whoever owns the new email */
+  @Post('confirm-email')
+  public async confirmEmail(
+    @Body() dto: MemberEmailConfirmationDTO,
+  ): Promise<{ success: true }> {
+    await this.membersService.confirmEmailChangeOrFail(dto.token);
+    return { success: true };
   }
 }

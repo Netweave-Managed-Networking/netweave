@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InvitationsModule } from '../invitations/invitations.module';
+import { MailModule } from '../mail/mail.module';
 import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
 import { Member } from './member.entity';
@@ -15,6 +16,7 @@ import { MembersService } from './members.service';
       MemberResourceRequirement,
     ]),
     InvitationsModule,
+    MailModule,
   ],
   controllers: [MemberController],
   providers: [MembersService],

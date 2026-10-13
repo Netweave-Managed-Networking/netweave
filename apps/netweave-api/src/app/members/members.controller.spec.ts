@@ -8,6 +8,7 @@ import { MembersService } from './members.service';
 const dto: MemberUpsertDTO = {
   name: 'Acme e.V.',
   contact: 'Erika Musterfrau',
+  email: 'nt@example.com',
   resourcesRequirements: [
     { category: 'competencies', resources: 'Moderation', requirements: null },
   ],
@@ -23,7 +24,10 @@ describe('MemberController', () => {
   let controller: MemberController;
 
   let membersService: Partial<
-    Record<'getLatestMember' | 'saveForInvitation', jest.Mock>
+    Record<
+      'getLatestMember' | 'saveForInvitation' | 'confirmEmailChangeOrFail',
+      jest.Mock
+    >
   >;
   let invitationsService: Partial<Record<'findValidByToken', jest.Mock>>;
 
@@ -33,6 +37,7 @@ describe('MemberController', () => {
       saveForInvitation: jest.fn().mockResolvedValue({
         id: 7,
         ...dto,
+        pendingEmail: 'neu@example.com',
         resourcesRequirements: dto.resourcesRequirements.map((item) => ({
           id: 1,
           memberId: 7,
@@ -45,9 +50,12 @@ describe('MemberController', () => {
           topicTotal: 200,
         })),
       }),
+      confirmEmailChangeOrFail: jest.fn().mockResolvedValue(undefined),
     };
     invitationsService = {
-      findValidByToken: jest.fn().mockResolvedValue({ id: 123 }),
+      findValidByToken: jest
+        .fn()
+        .mockResolvedValue({ id: 123, email: 'nt@example.com' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -61,15 +69,49 @@ describe('MemberController', () => {
     controller = module.get<MemberController>(MemberController);
   });
 
+  describe('getLatest', () => {
+    it('returns only the general data of the latest member, never its emails', async () => {
+      const createdAt = new Date();
+      (membersService.getLatestMember as jest.Mock).mockResolvedValueOnce({
+        id: 7,
+        name: 'Acme e.V.',
+        contact: null,
+        email: 'nt@example.com',
+        pendingEmail: 'neu@example.com',
+        createdAt,
+        updatedAt: createdAt,
+      });
+
+      expect(await controller.getLatest()).toEqual({
+        id: 7,
+        name: 'Acme e.V.',
+        contact: null,
+        createdAt,
+        updatedAt: createdAt,
+      });
+    });
+
+    it('returns null when there is no member', async () => {
+      expect(await controller.getLatest()).toBeNull();
+    });
+  });
+
   describe('saveByToken', () => {
-    it('saves the member for the invitation of a valid token', async () => {
+    it('saves the member for the invitation of a valid token and returns its emails and answers', async () => {
       const result = await controller.saveByToken('valid-token', dto);
 
       expect(invitationsService.findValidByToken).toHaveBeenCalledWith(
         'valid-token',
       );
-      expect(membersService.saveForInvitation).toHaveBeenCalledWith(123, dto);
-      expect(result).toEqual(dto);
+      expect(membersService.saveForInvitation).toHaveBeenCalledWith(
+        { id: 123, email: 'nt@example.com' },
+        dto,
+      );
+      expect(result).toEqual({
+        email: 'nt@example.com',
+        pendingEmail: 'neu@example.com',
+        member: dto,
+      });
     });
 
     it('throws NotFoundException and saves nothing when the token is invalid or expired', async () => {
@@ -81,6 +123,17 @@ describe('MemberController', () => {
         controller.saveByToken('unknown-token', dto),
       ).rejects.toThrow(NotFoundException);
       expect(membersService.saveForInvitation).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('confirmEmail', () => {
+    it('confirms the email change of the token', async () => {
+      const result = await controller.confirmEmail({ token: 'the-token' });
+
+      expect(membersService.confirmEmailChangeOrFail).toHaveBeenCalledWith(
+        'the-token',
+      );
+      expect(result).toEqual({ success: true });
     });
   });
 });

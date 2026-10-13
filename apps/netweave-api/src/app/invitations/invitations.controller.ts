@@ -16,7 +16,7 @@ import {
 } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
 import { Me } from '../auth/me.decorator';
-import { toMemberUpsertDTO } from '../members/member-upsert-dto.mapper';
+import { toInvitationTokenDTO } from '../members/member-upsert-dto.mapper';
 import { InvitationsService } from './invitations.service';
 
 @Controller('invitations')
@@ -40,12 +40,7 @@ export class InvitationsController {
       throw new NotFoundException();
     }
 
-    const { member } = invitation;
-
-    return {
-      email: invitation.email,
-      member: member ? toMemberUpsertDTO(member) : null,
-    };
+    return toInvitationTokenDTO(invitation, invitation.member);
   }
 
   @UseGuards(AuthGuard)
