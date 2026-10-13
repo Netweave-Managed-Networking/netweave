@@ -9,6 +9,8 @@ import { FieldTree, FormField } from '@angular/forms/signals';
 export class MemberGeneralDataComponent {
   public readonly name = input.required<FieldTree<string>>();
   public readonly contact = input.required<FieldTree<string>>();
-  /** comes from the invitation and can't be changed */
-  public readonly email = input<string>('');
+  public readonly email = input.required<FieldTree<string>>();
+  /** stays in use until the pending email is confirmed */
+  public readonly confirmedEmail = input<string>('');
+  public readonly pendingEmail = input<string | null>(null);
 }

@@ -12,7 +12,9 @@
     <app-member-general-data
       [name]="memberForm.name"
       [contact]="memberForm.contact"
-      [email]="invitation.value()?.email ?? ''"
+      [email]="memberForm.email"
+      [confirmedEmail]="invitation.value()?.email ?? ''"
+      [pendingEmail]="invitation.value()?.pendingEmail ?? null"
     />
 
     <app-member-resources-requirements
@@ -32,7 +34,9 @@
         <span class="text-success text-sm">Gespeichert.</span>
       }
       @if (saveState() === 'error') {
-        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
+        <span class="member-questions__save-error text-error text-sm">{{
+          saveError()
+        }}</span>
       }
 
       <button

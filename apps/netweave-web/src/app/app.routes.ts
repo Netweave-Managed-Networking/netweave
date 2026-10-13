@@ -13,6 +13,14 @@ export const appRoutes: Routes = [
       ),
   },
   {
+    // link from the mail confirming a member's new email
+    path: 'member-email-confirm/:token',
+    loadComponent: () =>
+      import(
+        './components/member-email-confirm/member-email-confirm.component'
+      ).then((m) => m.MemberEmailConfirmComponent),
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./components/main-layout/main-layout.component').then(

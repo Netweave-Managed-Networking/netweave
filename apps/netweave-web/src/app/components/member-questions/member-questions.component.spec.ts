@@ -7,6 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import {
   InvitationTokenDTO,
+  MemberUpsertDTO,
   RESOURCE_REQUIREMENT_CATEGORIES,
 } from '@netweave/api-types';
 import { MemberQuestionsComponent } from './member-questions.component';
@@ -14,6 +15,12 @@ import { MemberQuestionsComponent } from './member-questions.component';
 const emptyResourcesRequirements = RESOURCE_REQUIREMENT_CATEGORIES.map(
   (category) => ({ category, resources: null, requirements: null }),
 );
+
+const savedResponse = (member: MemberUpsertDTO): InvitationTokenDTO => ({
+  email: 'nt@example.com',
+  pendingEmail: null,
+  member,
+});
 
 describe('MemberQuestionsComponent', () => {
   let component: MemberQuestionsComponent;
@@ -49,7 +56,7 @@ describe('MemberQuestionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('requests the invitation for the token from the route and shows the email in a disabled field', async () => {
+  it('requests the invitation for the token from the route and shows the email in an editable field', async () => {
     await configure('some-token');
     fixture.detectChanges();
 
@@ -60,21 +67,23 @@ describe('MemberQuestionsComponent', () => {
 
     const mockInvitation: InvitationTokenDTO = {
       email: 'nt@example.com',
+      pendingEmail: null,
       member: null,
     };
     req.flush(mockInvitation);
 
     await fixture.whenStable();
+    fixture.detectChanges();
 
     const input = (fixture.nativeElement as HTMLElement).querySelector(
       'input#email',
     ) as HTMLInputElement;
 
     expect(input.value).toBe(mockInvitation.email);
-    expect(input.disabled).toBe(true);
+    expect(input.disabled).toBe(false);
   });
 
-  it('shows an empty, disabled field when the token is invalid', async () => {
+  it('shows an empty email field when the token is invalid', async () => {
     await configure('invalid-token');
     fixture.detectChanges();
 
@@ -91,7 +100,6 @@ describe('MemberQuestionsComponent', () => {
     ) as HTMLInputElement;
 
     expect(input.value).toBe('');
-    expect(input.disabled).toBe(true);
   });
 
   const query = <T extends Element>(selector: string) =>
@@ -119,7 +127,11 @@ describe('MemberQuestionsComponent', () => {
   };
 
   it('shows organization and contact fields inside the "Allgemeine Daten" fieldset, and the email below it', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     const fieldset = query<HTMLFieldSetElement>('fieldset');
 
@@ -135,9 +147,11 @@ describe('MemberQuestionsComponent', () => {
   it('prefills the fields with previously saved member data', async () => {
     await loadInvitation({
       email: 'nt@example.com',
+      pendingEmail: null,
       member: {
         name: 'Acme e.V.',
         contact: 'Erika Musterfrau',
+        email: 'nt@example.com',
         resourcesRequirements: [],
         cultureWeights: [],
       },
@@ -150,7 +164,11 @@ describe('MemberQuestionsComponent', () => {
   });
 
   it('saves organization name and contact for the token', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     typeInto('input#name', 'Acme e.V.');
     typeInto('input#contact', 'Erika Musterfrau');
@@ -165,10 +183,11 @@ describe('MemberQuestionsComponent', () => {
     expect(req.request.body).toEqual({
       name: 'Acme e.V.',
       contact: 'Erika Musterfrau',
+      email: 'nt@example.com',
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
     });
-    req.flush(req.request.body);
+    req.flush(savedResponse(req.request.body));
 
     fixture.detectChanges();
 
@@ -178,7 +197,11 @@ describe('MemberQuestionsComponent', () => {
   });
 
   it('sends an empty contact as null', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     typeInto('input#name', 'Acme e.V.');
     fixture.detectChanges();
@@ -189,14 +212,135 @@ describe('MemberQuestionsComponent', () => {
     expect(req.request.body).toEqual({
       name: 'Acme e.V.',
       contact: null,
+      email: 'nt@example.com',
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
     });
-    req.flush(req.request.body);
+    req.flush(savedResponse(req.request.body));
+  });
+
+  describe('email', () => {
+    const pendingHint = () =>
+      query<HTMLElement>('.member-general-data__pending-email');
+
+    it('shows an error and disables saving for an invalid email', async () => {
+      await loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: null,
+        member: null,
+      });
+
+      typeInto('input#name', 'Acme e.V.');
+      typeInto('input#email', 'keine-email');
+      query<HTMLInputElement>('input#email').dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+        'Ungültiges Email-Format.',
+      );
+      expect(
+        query<HTMLButtonElement>('button.member-questions__submit').disabled,
+      ).toBe(true);
+    });
+
+    it('disables saving for an empty email', async () => {
+      await loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: null,
+        member: null,
+      });
+
+      typeInto('input#name', 'Acme e.V.');
+      typeInto('input#email', '');
+      fixture.detectChanges();
+
+      expect(
+        query<HTMLButtonElement>('button.member-questions__submit').disabled,
+      ).toBe(true);
+    });
+
+    it('saves a changed email and then shows that it waits for confirmation', async () => {
+      await loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: null,
+        member: null,
+      });
+      expect(pendingHint()).toBeNull();
+
+      typeInto('input#name', 'Acme e.V.');
+      typeInto('input#email', ' neu@example.com ');
+      fixture.detectChanges();
+
+      query<HTMLButtonElement>('button.member-questions__submit').click();
+
+      const req = httpTesting.expectOne('/api/members/by-token/some-token');
+      expect(req.request.body.email).toBe('neu@example.com');
+      req.flush({
+        email: 'nt@example.com',
+        pendingEmail: 'neu@example.com',
+        member: req.request.body,
+      });
+      fixture.detectChanges();
+
+      expect(pendingHint().textContent).toContain('neu@example.com');
+      expect(pendingHint().textContent).toContain('nt@example.com');
+      expect(query<HTMLInputElement>('input#email').value).toBe(
+        'neu@example.com',
+      );
+    });
+
+    it('shows a pending email in the field, with a hint that the current one stays valid', async () => {
+      await loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: 'neu@example.com',
+        member: {
+          name: 'Acme e.V.',
+          contact: null,
+          email: 'nt@example.com',
+          resourcesRequirements: [],
+          cultureWeights: [],
+        },
+      });
+
+      expect(query<HTMLInputElement>('input#email').value).toBe(
+        'neu@example.com',
+      );
+      expect(pendingHint().textContent).toContain('nt@example.com');
+    });
+
+    it.each([
+      [409, 'bereits von einer anderen Organisation verwendet'],
+      [503, 'Bestätigungsmail an die neue Email konnte nicht gesendet werden'],
+    ])('explains why saving failed with status %d', async (status, message) => {
+      await loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: null,
+        member: null,
+      });
+
+      typeInto('input#name', 'Acme e.V.');
+      typeInto('input#email', 'neu@example.com');
+      fixture.detectChanges();
+
+      query<HTMLButtonElement>('button.member-questions__submit').click();
+
+      httpTesting
+        .expectOne('/api/members/by-token/some-token')
+        .flush(null, { status, statusText: 'Error' });
+      fixture.detectChanges();
+
+      expect(
+        query<HTMLElement>('.member-questions__save-error').textContent,
+      ).toContain(message);
+    });
   });
 
   it('disables saving while the organization name is empty', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     expect(
       query<HTMLButtonElement>('button.member-questions__submit').disabled,
@@ -204,7 +348,11 @@ describe('MemberQuestionsComponent', () => {
   });
 
   it('shows an error when saving fails', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     typeInto('input#name', 'Acme e.V.');
     fixture.detectChanges();
@@ -240,7 +388,11 @@ describe('MemberQuestionsComponent', () => {
     ).toBe(true);
   });
   it('shows a resources and a requirements textarea with description for each of the 7 categories', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     const categories = (fixture.nativeElement as HTMLElement).querySelectorAll(
       'fieldset.member-resources-requirements__category',
@@ -281,9 +433,11 @@ describe('MemberQuestionsComponent', () => {
   it('prefills the textareas with previously saved resources and requirements', async () => {
     await loadInvitation({
       email: 'nt@example.com',
+      pendingEmail: null,
       member: {
         name: 'Acme e.V.',
         contact: null,
+        email: 'nt@example.com',
         resourcesRequirements: [
           {
             category: 'premises',
@@ -304,7 +458,11 @@ describe('MemberQuestionsComponent', () => {
   });
 
   it('saves the resources and requirements of all categories', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     typeInto('input#name', 'Acme e.V.');
     typeInto('textarea#competencies-resources', 'Moderation');
@@ -325,7 +483,7 @@ describe('MemberQuestionsComponent', () => {
         return item;
       }),
     );
-    req.flush(req.request.body);
+    req.flush(savedResponse(req.request.body));
   });
 
   const cultureTopics = () =>
@@ -336,7 +494,11 @@ describe('MemberQuestionsComponent', () => {
     );
 
   it('shows a priority ranker with four statements for each of the 4 culture topics', async () => {
-    await loadInvitation({ email: 'nt@example.com', member: null });
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
 
     expect(
       cultureTopics().map((t) =>
@@ -364,9 +526,11 @@ describe('MemberQuestionsComponent', () => {
 
     await loadInvitation({
       email: 'nt@example.com',
+      pendingEmail: null,
       member: {
         name: 'Acme e.V.',
         contact: null,
+        email: 'nt@example.com',
         resourcesRequirements: [],
         cultureWeights: [...savedZ3],
       },
@@ -402,6 +566,6 @@ describe('MemberQuestionsComponent', () => {
         true,
       );
     }
-    req.flush(req.request.body);
+    req.flush(savedResponse(req.request.body));
   });
 });

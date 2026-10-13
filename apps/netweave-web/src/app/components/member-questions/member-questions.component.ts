@@ -1,4 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpStatusCode,
+} from '@angular/common/http';
 import {
   Component,
   computed,
@@ -7,9 +11,10 @@ import {
   resource,
   signal,
 } from '@angular/core';
-import { form, required } from '@angular/forms/signals';
+import { form, required, validate } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
-import { InvitationTokenDTO, MemberUpsertDTO } from '@netweave/api-types';
+import { InvitationTokenDTO } from '@netweave/api-types';
+import { isEmail } from 'class-validator';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
 import {
@@ -37,6 +42,7 @@ export class MemberQuestionsComponent {
   private token = this.route.snapshot.paramMap.get('token') ?? '';
 
   protected saveState = signal<LoadingState>('initial');
+  protected saveError = signal('');
 
   protected invitation = resource({
     loader: () =>
@@ -53,6 +59,12 @@ export class MemberQuestionsComponent {
     required(schemaPath.name, {
       message: 'Bitte den Namen der Organisation angeben.',
     });
+    required(schemaPath.email, { message: 'Bitte eine Email angeben.' });
+    validate(schemaPath.email, ({ value }) =>
+      !value() || isEmail(value().trim())
+        ? null
+        : { kind: 'email', message: 'Ungültiges Email-Format.' },
+    );
   });
 
   protected canSave = computed(
@@ -64,10 +76,10 @@ export class MemberQuestionsComponent {
 
   public constructor() {
     effect(() => {
-      const member = this.invitation.value()?.member;
-      if (!member) return;
+      const invitation = this.invitation.value();
+      if (!invitation) return;
 
-      this.memberModel.set(toMemberFormModel(member));
+      this.memberModel.set(toMemberFormModel(invitation));
     });
   }
 
@@ -79,18 +91,35 @@ export class MemberQuestionsComponent {
     const memberUpsertDTO = toMemberUpsertDTO(this.memberModel());
 
     this.http
-      .put<MemberUpsertDTO>(
+      .put<InvitationTokenDTO>(
         `/api/members/by-token/${this.token}`,
         memberUpsertDTO,
       )
       .pipe(
         take(1),
-        tap(() => this.saveState.set('success')),
-        catchError(() => {
+        tap((saved) => {
+          // brings in the pending email, so its hint shows up
+          this.invitation.set(saved);
+          this.saveState.set('success');
+        }),
+        catchError((err: unknown) => {
+          this.saveError.set(toSaveErrorMessage(err));
           this.saveState.set('error');
           return of(null);
         }),
       )
       .subscribe();
   }
+}
+
+function toSaveErrorMessage(err: unknown): string {
+  const status = err instanceof HttpErrorResponse ? err.status : undefined;
+
+  if (status === HttpStatusCode.Conflict)
+    return 'Speichern fehlgeschlagen: Diese Email wird bereits von einer anderen Organisation verwendet.';
+
+  if (status === HttpStatusCode.ServiceUnavailable)
+    return 'Speichern fehlgeschlagen: Die Bestätigungsmail an die neue Email konnte nicht gesendet werden. Bitte versuche es später erneut.';
+
+  return 'Speichern fehlgeschlagen.';
 }
