@@ -34,6 +34,15 @@ const STATUS_CONFIG: Record<RunStatus, StatusConfig> = {
   pending: { label: 'Läuft', colorClass: 'status-warning' },
 };
 
+const RANKING_STRATEGY_LABELS: Record<string, string> = {
+  'category-separation': 'Kategorie-Trennungs-Abgleich',
+  'max-category': 'Maximal-Kategorie-Abgleich',
+};
+
+const rankingStrategyOf = (run: MatchingRunListItemDTO): string | null =>
+  run.rankingStrategy &&
+  (RANKING_STRATEGY_LABELS[run.rankingStrategy] ?? run.rankingStrategy);
+
 const statusOf = (run: MatchingRunListItemDTO): RunStatus => {
   if (run.failedAt) return 'failed';
   if (run.cancelledAt) return 'cancelled';
@@ -67,6 +76,7 @@ export class MatchingHistoryComponent {
   protected readonly statusConfig = STATUS_CONFIG;
   protected readonly statusOf = statusOf;
   protected readonly durationOf = durationOf;
+  protected readonly rankingStrategyOf = rankingStrategyOf;
 
   protected page = signal(1);
   protected cancellingId = signal<number | null>(null);

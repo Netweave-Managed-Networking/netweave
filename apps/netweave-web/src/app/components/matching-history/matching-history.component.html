@@ -77,6 +77,14 @@
               >
                 {{ run.matchingCount }} Matchings
               </div>
+              @let rankingStrategy = rankingStrategyOf(run);
+              @if (rankingStrategy) {
+                <div
+                  class="matching-history__ranking-strategy text-xs text-base-content/70"
+                >
+                  Strategie: {{ rankingStrategy }}
+                </div>
+              }
               @let duration = durationOf(run);
               @if (duration) {
                 <div
