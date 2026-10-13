@@ -6,5 +6,6 @@ export interface MatchingRunListItemDTO
   finishedAt: Date | null;
   failedAt: Date | null;
   cancelledAt: Date | null;
+  rankingStrategy: string | null; // null for runs from before the ranking
   matchingCount: number;
 }
