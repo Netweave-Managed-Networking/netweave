@@ -21,6 +21,7 @@ import { MatchingRun } from './matching-run.entity';
 import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
 import { RANKING_STRATEGY, RankingStrategy } from './ranking/ranking-strategy';
+import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
 
 const INSERT_CHUNK_SIZE = 1000; // keeps a single insert statement well below postgres' parameter limit
 const RUN_LOCK_KEY = 1_853_060_205; // arbitrary, but unique app wide id of the postgres advisory lock that guards matching runs
@@ -56,6 +57,7 @@ export class MatchingsService {
     private matchingStrategy: MatchingStrategy,
     @Inject(RANKING_STRATEGY)
     private rankingStrategy: RankingStrategy,
+    private recommendationMailsService: RecommendationMailsService,
   ) {
     this.logger.log(`MatchingsService initialized`);
   }
@@ -328,10 +330,19 @@ export class MatchingsService {
         members,
         matchings: allRows,
       });
-      await this.markRunDone(manager, run.id, {
+      const finished = await this.markRunDone(manager, run.id, {
         finishedAt: new Date(),
         recommendations,
       });
+
+      if (finished) {
+        // fire and forget, so the run does not wait for every mail to go out
+        void this.recommendationMailsService.sendForRun(
+          run.id,
+          recommendations,
+        );
+      }
+
       return allRows.length;
     } catch (error) {
       // the strategy may wrap the abort reason in its own error, so the signal tells whether this was a cancel
@@ -393,6 +404,7 @@ export class MatchingsService {
    * possibly replaced with a new run) while this computation was still going: that would otherwise leave the
    * row with both finishedAt and failedAt set, from two computations that ran concurrently against it.
    * likewise never overwrites a run a user cancelled meanwhile.
+   * returns whether the run was actually marked.
    */
   private async markRunDone(
     manager: EntityManager,
@@ -400,7 +412,7 @@ export class MatchingsService {
     patch:
       | Pick<MatchingRun, 'finishedAt' | 'recommendations'>
       | Pick<MatchingRun, 'failedAt'>,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { affected } = await manager.update(
       MatchingRun,
       { id: runId, failedAt: IsNull(), cancelledAt: IsNull() },
@@ -412,6 +424,8 @@ export class MatchingsService {
         `Matching run ${runId} was already reaped as stale or cancelled before it finished; discarding its result`,
       );
     }
+
+    return !!affected;
   }
 }
 

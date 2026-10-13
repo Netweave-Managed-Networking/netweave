@@ -8,6 +8,7 @@ import { MatchingRun } from './matching-run.entity';
 import { MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
 import { RankingStrategy } from './ranking/ranking-strategy';
+import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
 import {
   MatchingRunCancelledError,
   MatchingsService,
@@ -61,6 +62,9 @@ describe('MatchingsService', () => {
   >;
   let strategy: jest.Mocked<MatchingStrategy>;
   let rankingStrategy: jest.Mocked<RankingStrategy>;
+  let recommendationMails: jest.Mocked<
+    Pick<RecommendationMailsService, 'sendForRun'>
+  >;
 
   beforeEach(() => {
     manager = createMockManager();
@@ -91,11 +95,16 @@ describe('MatchingsService', () => {
       rank: jest.fn().mockReturnValue(recommendations),
     };
 
+    recommendationMails = {
+      sendForRun: jest.fn().mockResolvedValue(undefined),
+    };
+
     service = new MatchingsService(
       repository as unknown as Repository<MatchingRun>,
       membersService as unknown as MembersService,
       strategy,
       rankingStrategy,
+      recommendationMails as unknown as RecommendationMailsService,
     );
   });
 
@@ -543,6 +552,25 @@ describe('MatchingsService', () => {
       expect(warn).toHaveBeenCalledWith(
         expect.stringContaining('already reaped as stale or cancelled'),
       );
+      expect(recommendationMails.sendForRun).not.toHaveBeenCalled();
+    });
+
+    it('sends the recommendation mails once the run finished', async () => {
+      await service.calculateScheduled();
+
+      expect(recommendationMails.sendForRun).toHaveBeenCalledWith(
+        42,
+        recommendations,
+      );
+    });
+
+    it('sends no recommendation mails when the run failed', async () => {
+      strategy.score.mockRejectedValue(new Error('llm down'));
+      jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+      await service.calculateScheduled();
+
+      expect(recommendationMails.sendForRun).not.toHaveBeenCalled();
     });
   });
 
@@ -880,6 +908,7 @@ describe('MatchingsService', () => {
         membersService as unknown as MembersService,
         strategy,
         rankingStrategy,
+        recommendationMails as unknown as RecommendationMailsService,
       );
 
       expect(await service.getRunHistory(1, 20)).toEqual({
@@ -927,6 +956,7 @@ describe('MatchingsService', () => {
         membersService as unknown as MembersService,
         strategy,
         rankingStrategy,
+        recommendationMails as unknown as RecommendationMailsService,
       );
 
       const result = await service.getRunHistory(3, 20);
@@ -946,6 +976,7 @@ describe('MatchingsService', () => {
         membersService as unknown as MembersService,
         strategy,
         rankingStrategy,
+        recommendationMails as unknown as RecommendationMailsService,
       );
 
       await service.getRunHistory(1, 1000);
@@ -962,6 +993,7 @@ describe('MatchingsService', () => {
         membersService as unknown as MembersService,
         strategy,
         rankingStrategy,
+        recommendationMails as unknown as RecommendationMailsService,
       );
 
       await service.getRunHistory(0, 20);
@@ -978,6 +1010,7 @@ describe('MatchingsService', () => {
         membersService as unknown as MembersService,
         strategy,
         rankingStrategy,
+        recommendationMails as unknown as RecommendationMailsService,
       );
 
       expect(await service.getRunHistory(1, 20)).toEqual({

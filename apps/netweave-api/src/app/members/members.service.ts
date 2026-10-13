@@ -66,6 +66,11 @@ export class MembersService {
     });
   }
 
+  /** the invitation holds the only email address of a member */
+  public async getAllWithInvitation(): Promise<Member[]> {
+    return this.membersRepository.find({ relations: { invitation: true } });
+  }
+
   /** whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything */
   public async haveAnswersChangedSince(since: Date): Promise<boolean> {
     const manager = this.membersRepository.manager;
