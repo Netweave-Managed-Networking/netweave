@@ -66,8 +66,11 @@ export class MembersService {
     });
   }
 
-  public async getAll(): Promise<Member[]> {
-    return this.membersRepository.find();
+  /** the resources explain a recommendation */
+  public async getAllWithResources(): Promise<Member[]> {
+    return this.membersRepository.find({
+      relations: { resourcesRequirements: true },
+    });
   }
 
   /** whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything */

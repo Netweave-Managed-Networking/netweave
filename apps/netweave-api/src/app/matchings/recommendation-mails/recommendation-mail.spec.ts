@@ -16,11 +16,28 @@ const recipient: RecommendationContact = {
   name: 'Seeker e.V.',
   contact: 'Erika Muster',
   email: 'seeker@example.com',
+  resources: {},
 };
 
 const contacts = new Map<number, RecommendationContact>([
-  [2, { name: 'Tafel', contact: 'Max', email: 'tafel@example.com' }],
-  [3, { name: 'Werkstatt', contact: null, email: 'werkstatt@example.com' }],
+  [
+    2,
+    {
+      name: 'Tafel',
+      contact: 'Max',
+      email: 'tafel@example.com',
+      resources: { premises: 'Saal für 80 Personen', equipment: 'Kühlwagen' },
+    },
+  ],
+  [
+    3,
+    {
+      name: 'Werkstatt',
+      contact: null,
+      email: 'werkstatt@example.com',
+      resources: { premises: 'Halle', helping_hands: 'Azubis\nab Mai' },
+    },
+  ],
 ]);
 
 describe('buildRecommendationMail', () => {
@@ -57,7 +74,45 @@ describe('buildRecommendationMail', () => {
     const mail = buildRecommendationMail(recommendations, recipient, contacts);
 
     expect(mail?.html).not.toContain('<h3>');
-    expect(mail?.html).toContain('Kategorie: Geräte / physische Ausstattung');
+    expect(mail?.html).toContain(
+      'Ressourcen in der Kategorie Geräte / physische Ausstattung: Kühlwagen',
+    );
+  });
+
+  it('lists only the resources of the category a match is recommended for', () => {
+    const recommendations: MemberRecommendationsDTO = {
+      kind: 'per-category',
+      seekerId: 1,
+      categories: [
+        { category: 'premises', matches: [match(2)] },
+        { category: 'helping_hands', matches: [match(3)] },
+      ],
+    };
+
+    const mail = buildRecommendationMail(recommendations, recipient, contacts);
+
+    expect(mail?.html).toContain(
+      'Ressourcen in der Kategorie Räumlichkeiten: Saal für 80 Personen',
+    );
+    expect(mail?.html).toContain(
+      'Ressourcen in der Kategorie Helfende Hände: Azubis<br>ab Mai',
+    );
+    expect(mail?.html).not.toContain('Kühlwagen');
+    expect(mail?.html).not.toContain('Halle');
+  });
+
+  it('says so when a match has no resources in its category', () => {
+    const recommendations: MemberRecommendationsDTO = {
+      kind: 'overall',
+      seekerId: 1,
+      matches: [{ ...match(2), category: 'land' }],
+    };
+
+    const mail = buildRecommendationMail(recommendations, recipient, contacts);
+
+    expect(mail?.html).toContain(
+      'Ressourcen in der Kategorie Flächen: keine Angabe',
+    );
   });
 
   it('leaves out matches without email and categories left empty by that', () => {
@@ -72,7 +127,7 @@ describe('buildRecommendationMail', () => {
 
     const mail = buildRecommendationMail(recommendations, recipient, contacts);
 
-    expect(mail?.html.match(/<li>/g)).toHaveLength(1);
+    expect(mail?.html.match(/<strong>/g)).toHaveLength(1);
     expect(mail?.html).not.toContain('Flächen');
   });
 
@@ -111,12 +166,21 @@ describe('buildRecommendationMail', () => {
       matches: [{ ...match(4), category: 'land' }],
     };
     const evil = new Map<number, RecommendationContact>([
-      [4, { name: '<script>x</script>', contact: null, email: 'a@b.c' }],
+      [
+        4,
+        {
+          name: '<script>x</script>',
+          contact: null,
+          email: 'a@b.c',
+          resources: { land: '<img src=x>' },
+        },
+      ],
     ]);
 
     const mail = buildRecommendationMail(recommendations, recipient, evil);
 
     expect(mail?.html).not.toContain('<script>');
     expect(mail?.html).toContain('&lt;script&gt;');
+    expect(mail?.html).not.toContain('<img');
   });
 });
