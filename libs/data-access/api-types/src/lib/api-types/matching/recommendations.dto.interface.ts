@@ -9,7 +9,7 @@ export interface RankingWeightsDTO {
 /** all scores range from 0 to 100 */
 export interface RankedMatchDTO {
   memberId: number;
-  score: number;
+  rankingScore: number;
   matchingScore: number;
   cultureScore: number | null; // null if one of both has no culture answers
 }
