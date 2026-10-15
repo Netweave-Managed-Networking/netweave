@@ -26,7 +26,8 @@ describe('MatchingsController', () => {
       | 'getNewestRun'
       | 'getRun'
       | 'cancelRun'
-      | 'getRunHistory',
+      | 'getRunHistory'
+      | 'getMemberChangesSinceLatestRun',
       jest.Mock
     >
   >;
@@ -37,14 +38,13 @@ describe('MatchingsController', () => {
       getLatestRun: jest.fn().mockResolvedValue(mockRun),
       getNewestRun: jest.fn().mockResolvedValue(mockRun),
       getRun: jest.fn().mockResolvedValue(mockRun),
-      cancelRun: jest
-        .fn()
-        .mockResolvedValue({
-          ...mockRun,
-          finishedAt: null,
-          cancelledAt: createdAt,
-        }),
+      cancelRun: jest.fn().mockResolvedValue({
+        ...mockRun,
+        finishedAt: null,
+        cancelledAt: createdAt,
+      }),
       getRunHistory: jest.fn().mockResolvedValue([]),
+      getMemberChangesSinceLatestRun: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -161,6 +161,21 @@ describe('MatchingsController', () => {
 
       expect(await controller.getHistory(1, 20)).toEqual(history);
       expect(matchingsService.getRunHistory).toHaveBeenCalledWith(1, 20);
+    });
+  });
+
+  describe('getMemberChanges', () => {
+    it('returns the members that changed since the latest run', async () => {
+      const changes = {
+        since: createdAt,
+        newMembers: [{ id: 4, name: 'Neu e.V.' }],
+        updatedMembers: [],
+      };
+      matchingsService.getMemberChangesSinceLatestRun?.mockResolvedValue(
+        changes,
+      );
+
+      expect(await controller.getMemberChanges()).toEqual(changes);
     });
   });
 });

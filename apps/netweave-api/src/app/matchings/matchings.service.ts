@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   MatchingRunDTO,
   MatchingRunListItemDTO,
+  MemberChangesSinceMatchingDTO,
   PaginatedDTO,
 } from '@netweave/api-types';
 import {
@@ -145,6 +146,24 @@ export class MatchingsService {
       where: { matchingRunId: run.id },
     });
     return toMatchingRunDTO(run, matchingCount);
+  }
+
+  /**
+   * members that joined or changed their data since the latest successful run, to judge whether a new run is
+   * worthwhile. measured from the run's start, like the skip check in beginRun, as that is when it read the members
+   */
+  public async getMemberChangesSinceLatestRun(): Promise<MemberChangesSinceMatchingDTO> {
+    const latest = await findLatestFinishedRun(
+      this.matchingRunsRepository.manager,
+    );
+    const since = latest?.createdAt ?? null;
+    const { created, updated } =
+      await this.membersService.getChangedSince(since);
+    return {
+      since,
+      newMembers: created.map(({ id, name }) => ({ id, name })),
+      updatedMembers: updated.map(({ id, name }) => ({ id, name })),
+    };
   }
 
   /**

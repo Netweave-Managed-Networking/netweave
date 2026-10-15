@@ -460,4 +460,66 @@ describe('MembersService', () => {
       });
     });
   });
+
+  describe('getChangedSince', () => {
+    const select = { id: true, name: true };
+    const order = { name: 'ASC' };
+    let membersRepository: { find: jest.Mock; createQueryBuilder: jest.Mock };
+    let queryBuilder: Record<
+      'select' | 'where' | 'andWhere' | 'setParameter' | 'orderBy' | 'getMany',
+      jest.Mock
+    >;
+
+    beforeEach(() => {
+      queryBuilder = {
+        select: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        setParameter: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([{ id: 2, name: 'Alt e.V.' }]),
+      };
+      membersRepository = {
+        find: jest.fn().mockResolvedValue([{ id: 4, name: 'Neu e.V.' }]),
+        createQueryBuilder: jest.fn(() => queryBuilder),
+      };
+      service = new MembersService(
+        membersRepository as unknown as Repository<Member>,
+        mailService as unknown as MailService,
+      );
+    });
+
+    it('splits members into created after and updated after the given date', async () => {
+      const since = new Date('2026-10-01T10:00:00Z');
+
+      expect(await service.getChangedSince(since)).toEqual({
+        created: [{ id: 4, name: 'Neu e.V.' }],
+        updated: [{ id: 2, name: 'Alt e.V.' }],
+      });
+      expect(membersRepository.find).toHaveBeenCalledWith({
+        select,
+        where: { createdAt: MoreThan(since) },
+        order,
+      });
+      // created members are excluded from the updated ones, so none is counted twice
+      expect(queryBuilder.where).toHaveBeenCalledWith(
+        'member.created_at <= :since',
+      );
+      // changes to the answers count as well, they don't touch the member row itself
+      const [changedCondition] = queryBuilder.andWhere.mock.calls[0];
+      expect(changedCondition).toContain('member.updated_at > :since');
+      expect(changedCondition).toContain('member_resources_requirements');
+      expect(changedCondition).toContain('member_culture_weights');
+      expect(queryBuilder.setParameter).toHaveBeenCalledWith('since', since);
+    });
+
+    it('counts all members as created when there is no date', async () => {
+      expect(await service.getChangedSince(null)).toEqual({
+        created: [{ id: 4, name: 'Neu e.V.' }],
+        updated: [],
+      });
+      expect(membersRepository.find).toHaveBeenCalledWith({ select, order });
+      expect(membersRepository.createQueryBuilder).not.toHaveBeenCalled();
+    });
+  });
 });

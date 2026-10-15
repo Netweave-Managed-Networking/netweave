@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchingRunDTO } from '@netweave/api-types';
 import { catchError, filter, interval, of, switchMap, take, tap } from 'rxjs';
@@ -24,6 +24,9 @@ export class MatchingRunComponent {
   protected cancelling = signal(false);
   protected lastRun = signal<MatchingRunDTO | null>(null);
   protected runningId = signal<number | null>(null); // the run being polled, known once it was created
+
+  /** a run polled on this page finished successfully */
+  public readonly finished = output<MatchingRunDTO>();
 
   public constructor() {
     // shows when the last run finished even before anyone clicks the button on this page load
@@ -109,7 +112,10 @@ export class MatchingRunComponent {
       .subscribe((run) => {
         this.runningId.set(null);
         this.cancelling.set(false);
-        if (run.finishedAt) this.lastRun.set(run);
+        if (run.finishedAt) {
+          this.lastRun.set(run);
+          this.finished.emit(run);
+        }
         if (run.cancelledAt) {
           this.cancelled.set(true);
           this.runState.set('initial');

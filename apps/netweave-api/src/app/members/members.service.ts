@@ -76,6 +76,45 @@ export class MembersService {
   }
 
   /**
+   * members created after `since`, and older ones that changed their data after it; a member is never in both.
+   * besides the member row itself this looks at its resources, requirements and culture weights, as saving only
+   * those leaves the member's own updated_at untouched. without `since` all members count as new
+   */
+  public async getChangedSince(
+    since: Date | null,
+  ): Promise<{ created: Member[]; updated: Member[] }> {
+    const select = { id: true, name: true } as const;
+    const order = { name: 'ASC' } as const;
+    if (!since) {
+      return {
+        created: await this.membersRepository.find({ select, order }),
+        updated: [],
+      };
+    }
+
+    const created = await this.membersRepository.find({
+      select,
+      where: { createdAt: MoreThan(since) },
+      order,
+    });
+
+    const updated = await this.membersRepository
+      .createQueryBuilder('member')
+      .select(['member.id', 'member.name'])
+      .where('member.created_at <= :since')
+      .andWhere(
+        `(member.updated_at > :since
+          OR EXISTS (SELECT 1 FROM member_resources_requirements rr WHERE rr.member_id = member.id AND rr.updated_at > :since)
+          OR EXISTS (SELECT 1 FROM member_culture_weights cw WHERE cw.member_id = member.id AND cw.updated_at > :since))`,
+      )
+      .setParameter('since', since)
+      .orderBy('member.name', 'ASC')
+      .getMany();
+
+    return { created, updated };
+  }
+
+  /**
    * creates or updates the member of an invitation, including its resources, requirements and culture weights, and marks
    * the invitation as answered. A new email is not taken over but mailed a confirmation link, see confirmEmailChangeOrFail
    *

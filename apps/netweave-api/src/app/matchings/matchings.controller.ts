@@ -15,6 +15,7 @@ import {
 import {
   MatchingRunDTO,
   MatchingRunListItemDTO,
+  MemberChangesSinceMatchingDTO,
   PaginatedDTO,
 } from '@netweave/api-types';
 import { AuthGuard } from '../auth/auth.guard';
@@ -89,6 +90,12 @@ export class MatchingsController {
       throw new ConflictException('The matching run is no longer in progress');
     }
     return run;
+  }
+
+  /** members that joined or changed their data since the latest successful run */
+  @Get('member-changes')
+  public async getMemberChanges(): Promise<MemberChangesSinceMatchingDTO> {
+    return this.matchingsService.getMemberChangesSinceLatestRun();
   }
 
   /** history of past runs, newest first, paginated */

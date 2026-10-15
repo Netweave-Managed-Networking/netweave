@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { EntityManager, IsNull, Not, Repository } from 'typeorm';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
 import { MembersService } from '../members/members.service';
@@ -50,6 +50,7 @@ describe('MatchingsService', () => {
       MembersService,
       | 'getAllWithResourcesRequirements'
       | 'haveResourcesRequirementsChangedSince'
+      | 'getChangedSince'
     >
   >;
   let strategy: jest.Mocked<MatchingStrategy>;
@@ -64,6 +65,9 @@ describe('MatchingsService', () => {
         .fn()
         .mockResolvedValue([answered(1), answered(2), answered(3)]),
       haveResourcesRequirementsChangedSince: jest.fn().mockResolvedValue(true),
+      getChangedSince: jest
+        .fn()
+        .mockResolvedValue({ created: [], updated: [] }),
     };
     strategy = {
       // encodes the direction, so wrong pairings would show up in the rows
@@ -686,6 +690,45 @@ describe('MatchingsService', () => {
     it('returns null when there is no successfully finished run yet', async () => {
       expect(await service.getLatestRun()).toBeNull();
       expect(manager.count).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getMemberChangesSinceLatestRun', () => {
+    it('lists new and updated members since the start of the latest successfully finished run', async () => {
+      const createdAt = new Date('2026-10-01T10:00:00Z');
+      manager.find?.mockResolvedValue([
+        { id: 9, createdAt, finishedAt: new Date('2026-10-01T10:05:00Z') },
+      ]);
+      membersService.getChangedSince.mockResolvedValue({
+        created: [{ id: 4, name: 'Neu e.V.', contact: 'x' } as Member],
+        updated: [{ id: 2, name: 'Alt e.V.' } as Member],
+      });
+
+      expect(await service.getMemberChangesSinceLatestRun()).toEqual({
+        since: createdAt,
+        newMembers: [{ id: 4, name: 'Neu e.V.' }],
+        updatedMembers: [{ id: 2, name: 'Alt e.V.' }],
+      });
+      expect(manager.find).toHaveBeenCalledWith(MatchingRun, {
+        where: { finishedAt: Not(IsNull()) },
+        order: { id: 'DESC' },
+        take: 1,
+      });
+      expect(membersService.getChangedSince).toHaveBeenCalledWith(createdAt);
+    });
+
+    it('counts all members as new when there is no successfully finished run yet', async () => {
+      membersService.getChangedSince.mockResolvedValue({
+        created: [{ id: 1, name: 'A' } as Member],
+        updated: [],
+      });
+
+      expect(await service.getMemberChangesSinceLatestRun()).toEqual({
+        since: null,
+        newMembers: [{ id: 1, name: 'A' }],
+        updatedMembers: [],
+      });
+      expect(membersService.getChangedSince).toHaveBeenCalledWith(null);
     });
   });
 
