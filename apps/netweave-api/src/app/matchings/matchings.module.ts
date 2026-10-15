@@ -9,6 +9,8 @@ import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
 import { Matching } from './matching.entity';
 import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
+import { createRankingStrategy } from './ranking/ranking-strategies';
+import { RANKING_STRATEGY } from './ranking/ranking-strategy';
 import { StringLengthMatchingStrategy } from './string-length-matching.strategy';
 
 /** falls back to the dummy algorithm without LLM_PROVIDER */
@@ -37,6 +39,7 @@ const createMatchingStrategy = (): MatchingStrategy => {
   providers: [
     MatchingsService,
     { provide: MATCHING_STRATEGY, useFactory: createMatchingStrategy },
+    { provide: RANKING_STRATEGY, useFactory: () => createRankingStrategy() },
   ],
 })
 export class MatchingsModule {}

@@ -60,19 +60,24 @@ export class MembersService {
     }
   }
 
-  public async getAllWithResourcesRequirements(): Promise<Member[]> {
+  public async getAllForMatching(): Promise<Member[]> {
     return this.membersRepository.find({
-      relations: { resourcesRequirements: true },
+      relations: { resourcesRequirements: true, cultureWeights: true },
     });
   }
 
-  /** whether any resource or requirement changed after `since`, e.g. to skip matching runs that would not change anything */
-  public async haveResourcesRequirementsChangedSince(
-    since: Date,
-  ): Promise<boolean> {
-    return this.membersRepository.manager.exists(MemberResourceRequirement, {
-      where: { updatedAt: MoreThan(since) },
-    });
+  /** whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything */
+  public async haveAnswersChangedSince(since: Date): Promise<boolean> {
+    const manager = this.membersRepository.manager;
+    const where = { updatedAt: MoreThan(since) };
+
+    const [resourcesRequirementsChanged, cultureWeightsChanged] =
+      await Promise.all([
+        manager.exists(MemberResourceRequirement, { where }),
+        manager.exists(MemberCultureWeight, { where }),
+      ]);
+
+    return resourcesRequirementsChanged || cultureWeightsChanged;
   }
 
   /**
@@ -284,7 +289,7 @@ export class MembersService {
 
     await manager.upsert(MemberResourceRequirement, rows, {
       conflictPaths: ['memberId', 'category'],
-      skipUpdateIfNoValuesChanged: true, // keeps updated_at of unchanged categories, see haveResourcesRequirementsChangedSince
+      skipUpdateIfNoValuesChanged: true, // keeps updated_at of unchanged categories, see haveAnswersChangedSince
     });
   }
 

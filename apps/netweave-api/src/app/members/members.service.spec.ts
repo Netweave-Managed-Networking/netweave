@@ -447,17 +447,29 @@ describe('MembersService', () => {
     });
   });
 
-  describe('haveResourcesRequirementsChangedSince', () => {
-    it('checks for resources or requirements updated after the given date', async () => {
-      const since = new Date('2026-09-28T10:00:00Z');
-      manager.exists?.mockResolvedValue(true);
+  describe('haveAnswersChangedSince', () => {
+    const since = new Date('2026-09-28T10:00:00Z');
 
-      expect(await service.haveResourcesRequirementsChangedSince(since)).toBe(
-        true,
-      );
+    it('checks for resources, requirements and culture answers updated after the given date', async () => {
+      manager.exists?.mockResolvedValue(false);
+
+      expect(await service.haveAnswersChangedSince(since)).toBe(false);
+
+      const where = { updatedAt: MoreThan(since) };
       expect(manager.exists).toHaveBeenCalledWith(MemberResourceRequirement, {
-        where: { updatedAt: MoreThan(since) },
+        where,
       });
+      expect(manager.exists).toHaveBeenCalledWith(MemberCultureWeight, {
+        where,
+      });
+    });
+
+    it('is true when only the culture answers changed', async () => {
+      manager.exists?.mockImplementation((entity) =>
+        Promise.resolve(entity === MemberCultureWeight),
+      );
+
+      expect(await service.haveAnswersChangedSince(since)).toBe(true);
     });
   });
 

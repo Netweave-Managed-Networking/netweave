@@ -37,6 +37,56 @@ describe('MatchingHistoryComponent', () => {
     httpTesting.verify();
   });
 
+  it('shows the ranking strategy of a run, but nothing for runs from before the ranking', async () => {
+    fixture.detectChanges();
+
+    httpTesting
+      .expectOne((r) => r.url === '/api/matchings/runs')
+      .flush(
+        page([
+          {
+            id: 3,
+            createdAt,
+            finishedAt: createdAt,
+            failedAt: null,
+            cancelledAt: null,
+            rankingStrategy: 'max-category',
+            matchingCount: 12,
+          },
+          {
+            id: 2,
+            createdAt,
+            finishedAt: createdAt,
+            failedAt: null,
+            cancelledAt: null,
+            rankingStrategy: 'some-future-strategy',
+            matchingCount: 12,
+          },
+          {
+            id: 1,
+            createdAt,
+            finishedAt: createdAt,
+            failedAt: null,
+            cancelledAt: null,
+            rankingStrategy: null,
+            matchingCount: 12,
+          },
+        ]),
+      );
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const strategies = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll(
+        '.matching-history__ranking-strategy',
+      ),
+    ).map((el) => el.textContent?.trim());
+    expect(strategies).toEqual([
+      'Strategie: Maximal-Kategorie-Abgleich',
+      'Strategie: some-future-strategy',
+    ]);
+  });
+
   it('requests the first page and renders one entry per run', async () => {
     fixture.detectChanges();
 
@@ -51,6 +101,7 @@ describe('MatchingHistoryComponent', () => {
           finishedAt: createdAt,
           failedAt: null,
           cancelledAt: null,
+          rankingStrategy: null,
           matchingCount: 12,
         },
         {
@@ -59,6 +110,7 @@ describe('MatchingHistoryComponent', () => {
           finishedAt: null,
           failedAt: createdAt,
           cancelledAt: null,
+          rankingStrategy: null,
           matchingCount: 0,
         },
       ]),
@@ -92,6 +144,7 @@ describe('MatchingHistoryComponent', () => {
             finishedAt,
             failedAt: null,
             cancelledAt: null,
+            rankingStrategy: null,
             matchingCount: 6,
           },
           {
@@ -100,6 +153,7 @@ describe('MatchingHistoryComponent', () => {
             finishedAt: null,
             failedAt: null,
             cancelledAt: null,
+            rankingStrategy: null,
             matchingCount: 0,
           },
         ]),
@@ -128,6 +182,7 @@ describe('MatchingHistoryComponent', () => {
             finishedAt: null,
             failedAt: null,
             cancelledAt: new Date('2026-09-29T10:00:45Z'),
+            rankingStrategy: null,
             matchingCount: 4,
           },
         ]),
@@ -156,6 +211,7 @@ describe('MatchingHistoryComponent', () => {
       finishedAt: createdAt,
       failedAt: null,
       cancelledAt: null,
+      rankingStrategy: null,
       matchingCount: 6,
     };
     const runningRun: MatchingRunListItemDTO = {
@@ -164,6 +220,7 @@ describe('MatchingHistoryComponent', () => {
       finishedAt: null,
       failedAt: null,
       cancelledAt: null,
+      rankingStrategy: null,
       matchingCount: 0,
     };
 
@@ -315,6 +372,7 @@ describe('MatchingHistoryComponent', () => {
       finishedAt: null,
       failedAt: null,
       cancelledAt: null,
+      rankingStrategy: null,
       matchingCount: 2,
     };
     const finishedRun: MatchingRunListItemDTO = {
@@ -323,6 +381,7 @@ describe('MatchingHistoryComponent', () => {
       finishedAt: createdAt,
       failedAt: null,
       cancelledAt: null,
+      rankingStrategy: null,
       matchingCount: 6,
     };
 
@@ -436,6 +495,7 @@ describe('MatchingHistoryComponent', () => {
               finishedAt: createdAt,
               failedAt: null,
               cancelledAt: null,
+              rankingStrategy: null,
               matchingCount: 6,
             },
           ],
@@ -472,6 +532,7 @@ describe('MatchingHistoryComponent', () => {
             finishedAt: createdAt,
             failedAt: null,
             cancelledAt: null,
+            rankingStrategy: null,
             matchingCount: 6,
           },
         ]),

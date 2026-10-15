@@ -20,6 +20,7 @@ import { TimestampColumnsUseTimezone1790800000000 } from './migrations/179080000
 import { MemberCultureWeightsCreate1790900000000 } from './migrations/1790900000000-member-culture-weights-create';
 import { MatchingRunsAddCancelledAt1791000000000 } from './migrations/1791000000000-matching-runs-add-cancelled-at';
 import { UsersAddEmailVerification1791100000000 } from './migrations/1791100000000-users-add-email-verification';
+import { MatchingRunsAddRecommendations1791200000000 } from './migrations/1791200000000-matching-runs-add-recommendations';
 import { MembersAddEmail1791300000000 } from './migrations/1791300000000-members-add-email';
 
 export const Migrations = [
@@ -45,5 +46,6 @@ export const Migrations = [
   MemberCultureWeightsCreate1790900000000,
   MatchingRunsAddCancelledAt1791000000000,
   UsersAddEmailVerification1791100000000,
+  MatchingRunsAddRecommendations1791200000000,
   MembersAddEmail1791300000000,
 ];
