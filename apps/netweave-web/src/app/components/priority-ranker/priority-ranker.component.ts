@@ -24,6 +24,7 @@ import {
   TrackSize,
   weightedLayout,
   weightsOf,
+  withMarkersOf,
 } from './priority-ranker.layout';
 
 const TRACK_HEIGHT = 560;
@@ -55,6 +56,8 @@ export class PriorityRankerComponent
 {
   public readonly statements = input.required<readonly RankerStatement[]>();
   public readonly value = model<PriorityWeights | null>(null);
+  /** colours marking the statements in their start order, so they can be recognised after moving */
+  public readonly markerColors = input<readonly string[]>([]);
 
   /** the texts label their boxes, as aria-label cannot hold HTML */
   protected readonly idPrefix = `priority-ranker-${nextInstance++}-`;
@@ -92,10 +95,17 @@ export class PriorityRankerComponent
         sameWeights(weightsOf(previous.value, size), value);
 
       if (showsValue) return previous.value;
-      if (value) return weightedLayout(statements, value, size);
-      // a resize must not reshuffle the unranked boxes
-      if (sameStatements) return stackedLayout(byTop(previous.value), size);
-      return stackedLayout(shuffle(statements), size);
+      if (!sameStatements) {
+        return value
+          ? weightedLayout(statements, value, size)
+          : stackedLayout(shuffle(statements), size);
+      }
+
+      const items = value
+        ? weightedLayout(statements, value, size)
+        : // a resize must not reshuffle the unranked boxes
+          stackedLayout(byTop(previous.value), size);
+      return withMarkersOf(items, previous.value);
     },
   });
 
@@ -117,6 +127,11 @@ export class PriorityRankerComponent
       texts.forEach((text) => observer.observe(text));
       onCleanup(() => observer.disconnect());
     });
+  }
+
+  protected markerColorOf(item: RankItem): string | null {
+    const colors = this.markerColors();
+    return colors.length ? colors[item.marker % colors.length] : null;
   }
 
   protected priorityOf(item: RankItem): number {

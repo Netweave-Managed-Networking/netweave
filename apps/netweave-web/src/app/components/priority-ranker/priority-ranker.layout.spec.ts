@@ -8,6 +8,7 @@ import {
   TrackSize,
   weightedLayout,
   weightsOf,
+  withMarkersOf,
 } from './priority-ranker.layout';
 
 // travel = 500, so 1 priority point = 5px
@@ -16,7 +17,11 @@ const size: TrackSize = { trackHeight: 600, boxHeight: 100 };
 const statements = ['a', 'b', 'c', 'd'].map((id) => ({ id, html: id }));
 
 const items = (tops: Record<string, number>): RankItem[] =>
-  statements.map((statement) => ({ ...statement, top: tops[statement.id] }));
+  statements.map((statement, marker) => ({
+    ...statement,
+    top: tops[statement.id],
+    marker,
+  }));
 
 // rounded, to ignore floating point noise
 const topsOf = (result: RankItem[]) =>
@@ -63,6 +68,39 @@ describe('priority ranker layout', () => {
     );
 
     expect(topsOf(result)).toEqual({ a: 0, b: 100, c: 400, d: 500 });
+  });
+
+  it('marks the statements by their start order', () => {
+    const markersOf = (result: RankItem[]) =>
+      Object.fromEntries(result.map((item) => [item.id, item.marker]));
+
+    expect(markersOf(stackedLayout(statements, size))).toEqual({
+      a: 0,
+      b: 1,
+      c: 2,
+      d: 3,
+    });
+    expect(
+      markersOf(
+        weightedLayout(statements, { a: 0, b: 100, c: 30, d: 60 }, size),
+      ),
+    ).toEqual({ b: 0, d: 1, c: 2, a: 3 });
+  });
+
+  it('keeps the markers of a previous layout', () => {
+    const previous = items({ a: 0, b: 100, c: 200, d: 300 });
+
+    const result = withMarkersOf(
+      weightedLayout(statements, { a: 0, b: 100, c: 30, d: 60 }, size),
+      previous,
+    );
+
+    expect(result.map(({ id, marker }) => [id, marker])).toEqual([
+      ['b', 1],
+      ['d', 3],
+      ['c', 2],
+      ['a', 0],
+    ]);
   });
 
   describe('dragTo', () => {
