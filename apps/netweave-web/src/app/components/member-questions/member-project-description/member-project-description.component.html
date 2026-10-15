@@ -1,0 +1,54 @@
+<section
+  class="member-project-description bg-base-100 border border-base-content/5 rounded-box p-6"
+>
+  <h2 class="text-lg font-semibold">Projektbeschreibung</h2>
+  <p class="text-sm text-base-content/60 mt-1">
+    Du kennst deine Bedarfe noch nicht genau? Beschreibe ein Projekt, das deine
+    Organisation umsetzen möchte, und lass dir daraus Bedarfe generieren. Sie
+    werden unten in den passenden Kategorien ergänzt, bereits eingetragene
+    Bedarfe bleiben erhalten. Du kannst sie anschließend wie gewohnt bearbeiten
+    und speichern, auch für mehrere Projekte nacheinander. Die
+    Projektbeschreibung selbst wird nicht gespeichert.
+  </p>
+
+  <div class="flex flex-col gap-1 mt-4">
+    <label class="label" for="project-description">Projektbeschreibung</label>
+    <textarea
+      class="member-project-description__textarea textarea w-full"
+      id="project-description"
+      rows="5"
+      placeholder="Wir wollen …"
+      [formField]="descriptionField"
+    ></textarea>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-end gap-3 mt-3">
+    @if (generateState() === 'success') {
+      <span class="member-project-description__success text-success text-sm">
+        @if (generatedCount() === 0) {
+          Aus der Beschreibung ließen sich keine Bedarfe ableiten.
+        } @else {
+          Bedarfe in {{ generatedCount() }}
+          {{ generatedCount() === 1 ? 'Kategorie' : 'Kategorien' }} ergänzt.
+          Bitte prüfen und speichern.
+        }
+      </span>
+    }
+    @if (generateState() === 'error') {
+      <span class="member-project-description__error text-error text-sm">{{
+        generateError()
+      }}</span>
+    }
+
+    <button
+      class="member-project-description__generate btn btn-primary"
+      [disabled]="!canGenerate()"
+      (click)="generate()"
+    >
+      @if (generateState() === 'pending') {
+        <span class="loading loading-spinner loading-sm"></span>
+      }
+      Bedarfe generieren
+    </button>
+  </div>
+</section>

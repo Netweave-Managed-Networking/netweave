@@ -17,6 +17,12 @@
       [pendingEmail]="invitation.value()?.pendingEmail ?? null"
     />
 
+    <app-member-project-description
+      [token]="token"
+      [disabled]="!invitation.value()"
+      (generated)="addGeneratedRequirements($event)"
+    />
+
     <app-member-resources-requirements
       [fields]="memberForm.resourcesRequirements"
     />

@@ -2,6 +2,7 @@ import {
   CULTURE_ORIENTATIONS,
   CULTURE_TOPICS,
   CultureTopic,
+  GeneratedRequirementsDTO,
   InvitationTokenDTO,
   MemberUpsertDTO,
   parseCultureItemId,
@@ -100,3 +101,24 @@ export const toMemberUpsertDTO = ({
     }));
   }),
 });
+
+/** generated requirements are added below the existing ones, never replace them */
+export const appendRequirements = (
+  current: ResourcesRequirementsModel,
+  generated: GeneratedRequirementsDTO,
+): ResourcesRequirementsModel =>
+  Object.fromEntries(
+    RESOURCE_REQUIREMENT_CATEGORIES.map((category) => {
+      const addition = generated[category]?.trim();
+      if (!addition) return [category, current[category]];
+
+      const existing = current[category].requirements.trim();
+      return [
+        category,
+        {
+          ...current[category],
+          requirements: existing ? `${existing}\n${addition}` : addition,
+        },
+      ];
+    }),
+  ) as ResourcesRequirementsModel; // fromEntries loses the key type

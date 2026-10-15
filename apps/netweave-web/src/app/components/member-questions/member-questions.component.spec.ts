@@ -568,4 +568,121 @@ describe('MemberQuestionsComponent', () => {
     }
     req.flush(savedResponse(req.request.body));
   });
+
+  describe('project description', () => {
+    const generateButton = () =>
+      query<HTMLButtonElement>('button.member-project-description__generate');
+
+    const loadWithSavedRequirements = () =>
+      loadInvitation({
+        email: 'nt@example.com',
+        pendingEmail: null,
+        member: {
+          name: 'Acme e.V.',
+          contact: null,
+          email: 'nt@example.com',
+          resourcesRequirements: [
+            {
+              category: 'premises',
+              resources: 'Ein Saal',
+              requirements: 'Wir brauchen ein Lager.',
+            },
+          ],
+          cultureWeights: [],
+        },
+      });
+
+    it('disables generating while the description is empty', async () => {
+      await loadWithSavedRequirements();
+
+      expect(generateButton().disabled).toBe(true);
+
+      typeInto('textarea#project-description', '   ');
+      fixture.detectChanges();
+      expect(generateButton().disabled).toBe(true);
+    });
+
+    it('adds the generated requirements below the existing ones, and saves them but not the description', async () => {
+      await loadWithSavedRequirements();
+
+      typeInto(
+        'textarea#project-description',
+        'Wir wollen ein Repair-Café eröffnen.',
+      );
+      fixture.detectChanges();
+      generateButton().click();
+
+      const req = httpTesting.expectOne({
+        method: 'POST',
+        url: '/api/members/by-token/some-token/generated-requirements',
+      });
+      expect(req.request.body).toEqual({
+        projectDescription: 'Wir wollen ein Repair-Café eröffnen.',
+      });
+      req.flush({
+        premises: 'Wir brauchen einen Raum für 20 Personen.',
+        helping_hands: 'Wir brauchen Helfer beim Aufbau.',
+      });
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(
+        query<HTMLTextAreaElement>('textarea#premises-requirements').value,
+      ).toBe(
+        'Wir brauchen ein Lager.\nWir brauchen einen Raum für 20 Personen.',
+      );
+      expect(
+        query<HTMLTextAreaElement>('textarea#helping_hands-requirements').value,
+      ).toBe('Wir brauchen Helfer beim Aufbau.');
+      expect(
+        query<HTMLTextAreaElement>('textarea#premises-resources').value,
+      ).toBe('Ein Saal');
+      expect(
+        query<HTMLElement>('.member-project-description__success').textContent,
+      ).toContain('2 Kategorien');
+
+      query<HTMLButtonElement>('button.member-questions__submit').click();
+
+      const save = httpTesting.expectOne('/api/members/by-token/some-token');
+      expect(save.request.body.projectDescription).toBeUndefined();
+      expect(
+        save.request.body.resourcesRequirements.find(
+          (item: { category: string }) => item.category === 'premises',
+        ),
+      ).toEqual({
+        category: 'premises',
+        resources: 'Ein Saal',
+        requirements:
+          'Wir brauchen ein Lager.\nWir brauchen einen Raum für 20 Personen.',
+      });
+      save.flush(savedResponse(save.request.body));
+    });
+
+    it.each([
+      [503, 'derzeit nicht verfügbar'],
+      [429, 'in einer Stunde erneut'],
+      [502, 'konnten nicht generiert werden'],
+    ])(
+      'explains why generating failed with status %d and keeps the requirements',
+      async (status, message) => {
+        await loadWithSavedRequirements();
+
+        typeInto('textarea#project-description', 'Ein Projekt');
+        fixture.detectChanges();
+        generateButton().click();
+
+        httpTesting
+          .expectOne('/api/members/by-token/some-token/generated-requirements')
+          .flush(null, { status, statusText: 'Error' });
+        fixture.detectChanges();
+
+        expect(
+          query<HTMLElement>('.member-project-description__error').textContent,
+        ).toContain(message);
+        expect(
+          query<HTMLTextAreaElement>('textarea#premises-requirements').value,
+        ).toBe('Wir brauchen ein Lager.');
+      },
+    );
+  });
 });

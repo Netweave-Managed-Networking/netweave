@@ -13,23 +13,29 @@ import {
 } from '@angular/core';
 import { form, required, validate } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
-import { InvitationTokenDTO } from '@netweave/api-types';
+import {
+  GeneratedRequirementsDTO,
+  InvitationTokenDTO,
+} from '@netweave/api-types';
 import { isEmail } from 'class-validator';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
 import {
+  appendRequirements,
   MemberFormModel,
   toMemberFormModel,
   toMemberUpsertDTO,
 } from './member-form.model';
 import { MemberCultureComponent } from './member-culture/member-culture.component';
 import { MemberGeneralDataComponent } from './member-general-data/member-general-data.component';
+import { MemberProjectDescriptionComponent } from './member-project-description/member-project-description.component';
 import { MemberResourcesRequirementsComponent } from './member-resources-requirements/member-resources-requirements.component';
 
 @Component({
   selector: 'app-member-questions',
   imports: [
     MemberGeneralDataComponent,
+    MemberProjectDescriptionComponent,
     MemberResourcesRequirementsComponent,
     MemberCultureComponent,
   ],
@@ -39,7 +45,7 @@ export class MemberQuestionsComponent {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
 
-  private token = this.route.snapshot.paramMap.get('token') ?? '';
+  protected token = this.route.snapshot.paramMap.get('token') ?? '';
 
   protected saveState = signal<LoadingState>('initial');
   protected saveError = signal('');
@@ -81,6 +87,16 @@ export class MemberQuestionsComponent {
 
       this.memberModel.set(toMemberFormModel(invitation));
     });
+  }
+
+  protected addGeneratedRequirements(generated: GeneratedRequirementsDTO) {
+    this.memberModel.update((model) => ({
+      ...model,
+      resourcesRequirements: appendRequirements(
+        model.resourcesRequirements,
+        generated,
+      ),
+    }));
   }
 
   protected submit() {
