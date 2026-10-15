@@ -9,6 +9,8 @@ export type PriorityWeights = Record<string, number>;
 
 export interface RankItem extends RankerStatement {
   top: number;
+  /** position in the start order, so a statement keeps its marker when moved */
+  marker: number;
 }
 
 export interface TrackSize {
@@ -53,6 +55,7 @@ export const stackedLayout = (
   return statements.map((statement, i) => ({
     ...statement,
     top: startTop + i * size.boxHeight,
+    marker: i,
   }));
 };
 
@@ -67,8 +70,9 @@ export const weightedLayout = (
     statements.map((statement) => ({
       ...statement,
       top: clamp((1 - (weights[statement.id] ?? 0) / 100) * maxTop, 0, maxTop),
+      marker: 0,
     })),
-  );
+  ).map((item, i) => ({ ...item, marker: i }));
 
   for (let i = 1; i < items.length; i++) {
     items[i].top = Math.max(items[i].top, items[i - 1].top + size.boxHeight);
@@ -80,6 +84,18 @@ export const weightedLayout = (
   }
 
   return items;
+};
+
+/** a new layout of the same statements must not change their markers */
+export const withMarkersOf = (
+  items: readonly RankItem[],
+  previous: readonly RankItem[],
+): RankItem[] => {
+  const markers = new Map(previous.map((item) => [item.id, item.marker]));
+  return items.map((item) => ({
+    ...item,
+    marker: markers.get(item.id) ?? item.marker,
+  }));
 };
 
 /** sticks to a neighbour in the way, and swaps with it once the pointer passes its midpoint */

@@ -40,6 +40,15 @@
         (pointercancel)="endDrag()"
         (keydown)="onKeydown($event, item)"
       >
+        @let markerColor = markerColorOf(item);
+        @if (markerColor) {
+          <span
+            class="priority-ranker__marker pointer-events-none absolute right-0 top-0 size-6 rounded-tr-field [clip-path:polygon(0_0,100%_0,100%_100%)]"
+            [style.background-color]="markerColor"
+            aria-hidden="true"
+          ></span>
+        }
+
         <span
           #text
           [id]="idPrefix + $index"

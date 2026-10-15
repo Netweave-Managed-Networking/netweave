@@ -13,6 +13,8 @@ describe('PriorityRankerComponent', () => {
   let fixture: ComponentFixture<PriorityRankerComponent>;
   let component: PriorityRankerComponent;
 
+  const markerColors = ['#C78A8F', '#4A8C8C', '#A07A1E', '#8F7BA8'];
+
   const create = async (value: PriorityWeights | null = null) => {
     await TestBed.configureTestingModule({
       imports: [PriorityRankerComponent],
@@ -22,6 +24,7 @@ describe('PriorityRankerComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('statements', statements);
     fixture.componentRef.setInput('value', value);
+    fixture.componentRef.setInput('markerColors', markerColors);
     fixture.detectChanges();
   };
 
@@ -136,4 +139,36 @@ describe('PriorityRankerComponent', () => {
 
     expect(component.value()).toEqual({ G: 20, I: 100, W: 0, S: 66 });
   });
+
+  it('marks the statements with the marker colours in their start order', async () => {
+    await create();
+
+    const byPosition = [...boxes()].sort(
+      (a, b) => parseFloat(a.style.top) - parseFloat(b.style.top),
+    );
+    expect(byPosition.map(markerColorOf)).toEqual([
+      'rgb(199, 138, 143)',
+      'rgb(74, 140, 140)',
+      'rgb(160, 122, 30)',
+      'rgb(143, 123, 168)',
+    ]);
+  });
+
+  it('keeps the marker colour of a statement when it is moved past others', async () => {
+    await create({ G: 100, I: 60, W: 30, S: 0 });
+    const target = box('Klare Verfahren');
+    const before = markerColorOf(target);
+
+    for (let i = 0; i < 100; i++) press(target, 'ArrowUp');
+
+    expect(component.value()?.['S']).toBe(100);
+    expect(markerColorOf(box('Klare Verfahren'))).toBe(before);
+    expect(markerColorOf(box('Gemeinsam entscheiden'))).toBe(
+      'rgb(199, 138, 143)',
+    );
+  });
 });
+
+const markerColorOf = (box: HTMLElement) =>
+  box.querySelector<HTMLElement>('.priority-ranker__marker')?.style
+    .backgroundColor;
