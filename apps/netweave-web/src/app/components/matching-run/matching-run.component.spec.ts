@@ -83,6 +83,8 @@ describe('MatchingRunComponent', () => {
   };
 
   it('starts a run and shows how many matchings were calculated once it finishes', async () => {
+    const finished = vi.fn();
+    fixture.componentInstance.finished.subscribe(finished);
     vi.useFakeTimers({
       toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
     });
@@ -104,6 +106,9 @@ describe('MatchingRunComponent', () => {
     expect(button().disabled).toBe(false);
     expect(result()).toContain('#7');
     expect(result()).toContain('3 Matchings');
+    expect(finished).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 7, matchingCount: 3 }),
+    );
   });
 
   it('keeps polling after a single transient error, instead of showing a false failure', async () => {
