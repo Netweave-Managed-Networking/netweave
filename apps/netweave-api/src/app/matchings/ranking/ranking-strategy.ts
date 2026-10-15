@@ -3,7 +3,7 @@ import { Member } from '../../members/member.entity';
 import { Matching } from '../matching.entity';
 import {
   CategoryMatching,
-  OverallScore,
+  RankingScore,
   RankingCandidate,
 } from './category-matching';
 import { CultureProfile, toCultureProfile } from './culture-profile';
@@ -62,7 +62,7 @@ export class ComposedRankingStrategy implements RankingStrategy {
       this.categoryMatching.recommend(
         id,
         candidatesBySeeker.get(id) ?? [],
-        this.overallScore,
+        this.rankingScore,
       ),
     );
 
@@ -84,7 +84,7 @@ export class ComposedRankingStrategy implements RankingStrategy {
 
   // weighted average; a segment without a value (no culture answers, nep not implemented yet) is left out
   // entirely, so it does not drag the score down as a 0 would
-  private readonly overallScore: OverallScore = (
+  private readonly rankingScore: RankingScore = (
     matchingScore,
     cultureScore,
   ) => {

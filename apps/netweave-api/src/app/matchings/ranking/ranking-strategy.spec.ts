@@ -87,15 +87,35 @@ describe('ComposedRankingStrategy', () => {
           {
             category: 'competencies', // ordered like RESOURCE_REQUIREMENT_CATEGORIES
             matches: [
-              { memberId: 2, score: 92, matchingScore: 90, cultureScore: 100 },
-              { memberId: 3, score: 8, matchingScore: 10, cultureScore: 0 },
+              {
+                memberId: 2,
+                rankingScore: 92,
+                matchingScore: 90,
+                cultureScore: 100,
+              },
+              {
+                memberId: 3,
+                rankingScore: 8,
+                matchingScore: 10,
+                cultureScore: 0,
+              },
             ],
           },
           {
             category: 'premises',
             matches: [
-              { memberId: 2, score: 60, matchingScore: 50, cultureScore: 100 },
-              { memberId: 3, score: 56, matchingScore: 70, cultureScore: 0 },
+              {
+                memberId: 2,
+                rankingScore: 60,
+                matchingScore: 50,
+                cultureScore: 100,
+              },
+              {
+                memberId: 3,
+                rankingScore: 56,
+                matchingScore: 70,
+                cultureScore: 0,
+              },
             ],
           },
         ],
@@ -160,10 +180,20 @@ describe('ComposedRankingStrategy', () => {
       const [first, second] =
         result.members as PerCategoryMemberRecommendationsDTO[];
       expect(first.categories[0].matches).toEqual([
-        { memberId: 2, score: 70, matchingScore: 70, cultureScore: null },
+        {
+          memberId: 2,
+          rankingScore: 70,
+          matchingScore: 70,
+          cultureScore: null,
+        },
       ]);
       expect(second.categories[0].matches).toEqual([
-        { memberId: 1, score: 30, matchingScore: 30, cultureScore: null },
+        {
+          memberId: 1,
+          rankingScore: 30,
+          matchingScore: 30,
+          cultureScore: null,
+        },
       ]);
     });
 
@@ -177,7 +207,7 @@ describe('ComposedRankingStrategy', () => {
       });
 
       const [seeker] = result.members as PerCategoryMemberRecommendationsDTO[];
-      expect(seeker.categories[0].matches[0].score).toBe(70);
+      expect(seeker.categories[0].matches[0].rankingScore).toBe(70);
     });
 
     it('gives every member an entry, also without any matching', () => {
@@ -224,21 +254,21 @@ describe('ComposedRankingStrategy', () => {
           {
             memberId: 3,
             category: 'premises',
-            score: 84,
+            rankingScore: 84,
             matchingScore: 80,
             cultureScore: 100,
           },
           {
             memberId: 2,
             category: 'competencies',
-            score: 72,
+            rankingScore: 72,
             matchingScore: 90,
             cultureScore: 0,
           },
           {
             memberId: 4,
             category: 'networks',
-            score: 26,
+            rankingScore: 26,
             matchingScore: 20,
             cultureScore: 50,
           },

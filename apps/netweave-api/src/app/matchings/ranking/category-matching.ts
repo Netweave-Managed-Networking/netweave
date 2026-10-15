@@ -22,7 +22,7 @@ export interface RankingCandidate {
   cultureScore: number | null;
 }
 
-export type OverallScore = (
+export type RankingScore = (
   matchingScore: number,
   cultureScore: number | null,
 ) => number;
@@ -31,7 +31,7 @@ export interface CategoryMatching {
   recommend(
     seekerId: number,
     candidates: RankingCandidate[],
-    overallScore: OverallScore,
+    rankingScore: RankingScore,
   ): MemberRecommendationsDTO;
 }
 
@@ -39,7 +39,7 @@ export class CategorySeparationMatching implements CategoryMatching {
   public recommend(
     seekerId: number,
     candidates: RankingCandidate[],
-    overallScore: OverallScore,
+    rankingScore: RankingScore,
   ): MemberRecommendationsDTO {
     const matchesByCategory = new Map<
       ResourceRequirementCategory,
@@ -49,7 +49,7 @@ export class CategorySeparationMatching implements CategoryMatching {
     for (const candidate of candidates) {
       for (const { category, score } of matchedCategories(candidate)) {
         const matches = matchesByCategory.get(category) ?? [];
-        matches.push(toRankedMatch(candidate, score, overallScore));
+        matches.push(toRankedMatch(candidate, score, rankingScore));
         matchesByCategory.set(category, matches);
       }
     }
@@ -69,7 +69,7 @@ export class MaxCategoryMatching implements CategoryMatching {
   public recommend(
     seekerId: number,
     candidates: RankingCandidate[],
-    overallScore: OverallScore,
+    rankingScore: RankingScore,
   ): MemberRecommendationsDTO {
     const matches: CategoryRankedMatchDTO[] = [];
 
@@ -78,7 +78,7 @@ export class MaxCategoryMatching implements CategoryMatching {
       if (!best) continue;
 
       matches.push({
-        ...toRankedMatch(candidate, best.score, overallScore),
+        ...toRankedMatch(candidate, best.score, rankingScore),
         category: best.category,
       });
     }
@@ -103,15 +103,15 @@ const bestCategory = (candidate: RankingCandidate): CategoryMatch | null => {
 const toRankedMatch = (
   { memberId, cultureScore }: RankingCandidate,
   matchingScore: number,
-  overallScore: OverallScore,
+  rankingScore: RankingScore,
 ): RankedMatchDTO => ({
   memberId,
-  score: overallScore(matchingScore, cultureScore),
+  rankingScore: rankingScore(matchingScore, cultureScore),
   matchingScore,
   cultureScore,
 });
 
 const topMatches = <T extends RankedMatchDTO>(matches: T[]): T[] =>
   [...matches]
-    .sort((a, b) => b.score - a.score || a.memberId - b.memberId)
+    .sort((a, b) => b.rankingScore - a.rankingScore || a.memberId - b.memberId)
     .slice(0, TOP_MATCHES_COUNT);
