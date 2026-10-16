@@ -11,7 +11,7 @@ const member = (id: number, email: string | null): Member =>
     id,
     name: `Member ${id}`,
     contact: null,
-    invitation: email ? { email } : null,
+    email,
   }) as Member;
 
 const overall = (seekerId: number, ...matchIds: number[]) => ({
@@ -20,7 +20,7 @@ const overall = (seekerId: number, ...matchIds: number[]) => ({
   matches: matchIds.map((memberId) => ({
     memberId,
     category: 'premises' as const,
-    score: 80,
+    rankingScore: 80,
     matchingScore: 80,
     cultureScore: null,
   })),
@@ -34,7 +34,7 @@ const recommendations: RecommendationsDTO = {
 
 describe('RecommendationMailsService', () => {
   let service: RecommendationMailsService;
-  let membersService: jest.Mocked<Pick<MembersService, 'getAllWithInvitation'>>;
+  let membersService: jest.Mocked<Pick<MembersService, 'getAll'>>;
   let mailService: jest.Mocked<Pick<MailService, 'sendMail'>>;
   const originalFlag = process.env.SEND_RECOMMENDATION_MAILS;
 
@@ -42,7 +42,7 @@ describe('RecommendationMailsService', () => {
     delete process.env.SEND_RECOMMENDATION_MAILS;
 
     membersService = {
-      getAllWithInvitation: jest
+      getAll: jest
         .fn()
         .mockResolvedValue([
           member(1, 'one@example.com'),
@@ -82,6 +82,24 @@ describe('RecommendationMailsService', () => {
     );
   });
 
+  it('uses the confirmed new email instead of the one the invitation was sent to', async () => {
+    membersService.getAll.mockResolvedValue([
+      {
+        ...member(1, 'new-one@example.com'),
+        invitation: { email: 'one@example.com' },
+      } as Member,
+      member(2, 'two@example.com'),
+    ]);
+
+    await service.sendForRun(42, recommendations);
+
+    expect(recipients()).toEqual(['new-one@example.com', 'two@example.com']);
+    // also listed with the new email as a match in the mails of others
+    const { html } = mailService.sendMail.mock.calls[1][0];
+    expect(html).toContain('mailto:new-one@example.com');
+    expect(html).not.toContain('mailto:one@example.com');
+  });
+
   it('logs how many mails were sent, failed and skipped', async () => {
     mailService.sendMail.mockResolvedValueOnce(false);
     const log = jest.spyOn(Logger.prototype, 'log');
@@ -98,12 +116,12 @@ describe('RecommendationMailsService', () => {
 
     await service.sendForRun(42, recommendations);
 
-    expect(membersService.getAllWithInvitation).not.toHaveBeenCalled();
+    expect(membersService.getAll).not.toHaveBeenCalled();
     expect(mailService.sendMail).not.toHaveBeenCalled();
   });
 
   it('never throws, e.g. when loading the members fails', async () => {
-    membersService.getAllWithInvitation.mockRejectedValue(new Error('db down'));
+    membersService.getAll.mockRejectedValue(new Error('db down'));
     const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
 
     await expect(

@@ -32,7 +32,7 @@ export class RecommendationMailsService {
     }
 
     try {
-      const members = await this.membersService.getAllWithInvitation();
+      const members = await this.membersService.getAll();
       const contacts = toContacts(members);
 
       let sent = 0;
@@ -77,13 +77,13 @@ export class RecommendationMailsService {
   }
 }
 
-/** by member id; only members with an invitation have an email address */
+/** by member id; only members with an email address, the confirmed one if it was changed */
 const toContacts = (members: Member[]): Map<number, RecommendationContact> => {
   const contacts = new Map<number, RecommendationContact>();
 
-  for (const { id, name, contact, invitation } of members) {
-    if (invitation?.email) {
-      contacts.set(id, { name, contact, email: invitation.email });
+  for (const { id, name, contact, email } of members) {
+    if (email) {
+      contacts.set(id, { name, contact, email });
     }
   }
 

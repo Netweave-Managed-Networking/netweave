@@ -7,7 +7,7 @@ import {
 
 const match = (memberId: number) => ({
   memberId,
-  score: 80,
+  rankingScore: 80,
   matchingScore: 80,
   cultureScore: null,
 });
