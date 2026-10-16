@@ -76,6 +76,14 @@ export const appRoutes: Routes = [
           ).then((m) => m.MemberInvitationsComponent),
       },
       {
+        path: 'members',
+        canActivate: [authenticatedGuard],
+        loadComponent: () =>
+          import('./components/members/members.component').then(
+            (m) => m.MembersComponent,
+          ),
+      },
+      {
         path: 'matching-history',
         canActivate: [authenticatedGuard],
         loadComponent: () =>
