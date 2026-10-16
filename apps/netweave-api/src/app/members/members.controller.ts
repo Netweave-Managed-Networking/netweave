@@ -1,21 +1,30 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   InvitationTokenDTO,
   MemberDTO,
   MemberEmailConfirmationDTO,
+  MemberListItemDTO,
   MemberUpsertDTO,
+  PaginatedDTO,
 } from '@netweave/api-types';
+import { AuthGuard } from '../auth/auth.guard';
 import { InvitationsService } from '../invitations/invitations.service';
 import { toInvitationTokenDTO } from './member-upsert-dto.mapper';
 import { MembersService } from './members.service';
+
+const DEFAULT_LIST_PAGE_SIZE = 20;
 
 @Controller('members')
 export class MemberController {
@@ -23,6 +32,22 @@ export class MemberController {
     private readonly membersService: MembersService,
     private readonly invitationsService: InvitationsService,
   ) {}
+
+  /** member overview, by name, paginated, optionally narrowed down by a search on name and email */
+  @UseGuards(AuthGuard)
+  @Get('')
+  public async getPage(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(DEFAULT_LIST_PAGE_SIZE),
+      ParseIntPipe,
+    )
+    pageSize: number,
+    @Query('search', new DefaultValuePipe('')) search: string,
+  ): Promise<PaginatedDTO<MemberListItemDTO>> {
+    return this.membersService.getPage(page, pageSize, search);
+  }
 
   @Get('/latest')
   public async getLatest(): Promise<MemberDTO | null> {

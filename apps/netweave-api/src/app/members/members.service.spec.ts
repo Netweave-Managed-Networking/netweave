@@ -6,6 +6,7 @@ import {
 import { MemberUpsertDTO } from '@netweave/api-types';
 import {
   EntityManager,
+  ILike,
   IsNull,
   MoreThan,
   QueryFailedError,
@@ -532,6 +533,80 @@ describe('MembersService', () => {
       });
       expect(membersRepository.find).toHaveBeenCalledWith({ select, order });
       expect(membersRepository.createQueryBuilder).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getPage', () => {
+    const member = { id: 1, name: 'Acme e.V.', email: 'nt@example.com' };
+    let membersRepository: { findAndCount: jest.Mock };
+
+    beforeEach(() => {
+      membersRepository = {
+        findAndCount: jest.fn().mockResolvedValue([[member], 21]),
+      };
+      service = new MembersService(
+        membersRepository as unknown as Repository<Member>,
+        mailService as unknown as MailService,
+      );
+    });
+
+    it('loads only id, name and email of one page of members, ordered by name', async () => {
+      expect(await service.getPage(2, 10)).toEqual({
+        items: [member],
+        page: 2,
+        pageSize: 10,
+        total: 21,
+      });
+      expect(membersRepository.findAndCount).toHaveBeenCalledWith({
+        select: { id: true, name: true, email: true },
+        order: { name: 'ASC', id: 'ASC' },
+        skip: 10,
+        take: 10,
+      });
+    });
+
+    it('searches name and email for the trimmed search, regardless of case', async () => {
+      await service.getPage(1, 10, '  Acme ');
+
+      expect(membersRepository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: [{ name: ILike('%Acme%') }, { email: ILike('%Acme%') }],
+        }),
+      );
+    });
+
+    it('matches wildcard characters in the search literally', async () => {
+      await service.getPage(1, 10, '100%_\\');
+
+      expect(membersRepository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: [
+            { name: ILike('%100\\%\\_\\\\%') },
+            { email: ILike('%100\\%\\_\\\\%') },
+          ],
+        }),
+      );
+    });
+
+    it('does not filter for a blank search', async () => {
+      await service.getPage(1, 10, '   ');
+
+      expect(membersRepository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({ where: undefined }),
+      );
+    });
+
+    it('clamps page and page size to sensible bounds', async () => {
+      const result = await service.getPage(0, 1000);
+
+      expect(result.page).toBe(1);
+      expect(result.pageSize).toBe(MembersService.MAX_LIST_PAGE_SIZE);
+      expect(membersRepository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 0,
+          take: MembersService.MAX_LIST_PAGE_SIZE,
+        }),
+      );
     });
   });
 });
