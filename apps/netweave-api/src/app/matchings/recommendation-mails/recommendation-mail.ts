@@ -9,6 +9,8 @@ export interface RecommendationContact {
   name: string;
   contact: string | null;
   email: string;
+  /** resource field per category; categories without resources are left out */
+  resources: Partial<Record<ResourceRequirementCategory, string>>;
 }
 
 interface Section {
@@ -45,6 +47,8 @@ export const buildRecommendationMail = (
   };
 };
 
+// both ranking strategies base every recommended match on a single category, so only that category's
+// resources are listed; a strategy ranking on all categories would pass all of them to listItem
 const toSections = (
   recommendations: MemberRecommendationsDTO,
   contacts: ReadonlyMap<number, RecommendationContact>,
@@ -53,7 +57,7 @@ const toSections = (
     return recommendations.categories.map(({ category, matches }) => ({
       heading: categoryLabel(category),
       items: matches.flatMap(({ memberId }) =>
-        listItem(contacts.get(memberId)),
+        listItem(contacts.get(memberId), [category]),
       ),
     }));
   }
@@ -62,7 +66,7 @@ const toSections = (
     {
       heading: null,
       items: recommendations.matches.flatMap(({ memberId, category }) =>
-        listItem(contacts.get(memberId), categoryLabel(category)),
+        listItem(contacts.get(memberId), [category]),
       ),
     },
   ];
@@ -74,9 +78,10 @@ const renderSection = ({ heading, items }: Section): string => {
   return `${title}<ul>${items.join('')}</ul>`;
 };
 
+/** `categories` are the ones the recommendation is based on, only their resources explain it */
 const listItem = (
   match: RecommendationContact | undefined,
-  category?: string,
+  categories: ResourceRequirementCategory[],
 ): string[] => {
   if (!match) {
     return [];
@@ -87,17 +92,27 @@ const listItem = (
   const parts = [
     `<strong>${escapeHtml(match.name)}</strong>`,
     match.contact ? `Ansprechpartner: ${escapeHtml(match.contact)}` : null,
-    category ? `Kategorie: ${escapeHtml(category)}` : null,
     `<a href="mailto:${email}">${email}</a>`,
   ];
 
-  return [`<li>${parts.filter(Boolean).join(' – ')}</li>`];
+  const resources = categories.map(
+    (category) =>
+      `<li>Ressourcen in der Kategorie ${escapeHtml(categoryLabel(category))}: ` +
+      `${multiline(match.resources[category] ?? 'keine Angabe')}</li>`,
+  );
+
+  return [
+    `<li>${parts.filter(Boolean).join(' – ')}<ul>${resources.join('')}</ul></li>`,
+  ];
 };
 
 const categoryLabel = (category: ResourceRequirementCategory): string =>
   RESOURCE_REQUIREMENT_CATEGORY_TEXTS[category].label;
 
-/** names and contacts are user input */
+const multiline = (text: string): string =>
+  escapeHtml(text).replace(/\r?\n/g, '<br>');
+
+/** names, contacts and resources are user input */
 const escapeHtml = (text: string): string =>
   text
     .replace(/&/g, '&amp;')

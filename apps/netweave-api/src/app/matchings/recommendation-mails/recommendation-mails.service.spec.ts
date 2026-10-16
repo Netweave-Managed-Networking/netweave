@@ -12,6 +12,11 @@ const member = (id: number, email: string | null): Member =>
     name: `Member ${id}`,
     contact: null,
     email,
+    resourcesRequirements: [
+      { category: 'premises', resources: `Raum von ${id}` },
+      { category: 'land', resources: `Fläche von ${id}` },
+      { category: 'equipment', resources: '  ' },
+    ],
   }) as Member;
 
 const overall = (seekerId: number, ...matchIds: number[]) => ({
@@ -34,7 +39,7 @@ const recommendations: RecommendationsDTO = {
 
 describe('RecommendationMailsService', () => {
   let service: RecommendationMailsService;
-  let membersService: jest.Mocked<Pick<MembersService, 'getAll'>>;
+  let membersService: jest.Mocked<Pick<MembersService, 'getAllWithResources'>>;
   let mailService: jest.Mocked<Pick<MailService, 'sendMail'>>;
   const originalFlag = process.env.SEND_RECOMMENDATION_MAILS;
 
@@ -42,7 +47,7 @@ describe('RecommendationMailsService', () => {
     delete process.env.SEND_RECOMMENDATION_MAILS;
 
     membersService = {
-      getAll: jest
+      getAllWithResources: jest
         .fn()
         .mockResolvedValue([
           member(1, 'one@example.com'),
@@ -83,7 +88,7 @@ describe('RecommendationMailsService', () => {
   });
 
   it('uses the confirmed new email instead of the one the invitation was sent to', async () => {
-    membersService.getAll.mockResolvedValue([
+    membersService.getAllWithResources.mockResolvedValue([
       {
         ...member(1, 'new-one@example.com'),
         invitation: { email: 'one@example.com' },
@@ -98,6 +103,16 @@ describe('RecommendationMailsService', () => {
     const { html } = mailService.sendMail.mock.calls[1][0];
     expect(html).toContain('mailto:new-one@example.com');
     expect(html).not.toContain('mailto:one@example.com');
+  });
+
+  it('explains every match with its resources of the recommended category', async () => {
+    await service.sendForRun(42, recommendations);
+
+    const html = mailService.sendMail.mock.calls[0][0].html;
+    expect(html).toContain(
+      'Ressourcen in der Kategorie Räumlichkeiten: Raum von 2',
+    );
+    expect(html).not.toContain('Fläche von 2');
   });
 
   it('logs how many mails were sent, failed and skipped', async () => {
@@ -116,12 +131,12 @@ describe('RecommendationMailsService', () => {
 
     await service.sendForRun(42, recommendations);
 
-    expect(membersService.getAll).not.toHaveBeenCalled();
+    expect(membersService.getAllWithResources).not.toHaveBeenCalled();
     expect(mailService.sendMail).not.toHaveBeenCalled();
   });
 
   it('never throws, e.g. when loading the members fails', async () => {
-    membersService.getAll.mockRejectedValue(new Error('db down'));
+    membersService.getAllWithResources.mockRejectedValue(new Error('db down'));
     const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
 
     await expect(
