@@ -66,6 +66,10 @@ export class MembersService {
     });
   }
 
+  public async getAll(): Promise<Member[]> {
+    return this.membersRepository.find();
+  }
+
   /** whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything */
   public async haveAnswersChangedSince(since: Date): Promise<boolean> {
     const manager = this.membersRepository.manager;

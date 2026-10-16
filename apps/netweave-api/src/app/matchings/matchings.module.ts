@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
+import { MailModule } from '../mail/mail.module';
 import { MembersModule } from '../members/members.module';
 import { createLanguageModel, readLlmConfig } from './llm/llm-config';
 import { LlmMatchingStrategy } from './llm-matching.strategy';
@@ -11,6 +12,7 @@ import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
 import { createRankingStrategy } from './ranking/ranking-strategies';
 import { RANKING_STRATEGY } from './ranking/ranking-strategy';
+import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
 import { StringLengthMatchingStrategy } from './string-length-matching.strategy';
 
 /** falls back to the dummy algorithm without LLM_PROVIDER */
@@ -34,10 +36,12 @@ const createMatchingStrategy = (): MatchingStrategy => {
     TypeOrmModule.forFeature([Matching, MatchingRun]),
     MembersModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [MatchingsController],
   providers: [
     MatchingsService,
+    RecommendationMailsService,
     { provide: MATCHING_STRATEGY, useFactory: createMatchingStrategy },
     { provide: RANKING_STRATEGY, useFactory: () => createRankingStrategy() },
   ],
