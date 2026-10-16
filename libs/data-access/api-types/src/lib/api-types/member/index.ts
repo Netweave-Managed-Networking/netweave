@@ -1,6 +1,7 @@
 export * from './culture.type';
 export * from './member-culture-weight.upsert.dto.class';
 export * from './member-email-confirmation.dto.class';
+export * from './member-list-item.dto.interface';
 export * from './member-resource-requirement.upsert.dto.class';
 export * from './member.dto.interface';
 export * from './member.upsert.dto.class';

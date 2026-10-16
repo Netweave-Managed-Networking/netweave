@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MemberUpsertDTO } from '@netweave/api-types';
+import { AuthGuard } from '../auth/auth.guard';
 import { InvitationsService } from '../invitations/invitations.service';
 import { MemberController } from './members.controller';
 import { MembersService } from './members.service';
@@ -25,7 +26,10 @@ describe('MemberController', () => {
 
   let membersService: Partial<
     Record<
-      'getLatestMember' | 'saveForInvitation' | 'confirmEmailChangeOrFail',
+      | 'getPage'
+      | 'getLatestMember'
+      | 'saveForInvitation'
+      | 'confirmEmailChangeOrFail',
       jest.Mock
     >
   >;
@@ -33,6 +37,7 @@ describe('MemberController', () => {
 
   beforeEach(async () => {
     membersService = {
+      getPage: jest.fn(),
       getLatestMember: jest.fn().mockResolvedValue(null),
       saveForInvitation: jest.fn().mockResolvedValue({
         id: 7,
@@ -64,9 +69,27 @@ describe('MemberController', () => {
         { provide: MembersService, useValue: membersService },
         { provide: InvitationsService, useValue: invitationsService },
       ],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<MemberController>(MemberController);
+  });
+
+  describe('getPage', () => {
+    it('returns the requested page of the member overview', async () => {
+      const page = {
+        items: [{ id: 1, name: 'Acme e.V.', email: 'nt@example.com' }],
+        page: 2,
+        pageSize: 10,
+        total: 11,
+      };
+      membersService.getPage?.mockResolvedValueOnce(page);
+
+      expect(await controller.getPage(2, 10, 'acme')).toEqual(page);
+      expect(membersService.getPage).toHaveBeenCalledWith(2, 10, 'acme');
+    });
   });
 
   describe('getLatest', () => {
