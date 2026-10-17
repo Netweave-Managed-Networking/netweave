@@ -61,8 +61,6 @@ services:
     container_name: netweave-web
     env_file:
       - .env
-    environment:
-      - SSR_API_URL=http://netweave-api:3000
     depends_on:
       netweave-api:
         condition: service_healthy

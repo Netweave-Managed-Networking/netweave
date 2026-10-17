@@ -203,7 +203,7 @@ Start order: db healthy → api healthy → web → Nginx.
 
 All variables are documented in `.env.example`.\
 On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=netweave-db`.\
-`docker-compose.yml` also sets `SSR_API_URL` for the web container, but the app never reads it: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Nginx.
+The web container needs no API URL: the frontend calls the relative /api, and during SSR Angular resolves that against the requested host, so it goes through Nginx
 
 ### TLS certificates
 
@@ -245,5 +245,4 @@ sudo certbot renew --dry-run             # test certificate renewal
 ### Observations
 
 - `deploy.yml` does not copy `nginx/nginx.conf`; config changes must be applied on the server by hand.
-- `SSR_API_URL` in `docker-compose.yml` is unused (see [Configuration](#configuration-env)).
 - Fixed `container_name` values and host ports prevent running a second copy of the stack on the same server.
