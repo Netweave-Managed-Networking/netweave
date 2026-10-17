@@ -88,9 +88,7 @@ docker compose up -d
 
 Running it locally needs:
 
-- the TLS certificate files at `/etc/letsencrypt/live/dev.netweave.de/`
-  (`fullchain.pem`, `privkey.pem`), since Nginx serves `dev.netweave.de` and
-  redirects HTTP to HTTPS,
+- the TLS certificate files at `/etc/letsencrypt/live/dev.netweave.de/` (`fullchain.pem`, `privkey.pem`), since Nginx serves `dev.netweave.de` and redirects HTTP to HTTPS,
 - `DB_HOST=netweave-db` in `.env`,
 - possibly `docker login ghcr.io`, if the images are private.
 
@@ -177,7 +175,6 @@ flowchart LR
   N -->|"url: /"| W["netweave-web<br/>Angular SSR :4000"]
   W -.->|"SSR: /api via public URL"| N
   A --> D[("netweave-db<br/>:5432")]
-  B -.->|"port 3000, bypasses Nginx"| A
 ```
 
 ### Docker services
@@ -187,7 +184,7 @@ Compose project `netweave` (from the folder name `~/netweave`); details in `dock
 | Container        | Published ports          | Notes                                  |
 | ---------------- | ------------------------ | -------------------------------------- |
 | `netweave-proxy` | 80, 443                  | mounts `nginx/nginx.conf` and the cert |
-| `netweave-api`   | 3000 on all interfaces   | healthcheck on `/api`                  |
+| `netweave-api`   | none                     | healthcheck on `/api`                  |
 | `netweave-web`   | none                     | listens on 4000 inside Docker          |
 | `netweave-db`    | 5432 on `127.0.0.1` only | data in volume `netweave_db-data`      |
 
@@ -213,7 +210,7 @@ On the server, one `.env` is shared by the api, web and db containers and uses `
 
 - One Let's Encrypt certificate for `dev.netweave.de` (ECDSA) in `/etc/letsencrypt/live/dev.netweave.de/`.
 - Renewal: `certbot.timer` (twice a day, renews within 30 days of expiry) with the `standalone` authenticator. `certbot renew --dry-run` succeeds.
-- Hooks in `/etc/letsencrypt/renewal-hooks/` free port 80: `pre/stop-nginx.sh` and `post/start-nginx.sh` run `docker compose -f /home/marv/netweave/docker-compose.yml> stop|start nginx`. They depend on that path and the service name `nginx`.
+- Hooks in `/etc/letsencrypt/renewal-hooks/` free port 80: `pre/stop-nginx.sh` and `post/start-nginx.sh` run `docker compose -f /home/marv/netweave/docker-compose.yml stop|start nginx`. They depend on that path and the service name `nginx`.
   - Nginx is down for about 15 seconds per renewal run, and also during every dry run. The hooks run once per run, not once per certificate.
 - Nginx mounts `fullchain.pem` and `privkey.pem` as single files. That is fine: `start` makes Docker resolve the `live/` symlinks again, so Nginx picks up the renewed certificate.
 
@@ -249,6 +246,5 @@ sudo certbot renew --dry-run             # test certificate renewal
 ### Observations
 
 - `deploy.yml` does not copy `nginx/nginx.conf`; config changes must be applied on the server by hand.
-- The API publishes port 3000 on all interfaces, so it is reachable unencrypted from the internet, bypassing Nginx. Nothing needs it: Nginx and the healthcheck reach the API inside Docker.
 - `SSR_API_URL` in `docker-compose.yml` is unused (see [Configuration](#configuration-env)).
 - Fixed `container_name` values and host ports prevent running a second copy of the stack on the same server.

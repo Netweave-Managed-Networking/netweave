@@ -26,8 +26,6 @@ services:
       - backend
     image: ghcr.io/netweave-managed-networking/netweave-api:latest
     container_name: netweave-api
-    ports:
-      - '3000:3000'
     env_file:
       - .env
     depends_on:
