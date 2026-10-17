@@ -27,10 +27,10 @@ reload. Use Docker Compose when you want to run the deployment-like stack.
    cp .env.example .env
    ```
 
-3. Fill in the values in `.env`. At minimum, configure the PostgreSQL
-   connection, `JWT_SECRET`, and the mail settings. Set `SEND_MAIL_ACTIVATED`
-   to `false` when you do not want the application to send mail during local
-   development.
+3. Fill in the values in `.env`; `.env.example` documents every variable. At
+   minimum, configure the PostgreSQL connection, `JWT_SECRET`, and the mail
+   settings. Set `SEND_MAIL_ACTIVATED=false` when you do not want the
+   application to send mail during local development.
 
 4. Only whitelisted emails can register. On a fresh instance, set
    `REGISTRATION_WHITELIST` (e.g. `you@example.com:admin`) so the first admin
@@ -53,13 +53,11 @@ npm run serve
 Then open [http://localhost:4200](http://localhost:4200). Nx starts the API as
 a dependency of the web development server. The API listens at
 [http://localhost:3000/api](http://localhost:3000/api), and the Angular proxy
-forwards browser requests under `/api` to it. Frontend changes are picked up
-by Angular's development server automatically.
+forwards browser requests under `/api` to it.
 
-The API connects to PostgreSQL when it starts. TypeORM does not synchronize
-the schema automatically, but it does run pending migrations
-(`synchronize: false` and `migrationsRun: true`). The database must therefore
-be reachable before running `npm run serve`.
+The API runs pending migrations when it starts (`synchronize: false`,
+`migrationsRun: true`), so the database must be reachable before running
+`npm run serve`.
 
 #### Local mail testing (Mailcatcher)
 
@@ -79,39 +77,26 @@ is persisted to the database and survives a restart.
 
 ### 2B. Run with Docker Compose
 
-This workflow requires Docker Desktop with a running Docker daemon. It starts
-PostgreSQL, the API, the server-rendered Angular web app, and an Nginx reverse
-proxy:
-
-```sh
-docker compose up
-```
-
-To run the stack in the background:
+`docker-compose.yml` is the server deployment file (see
+[Server setup](#server-setup)). It starts PostgreSQL, the API, the
+server-rendered web app and Nginx, but pulls the prebuilt `latest` images from
+GitHub Container Registry instead of building the checked-out code.
 
 ```sh
 docker compose up -d
 ```
 
-The Compose file uses prebuilt `latest` images from GitHub Container Registry;
-it does not build the checked-out source code. It also expects the Nginx TLS
-certificates at:
+Running it locally needs:
 
-```text
-/etc/letsencrypt/live/dev.netweave.de/fullchain.pem
-/etc/letsencrypt/live/dev.netweave.de/privkey.pem
-```
+- the TLS certificate files at `/etc/letsencrypt/live/dev.netweave.de/`
+  (`fullchain.pem`, `privkey.pem`), since Nginx serves `dev.netweave.de` and
+  redirects HTTP to HTTPS,
+- `DB_HOST=netweave-db` in `.env`,
+- possibly `docker login ghcr.io`, if the images are private.
 
-The Nginx configuration expects the hostname `dev.netweave.de` and redirects
-HTTP to HTTPS, so this path may require local DNS or `/etc/hosts` setup and
-valid certificates before it works on a fresh machine. The application is
-served through Nginx on ports 80 and 443; the web container does not publish a
-host port directly.
-
-Docker Compose does not provide Angular development live reload. For frontend
-work, use the source-based workflow above. To stop the containers while
-keeping the database volume, run `docker compose down`; `docker compose down
--v` also deletes the database volume and its data.
+There is no live reload; for frontend work use 2A. `docker compose down` stops
+the stack and keeps the database volume; `docker compose down -v` also deletes
+the database.
 
 ## Software
 
@@ -157,8 +142,7 @@ Use migrations when changing the database schema:
    Generated migrations are placed under
    `apps/netweave-api/src/app/db/migrations/`.
 
-3. Import the migration in
-   `apps/netweave-api/src/app/db/db.migrations.ts`.
+3. Import the migration in `apps/netweave-api/src/app/db/db.migrations.ts`.
 4. Inspect and run pending migrations against the database configured in
    `.env`:
 
@@ -166,3 +150,105 @@ Use migrations when changing the database schema:
    npm run mig:show
    npm run mig:run
    ```
+
+## Server setup
+
+As of 2026-10-17.
+
+### Overview
+
+One VPS runs the stack from `docker-compose.yml` at https://dev.netweave.de.\
+Every push to `develop` builds new images and redeploys via `.github/workflows/deploy.yml`.\
+Secrets exist only on the server and in GitHub secrets.
+
+### Server and DNS
+
+- VPS: certbot runs on the host, not in Docker.
+- `dev.netweave.de` and `dummy.netweave.de` (configured at ionos) both have an A record to the VPS.
+  - `dummy` has no configuration of its own yet, so Nginx answers it with the dev server block and certificate.
+
+### Request flow
+
+```mermaid
+flowchart LR
+  C["Let's Encrypt cert<br/>on host"] -.->|"mounted read-only"| N
+  B["Browser"] -->|"HTTPS (80 redirects)"| N["netweave-proxy<br/>Nginx"]
+  N -->|"url: /api"| A["netweave-api<br/>NestJs :3000"]
+  N -->|"url: /"| W["netweave-web<br/>Angular SSR :4000"]
+  W -.->|"SSR: /api via public URL"| N
+  A --> D[("netweave-db<br/>:5432")]
+  B -.->|"port 3000, bypasses Nginx"| A
+```
+
+### Docker services
+
+Compose project `netweave` (from the folder name `~/netweave`); details in `docker-compose.yml`.
+
+| Container        | Published ports          | Notes                                  |
+| ---------------- | ------------------------ | -------------------------------------- |
+| `netweave-proxy` | 80, 443                  | mounts `nginx/nginx.conf` and the cert |
+| `netweave-api`   | 3000 on all interfaces   | healthcheck on `/api`                  |
+| `netweave-web`   | none                     | listens on 4000 inside Docker          |
+| `netweave-db`    | 5432 on `127.0.0.1` only | data in volume `netweave_db-data`      |
+
+Start order: db healthy → api healthy → web → Nginx.
+
+### Files on the server
+
+```text
+~/netweave/
+├── docker-compose.yml   # copied by every deploy
+├── .env                 # by hand, based on .env.example
+└── nginx/
+    └── nginx.conf       # by hand, identical to nginx/nginx.conf in this repo
+```
+
+### Configuration (.env)
+
+All variables are documented in `.env.example`.\
+On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=netweave-db`.\
+`docker-compose.yml` also sets `SSR_API_URL` for the web container, but the app never reads it: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Nginx.
+
+### TLS certificates
+
+- One Let's Encrypt certificate for `dev.netweave.de` (ECDSA) in `/etc/letsencrypt/live/dev.netweave.de/`.
+- Renewal: `certbot.timer` (twice a day, renews within 30 days of expiry) with the `standalone` authenticator. `certbot renew --dry-run` succeeds.
+- Hooks in `/etc/letsencrypt/renewal-hooks/` free port 80: `pre/stop-nginx.sh` and `post/start-nginx.sh` run `docker compose -f /home/marv/netweave/docker-compose.yml> stop|start nginx`. They depend on that path and the service name `nginx`.
+  - Nginx is down for about 15 seconds per renewal run, and also during every dry run. The hooks run once per run, not once per certificate.
+- Nginx mounts `fullchain.pem` and `privkey.pem` as single files. That is fine: `start` makes Docker resolve the `live/` symlinks again, so Nginx picks up the renewed certificate.
+
+### Deployment pipeline
+
+`.github/workflows/deploy.yml` runs on every push to `develop`:
+
+1. Build `netweave-api` and `netweave-web` and push them to GHCR, tagged with the short commit SHA and `latest`.
+2. Copy `docker-compose.yml` to `~/netweave` on the VPS, then run `docker compose pull` and `docker compose up -d --remove-orphans` over SSH.
+3. Verify that both images exist and that no container is exited or restarting.
+
+Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
+
+### Database and migrations
+
+The API runs pending migrations on startup (see `apps/netweave-api/src/app/db/db.data-source.ts`), so an empty database needs no manual steps.\
+Postgres creates the user and database from `DB_USER`, `DB_PASSWORD` and `DB_DB` only on the first start of an empty volume.\
+Creating migrations: see [Change Database](#change-database).
+
+### Useful commands
+
+Run on the server in `~/netweave`:
+
+```sh
+docker compose ps                        # container status
+docker compose logs -f netweave-api      # follow API logs
+docker compose restart nginx             # apply a changed nginx.conf
+docker compose up -d --force-recreate    # apply a changed .env
+sudo certbot certificates                # certificate status
+sudo certbot renew --dry-run             # test certificate renewal
+```
+
+### Observations
+
+- `deploy.yml` does not copy `nginx/nginx.conf`; config changes must be applied on the server by hand.
+- The API publishes port 3000 on all interfaces, so it is reachable unencrypted from the internet, bypassing Nginx. Nothing needs it: Nginx and the healthcheck reach the API inside Docker.
+- `SSR_API_URL` in `docker-compose.yml` is unused (see [Configuration](#configuration-env)).
+- Fixed `container_name` values and host ports prevent running a second copy of the stack on the same server.
