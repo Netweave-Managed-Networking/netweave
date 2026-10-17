@@ -59,21 +59,20 @@ The API runs pending migrations when it starts (`synchronize: false`,
 `migrationsRun: true`), so the database must be reachable before running
 `npm run serve`.
 
-#### Local mail testing (Mailcatcher)
+#### Local mail testing (Mailpit)
 
-To see mail the API sends (invitation emails, etc.) without configuring a real
-SMTP provider, start the bundled Mailcatcher container:
+To see mail the API sends (invitations etc.) without a real SMTP provider,
+start the bundled Mailpit container:
 
 ```sh
 docker compose -f docker-compose.dev.yml up -d
 ```
 
-The `.env` defaults already point `SMTP_HOST`/`SMTP_PORT` at this container
-(`localhost:1025`, no auth). Caught mail can be viewed at
-[http://localhost:8025](http://localhost:8025). The mail transport itself
-(host, port, TLS, credentials, sender) can also be changed at runtime from the
-"Mail-Einstellungen" admin page instead of editing `.env`; a change made there
-is persisted to the database and survives a restart.
+Then set `SEND_MAIL_ACTIVATED=true`, `SMTP_HOST=localhost`, `SMTP_PORT=1025`
+and `SMTP_SECURE=false` in `.env`, and leave `SMTP_USER` and `SMTP_PASSWORD`
+empty. Caught mail is shown at [http://localhost:8025](http://localhost:8025).
+The mail transport can also be changed at runtime on the "Mail-Einstellungen"
+admin page; that override is stored in the database and survives a restart.
 
 ### 2B. Run with Docker Compose
 
