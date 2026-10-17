@@ -76,10 +76,9 @@ admin page; that override is stored in the database and survives a restart.
 
 ### 2B. Run with Docker Compose
 
-`docker-compose.yml` is the server deployment file (see
-[Server setup](#server-setup)). It starts PostgreSQL, the API, the
-server-rendered web app and Nginx, but pulls the prebuilt `latest` images from
-GitHub Container Registry instead of building the checked-out code.
+`docker-compose.yml` is the server deployment file (see [Server setup](#server-setup)).\
+It starts PostgreSQL, the API, the server-rendered web app and Nginx,\
+but pulls the prebuilt `latest` images from GitHub Container Registry instead of building the checked-out code.
 
 ```sh
 docker compose up -d
@@ -196,7 +195,7 @@ Start order: db healthy → api healthy → web → Nginx.
 ├── docker-compose.yml   # copied by every deploy
 ├── .env                 # by hand, based on .env.example
 └── nginx/
-    └── nginx.conf       # by hand, identical to nginx/nginx.conf in this repo
+    └── nginx.conf       # copied by every deploy
 ```
 
 ### Configuration (.env)
@@ -244,5 +243,4 @@ sudo certbot renew --dry-run             # test certificate renewal
 
 ### Observations
 
-- `deploy.yml` does not copy `nginx/nginx.conf`; config changes must be applied on the server by hand.
 - Fixed `container_name` values and host ports prevent running a second copy of the stack on the same server.

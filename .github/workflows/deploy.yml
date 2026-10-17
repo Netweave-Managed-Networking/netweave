@@ -85,7 +85,7 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: docker-compose.yml
+          source: docker-compose.yml,nginx/nginx.conf
           target: ~/netweave
 
       - name: Deploy on VPS
@@ -100,7 +100,9 @@ jobs:
             cd ~/netweave
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
             docker compose pull
+            docker compose run --rm --no-deps nginx nginx -t
             docker compose up -d --remove-orphans
+            docker compose restart nginx
             docker image prune -f
 
       - name: Log in to GHCR # in order to verify images in the next step
