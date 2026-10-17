@@ -38,7 +38,7 @@ jobs:
           images: ${{ env.IMAGE_PREFIX }}/netweave-api
           tags: |
             type=sha,prefix=,format=short
-            type=raw,value=latest
+            type=ref,event=branch
 
       - name: Build & push API
         uses: docker/build-push-action@v5
@@ -58,7 +58,7 @@ jobs:
           images: ${{ env.IMAGE_PREFIX }}/netweave-web
           tags: |
             type=sha,prefix=,format=short
-            type=raw,value=latest
+            type=ref,event=branch
 
       - name: Build & push Web
         uses: docker/build-push-action@v5
@@ -114,8 +114,8 @@ jobs:
 
       - name: Verify images exist in GHCR
         run: |
-          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-api:latest
-          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-web:latest
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-api:${{ github.ref_name }}
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-web:${{ github.ref_name }}
 
       - name: Verify deployment on VPS
         uses: appleboy/ssh-action@v1

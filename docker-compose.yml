@@ -24,7 +24,7 @@ services:
   netweave-api:
     networks:
       - backend
-    image: ghcr.io/netweave-managed-networking/netweave-api:latest
+    image: ghcr.io/netweave-managed-networking/netweave-api:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     container_name: netweave-api
     env_file:
       - .env
@@ -57,7 +57,7 @@ services:
     networks:
       - frontend
       - backend
-    image: ghcr.io/netweave-managed-networking/netweave-web:latest
+    image: ghcr.io/netweave-managed-networking/netweave-web:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     container_name: netweave-web
     env_file:
       - .env
