@@ -98,6 +98,7 @@ jobs:
           script: |
             set -euo pipefail
             cd ~/netweave
+            docker network inspect netweave-proxy >/dev/null 2>&1 || docker network create netweave-proxy
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
             docker compose pull
             docker compose run --rm --no-deps nginx nginx -t

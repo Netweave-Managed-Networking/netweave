@@ -186,6 +186,11 @@ Compose project `netweave` (from the folder name `~/netweave`); details in `dock
 | `netweave-web`   | none                     | listens on 4000 inside Docker          |
 | `netweave-db`    | 5432 on `127.0.0.1` only | data in volume `netweave_db-data`      |
 
+Networks:
+
+- `netweave_frontend` and `netweave_backend` are private to this project and created by Compose.
+- `netweave-proxy` is shared by all projects and created by the deploy if missing. `netweave-api` and `netweave-web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; the database never joins it.
+
 Start order: db healthy → api healthy → web → Nginx.
 
 ### Files on the server
@@ -202,7 +207,8 @@ Start order: db healthy → api healthy → web → Nginx.
 
 All variables are documented in `.env.example`.\
 On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=netweave-db`.\
-The web container needs no API URL: the frontend calls the relative /api, and during SSR Angular resolves that against the requested host, so it goes through Nginx
+`IMAGE_TAG` and `INSTANCE_NAME` are only read by Compose: they pick the image tag and name the instance on the shared proxy network.\
+The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Nginx.
 
 ### TLS certificates
 

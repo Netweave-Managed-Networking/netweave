@@ -1,6 +1,9 @@
 networks:
   frontend:
   backend:
+  proxy:
+    name: netweave-proxy
+    external: true
 
 services:
   nginx:
@@ -23,7 +26,10 @@ services:
 
   netweave-api:
     networks:
-      - backend
+      backend:
+      proxy:
+        aliases:
+          - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-api
     image: ghcr.io/netweave-managed-networking/netweave-api:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     container_name: netweave-api
     env_file:
@@ -55,8 +61,11 @@ services:
 
   netweave-web:
     networks:
-      - frontend
-      - backend
+      frontend:
+      backend:
+      proxy:
+        aliases:
+          - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-web
     image: ghcr.io/netweave-managed-networking/netweave-web:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     container_name: netweave-web
     env_file:
