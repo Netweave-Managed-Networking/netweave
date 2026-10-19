@@ -22,6 +22,7 @@ import { MatchingRunsAddCancelledAt1791000000000 } from './migrations/1791000000
 import { UsersAddEmailVerification1791100000000 } from './migrations/1791100000000-users-add-email-verification';
 import { MatchingRunsAddRecommendations1791200000000 } from './migrations/1791200000000-matching-runs-add-recommendations';
 import { MembersAddEmail1791300000000 } from './migrations/1791300000000-members-add-email';
+import { MemberUpdateRemindersCreate1791400000000 } from './migrations/1791400000000-member-update-reminders-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -48,4 +49,5 @@ export const Migrations = [
   UsersAddEmailVerification1791100000000,
   MatchingRunsAddRecommendations1791200000000,
   MembersAddEmail1791300000000,
+  MemberUpdateRemindersCreate1791400000000,
 ];

@@ -7,6 +7,7 @@ import { InvitationsModule } from './invitations/invitations.module';
 import { MailModule } from './mail/mail.module';
 import { MatchingsModule } from './matchings/matchings.module';
 import { MembersModule } from './members/members.module';
+import { MemberUpdateRemindersModule } from './members/update-reminders/member-update-reminders.module';
 import { UserEmailWhitelistsModule } from './user-email-whitelists/user-email-whitelists.module';
 import { UsersModule } from './users/users.module';
 import { SequentialTestMailerModule } from './utils/sequential-test-mailer.service/sequential-test-mailer.module';
@@ -21,6 +22,7 @@ import { SequentialTestMailerModule } from './utils/sequential-test-mailer.servi
     MatchingsModule,
     SequentialTestMailerModule,
     MembersModule,
+    MemberUpdateRemindersModule,
     UserEmailWhitelistsModule,
     UsersModule,
   ],
