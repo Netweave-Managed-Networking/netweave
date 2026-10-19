@@ -101,7 +101,7 @@ export class MembersService {
     });
   }
 
-  /** the resources explain a recommendation, the culture weights give the hints on cultural coherence */
+  /** everything the recommendation mails need */
   public async getAllWithAnswers(): Promise<Member[]> {
     return this.membersRepository.find({
       relations: { resourcesRequirements: true, cultureWeights: true },

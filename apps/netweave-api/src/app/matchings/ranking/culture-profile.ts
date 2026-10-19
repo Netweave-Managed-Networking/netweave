@@ -29,7 +29,7 @@ export const toCultureProfile = (
   return profile;
 };
 
-/** the orientation with the highest share, which is the one with the highest sum over the topics Z1 to Z4; on a tie the first in CULTURE_ORIENTATIONS */
+/** on a tie the first one in G, I, W, S wins */
 export const dominantOrientation = (
   profile: CultureProfile,
 ): CultureOrientation =>

@@ -41,6 +41,16 @@ const contacts = new Map<number, RecommendationContact>([
       culture: null,
     },
   ],
+  [
+    4,
+    {
+      name: 'Nachbarschaftshaus',
+      contact: null,
+      email: 'haus@example.com',
+      resources: {},
+      culture: 'G',
+    },
+  ],
 ]);
 
 describe('buildRecommendationMail', () => {
@@ -193,43 +203,42 @@ describe('buildRecommendationMail', () => {
   });
 
   describe('hints on cultural coherence', () => {
-    const clan = { ...recipient, culture: 'G' as const };
+    const clan: RecommendationContact = { ...recipient, culture: 'G' };
+    const market: RecommendationContact = { ...recipient, culture: 'W' };
 
-    it('adds the hint for the culture of the recipient at the culture of each match below the list', () => {
-      const recommendations: MemberRecommendationsDTO = {
-        kind: 'overall',
-        seekerId: 1,
-        matches: [{ ...match(2), category: 'land' }],
-      };
-
-      const html =
-        buildRecommendationMail(recommendations, clan, contacts)?.html ?? '';
-
-      expect(html).toContain(
-        '<h3>Hinweise zur kulturellen Stimmigkeit</h3>' +
-          '<ul><li><strong>Tafel</strong>: Clan -&gt; Markt</li></ul>',
-      );
-      expect(html.endsWith('</ul>')).toBe(true);
+    const overall = (...memberIds: number[]): MemberRecommendationsDTO => ({
+      kind: 'overall',
+      seekerId: 1,
+      matches: memberIds.map((memberId) => ({
+        ...match(memberId),
+        category: 'land',
+      })),
     });
 
-    it('picks the text by direction', () => {
-      const recommendations: MemberRecommendationsDTO = {
-        kind: 'overall',
-        seekerId: 1,
-        matches: [{ ...match(4), category: 'land' }],
-      };
-      const clanMatch = new Map<number, RecommendationContact>([
-        [4, { ...recipient, name: 'Clan e.V.', culture: 'G' }],
-      ]);
+    /** everything from the hint heading to the end of the mail, null without hints */
+    const hintSection = (
+      seeker: RecommendationContact,
+      recommendations: MemberRecommendationsDTO,
+    ): string | null => {
+      const html =
+        buildRecommendationMail(recommendations, seeker, contacts)?.html ?? '';
+      const start = html.indexOf('<h3>Hinweise zur kulturellen Stimmigkeit');
 
-      const html = buildRecommendationMail(
-        recommendations,
-        { ...recipient, culture: 'W' },
-        clanMatch,
-      )?.html;
+      return start === -1 ? null : html.slice(start);
+    };
 
-      expect(html).toContain('Markt -&gt; Clan');
-      expect(html).not.toContain('Clan -&gt; Markt');
+    it('lists the hint for each match at the end of the mail', () => {
+      expect(hintSection(clan, overall(2, 4))).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '<li><strong>Nachbarschaftshaus</strong>: Clan -&gt; Clan</li>' +
+          '</ul>',
+      );
+    });
+
+    it('picks the text by the direction from recipient to match', () => {
+      expect(hintSection(clan, overall(2))).toContain('Clan -&gt; Markt');
+      expect(hintSection(market, overall(4))).toContain('Markt -&gt; Clan');
     });
 
     it('lists a match recommended in several categories only once', () => {
@@ -242,65 +251,27 @@ describe('buildRecommendationMail', () => {
         ],
       };
 
-      const html = buildRecommendationMail(
-        recommendations,
-        clan,
-        contacts,
-      )?.html;
-
-      expect(html?.match(/Clan -&gt; Markt/g)).toHaveLength(1);
+      expect(hintSection(clan, recommendations)).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '</ul>',
+      );
     });
 
     it('leaves out matches without culture answers or without email', () => {
-      const recommendations: MemberRecommendationsDTO = {
-        kind: 'per-category',
-        seekerId: 1,
-        categories: [
-          { category: 'premises', matches: [match(3), match(2), match(99)] },
-        ],
-      };
-
-      const html = buildRecommendationMail(
-        recommendations,
-        clan,
-        contacts,
-      )?.html;
-
-      expect(html).toContain('<strong>Werkstatt</strong>');
-      expect(html).not.toContain('<strong>Werkstatt</strong>:');
-      expect(html).toContain('<strong>Tafel</strong>: Clan -&gt; Markt');
+      expect(hintSection(clan, overall(3, 2, 99))).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '</ul>',
+      );
     });
 
     it('has no hints when the recipient has no culture answers', () => {
-      const recommendations: MemberRecommendationsDTO = {
-        kind: 'overall',
-        seekerId: 1,
-        matches: [{ ...match(2), category: 'land' }],
-      };
-
-      const html = buildRecommendationMail(
-        recommendations,
-        recipient,
-        contacts,
-      )?.html;
-
-      expect(html).not.toContain('kulturellen Stimmigkeit');
+      expect(hintSection(recipient, overall(2))).toBeNull();
     });
 
     it('has no hints when no match has culture answers', () => {
-      const recommendations: MemberRecommendationsDTO = {
-        kind: 'overall',
-        seekerId: 1,
-        matches: [{ ...match(3), category: 'land' }],
-      };
-
-      const html = buildRecommendationMail(
-        recommendations,
-        clan,
-        contacts,
-      )?.html;
-
-      expect(html).not.toContain('kulturellen Stimmigkeit');
+      expect(hintSection(clan, overall(3))).toBeNull();
     });
   });
 });

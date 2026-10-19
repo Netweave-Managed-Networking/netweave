@@ -1,6 +1,7 @@
 import {
   CultureOrientation,
   MemberRecommendationsDTO,
+  RankedMatchDTO,
   RESOURCE_REQUIREMENT_CATEGORY_TEXTS,
   ResourceRequirementCategory,
 } from '@netweave/api-types';
@@ -14,7 +15,7 @@ export interface RecommendationContact {
   email: string;
   /** resource field per category; categories without resources are left out */
   resources: Partial<Record<ResourceRequirementCategory, string>>;
-  /** dominant orientation; null without culture answers */
+  /** null without culture answers */
   culture: CultureOrientation | null;
 }
 
@@ -112,42 +113,51 @@ const listItem = (
   ];
 };
 
-/** one hint per listed match, in the order they first appear; left out where a culture is unknown */
 const cultureHints = (
   recommendations: MemberRecommendationsDTO,
   recipient: RecommendationContact,
   contacts: ReadonlyMap<number, RecommendationContact>,
 ): string => {
-  const { culture } = recipient;
-
-  if (!culture) {
+  if (!recipient.culture) {
     return '';
   }
 
-  const memberIds = new Set(
-    recommendations.kind === 'per-category'
-      ? recommendations.categories.flatMap(({ matches }) =>
-          matches.map(({ memberId }) => memberId),
-        )
-      : recommendations.matches.map(({ memberId }) => memberId),
-  );
+  const items: string[] = [];
 
-  const items = [...memberIds].flatMap((memberId) => {
+  for (const memberId of recommendedMemberIds(recommendations)) {
     const match = contacts.get(memberId);
 
-    return match?.culture
-      ? [
-          `<li><strong>${escapeHtml(match.name)}</strong>: ` +
-            `${escapeHtml(CULTURE_HINTS[culture][match.culture])}</li>`,
-        ]
-      : [];
-  });
+    if (!match?.culture) {
+      continue;
+    }
+
+    const hint = CULTURE_HINTS[recipient.culture][match.culture];
+
+    items.push(
+      `<li><strong>${escapeHtml(match.name)}</strong>: ${escapeHtml(hint)}</li>`,
+    );
+  }
 
   if (items.length === 0) {
     return '';
   }
 
-  return `<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>${items.join('')}</ul>`;
+  return renderSection({
+    heading: 'Hinweise zur kulturellen Stimmigkeit',
+    items,
+  });
+};
+
+/** in the order of the mail, every member only once */
+const recommendedMemberIds = (
+  recommendations: MemberRecommendationsDTO,
+): Set<number> => {
+  const matches: RankedMatchDTO[] =
+    recommendations.kind === 'per-category'
+      ? recommendations.categories.flatMap(({ matches }) => matches)
+      : recommendations.matches;
+
+  return new Set(matches.map(({ memberId }) => memberId));
 };
 
 const categoryLabel = (category: ResourceRequirementCategory): string =>

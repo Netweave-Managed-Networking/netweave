@@ -87,23 +87,18 @@ export class RecommendationMailsService {
 const toContacts = (members: Member[]): Map<number, RecommendationContact> => {
   const contacts = new Map<number, RecommendationContact>();
 
-  for (const {
-    id,
-    name,
-    contact,
-    email,
-    resourcesRequirements,
-    cultureWeights,
-  } of members) {
-    if (email) {
-      contacts.set(id, {
-        name,
-        contact,
-        email,
-        resources: toResources(resourcesRequirements ?? []),
-        culture: toCulture(cultureWeights ?? []),
-      });
+  for (const member of members) {
+    if (!member.email) {
+      continue;
     }
+
+    contacts.set(member.id, {
+      name: member.name,
+      contact: member.contact,
+      email: member.email,
+      resources: toResources(member.resourcesRequirements ?? []),
+      culture: toCulture(member.cultureWeights ?? []),
+    });
   }
 
   return contacts;

@@ -1,9 +1,8 @@
 import { CultureOrientation } from '@netweave/api-types';
 
 /**
- * hint for the recipient of a recommendation mail, by the culture of the recipient and then by the culture of the
- * recommended member (G = Clan, I = Adhokratie, W = Markt, S = Hierarchie); directional, so G -> W differs from
- * W -> G. plain text, it is escaped in the mail. placeholders until the final texts are delivered
+ * by the culture of the recipient, then by the culture of the recommended member;
+ * G = Clan, I = Adhokratie, W = Markt, S = Hierarchie. placeholders until the final texts are delivered
  */
 export const CULTURE_HINTS: Record<
   CultureOrientation,
