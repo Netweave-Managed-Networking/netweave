@@ -4,6 +4,7 @@ import {
   ResourceRequirementCategory,
 } from '@netweave/api-types';
 import { SendMailInput } from '../../mail/mail.service';
+import { escapeHtml } from '../../utils/escape-html';
 
 export interface RecommendationContact {
   name: string;
@@ -111,12 +112,3 @@ const categoryLabel = (category: ResourceRequirementCategory): string =>
 
 const multiline = (text: string): string =>
   escapeHtml(text).replace(/\r?\n/g, '<br>');
-
-/** names, contacts and resources are user input */
-const escapeHtml = (text: string): string =>
-  text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');

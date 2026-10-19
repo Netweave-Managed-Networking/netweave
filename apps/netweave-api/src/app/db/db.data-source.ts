@@ -8,6 +8,7 @@ import { Matching } from '../matchings/matching.entity';
 import { MemberCultureWeight } from '../members/member-culture-weight.entity';
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
 import { Member } from '../members/member.entity';
+import { MemberUpdateReminder } from '../members/update-reminders/member-update-reminder.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
@@ -32,6 +33,7 @@ export default new DataSource({
     Member,
     MemberCultureWeight,
     MemberResourceRequirement,
+    MemberUpdateReminder,
     User,
     UserEmailWhitelist,
   ],
