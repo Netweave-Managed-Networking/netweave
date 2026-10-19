@@ -1,6 +1,10 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 import { Logger } from '@nestjs/common';
-import { RecommendationsDTO } from '@netweave/api-types';
+import {
+  CULTURE_ORIENTATIONS,
+  CultureOrientation,
+  RecommendationsDTO,
+} from '@netweave/api-types';
 import { Repository } from 'typeorm';
 import { MailConfig } from '../../mail/mail-config.entity';
 import { MailService } from '../../mail/mail.service';
@@ -37,19 +41,33 @@ const member = (
     ),
   }) as Member;
 
+// a single answered topic decides the dominant culture
+const culture = (orientation: CultureOrientation) =>
+  CULTURE_ORIENTATIONS.map((other) => ({
+    itemId: `Z1-${other}` as const,
+    weight: other === orientation ? 1 : 0,
+    topicTotal: 1,
+  }));
+
 const members = [
-  member(1, 'Nachbarschaftsgarten', 'Erika Muster', {
-    competencies: 'Wissen über ökologischen Gemüseanbau und Kompostierung.',
-  }),
+  {
+    ...member(1, 'Nachbarschaftsgarten', 'Erika Muster', {
+      competencies: 'Wissen über ökologischen Gemüseanbau und Kompostierung.',
+    }),
+    cultureWeights: culture('G'),
+  } as Member,
   member(2, 'Werkstatt Hobelbank', null, {
     equipment:
       'Voll ausgestattete Holzwerkstatt;\nHandwerkzeug und Schubkarren können ausgeliehen werden.',
     competencies: 'Schreinermeister im Team, wir bauen Hochbeete.',
   }),
-  member(3, 'Stadtteilverein Mitte', 'Max Beispiel', {
-    land: 'Brachfläche von ca. 300 m² hinter dem Vereinsheim.',
-    helping_hands: 'Rund 40 Ehrenamtliche für Aktionstage.',
-  }),
+  {
+    ...member(3, 'Stadtteilverein Mitte', 'Max Beispiel', {
+      land: 'Brachfläche von ca. 300 m² hinter dem Vereinsheim.',
+      helping_hands: 'Rund 40 Ehrenamtliche für Aktionstage.',
+    }),
+    cultureWeights: culture('S'),
+  } as Member,
 ];
 
 const match = (memberId: number) => ({
@@ -137,7 +155,7 @@ const caughtMail = async (to: string): Promise<MailpitMessage> => {
         findOne: jest.fn().mockResolvedValue(null),
       } as unknown as Repository<MailConfig>;
       const membersService = {
-        getAllWithResources: jest.fn().mockResolvedValue(members),
+        getAllWithAnswers: jest.fn().mockResolvedValue(members),
       } as unknown as MembersService;
 
       const service = new RecommendationMailsService(
@@ -169,6 +187,9 @@ const caughtMail = async (to: string): Promise<MailpitMessage> => {
       );
       // only the category the match is recommended for
       expect(mail.HTML).not.toContain('Schreinermeister');
+      // only for the match with culture answers, and only once
+      expect(mail.HTML).toContain('Hinweise zur kulturellen Stimmigkeit');
+      expect(mail.HTML.match(/Clan -&gt; Hierarchie/g)).toHaveLength(1);
     });
 
     it('delivers the overall mail with the resources of the best category', async () => {

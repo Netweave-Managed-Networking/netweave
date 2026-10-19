@@ -1,10 +1,12 @@
 import {
+  CultureOrientation,
   MemberRecommendationsDTO,
   RESOURCE_REQUIREMENT_CATEGORY_TEXTS,
   ResourceRequirementCategory,
 } from '@netweave/api-types';
 import { SendMailInput } from '../../mail/mail.service';
 import { escapeHtml } from '../../utils/escape-html';
+import { CULTURE_HINTS } from './culture-hints';
 
 export interface RecommendationContact {
   name: string;
@@ -12,6 +14,8 @@ export interface RecommendationContact {
   email: string;
   /** resource field per category; categories without resources are left out */
   resources: Partial<Record<ResourceRequirementCategory, string>>;
+  /** dominant orientation; null without culture answers */
+  culture: CultureOrientation | null;
 }
 
 interface Section {
@@ -44,7 +48,8 @@ export const buildRecommendationMail = (
     html:
       `<p>Hallo ${greeting},</p>` +
       '<p>auf Basis der aktuellen Matching-Berechnung empfehlen wir dir, mit folgenden Netzwerkteilnehmern Kontakt aufzunehmen:</p>' +
-      body,
+      body +
+      cultureHints(recommendations, recipient, contacts),
   };
 };
 
@@ -105,6 +110,44 @@ const listItem = (
   return [
     `<li>${parts.filter(Boolean).join(' – ')}<ul>${resources.join('')}</ul></li>`,
   ];
+};
+
+/** one hint per listed match, in the order they first appear; left out where a culture is unknown */
+const cultureHints = (
+  recommendations: MemberRecommendationsDTO,
+  recipient: RecommendationContact,
+  contacts: ReadonlyMap<number, RecommendationContact>,
+): string => {
+  const { culture } = recipient;
+
+  if (!culture) {
+    return '';
+  }
+
+  const memberIds = new Set(
+    recommendations.kind === 'per-category'
+      ? recommendations.categories.flatMap(({ matches }) =>
+          matches.map(({ memberId }) => memberId),
+        )
+      : recommendations.matches.map(({ memberId }) => memberId),
+  );
+
+  const items = [...memberIds].flatMap((memberId) => {
+    const match = contacts.get(memberId);
+
+    return match?.culture
+      ? [
+          `<li><strong>${escapeHtml(match.name)}</strong>: ` +
+            `${escapeHtml(CULTURE_HINTS[culture][match.culture])}</li>`,
+        ]
+      : [];
+  });
+
+  if (items.length === 0) {
+    return '';
+  }
+
+  return `<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>${items.join('')}</ul>`;
 };
 
 const categoryLabel = (category: ResourceRequirementCategory): string =>

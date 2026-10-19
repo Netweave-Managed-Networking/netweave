@@ -101,10 +101,10 @@ export class MembersService {
     });
   }
 
-  /** the resources explain a recommendation */
-  public async getAllWithResources(): Promise<Member[]> {
+  /** the resources explain a recommendation, the culture weights give the hints on cultural coherence */
+  public async getAllWithAnswers(): Promise<Member[]> {
     return this.membersRepository.find({
-      relations: { resourcesRequirements: true },
+      relations: { resourcesRequirements: true, cultureWeights: true },
     });
   }
 

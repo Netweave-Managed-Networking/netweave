@@ -39,7 +39,7 @@ const recommendations: RecommendationsDTO = {
 
 describe('RecommendationMailsService', () => {
   let service: RecommendationMailsService;
-  let membersService: jest.Mocked<Pick<MembersService, 'getAllWithResources'>>;
+  let membersService: jest.Mocked<Pick<MembersService, 'getAllWithAnswers'>>;
   let mailService: jest.Mocked<Pick<MailService, 'sendMail'>>;
   const originalFlag = process.env.SEND_RECOMMENDATION_MAILS;
 
@@ -47,7 +47,7 @@ describe('RecommendationMailsService', () => {
     delete process.env.SEND_RECOMMENDATION_MAILS;
 
     membersService = {
-      getAllWithResources: jest
+      getAllWithAnswers: jest
         .fn()
         .mockResolvedValue([
           member(1, 'one@example.com'),
@@ -88,7 +88,7 @@ describe('RecommendationMailsService', () => {
   });
 
   it('uses the confirmed new email instead of the one the invitation was sent to', async () => {
-    membersService.getAllWithResources.mockResolvedValue([
+    membersService.getAllWithAnswers.mockResolvedValue([
       {
         ...member(1, 'new-one@example.com'),
         invitation: { email: 'one@example.com' },
@@ -131,12 +131,12 @@ describe('RecommendationMailsService', () => {
 
     await service.sendForRun(42, recommendations);
 
-    expect(membersService.getAllWithResources).not.toHaveBeenCalled();
+    expect(membersService.getAllWithAnswers).not.toHaveBeenCalled();
     expect(mailService.sendMail).not.toHaveBeenCalled();
   });
 
   it('never throws, e.g. when loading the members fails', async () => {
-    membersService.getAllWithResources.mockRejectedValue(new Error('db down'));
+    membersService.getAllWithAnswers.mockRejectedValue(new Error('db down'));
     const error = jest.spyOn(Logger.prototype, 'error').mockImplementation();
 
     await expect(
@@ -144,5 +144,30 @@ describe('RecommendationMailsService', () => {
     ).resolves.toBeUndefined();
 
     expect(error).toHaveBeenCalled();
+  });
+
+  it('gives the hints on cultural coherence by the dominant culture of recipient and match', async () => {
+    membersService.getAllWithAnswers.mockResolvedValue([
+      {
+        ...member(1, 'one@example.com'),
+        cultureWeights: [
+          { itemId: 'Z1-G', weight: 3, topicTotal: 4 },
+          { itemId: 'Z1-S', weight: 1, topicTotal: 4 },
+        ],
+      } as Member,
+      {
+        ...member(2, 'two@example.com'),
+        cultureWeights: [
+          { itemId: 'Z1-G', weight: 1, topicTotal: 4 },
+          { itemId: 'Z1-S', weight: 3, topicTotal: 4 },
+        ],
+      } as Member,
+    ]);
+
+    await service.sendForRun(42, recommendations);
+
+    const [toOne, toTwo] = mailService.sendMail.mock.calls.map(([m]) => m.html);
+    expect(toOne).toContain('<strong>Member 2</strong>: Clan -&gt; Hierarchie');
+    expect(toTwo).toContain('<strong>Member 1</strong>: Hierarchie -&gt; Clan');
   });
 });

@@ -1,5 +1,9 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
-import { CultureProfile, toCultureProfile } from './culture-profile';
+import {
+  CultureProfile,
+  dominantOrientation,
+  toCultureProfile,
+} from './culture-profile';
 import {
   cultureDistance,
   EuclideanMaxCultureWeighting,
@@ -30,6 +34,18 @@ describe('toCultureProfile', () => {
 
   it('is null without any culture answers', () => {
     expect(toCultureProfile([])).toBeNull();
+  });
+});
+
+describe('dominantOrientation', () => {
+  it('is the orientation with the highest share', () => {
+    expect(dominantOrientation({ G: 20, I: 30, W: 10, S: 40 })).toBe('S');
+    expect(dominantOrientation({ G: 10, I: 60, W: 10, S: 20 })).toBe('I');
+  });
+
+  it('is the first of G, I, W, S on a tie', () => {
+    expect(dominantOrientation({ G: 0, I: 40, W: 40, S: 20 })).toBe('I');
+    expect(dominantOrientation({ G: 25, I: 25, W: 25, S: 25 })).toBe('G');
   });
 });
 

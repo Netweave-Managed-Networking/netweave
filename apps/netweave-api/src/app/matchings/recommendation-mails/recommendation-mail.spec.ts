@@ -17,6 +17,7 @@ const recipient: RecommendationContact = {
   contact: 'Erika Muster',
   email: 'seeker@example.com',
   resources: {},
+  culture: null,
 };
 
 const contacts = new Map<number, RecommendationContact>([
@@ -27,6 +28,7 @@ const contacts = new Map<number, RecommendationContact>([
       contact: 'Max',
       email: 'tafel@example.com',
       resources: { premises: 'Saal für 80 Personen', equipment: 'Kühlwagen' },
+      culture: 'W',
     },
   ],
   [
@@ -36,6 +38,7 @@ const contacts = new Map<number, RecommendationContact>([
       contact: null,
       email: 'werkstatt@example.com',
       resources: { premises: 'Halle', helping_hands: 'Azubis\nab Mai' },
+      culture: null,
     },
   ],
 ]);
@@ -173,14 +176,131 @@ describe('buildRecommendationMail', () => {
           contact: null,
           email: 'a@b.c',
           resources: { land: '<img src=x>' },
+          culture: 'G',
         },
       ],
     ]);
 
-    const mail = buildRecommendationMail(recommendations, recipient, evil);
+    const mail = buildRecommendationMail(
+      recommendations,
+      { ...recipient, culture: 'G' },
+      evil,
+    );
 
     expect(mail?.html).not.toContain('<script>');
     expect(mail?.html).toContain('&lt;script&gt;');
     expect(mail?.html).not.toContain('<img');
+  });
+
+  describe('hints on cultural coherence', () => {
+    const clan = { ...recipient, culture: 'G' as const };
+
+    it('adds the hint for the culture of the recipient at the culture of each match below the list', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'overall',
+        seekerId: 1,
+        matches: [{ ...match(2), category: 'land' }],
+      };
+
+      const html =
+        buildRecommendationMail(recommendations, clan, contacts)?.html ?? '';
+
+      expect(html).toContain(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3>' +
+          '<ul><li><strong>Tafel</strong>: Clan -&gt; Markt</li></ul>',
+      );
+      expect(html.endsWith('</ul>')).toBe(true);
+    });
+
+    it('picks the text by direction', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'overall',
+        seekerId: 1,
+        matches: [{ ...match(4), category: 'land' }],
+      };
+      const clanMatch = new Map<number, RecommendationContact>([
+        [4, { ...recipient, name: 'Clan e.V.', culture: 'G' }],
+      ]);
+
+      const html = buildRecommendationMail(
+        recommendations,
+        { ...recipient, culture: 'W' },
+        clanMatch,
+      )?.html;
+
+      expect(html).toContain('Markt -&gt; Clan');
+      expect(html).not.toContain('Clan -&gt; Markt');
+    });
+
+    it('lists a match recommended in several categories only once', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'per-category',
+        seekerId: 1,
+        categories: [
+          { category: 'premises', matches: [match(2)] },
+          { category: 'equipment', matches: [match(2)] },
+        ],
+      };
+
+      const html = buildRecommendationMail(
+        recommendations,
+        clan,
+        contacts,
+      )?.html;
+
+      expect(html?.match(/Clan -&gt; Markt/g)).toHaveLength(1);
+    });
+
+    it('leaves out matches without culture answers or without email', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'per-category',
+        seekerId: 1,
+        categories: [
+          { category: 'premises', matches: [match(3), match(2), match(99)] },
+        ],
+      };
+
+      const html = buildRecommendationMail(
+        recommendations,
+        clan,
+        contacts,
+      )?.html;
+
+      expect(html).toContain('<strong>Werkstatt</strong>');
+      expect(html).not.toContain('<strong>Werkstatt</strong>:');
+      expect(html).toContain('<strong>Tafel</strong>: Clan -&gt; Markt');
+    });
+
+    it('has no hints when the recipient has no culture answers', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'overall',
+        seekerId: 1,
+        matches: [{ ...match(2), category: 'land' }],
+      };
+
+      const html = buildRecommendationMail(
+        recommendations,
+        recipient,
+        contacts,
+      )?.html;
+
+      expect(html).not.toContain('kulturellen Stimmigkeit');
+    });
+
+    it('has no hints when no match has culture answers', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'overall',
+        seekerId: 1,
+        matches: [{ ...match(3), category: 'land' }],
+      };
+
+      const html = buildRecommendationMail(
+        recommendations,
+        clan,
+        contacts,
+      )?.html;
+
+      expect(html).not.toContain('kulturellen Stimmigkeit');
+    });
   });
 });
