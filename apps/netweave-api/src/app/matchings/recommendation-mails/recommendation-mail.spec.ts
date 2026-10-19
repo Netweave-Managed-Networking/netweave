@@ -17,6 +17,7 @@ const recipient: RecommendationContact = {
   contact: 'Erika Muster',
   email: 'seeker@example.com',
   resources: {},
+  culture: null,
 };
 
 const contacts = new Map<number, RecommendationContact>([
@@ -27,6 +28,7 @@ const contacts = new Map<number, RecommendationContact>([
       contact: 'Max',
       email: 'tafel@example.com',
       resources: { premises: 'Saal für 80 Personen', equipment: 'Kühlwagen' },
+      culture: 'W',
     },
   ],
   [
@@ -36,6 +38,17 @@ const contacts = new Map<number, RecommendationContact>([
       contact: null,
       email: 'werkstatt@example.com',
       resources: { premises: 'Halle', helping_hands: 'Azubis\nab Mai' },
+      culture: null,
+    },
+  ],
+  [
+    4,
+    {
+      name: 'Nachbarschaftshaus',
+      contact: null,
+      email: 'haus@example.com',
+      resources: {},
+      culture: 'G',
     },
   ],
 ]);
@@ -173,14 +186,92 @@ describe('buildRecommendationMail', () => {
           contact: null,
           email: 'a@b.c',
           resources: { land: '<img src=x>' },
+          culture: 'G',
         },
       ],
     ]);
 
-    const mail = buildRecommendationMail(recommendations, recipient, evil);
+    const mail = buildRecommendationMail(
+      recommendations,
+      { ...recipient, culture: 'G' },
+      evil,
+    );
 
     expect(mail?.html).not.toContain('<script>');
     expect(mail?.html).toContain('&lt;script&gt;');
     expect(mail?.html).not.toContain('<img');
+  });
+
+  describe('hints on cultural coherence', () => {
+    const clan: RecommendationContact = { ...recipient, culture: 'G' };
+    const market: RecommendationContact = { ...recipient, culture: 'W' };
+
+    const overall = (...memberIds: number[]): MemberRecommendationsDTO => ({
+      kind: 'overall',
+      seekerId: 1,
+      matches: memberIds.map((memberId) => ({
+        ...match(memberId),
+        category: 'land',
+      })),
+    });
+
+    /** everything from the hint heading to the end of the mail, null without hints */
+    const hintSection = (
+      seeker: RecommendationContact,
+      recommendations: MemberRecommendationsDTO,
+    ): string | null => {
+      const html =
+        buildRecommendationMail(recommendations, seeker, contacts)?.html ?? '';
+      const start = html.indexOf('<h3>Hinweise zur kulturellen Stimmigkeit');
+
+      return start === -1 ? null : html.slice(start);
+    };
+
+    it('lists the hint for each match at the end of the mail', () => {
+      expect(hintSection(clan, overall(2, 4))).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '<li><strong>Nachbarschaftshaus</strong>: Clan -&gt; Clan</li>' +
+          '</ul>',
+      );
+    });
+
+    it('picks the text by the direction from recipient to match', () => {
+      expect(hintSection(clan, overall(2))).toContain('Clan -&gt; Markt');
+      expect(hintSection(market, overall(4))).toContain('Markt -&gt; Clan');
+    });
+
+    it('lists a match recommended in several categories only once', () => {
+      const recommendations: MemberRecommendationsDTO = {
+        kind: 'per-category',
+        seekerId: 1,
+        categories: [
+          { category: 'premises', matches: [match(2)] },
+          { category: 'equipment', matches: [match(2)] },
+        ],
+      };
+
+      expect(hintSection(clan, recommendations)).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '</ul>',
+      );
+    });
+
+    it('leaves out matches without culture answers or without email', () => {
+      expect(hintSection(clan, overall(3, 2, 99))).toBe(
+        '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
+          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          '</ul>',
+      );
+    });
+
+    it('has no hints when the recipient has no culture answers', () => {
+      expect(hintSection(recipient, overall(2))).toBeNull();
+    });
+
+    it('has no hints when no match has culture answers', () => {
+      expect(hintSection(clan, overall(3))).toBeNull();
+    });
   });
 });

@@ -101,10 +101,10 @@ export class MembersService {
     });
   }
 
-  /** the resources explain a recommendation */
-  public async getAllWithResources(): Promise<Member[]> {
+  /** everything the recommendation mails need */
+  public async getAllWithAnswers(): Promise<Member[]> {
     return this.membersRepository.find({
-      relations: { resourcesRequirements: true },
+      relations: { resourcesRequirements: true, cultureWeights: true },
     });
   }
 

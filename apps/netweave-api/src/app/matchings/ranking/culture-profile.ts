@@ -1,4 +1,8 @@
-import { CultureOrientation, parseCultureItemId } from '@netweave/api-types';
+import {
+  CULTURE_ORIENTATIONS,
+  CultureOrientation,
+  parseCultureItemId,
+} from '@netweave/api-types';
 import { MemberCultureWeight } from '../../members/member-culture-weight.entity';
 
 /** share of each orientation in percent, adding up to 100 */
@@ -24,3 +28,11 @@ export const toCultureProfile = (
 
   return profile;
 };
+
+/** on a tie the first one in G, I, W, S wins */
+export const dominantOrientation = (
+  profile: CultureProfile,
+): CultureOrientation =>
+  CULTURE_ORIENTATIONS.reduce((dominant, orientation) =>
+    profile[orientation] > profile[dominant] ? orientation : dominant,
+  );

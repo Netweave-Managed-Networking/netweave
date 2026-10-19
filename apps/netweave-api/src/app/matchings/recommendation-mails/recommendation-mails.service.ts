@@ -1,9 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RecommendationsDTO } from '@netweave/api-types';
 import { MailService } from '../../mail/mail.service';
+import { MemberCultureWeight } from '../../members/member-culture-weight.entity';
 import { MemberResourceRequirement } from '../../members/member-resource-requirement.entity';
 import { Member } from '../../members/member.entity';
 import { MembersService } from '../../members/members.service';
+import {
+  dominantOrientation,
+  toCultureProfile,
+} from '../ranking/culture-profile';
 import {
   buildRecommendationMail,
   RecommendationContact,
@@ -33,7 +38,7 @@ export class RecommendationMailsService {
     }
 
     try {
-      const members = await this.membersService.getAllWithResources();
+      const members = await this.membersService.getAllWithAnswers();
       const contacts = toContacts(members);
 
       let sent = 0;
@@ -82,15 +87,18 @@ export class RecommendationMailsService {
 const toContacts = (members: Member[]): Map<number, RecommendationContact> => {
   const contacts = new Map<number, RecommendationContact>();
 
-  for (const { id, name, contact, email, resourcesRequirements } of members) {
-    if (email) {
-      contacts.set(id, {
-        name,
-        contact,
-        email,
-        resources: toResources(resourcesRequirements ?? []),
-      });
+  for (const member of members) {
+    if (!member.email) {
+      continue;
     }
+
+    contacts.set(member.id, {
+      name: member.name,
+      contact: member.contact,
+      email: member.email,
+      resources: toResources(member.resourcesRequirements ?? []),
+      culture: toCulture(member.cultureWeights ?? []),
+    });
   }
 
   return contacts;
@@ -108,4 +116,12 @@ const toResources = (
   }
 
   return resources;
+};
+
+const toCulture = (
+  cultureWeights: MemberCultureWeight[],
+): RecommendationContact['culture'] => {
+  const profile = toCultureProfile(cultureWeights);
+
+  return profile ? dominantOrientation(profile) : null;
 };

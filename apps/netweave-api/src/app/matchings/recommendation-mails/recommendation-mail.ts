@@ -1,10 +1,13 @@
 import {
+  CultureOrientation,
   MemberRecommendationsDTO,
+  RankedMatchDTO,
   RESOURCE_REQUIREMENT_CATEGORY_TEXTS,
   ResourceRequirementCategory,
 } from '@netweave/api-types';
 import { SendMailInput } from '../../mail/mail.service';
 import { escapeHtml } from '../../utils/escape-html';
+import { CULTURE_HINTS } from './culture-hints';
 
 export interface RecommendationContact {
   name: string;
@@ -12,6 +15,8 @@ export interface RecommendationContact {
   email: string;
   /** resource field per category; categories without resources are left out */
   resources: Partial<Record<ResourceRequirementCategory, string>>;
+  /** null without culture answers */
+  culture: CultureOrientation | null;
 }
 
 interface Section {
@@ -44,7 +49,8 @@ export const buildRecommendationMail = (
     html:
       `<p>Hallo ${greeting},</p>` +
       '<p>auf Basis der aktuellen Matching-Berechnung empfehlen wir dir, mit folgenden Netzwerkteilnehmern Kontakt aufzunehmen:</p>' +
-      body,
+      body +
+      cultureHints(recommendations, recipient, contacts),
   };
 };
 
@@ -105,6 +111,53 @@ const listItem = (
   return [
     `<li>${parts.filter(Boolean).join(' – ')}<ul>${resources.join('')}</ul></li>`,
   ];
+};
+
+const cultureHints = (
+  recommendations: MemberRecommendationsDTO,
+  recipient: RecommendationContact,
+  contacts: ReadonlyMap<number, RecommendationContact>,
+): string => {
+  if (!recipient.culture) {
+    return '';
+  }
+
+  const items: string[] = [];
+
+  for (const memberId of recommendedMemberIds(recommendations)) {
+    const match = contacts.get(memberId);
+
+    if (!match?.culture) {
+      continue;
+    }
+
+    const hint = CULTURE_HINTS[recipient.culture][match.culture];
+
+    items.push(
+      `<li><strong>${escapeHtml(match.name)}</strong>: ${escapeHtml(hint)}</li>`,
+    );
+  }
+
+  if (items.length === 0) {
+    return '';
+  }
+
+  return renderSection({
+    heading: 'Hinweise zur kulturellen Stimmigkeit',
+    items,
+  });
+};
+
+/** in the order of the mail, every member only once */
+const recommendedMemberIds = (
+  recommendations: MemberRecommendationsDTO,
+): Set<number> => {
+  const matches: RankedMatchDTO[] =
+    recommendations.kind === 'per-category'
+      ? recommendations.categories.flatMap(({ matches }) => matches)
+      : recommendations.matches;
+
+  return new Set(matches.map(({ memberId }) => memberId));
 };
 
 const categoryLabel = (category: ResourceRequirementCategory): string =>
