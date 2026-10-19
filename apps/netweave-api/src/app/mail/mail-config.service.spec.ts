@@ -15,10 +15,7 @@ const createMockRepository = (): MockRepo => ({
 const createMockMailService = () =>
   ({
     getEffectiveConfig: jest.fn(),
-    reload: jest.fn(),
-  }) as unknown as jest.Mocked<
-    Pick<MailService, 'getEffectiveConfig' | 'reload'>
-  >;
+  }) as unknown as jest.Mocked<Pick<MailService, 'getEffectiveConfig'>>;
 
 describe('MailConfigService', () => {
   let service: MailConfigService;
@@ -110,7 +107,7 @@ describe('MailConfigService', () => {
       fromAddress: 'info@netweave.de',
     };
 
-    it('creates the singleton row, encrypts the password, and reloads the mailService', async () => {
+    it('creates the singleton row and encrypts the password', async () => {
       repository.findOne
         ?.mockResolvedValueOnce(undefined) // existing lookup
         .mockResolvedValueOnce({
@@ -132,8 +129,6 @@ describe('MailConfigService', () => {
       expect(saved.authPassEncrypted).toBeDefined();
       expect(decryptSecret(saved.authPassEncrypted)).toBe('new-secret');
       expect(saved.updatedBy).toEqual({ id: 7 });
-
-      expect(mailService.reload).toHaveBeenCalledTimes(1);
     });
 
     it('keeps the existing encrypted password when authPass is omitted', async () => {
@@ -155,6 +150,35 @@ describe('MailConfigService', () => {
       const saved = repository.save?.mock.calls[0][0];
       expect(saved.id).toBe(1);
       expect(saved.authPassEncrypted).toBe('iv:tag:cipher');
+    });
+
+    it('takes over the env password when authPass is omitted and no row exists yet', async () => {
+      repository.findOne
+        ?.mockResolvedValueOnce(undefined) // existing lookup
+        .mockResolvedValueOnce({
+          host: dto.host,
+          port: dto.port,
+          secure: dto.secure,
+          authUser: dto.authUser,
+          fromName: dto.fromName,
+          fromAddress: dto.fromAddress,
+          updatedAt: new Date(),
+        });
+      mailService.getEffectiveConfig.mockResolvedValue({
+        host: 'smtp.example.com',
+        port: 587,
+        secure: true,
+        authUser: 'smtp-user',
+        authPass: 'env-secret',
+        fromName: 'Netweave',
+        fromAddress: 'info@netweave.de',
+      });
+
+      const { authPass: _authPass, ...dtoWithoutPassword } = dto;
+      await service.update(dtoWithoutPassword as MailConfigUpdateDTO, 7);
+
+      const saved = repository.save?.mock.calls[0][0];
+      expect(decryptSecret(saved.authPassEncrypted)).toBe('env-secret');
     });
 
     it('clears the stored password when authPass is an empty string', async () => {

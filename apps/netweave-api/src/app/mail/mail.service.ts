@@ -24,18 +24,12 @@ export interface EffectiveMailConfig {
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter: Transporter | null = null;
 
   public constructor(
     @InjectRepository(MailConfig)
     private readonly repository: Repository<MailConfig>,
   ) {
     this.logger.log(`MailService initialized`);
-  }
-
-  /** drops the cached transporter so the next send rebuilds it from fresh config */
-  public reload(): void {
-    this.transporter = null;
   }
 
   public async sendMail({
@@ -45,7 +39,7 @@ export class MailService {
   }: SendMailInput): Promise<boolean> {
     try {
       const config = await this.getEffectiveConfig();
-      const transporter = this.getTransporter(config);
+      const transporter = this.createTransporter(config);
 
       await transporter.sendMail({
         from: `"${config.fromName}" <${config.fromAddress}>`,
@@ -117,10 +111,8 @@ export class MailService {
     };
   }
 
-  private getTransporter(config: EffectiveMailConfig): Transporter {
-    if (this.transporter) return this.transporter;
-
-    this.transporter = createTransport({
+  private createTransporter(config: EffectiveMailConfig): Transporter {
+    return createTransport({
       host: config.host,
       port: config.port,
       secure: config.secure,
@@ -128,7 +120,5 @@ export class MailService {
         ? { user: config.authUser, pass: config.authPass }
         : undefined,
     });
-
-    return this.transporter;
   }
 }
