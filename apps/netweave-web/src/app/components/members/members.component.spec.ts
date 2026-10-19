@@ -63,15 +63,15 @@ describe('MembersComponent', () => {
 
   it('lists the name of every member in the order the API delivers', async () => {
     await flush([
-      { id: 1, name: 'Acme e.V.', email: null },
-      { id: 2, name: 'Beta gGmbH', email: null },
+      { id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' },
+      { id: 2, name: 'Beta gGmbH', email: 'kontakt@beta.example' },
     ]);
 
     expect(names()).toEqual(['Acme e.V.', 'Beta gGmbH']);
   });
 
   it('shows a legend for the email and organization columns', async () => {
-    await flush([{ id: 1, name: 'Acme e.V.', email: null }]);
+    await flush([{ id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' }]);
 
     const legend = Array.from(
       compiled().querySelectorAll('.members__legend [role="columnheader"]'),
@@ -83,13 +83,15 @@ describe('MembersComponent', () => {
   });
 
   it('shows no pagination when all members fit on one page', async () => {
-    await flush([{ id: 1, name: 'Acme e.V.', email: null }]);
+    await flush([{ id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' }]);
 
     expect(compiled().querySelector('.members__pagination')).toBeNull();
   });
 
   it('pages through the members', async () => {
-    await flush([{ id: 1, name: 'Acme e.V.', email: null }], { total: 21 });
+    await flush([{ id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' }], {
+      total: 21,
+    });
     expect(compiled().querySelector('.members__pagination')).toBeTruthy();
     expect(
       compiled().querySelector<HTMLButtonElement>('.members__prev-page')
@@ -97,10 +99,13 @@ describe('MembersComponent', () => {
     ).toBe(true);
 
     click('.members__next-page');
-    await flush([{ id: 21, name: 'Zeta e.V.', email: null }], {
-      page: 2,
-      total: 21,
-    });
+    await flush(
+      [{ id: 21, name: 'Zeta e.V.', email: 'kontakt@zeta.example' }],
+      {
+        page: 2,
+        total: 21,
+      },
+    );
 
     expect(names()).toEqual(['Zeta e.V.']);
     expect(
@@ -131,17 +136,26 @@ describe('MembersComponent', () => {
     };
 
     it('loads the members matching the trimmed search, starting on the first page', async () => {
-      await flush([{ id: 1, name: 'Acme e.V.', email: null }], { total: 21 });
+      await flush(
+        [{ id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' }],
+        { total: 21 },
+      );
       click('.members__next-page');
-      await flush([{ id: 21, name: 'Zeta e.V.', email: null }], {
-        page: 2,
-        total: 21,
-      });
+      await flush(
+        [{ id: 21, name: 'Zeta e.V.', email: 'kontakt@zeta.example' }],
+        {
+          page: 2,
+          total: 21,
+        },
+      );
 
       await type('  acme ');
-      await flush([{ id: 1, name: 'Acme e.V.', email: null }], {
-        search: 'acme',
-      });
+      await flush(
+        [{ id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' }],
+        {
+          search: 'acme',
+        },
+      );
 
       expect(names()).toEqual(['Acme e.V.']);
     });
@@ -159,7 +173,9 @@ describe('MembersComponent', () => {
     });
 
     it('says so when nothing matches the search', async () => {
-      await flush([{ id: 1, name: 'Acme e.V.', email: null }]);
+      await flush([
+        { id: 1, name: 'Acme e.V.', email: 'kontakt@acme.example' },
+      ]);
 
       await type('xyz');
       await flush([], { search: 'xyz' });
