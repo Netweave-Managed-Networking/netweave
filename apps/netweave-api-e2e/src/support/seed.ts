@@ -20,11 +20,13 @@ export async function seedDatabase() {
   try {
     await client.query('DELETE FROM members');
     await client.query(
-      `INSERT INTO members (name, contact) VALUES ($1, $2), ($3, $4)`,
+      `INSERT INTO members (name, contact, email) VALUES ($1, $2, $3), ($4, $5, $6)`,
       [
         'Acme E2E',
         'acme-e2e@example.com',
+        'acme-e2e@example.com',
         'Netweave Test Org',
+        'test@netweave.io',
         'test@netweave.io',
       ],
     );

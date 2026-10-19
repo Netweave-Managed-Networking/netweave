@@ -11,11 +11,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   CultureItemId,
   CultureTopic,
+  MemberListItemDTO,
   MemberUpsertDTO,
+  PaginatedDTO,
   parseCultureItemId,
 } from '@netweave/api-types';
 import {
   EntityManager,
+  ILike,
   IsNull,
   MoreThan,
   Not,
@@ -35,6 +38,7 @@ export class MembersService {
   private readonly logger = new Logger(MembersService.name);
 
   public static readonly EMAIL_CHANGE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+  public static readonly MAX_LIST_PAGE_SIZE = 100;
 
   public constructor(
     @InjectRepository(Member)
@@ -58,6 +62,37 @@ export class MembersService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * members by name for the member overview, paginated. page is 1-based; pageSize is capped at
+   * MAX_LIST_PAGE_SIZE regardless of what is requested. a search narrows it down to members whose
+   * name or email contains it, regardless of case
+   */
+  public async getPage(
+    page: number,
+    pageSize: number,
+    search = '',
+  ): Promise<PaginatedDTO<MemberListItemDTO>> {
+    const clampedPage = Math.max(page, 1);
+    const clampedPageSize = Math.min(
+      Math.max(pageSize, 1),
+      MembersService.MAX_LIST_PAGE_SIZE,
+    );
+
+    const pattern = `%${escapeLike(search.trim())}%`;
+    const [items, total] = await this.membersRepository.findAndCount({
+      select: { id: true, name: true, email: true },
+      where: search.trim()
+        ? [{ name: ILike(pattern) }, { email: ILike(pattern) }]
+        : undefined,
+      // id breaks ties between equal names, so no member shows up on two pages
+      order: { name: 'ASC', id: 'ASC' },
+      skip: (clampedPage - 1) * clampedPageSize,
+      take: clampedPageSize,
+    });
+
+    return { items, page: clampedPage, pageSize: clampedPageSize, total };
   }
 
   public async getAllForMatching(): Promise<Member[]> {
@@ -332,6 +367,10 @@ const NO_EMAIL_CHANGE = {
   emailChangeTokenHash: null,
   emailChangeExpiresAt: null,
 };
+
+/** so a search for e.g. "100%" or "a_b" matches these characters literally instead of as wildcards */
+const escapeLike = (value: string): string =>
+  value.replace(/[\\%_]/g, (char) => `\\${char}`);
 
 const isSameEmail = (a: string, b: string | null | undefined): boolean =>
   !!b && a.toLowerCase() === b.toLowerCase();
