@@ -30,7 +30,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ↓ new
       - name: Docker metadata (API)
         id: meta-api
         uses: docker/metadata-action@v5
@@ -50,7 +49,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # ↓ new
       - name: Docker metadata (Web)
         id: meta-web
         uses: docker/metadata-action@v5
@@ -78,14 +76,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy compose file to VPS
+      - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           port: ${{ secrets.VPS_SSH_PORT }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: docker-compose.yml,nginx/nginx.conf,proxy/docker-compose.yml,proxy/caddy/Caddyfile
+          source: docker-compose.yml,proxy/docker-compose.yml,proxy/caddy/Caddyfile
           target: ~/netweave
 
       - name: Deploy on VPS
@@ -101,9 +99,12 @@ jobs:
             docker network inspect netweave-proxy >/dev/null 2>&1 || docker network create netweave-proxy
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
             docker compose pull
-            docker compose run --rm --no-deps nginx nginx -t
+            docker compose -f proxy/docker-compose.yml pull
+            docker compose -f proxy/docker-compose.yml run --rm --no-deps caddy caddy validate --config /etc/caddy/Caddyfile
             docker compose up -d --remove-orphans
-            docker compose restart nginx
+            docker compose -f proxy/docker-compose.yml up -d
+            sleep 2 # give a freshly started Caddy a moment before reloading
+            docker compose -f proxy/docker-compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
             docker image prune -f
 
       - name: Log in to GHCR # in order to verify images in the next step
@@ -127,10 +128,11 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ~/netweave
-            UNHEALTHY=$(docker compose ps --status exited --status restarting -q)
+            UNHEALTHY="$(docker compose ps --status exited --status restarting -q)$(docker compose -f proxy/docker-compose.yml ps --status exited --status restarting -q)"
             if [ -n "$UNHEALTHY" ]; then
               echo "❌ One or more containers are not running"
               docker compose ps
+              docker compose -f proxy/docker-compose.yml ps
               exit 1
             fi
             echo "✅ All containers are running"

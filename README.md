@@ -76,23 +76,10 @@ admin page; that override is stored in the database and survives a restart.
 
 ### 2B. Run with Docker Compose
 
-`docker-compose.yml` is the server deployment file (see [Server setup](#server-setup)).\
-It starts PostgreSQL, the API, the server-rendered web app and Nginx,\
-but pulls the prebuilt `latest` images from GitHub Container Registry instead of building the checked-out code.
-
-```sh
-docker compose up -d
-```
-
-Running it locally needs:
-
-- the TLS certificate files at `/etc/letsencrypt/live/dev.netweave.de/` (`fullchain.pem`, `privkey.pem`), since Nginx serves `dev.netweave.de` and redirects HTTP to HTTPS,
-- `DB_HOST=netweave-db` in `.env`,
-- possibly `docker login ghcr.io`, if the images are private.
-
-There is no live reload; for frontend work use 2A. `docker compose down` stops
-the stack and keeps the database volume; `docker compose down -v` also deletes
-the database.
+- `docker-compose.yml` is the server deployment file for one instance (see [Server setup](#server-setup)).
+- It starts PostgreSQL, the API and the server-rendered web app from prebuilt images, selected by `IMAGE_TAG`, instead of building the checked-out code.
+- It publishes no web port; the separate Caddy proxy (`proxy/docker-compose.yml`) serves it, so it is not meant for local use.\
+- For local development use [2A. Recommended: run from source](#2a-recommended-run-from-source).
 
 ## Software
 
@@ -149,58 +136,60 @@ Use migrations when changing the database schema:
 
 ## Server setup
 
-As of 2026-10-17.
+As of 2026-10-20.
 
 ### Overview
 
-One VPS runs the stack from `docker-compose.yml` at https://dev.netweave.de.\
+One VPS runs the dev instance (docker-compose.yml) behind a Caddy proxy (proxy/docker-compose.yml)\
 Every push to `develop` builds new images and redeploys via `.github/workflows/deploy.yml`.\
 Secrets exist only on the server and in GitHub secrets.
 
 ### Server and DNS
 
-- VPS: certbot runs on the host, not in Docker.
-- `dev.netweave.de` and `dummy.netweave.de` (configured at ionos) both have an A record to the VPS.
-  - `dummy` has no configuration of its own yet, so Nginx answers it with the dev server block and certificate.
+- Subdomains (like `dev.netweave.de`) are A records at IONOS pointing to the VPS.
 
 ### Request flow
 
 ```mermaid
 flowchart LR
-  C["Let's Encrypt cert<br/>on host"] -.->|"mounted read-only"| N
-  B["Browser"] -->|"HTTPS (80 redirects)"| N["netweave-proxy<br/>Nginx"]
-  N -->|"url: /api"| A["netweave-api<br/>NestJs :3000"]
-  N -->|"url: /"| W["netweave-web<br/>Angular SSR :4000"]
-  W -.->|"SSR: /api via public URL"| N
+  B["Browser"] -->|"HTTPS (80 redirects)"| C["proxy-caddy-1<br/>Caddy"]
+  C -->|"url: /api*"| A["dev-api<br/>NestJS :3000"]
+  C -->|"url: /"| W["dev-web<br/>Angular SSR :4000"]
+  W -.->|"SSR: /api via public URL"| C
   A --> D[("netweave-db<br/>:5432")]
 ```
 
 ### Docker services
 
-Compose project `netweave` (from the folder name `~/netweave`); details in `docker-compose.yml`.
+Two Compose projects: `proxy` (from `proxy/docker-compose.yml`, name set in the file) and the dev instance `netweave` (from `docker-compose.yml`, name from the folder `~/netweave`).
 
-| Container        | Published ports          | Notes                                  |
-| ---------------- | ------------------------ | -------------------------------------- |
-| `netweave-proxy` | 80, 443                  | mounts `nginx/nginx.conf` and the cert |
-| `netweave-api`   | none                     | healthcheck on `/api`                  |
-| `netweave-web`   | none                     | listens on 4000 inside Docker          |
-| `netweave-db`    | 5432 on `127.0.0.1` only | data in volume `netweave_db-data`      |
+| Container       | Name on `netweave-proxy` | Project    | Published ports                         | Notes                                                            |
+| --------------- | ------------------------ | ---------- | --------------------------------------- | ---------------------------------------------------------------- |
+| `proxy-caddy-1` | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
+| `netweave-api`  | `<INSTANCE_NAME>-api`    | `netweave` | none                                    | healthcheck on `/api`                                            |
+| `netweave-web`  | `<INSTANCE_NAME>-web`    | `netweave` | none                                    | listens on 4000 inside Docker                                    |
+| `netweave-db`   | not on this network      | `netweave` | 5432 on `127.0.0.1` only for SSH tunnel | data in volume `netweave_db-data`                                |
+
+Start order within the instance: db healthy → api healthy → web.
 
 Networks:
 
-- `netweave_frontend` and `netweave_backend` are private to this project and created by Compose.
-- `netweave-proxy` is shared by all projects and created by the deploy if missing. `netweave-api` and `netweave-web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; the database never joins it.
-
-Start order: db healthy → api healthy → web → Nginx.
+- `netweave_backend` is private to the instance and created by Compose.
+- `netweave-proxy` is shared by all projects and created by the deploy if missing. Caddy joins it, and `netweave-api` and `netweave-web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; the database never joins it.
 
 ### Files on the server
 
+(see deploy.yml)
+
 ```text
 ~/netweave/
-├── docker-compose.yml   # copied by every deploy
-├── .env                 # by hand, based on .env.example
-└── nginx/
-    └── nginx.conf       # copied by every deploy
+├── docker-compose.yml          # copied by every deploy
+├── .env                        # by hand, based on .env.example
+└── proxy/
+    ├── docker-compose.yml      # copied by every deploy
+    └── caddy/
+        ├── Caddyfile           # copied by every deploy
+        └── sites/              # by hand: one <INSTANCE_NAME>.caddyfile per instance, based on proxy/site.example.caddyfile
 ```
 
 ### Configuration (.env)
@@ -208,23 +197,21 @@ Start order: db healthy → api healthy → web → Nginx.
 All variables are documented in `.env.example`.\
 On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=netweave-db`.\
 `IMAGE_TAG` and `INSTANCE_NAME` are only read by Compose: they pick the image tag and name the instance on the shared proxy network.\
-The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Nginx.
+The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Caddy.
 
 ### TLS certificates
 
-- One Let's Encrypt certificate for `dev.netweave.de` (ECDSA) in `/etc/letsencrypt/live/dev.netweave.de/`.
-- Renewal: `certbot.timer` (twice a day, renews within 30 days of expiry) with the `standalone` authenticator. `certbot renew --dry-run` succeeds.
-- Hooks in `/etc/letsencrypt/renewal-hooks/` free port 80: `pre/stop-nginx.sh` and `post/start-nginx.sh` run `docker compose -f /home/marv/netweave/docker-compose.yml stop|start nginx`. They depend on that path and the service name `nginx`.
-  - Nginx is down for about 15 seconds per renewal run, and also during every dry run. The hooks run once per run, not once per certificate.
-- Nginx mounts `fullchain.pem` and `privkey.pem` as single files. That is fine: `start` makes Docker resolve the `live/` symlinks again, so Nginx picks up the renewed certificate.
+- Caddy requests and renews a Let's Encrypt certificate for every domain in a site file (CA set via `acme_ca` in `proxy/caddy/Caddyfile`).
+- The check runs over port 80 while Caddy keeps running, so renewals cause no downtime.
+- Certificates live in the volume `proxy_caddy-data`. Deleting it makes Caddy request new ones.
 
 ### Deployment pipeline
 
 `.github/workflows/deploy.yml` runs on every push to `develop`:
 
-1. Build `netweave-api` and `netweave-web` and push them to GHCR, tagged with the short commit SHA and `latest`.
-2. Copy `docker-compose.yml` to `~/netweave` on the VPS, then run `docker compose pull` and `docker compose up -d --remove-orphans` over SSH.
-3. Verify that both images exist and that no container is exited or restarting.
+1. Build `netweave-api` and `netweave-web` and push them to GHCR, tagged with the branch name and the short commit SHA.
+2. Copy `docker-compose.yml`, `proxy/docker-compose.yml` and `proxy/caddy/Caddyfile` to `~/netweave` on the VPS. Then, over SSH: create the shared network if missing, pull images, validate the Caddy config, `docker compose up -d --remove-orphans` for the instance, start the proxy and reload Caddy.
+3. Verify that both images exist and that no container of either project is exited or restarting.
 
 Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
 
@@ -239,14 +226,14 @@ Creating migrations: see [Change Database](#change-database).
 Run on the server in `~/netweave`:
 
 ```sh
-docker compose ps                        # container status
-docker compose logs -f netweave-api      # follow API logs
-docker compose restart nginx             # apply a changed nginx.conf
-docker compose up -d --force-recreate    # apply a changed .env
-sudo certbot certificates                # certificate status
-sudo certbot renew --dry-run             # test certificate renewal
+docker compose ps                                                  # instance container status
+docker compose logs -f netweave-api                                # follow API logs
+docker compose up -d --force-recreate                              # apply a changed .env
+docker compose -f proxy/docker-compose.yml logs -f caddy           # proxy logs, including certificate requests
+docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile   # apply a changed site file
 ```
 
 ### Observations
 
-- Fixed `container_name` values and host ports prevent running a second copy of the stack on the same server.
+- Fixed `container_name` values prevent running a second copy of the instance stack on the same server.
+- Leftovers: certbot is still installed with its timer and renewal hooks, but unused; the `netweave_frontend` network now only holds `netweave-web`.
