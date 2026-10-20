@@ -1,5 +1,4 @@
 networks:
-  frontend:
   backend:
   proxy:
     name: netweave-proxy
@@ -43,7 +42,6 @@ services:
 
   netweave-web:
     networks:
-      frontend:
       backend:
       proxy:
         aliases:

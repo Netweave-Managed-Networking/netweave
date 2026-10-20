@@ -236,4 +236,3 @@ docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc
 ### Observations
 
 - Fixed `container_name` values prevent running a second copy of the instance stack on the same server.
-- Leftovers: certbot is still installed with its timer and renewal hooks, but unused; the `netweave_frontend` network now only holds `netweave-web`.
