@@ -5,18 +5,17 @@ networks:
     external: true
 
 services:
-  netweave-api:
+  api:
     networks:
       backend:
       proxy:
         aliases:
           - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-api
     image: ghcr.io/netweave-managed-networking/netweave-api:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
-    container_name: netweave-api
     env_file:
       - .env
     depends_on:
-      netweave-db:
+      db:
         condition: service_healthy
     restart: unless-stopped
     deploy:
@@ -40,18 +39,17 @@ services:
       retries: 3
       start_period: 10s
 
-  netweave-web:
+  web:
     networks:
       backend:
       proxy:
         aliases:
           - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-web
     image: ghcr.io/netweave-managed-networking/netweave-web:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
-    container_name: netweave-web
     env_file:
       - .env
     depends_on:
-      netweave-api:
+      api:
         condition: service_healthy
     restart: unless-stopped
     deploy:
@@ -63,11 +61,10 @@ services:
           cpus: '0.25'
           memory: 256M
 
-  netweave-db:
+  db:
     networks:
       - backend
     image: postgres:16-alpine
-    container_name: netweave-db
     ports:
       - '127.0.0.1:5432:5432'
     env_file:

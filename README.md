@@ -163,12 +163,12 @@ flowchart LR
 
 Two Compose projects: `proxy` (from `proxy/docker-compose.yml`, name set in the file) and the dev instance `netweave` (from `docker-compose.yml`, name from the folder `~/netweave`).
 
-| Container       | Name on `netweave-proxy` | Project    | Published ports                         | Notes                                                            |
-| --------------- | ------------------------ | ---------- | --------------------------------------- | ---------------------------------------------------------------- |
-| `proxy-caddy-1` | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
-| `netweave-api`  | `<INSTANCE_NAME>-api`    | `netweave` | none                                    | healthcheck on `/api`                                            |
-| `netweave-web`  | `<INSTANCE_NAME>-web`    | `netweave` | none                                    | listens on 4000 inside Docker                                    |
-| `netweave-db`   | not on this network      | `netweave` | 5432 on `127.0.0.1` only for SSH tunnel | data in volume `netweave_db-data`                                |
+| Container        | Name on `netweave-proxy` | Project    | Published ports                         | Notes                                                            |
+| ---------------- | ------------------------ | ---------- | --------------------------------------- | ---------------------------------------------------------------- |
+| `proxy-caddy-1`  | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
+| `netweave-api-1` | `<INSTANCE_NAME>-api`    | `netweave` | none                                    | healthcheck on `/api`                                            |
+| `netweave-web-1` | `<INSTANCE_NAME>-web`    | `netweave` | none                                    | listens on 4000 inside Docker                                    |
+| `netweave-db-1`  | not on this network      | `netweave` | 5432 on `127.0.0.1` only for SSH tunnel | data in volume `netweave_db-data`                                |
 
 Start order within the instance: db healthy → api healthy → web.
 
@@ -195,7 +195,7 @@ Networks:
 ### Configuration (.env)
 
 All variables are documented in `.env.example`.\
-On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=netweave-db`.\
+On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=db`.\
 `IMAGE_TAG` and `INSTANCE_NAME` are only read by Compose: they pick the image tag and name the instance on the shared proxy network.\
 The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Caddy.
 
@@ -227,12 +227,8 @@ Run on the server in `~/netweave`:
 
 ```sh
 docker compose ps                                                  # instance container status
-docker compose logs -f netweave-api                                # follow API logs
+docker compose logs -f api                                         # follow API logs
 docker compose up -d --force-recreate                              # apply a changed .env
 docker compose -f proxy/docker-compose.yml logs -f caddy           # proxy logs, including certificate requests
 docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile   # apply a changed site file
 ```
-
-### Observations
-
-- Fixed `container_name` values prevent running a second copy of the instance stack on the same server.
