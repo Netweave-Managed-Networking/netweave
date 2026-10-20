@@ -1,4 +1,4 @@
-name: netweave-dev
+name: netweave-local
 services:
   mailcatcher:
     image: axllent/mailpit
@@ -10,7 +10,7 @@ services:
 
   db:
     image: postgres:16-alpine # same major version as the server
-    container_name: netweave-db-dev
+    container_name: netweave-db-local
     ports:
       - '127.0.0.1:5432:5432'
     environment:

@@ -1,10 +1,10 @@
-import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 import { Logger } from '@nestjs/common';
 import {
   CULTURE_ORIENTATIONS,
   CultureOrientation,
   RecommendationsDTO,
 } from '@netweave/api-types';
+import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 import { Repository } from 'typeorm';
 import { MailConfig } from '../../mail/mail-config.entity';
 import { MailService } from '../../mail/mail.service';
@@ -13,7 +13,7 @@ import { MembersService } from '../../members/members.service';
 import { RecommendationMailsService } from './recommendation-mails.service';
 
 /**
- * sends real recommendation mails over smtp to the mailcatcher of docker-compose.dev.yml and checks what arrived;
+ * sends real recommendation mails over smtp to the mailcatcher of docker-compose.local.yml and checks what arrived;
  * the mails are left there to be looked at in its web ui.
  * opt-in, as it needs the running container:
  * MAILCATCHER_URL=http://localhost:8025 npx nx test netweave-api --testPathPatterns=mailcatcher

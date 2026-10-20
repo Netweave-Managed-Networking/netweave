@@ -43,11 +43,11 @@ reload. Use Docker Compose when you want to run the deployment-like stack.
 This workflow needs Docker for the local database and Mailpit. Start both:
 
 ```sh
-   docker compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.local.yml up -d
 ```
 
 The database uses the credentials from `.env` (`DB_USER`, `DB_PASSWORD`, `DB_DB`) and listens on `localhost:5432`.\
- `docker compose -f docker-compose.dev.yml down -v` deletes it for a fresh start.
+ `docker compose -f docker-compose.local.yml down -v` deletes it for a fresh start.
 
 Start the frontend and API together:
 

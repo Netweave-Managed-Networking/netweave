@@ -9,7 +9,7 @@ import {
 } from './member-update-reminders.service';
 
 /**
- * sends real update reminders over smtp to the mailcatcher of docker-compose.dev.yml and checks what arrived;
+ * sends real update reminders over smtp to the mailcatcher of docker-compose.local.yml and checks what arrived;
  * the mails are left there to be looked at in its web ui.
  * opt-in, as it needs the running container:
  * MAILCATCHER_URL=http://localhost:8025 npx nx test netweave-api --testPathPatterns=mailcatcher
