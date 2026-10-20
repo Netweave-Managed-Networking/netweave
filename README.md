@@ -40,9 +40,14 @@ reload. Use Docker Compose when you want to run the deployment-like stack.
 
 ### 2A. Recommended: run from source
 
-This workflow requires a PostgreSQL server running on the local machine. The
-database and user must match `.env`; for a local database, keep
-`DB_HOST=localhost` and use the configured `DB_PORT` (5432 by default).
+This workflow needs Docker for the local database and Mailpit. Start both:
+
+```sh
+   docker compose -f docker-compose.dev.yml up -d
+```
+
+The database uses the credentials from `.env` (`DB_USER`, `DB_PASSWORD`, `DB_DB`) and listens on `localhost:5432`.\
+ `docker compose -f docker-compose.dev.yml down -v` deletes it for a fresh start.
 
 Start the frontend and API together:
 
@@ -61,18 +66,13 @@ The API runs pending migrations when it starts (`synchronize: false`,
 
 #### Local mail testing (Mailpit)
 
-To see mail the API sends (invitations etc.) without a real SMTP provider,
-start the bundled Mailpit container:
-
-```sh
-docker compose -f docker-compose.dev.yml up -d
-```
-
-Then set `SEND_MAIL_ACTIVATED=true`, `SMTP_HOST=localhost`, `SMTP_PORT=1025`
+Set `SEND_MAIL_ACTIVATED=true`, `SMTP_HOST=localhost`, `SMTP_PORT=1025`
 and `SMTP_SECURE=false` in `.env`, and leave `SMTP_USER` and `SMTP_PASSWORD`
 empty. Caught mail is shown at [http://localhost:8025](http://localhost:8025).
 The mail transport can also be changed at runtime on the "Mail-Einstellungen"
 admin page; that override is stored in the database and survives a restart.
+
+Mailpit is started together with the database (see [2A. Recommended: run from source](#2a-recommended-run-from-source)).
 
 ### 2B. Run with Docker Compose
 
