@@ -71,9 +71,13 @@ export class MailConfigService {
       select: { id: true, authPassEncrypted: true },
     });
 
-    // authPass omitted -> keep the stored password; '' -> clear it; otherwise -> replace it
+    // authPass omitted -> keep the current password (the env one if there is no row yet);
+    // '' -> clear it; otherwise -> replace it
     let authPassEncrypted = existing?.authPassEncrypted ?? null;
-    if (dto.authPass !== undefined) {
+    if (dto.authPass === undefined && !existing) {
+      const { authPass } = await this.mailService.getEffectiveConfig();
+      authPassEncrypted = authPass ? encryptSecret(authPass) : null;
+    } else if (dto.authPass !== undefined) {
       authPassEncrypted =
         dto.authPass === '' ? null : encryptSecret(dto.authPass);
     }
@@ -89,8 +93,6 @@ export class MailConfigService {
       fromAddress: dto.fromAddress,
       updatedBy: { id: updatedById },
     });
-
-    this.mailService.reload();
 
     return this.get();
   }

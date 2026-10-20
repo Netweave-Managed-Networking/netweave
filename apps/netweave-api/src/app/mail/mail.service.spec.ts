@@ -132,17 +132,30 @@ describe('MailService', () => {
       expect(result).toBe(false);
     });
 
-    it('reuses the cached transporter across calls until reload() is invoked', async () => {
-      repository.findOne?.mockResolvedValue(null);
+    it('builds the transporter from the current config on every send', async () => {
       sendMailMock.mockResolvedValue(undefined);
+      process.env.SMTP_USER = 'smtp-user';
+      process.env.SMTP_PASSWORD = 'env-secret';
 
+      repository.findOne?.mockResolvedValue({
+        host: 'localhost',
+        port: 1025,
+        secure: false,
+        authUser: 'smtp-user',
+        authPassEncrypted: encryptSecret('wrong-secret'),
+        fromName: 'Netweave',
+        fromAddress: 'info@netweave.de',
+      });
       await service.sendMail({ to: 'a@example.com', subject: 's', html: 'h' });
-      await service.sendMail({ to: 'b@example.com', subject: 's', html: 'h' });
-      expect(createTransportMock).toHaveBeenCalledTimes(1);
 
-      service.reload();
-      await service.sendMail({ to: 'c@example.com', subject: 's', html: 'h' });
-      expect(createTransportMock).toHaveBeenCalledTimes(2);
+      repository.findOne?.mockResolvedValue(null);
+      await service.sendMail({ to: 'b@example.com', subject: 's', html: 'h' });
+
+      expect(createTransportMock).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          auth: { user: 'smtp-user', pass: 'env-secret' },
+        }),
+      );
     });
   });
 
