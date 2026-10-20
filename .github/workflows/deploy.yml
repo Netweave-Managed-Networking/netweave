@@ -85,7 +85,7 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: docker-compose.yml,nginx/nginx.conf
+          source: docker-compose.yml,nginx/nginx.conf,proxy/docker-compose.yml,proxy/caddy/Caddyfile
           target: ~/netweave
 
       - name: Deploy on VPS
