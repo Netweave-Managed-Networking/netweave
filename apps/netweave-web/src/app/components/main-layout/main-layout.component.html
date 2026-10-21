@@ -1,0 +1,6 @@
+<div class="app">
+  <app-side-nav [sideNavId]="sideNavId">
+    <app-top-nav ngProjectAs="top-nav" [sideNavId]="sideNavId" />
+    <router-outlet ngProjectAs="main" />
+  </app-side-nav>
+</div>

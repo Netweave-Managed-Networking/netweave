@@ -1,0 +1,37 @@
+import { ResourceRequirementCategoryText } from '@netweave/api-types';
+
+/** prompt as specified in NETW-35 */
+export const coveragePrompt = (
+  category: ResourceRequirementCategoryText,
+  requirement: string,
+  resource: string,
+) =>
+  `Du bist ein Match-Scoring-Algorithmus.
+
+Deine Aufgabe ist die streng objektive und ausschließliche Bewertung des inhaltlichen Deckungsgrads der Ressource für den Bedarf.
+
+Wichtig: Bewerte die semantische und fachliche Übereinstimmung, ignoriere aber die Textlänge, Schreibweise oder Stilistik der Eingaben.
+
+Skala 0-100 (Ganzer Wert):
+0: Kein inhaltlicher Bezug. Die Ressource erfüllt den Bedarf in keiner Weise.
+100: Vollständige, präzise und qualitativ hochwertige Abdeckung des Bedarfs.
+1-99: Werte stehen für eine teilweise Abdeckung, proportional zum Grad der inhaltlichen Übereinstimmung.
+
+Ausgabeformat-Zwang:
+Gib als Ergebnis NUR die errechnete ganze Zahl zwischen 0 und 100 aus. KEIN anderer Text, KEINE Begründung, KEINE Umschreibung.
+
+Kontextinformation:
+Sowohl der folgende Bedarf als auch die folgende Ressource wurden durch die befragten Netzwerkteilnehmer in der Kategorie "${category.label}; ${category.description}" angegeben.
+
+Bedarf, den Netzwerteilnehmer A hat:
+${requirement}
+
+Ressource, über die Netzwerteilnehmer B verfügt:
+${resource}`;
+
+/** null if the answer is not a single integer between 0 and 100 */
+export const parseCoverageScore = (answer: string): number | null => {
+  const numbers = answer.match(/-?\d+(?:[.,]\d+)?/g) ?? [];
+  const score = numbers.length === 1 ? Number(numbers[0]) : NaN;
+  return Number.isInteger(score) && score >= 0 && score <= 100 ? score : null;
+};

@@ -1,0 +1,63 @@
+<div class="manager-invitation-delete">
+  <div class="tooltip tooltip-left tooltip-error">
+    <div class="tooltip-content font-bold">Dialog öffnen</div>
+    <button
+      class="manager-invitation-delete__open btn btn-square"
+      (click)="managerInvitationModalDelete.showModal()"
+    >
+      <icon-trash />
+    </button>
+  </div>
+
+  <dialog
+    #managerInvitationModalDelete
+    class="manager-invitation-delete__modal modal whitespace-normal"
+  >
+    <div class="manager-invitation-delete__modal-box modal-box">
+      <h3 class="text-lg font-bold">Bestehende Email / Domäne löschen</h3>
+
+      <div class="flex flex-col justify-center gap-2 p-4 w-full">
+        @let emailOrDomain = toDelete().emailOrDomain;
+        @let isMail = emailOrDomain.charAt(0) !== '@';
+
+        <p class="text-justify">
+          Soll die {{ isMail ? 'Email' : 'Domäne' }}
+          <strong
+            ><em>{{ emailOrDomain }}</em></strong
+          >
+          gelöscht werden?
+        </p>
+        <p class="text-justify">
+          @if (isMail) {
+            Damit wird der Zugang für
+            <strong
+              ><em>{{ emailOrDomain }}</em></strong
+            >
+            entzogen, sofern nicht noch eine entsprechende Domänen Regel
+            existiert.
+          } @else {
+            Dann wird allen Benutzern der Zugang entzogen, für die keine
+            entsprechende Domänen- oder Email-Regel mehr existiert.
+          }
+
+          (TODO)
+        </p>
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="manager-invitation-delete__cancel btn">
+            Abbrechen
+          </button>
+        </form>
+        <button
+          class="manager-invitation-delete__confirm btn btn-error"
+          (click)="submit(managerInvitationModalDelete)"
+        >
+          Löschen
+        </button>
+      </div>
+    </div>
+  </dialog>
+</div>

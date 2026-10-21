@@ -1,0 +1,45 @@
+@if (changes(); as changes) {
+  <div
+    class="member-changes stats stats-vertical sm:stats-horizontal w-full bg-base-100 border border-base-content/5"
+  >
+    <div class="member-changes__new stat">
+      <div class="stat-title">Neue Organisationen</div>
+      <div class="member-changes__new-count stat-value text-accent">
+        {{ changes.newMembers.length }}
+      </div>
+      <div class="member-changes__new-desc stat-desc whitespace-normal">
+        @if (changes.since) {
+          seit dem letzten Matching
+        } @else {
+          noch kein Matching berechnet
+        }
+        @if (changes.newMembers.length) {
+          <p
+            class="member-changes__new-names line-clamp-3 mt-1"
+            [title]="names(changes.newMembers)"
+          >
+            {{ names(changes.newMembers) }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <div class="member-changes__updated stat">
+      <div class="stat-title">Aktualisierte Daten</div>
+      <div class="member-changes__updated-count stat-value">
+        {{ changes.updatedMembers.length }}
+      </div>
+      <div class="member-changes__updated-desc stat-desc whitespace-normal">
+        Organisationen seit dem letzten Matching
+        @if (changes.updatedMembers.length) {
+          <p
+            class="member-changes__updated-names line-clamp-3 mt-1"
+            [title]="names(changes.updatedMembers)"
+          >
+            {{ names(changes.updatedMembers) }}
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+}

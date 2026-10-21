@@ -1,22 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, resource } from '@angular/core';
-import { OrganizationDTO } from '@netweave/api-types';
-import { catchError, firstValueFrom, of } from 'rxjs';
+import { Component } from '@angular/core';
+import { DevInfosComponent } from '../dev-infos/dev-infos.component';
+import { InviteParticipantComponent } from '../invite-participant/invite-participant.component';
+import { MatchingRunComponent } from '../matching-run/matching-run.component';
+import { MemberChangesComponent } from '../member-changes/member-changes.component';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [
+    InviteParticipantComponent,
+    MatchingRunComponent,
+    MemberChangesComponent,
+    DevInfosComponent,
+  ],
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
-  private http = inject(HttpClient);
-
-  protected organizationLatest = resource({
-    loader: () =>
-      firstValueFrom(
-        this.http
-          .get<OrganizationDTO | null>('/api/organizations/latest')
-          .pipe(catchError(() => of(null))),
-      ),
-  });
-}
+export class HomeComponent {}

@@ -3,7 +3,9 @@ name: Build & Deploy
 on:
   push:
     branches:
+      - main
       - develop
+      - 'release-*'
 
 env:
   REGISTRY: ghcr.io
@@ -30,7 +32,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ↓ new
       - name: Docker metadata (API)
         id: meta-api
         uses: docker/metadata-action@v5
@@ -38,7 +39,7 @@ jobs:
           images: ${{ env.IMAGE_PREFIX }}/netweave-api
           tags: |
             type=sha,prefix=,format=short
-            type=raw,value=latest
+            type=ref,event=branch
 
       - name: Build & push API
         uses: docker/build-push-action@v5
@@ -50,7 +51,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # ↓ new
       - name: Docker metadata (Web)
         id: meta-web
         uses: docker/metadata-action@v5
@@ -58,7 +58,7 @@ jobs:
           images: ${{ env.IMAGE_PREFIX }}/netweave-web
           tags: |
             type=sha,prefix=,format=short
-            type=raw,value=latest
+            type=ref,event=branch
 
       - name: Build & push Web
         uses: docker/build-push-action@v5
@@ -78,7 +78,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy compose file to VPS
+      - name: Copy release to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -86,6 +86,17 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: docker-compose.yml
+          target: ~/netweave/releases/${{ github.ref_name }}
+
+      - name: Copy proxy to VPS
+        if: github.ref_name == 'main' # only after merge on main branch, changes in `Caddyfile` and `proxy/docker-compose.yml` will apply
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: proxy/docker-compose.yml,proxy/caddy/Caddyfile
           target: ~/netweave
 
       - name: Deploy on VPS
@@ -97,10 +108,22 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -euo pipefail
+            BRANCH="${{ github.ref_name }}"
             cd ~/netweave
+            docker network inspect netweave-proxy >/dev/null 2>&1 || docker network create netweave-proxy
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "netweave-managed-networking" --password-stdin
-            docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose -f proxy/docker-compose.yml pull
+            docker compose -f proxy/docker-compose.yml run --rm --no-deps caddy caddy validate --config /etc/caddy/Caddyfile
+            for dir in instances/*/; do
+              if grep -qE "^IMAGE_TAG=${BRANCH}(\s|#|$)" "${dir}.env"; then
+                echo "Deploying ${dir} (branch ${BRANCH})"
+                docker compose --project-directory "$dir" -f "releases/${BRANCH}/docker-compose.yml" pull
+                docker compose --project-directory "$dir" -f "releases/${BRANCH}/docker-compose.yml" up -d --remove-orphans
+              fi
+            done
+            docker compose -f proxy/docker-compose.yml up -d
+            sleep 2 # give a freshly started Caddy a moment before reloading
+            docker compose -f proxy/docker-compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
             docker image prune -f
 
       - name: Log in to GHCR # in order to verify images in the next step
@@ -112,8 +135,8 @@ jobs:
 
       - name: Verify images exist in GHCR
         run: |
-          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-api:latest
-          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-web:latest
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-api:${{ github.ref_name }}
+          docker manifest inspect ${{ env.IMAGE_PREFIX }}/netweave-web:${{ github.ref_name }}
 
       - name: Verify deployment on VPS
         uses: appleboy/ssh-action@v1
@@ -123,11 +146,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ~/netweave
-            UNHEALTHY=$(docker compose ps --status exited --status restarting -q)
+            UNHEALTHY="$(docker ps -a --filter status=exited --filter status=restarting --format '{{.Names}}: {{.Status}}')"
             if [ -n "$UNHEALTHY" ]; then
-              echo "❌ One or more containers are not running"
-              docker compose ps
+              echo "❌ One or more containers are not running:"
+              echo "$UNHEALTHY"
               exit 1
             fi
             echo "✅ All containers are running"

@@ -1,0 +1,10 @@
+# copy to ~/netweave/proxy/caddy/sites/<INSTANCE_NAME>.caddyfile
+# on the server and fill in INSTANCE_NAME and domain
+<domain> {
+	handle /api* {
+		reverse_proxy <INSTANCE_NAME>-api:3000
+	}
+	handle {
+		reverse_proxy <INSTANCE_NAME>-web:4000
+	}
+}

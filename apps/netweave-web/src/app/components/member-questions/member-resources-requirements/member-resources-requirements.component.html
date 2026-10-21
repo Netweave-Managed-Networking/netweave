@@ -1,0 +1,55 @@
+<section
+  class="member-resources-requirements bg-base-100 border border-base-content/5 rounded-box p-6"
+>
+  <h2 class="text-lg font-semibold">Ressourcen & Bedarfe</h2>
+  <p class="text-sm text-base-content/60 mt-1">
+    Beschreibe pro Kategorie, was deine Organisation einbringen kann und was sie
+    benötigt.
+  </p>
+
+  @for (category of categories; track category) {
+    @let categoryFields = fields()[category];
+    @let text = categoryTexts[category];
+
+    <div class="divider my-4"></div>
+
+    <fieldset class="member-resources-requirements__category fieldset p-0">
+      <legend class="fieldset-legend text-base pb-0">
+        {{ text.label }}
+      </legend>
+      <p
+        class="member-resources-requirements__category-description text-sm text-base-content/60"
+      >
+        {{ text.description }}
+      </p>
+
+      <div class="grid gap-4 md:grid-cols-2 mt-3">
+        <div class="flex flex-col gap-1">
+          <label class="label" [for]="category + '-resources'">
+            Ressourcen
+          </label>
+          <textarea
+            class="textarea w-full"
+            [id]="category + '-resources'"
+            rows="3"
+            placeholder="Beschreibe alle deine Ressourcen möglichst präzise"
+            [formField]="categoryFields.resources"
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="label" [for]="category + '-requirements'">
+            Bedarfe
+          </label>
+          <textarea
+            class="textarea w-full"
+            [id]="category + '-requirements'"
+            rows="3"
+            placeholder="Beschreibe alle deine Bedarfe möglichst präzise"
+            [formField]="categoryFields.requirements"
+          ></textarea>
+        </div>
+      </div>
+    </fieldset>
+  }
+</section>

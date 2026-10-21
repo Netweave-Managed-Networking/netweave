@@ -1,0 +1,27 @@
+# NOTE: when this file is changed, changes will apply only after a merge on main branch, same goes for Caddyfile
+
+name: proxy
+
+services:
+  caddy:
+    image: caddy:2.11
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp' # HTTP/3
+    volumes:
+      - ./caddy:/etc/caddy:ro
+      - caddy-data:/data # certificates and ACME account; must persist
+      - caddy-config:/config
+    networks:
+      - proxy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    name: netweave-proxy
+    external: true
+
+volumes:
+  caddy-data:
+  caddy-config:

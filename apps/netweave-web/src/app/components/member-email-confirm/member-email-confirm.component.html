@@ -1,0 +1,38 @@
+<div
+  class="member-email-confirm min-h-screen flex items-center justify-center bg-base-200 px-4"
+>
+  <div
+    class="member-email-confirm__box bg-base-100 border border-base-content/5 rounded-box w-full max-w-sm p-6 flex flex-col gap-4"
+  >
+    @switch (state()) {
+      @case ('pending') {
+        <p class="member-email-confirm__pending flex items-center gap-2">
+          <span class="loading loading-spinner loading-sm"></span>
+          Email wird bestätigt …
+        </p>
+      }
+      @case ('confirmed') {
+        <h2 class="text-lg font-bold">Email bestätigt</h2>
+        <p class="member-email-confirm__confirmed">
+          Deine neue Email ist bestätigt. Netweave kontaktiert euch ab jetzt
+          unter dieser Adresse.
+        </p>
+      }
+      @case ('taken') {
+        <h2 class="text-lg font-bold">Email bereits vergeben</h2>
+        <p class="member-email-confirm__taken">
+          Diese Email wird inzwischen von einer anderen Organisation verwendet.
+          Bitte gib im Fragebogen eine andere Email an.
+        </p>
+      }
+      @default {
+        <h2 class="text-lg font-bold">Link ungültig oder abgelaufen</h2>
+        <p class="member-email-confirm__invalid">
+          Dieser Bestätigungslink ist ungültig, wurde bereits verwendet oder ist
+          abgelaufen. Speichere den Fragebogen mit der neuen Email erneut, um
+          einen neuen Link zu erhalten.
+        </p>
+      }
+    }
+  </div>
+</div>

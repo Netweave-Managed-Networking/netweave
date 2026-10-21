@@ -1,0 +1,7 @@
+.user-remove {
+  .user-remove__open:hover {
+    lib-trash-icon {
+      --stroke: var(--color-error);
+    }
+  }
+}

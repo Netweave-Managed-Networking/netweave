@@ -1,0 +1,18 @@
+<div class="dev-infos">
+  <div class="dev.infos card w-96 bg-base-100 card-sm shadow-sm">
+    <div class="card-body">
+      <h2 class="dev-infos__title card-title">Dev Infos</h2>
+
+      <p class="dev-infos__message">
+        You have successfully logged in to netweave.
+      </p>
+
+      <div class="divider"></div>
+
+      <p>Zuletzt hinzugefügter Netzwerkteilnehmer:</p>
+      <pre class="dev-infos__member">{{
+        memberLatest.value()?.name ?? 'No member added yet.'
+      }}</pre>
+    </div>
+  </div>
+</div>

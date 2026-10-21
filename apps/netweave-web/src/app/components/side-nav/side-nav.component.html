@@ -7,9 +7,13 @@
     [(ngModel)]="this.isDrawerOpen"
   />
 
-  <div class="sidenav__content drawer-content">
-    <ng-content select="top-nav" />
-    <ng-content select="main" />
+  <div class="sidenav__content drawer-content flex flex-col">
+    <div class="top-nav-wrapper">
+      <ng-content select="top-nav" />
+    </div>
+    <div class="sidenav__main-wrapper p-4 flex-1">
+      <ng-content select="main" />
+    </div>
   </div>
 
   <div class="sidenav__sidebar drawer-side is-drawer-close:overflow-visible">
@@ -34,6 +38,36 @@
               <span class="is-drawer-close:hidden">Home</span>
             </button>
           </li>
+          <li>
+            <button
+              routerLink="/members"
+              class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
+              data-tip="Netzwerkteilnehmer"
+            >
+              <icon-users />
+              <span class="is-drawer-close:hidden">Netzwerkteilnehmer</span>
+            </button>
+          </li>
+          <li>
+            <button
+              routerLink="/member-invitations"
+              class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
+              data-tip="Einladungen"
+            >
+              <icon-mail />
+              <span class="is-drawer-close:hidden">Einladungen</span>
+            </button>
+          </li>
+          <li>
+            <button
+              routerLink="/matching-history"
+              class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
+              data-tip="Matching-Verlauf"
+            >
+              <icon-clock />
+              <span class="is-drawer-close:hidden">Matching-Verlauf</span>
+            </button>
+          </li>
         </ul>
         <ul class="sidenav__menu--bottom" *appHasRole="'admin'">
           <div class="divider my-2">
@@ -43,14 +77,14 @@
           </div>
           <li>
             <button
-              routerLink="/user-invitations"
+              routerLink="/settings"
               class="is-drawer-close:tooltip is-drawer-close:tooltip-right h-8"
-              data-tip="Manager-Verwaltung"
+              data-tip="Einstellungen"
             >
               <div class="rotate-90">
                 <icon-settings />
               </div>
-              <span class="is-drawer-close:hidden">Manager-Verwaltung</span>
+              <span class="is-drawer-close:hidden">Einstellungen</span>
             </button>
           </li>
         </ul>

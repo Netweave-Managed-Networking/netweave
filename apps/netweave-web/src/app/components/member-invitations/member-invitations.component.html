@@ -1,0 +1,90 @@
+<div class="member-invitations w-full max-w-6xl m-auto">
+  <div
+    class="member-invitations__title w-full flex flex-col items-center pb-4 gap-2"
+  >
+    <h1>Einladungen</h1>
+  </div>
+
+  <div
+    class="member-invitations__stats stats stats-vertical sm:stats-horizontal w-full mb-4 rounded-box border border-base-content/5 bg-base-100"
+  >
+    <div class="member-invitations__stat-awaiting stat">
+      <div class="stat-title">Ausstehend</div>
+      <div class="stat-value text-warning">{{ awaitingCount() }}</div>
+      <div class="stat-desc">Noch keine Antwort erhalten</div>
+    </div>
+    <div class="member-invitations__stat-answered stat">
+      <div class="stat-title">Beantwortet</div>
+      <div class="stat-value text-success">{{ answeredCount() }}</div>
+    </div>
+    <div class="member-invitations__stat-failed stat">
+      <div class="stat-title">Fehlgeschlagen</div>
+      <div class="stat-value text-error">{{ failedCount() }}</div>
+    </div>
+  </div>
+
+  <div
+    class="member-invitations__container overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
+  >
+    @let items = sortedInvitations();
+
+    @if (items) {
+      <table class="member-invitations__table table table-zebra">
+        <thead>
+          <tr>
+            @for (column of columns; track column.key) {
+              <th
+                [class]="column.thClass"
+                [attr.aria-sort]="ariaSort(column.key)"
+              >
+                <button
+                  type="button"
+                  class="member-invitations__sort-button flex items-center gap-1 cursor-pointer"
+                  (click)="toggleSort(column.key)"
+                >
+                  {{ column.label }}
+                  @if (sort().column === column.key) {
+                    <span aria-hidden="true">{{
+                      sort().direction === 'asc' ? '▲' : '▼'
+                    }}</span>
+                  }
+                </button>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (invitation of items; track invitation.id) {
+            @let config = statusConfig[invitation.status];
+
+            <tr>
+              <td class="member-invitations__email-td">
+                {{ invitation.email }}
+              </td>
+              <td class="member-invitations__status-td">
+                <div
+                  class="member-invitations__status-badge flex items-center gap-2"
+                >
+                  <div class="inline-grid *:[grid-area:1/1]">
+                    @if (config.ping) {
+                      <div
+                        [class]="
+                          'status ' + config.colorClass + ' animate-ping'
+                        "
+                      ></div>
+                    }
+                    <div [class]="'status ' + config.colorClass"></div>
+                  </div>
+                  <span>{{ config.label }}</span>
+                </div>
+              </td>
+              <td class="member-invitations__created-at-td">
+                {{ invitation.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

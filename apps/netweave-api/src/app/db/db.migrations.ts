@@ -8,6 +8,21 @@ import { UsersFixesRoleNoDefaultSequenceRename1781288095192 } from './migrations
 import { UserEmailWhitelistsCreate1781289531508 } from './migrations/1781289531508-user-email-whitelists-create';
 import { UserEmailWhitelistsFixForeignKeyOnUser1781623307811 } from './migrations/1781623307811-user-email-whitelists-fix-foreign-key-on-user';
 import { UserEmailWhitelistRenameCreatedByIdColumn1786635620919 } from './migrations/1786635620919-user-email-whitelist-rename-created-by-id-column';
+import { OrganizationsRenameMember1789313978460 } from './migrations/1789313978460-organizations-rename-member';
+import { InvitationsCreate1790057195000 } from './migrations/1790057195000-invitations-create';
+import { MailConfigCreate1790200000000 } from './migrations/1790200000000-mail-config-create';
+import { MembersAddInvitation1790300000000 } from './migrations/1790300000000-members-add-invitation';
+import { MemberResourcesRequirementsCreate1790400000000 } from './migrations/1790400000000-member-resources-requirements-create';
+import { UserEmailWhitelistsAddRole1790500000000 } from './migrations/1790500000000-user-email-whitelists-add-role';
+import { MatchingsCreate1790600000000 } from './migrations/1790600000000-matchings-create';
+import { MatchingRunsAddFailedAt1790700000000 } from './migrations/1790700000000-matching-runs-add-failed-at';
+import { TimestampColumnsUseTimezone1790800000000 } from './migrations/1790800000000-timestamp-columns-use-timezone';
+import { MemberCultureWeightsCreate1790900000000 } from './migrations/1790900000000-member-culture-weights-create';
+import { MatchingRunsAddCancelledAt1791000000000 } from './migrations/1791000000000-matching-runs-add-cancelled-at';
+import { UsersAddEmailVerification1791100000000 } from './migrations/1791100000000-users-add-email-verification';
+import { MatchingRunsAddRecommendations1791200000000 } from './migrations/1791200000000-matching-runs-add-recommendations';
+import { MembersAddEmail1791300000000 } from './migrations/1791300000000-members-add-email';
+import { MemberUpdateRemindersCreate1791400000000 } from './migrations/1791400000000-member-update-reminders-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -20,4 +35,19 @@ export const Migrations = [
   UserEmailWhitelistsCreate1781289531508,
   UserEmailWhitelistsFixForeignKeyOnUser1781623307811,
   UserEmailWhitelistRenameCreatedByIdColumn1786635620919,
+  OrganizationsRenameMember1789313978460,
+  InvitationsCreate1790057195000,
+  MailConfigCreate1790200000000,
+  MembersAddInvitation1790300000000,
+  MemberResourcesRequirementsCreate1790400000000,
+  UserEmailWhitelistsAddRole1790500000000,
+  MatchingsCreate1790600000000,
+  MatchingRunsAddFailedAt1790700000000,
+  TimestampColumnsUseTimezone1790800000000,
+  MemberCultureWeightsCreate1790900000000,
+  MatchingRunsAddCancelledAt1791000000000,
+  UsersAddEmailVerification1791100000000,
+  MatchingRunsAddRecommendations1791200000000,
+  MembersAddEmail1791300000000,
+  MemberUpdateRemindersCreate1791400000000,
 ];

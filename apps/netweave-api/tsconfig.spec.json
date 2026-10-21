@@ -4,6 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
     "moduleResolution": "node10",
+    "allowJs": true, // lets ts-jest transform the esm-only ai sdk, see jest.config.cts
     "types": ["jest", "node"]
   },
   "include": [

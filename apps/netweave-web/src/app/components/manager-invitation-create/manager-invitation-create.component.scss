@@ -1,0 +1,7 @@
+.manager-invitation-create {
+  .manager-invitation-create__open:hover {
+    lib-plus-icon {
+      --stroke: var(--color-accent);
+    }
+  }
+}

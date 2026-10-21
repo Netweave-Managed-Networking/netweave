@@ -1,7 +1,14 @@
 import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Organization } from '../organizations/organization.entity';
+import { Invitation } from '../invitations/invitation.entity';
+import { MailConfig } from '../mail/mail-config.entity';
+import { MatchingRun } from '../matchings/matching-run.entity';
+import { Matching } from '../matchings/matching.entity';
+import { MemberCultureWeight } from '../members/member-culture-weight.entity';
+import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
+import { Member } from '../members/member.entity';
+import { MemberUpdateReminder } from '../members/update-reminders/member-update-reminder.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 import { User } from '../users/user.entity';
 import { Migrations } from './db.migrations';
@@ -18,7 +25,18 @@ export default new DataSource({
   database: process.env.DB_DB,
 
   // we need to specify entities here for typeorm CLI, otherwise (when using autoLoadEntities: true) it won't find them and won't generate migrations
-  entities: [Organization, User, UserEmailWhitelist],
+  entities: [
+    Invitation,
+    MailConfig,
+    Matching,
+    MatchingRun,
+    Member,
+    MemberCultureWeight,
+    MemberResourceRequirement,
+    MemberUpdateReminder,
+    User,
+    UserEmailWhitelist,
+  ],
 
   // migrations
   synchronize: false,

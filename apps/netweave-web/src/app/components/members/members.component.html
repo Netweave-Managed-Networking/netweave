@@ -1,0 +1,90 @@
+<div class="members w-full max-w-3xl m-auto">
+  <div class="members__title w-full flex flex-col items-center pb-4 gap-2">
+    <h1>Netzwerkteilnehmer</h1>
+  </div>
+
+  <label class="members__search input w-full mb-4">
+    <icon-search class="opacity-50" />
+    <input
+      type="search"
+      class="members__search-input grow"
+      placeholder="Nach E-Mail oder Organisation suchen"
+      aria-label="Netzwerkteilnehmer suchen"
+      [value]="searchInput()"
+      (input)="onSearchInput($event)"
+    />
+  </label>
+
+  <div
+    class="members__container rounded-box border border-base-content/5 bg-base-100"
+  >
+    @if (membersResponse.isLoading()) {
+      <div class="members__loading flex justify-center p-8">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else if (membersResponse.error()) {
+      <div role="alert" class="members__error alert alert-error m-4">
+        <span>Die Netzwerkteilnehmer konnten nicht geladen werden.</span>
+      </div>
+    } @else if (members().length) {
+      <!-- a grid with table roles, as the row is a component of its own and <tr> only takes cells -->
+      <div role="table" aria-label="Netzwerkteilnehmer" class="members__table">
+        <div role="rowgroup">
+          <div
+            role="row"
+            class="members__legend grid grid-cols-2 gap-4 px-4 py-3 text-sm font-semibold text-base-content/70 border-b border-base-content/5"
+          >
+            <span role="columnheader" class="members__legend-email"
+              >E-Mail</span
+            >
+            <span role="columnheader" class="members__legend-name"
+              >Organisation</span
+            >
+          </div>
+        </div>
+        <div role="rowgroup" class="members__list">
+          @for (member of members(); track member.id) {
+            <app-member-list-item
+              class="members__item even:bg-base-200"
+              [member]="member"
+            />
+          }
+        </div>
+      </div>
+    } @else {
+      <p class="members__empty p-8 text-center text-base-content/70">
+        @if (search()) {
+          Keine Netzwerkteilnehmer zu „{{ search() }}“ gefunden.
+        } @else {
+          Es sind noch keine Netzwerkteilnehmer vorhanden.
+        }
+      </p>
+    }
+  </div>
+
+  @if (totalPages() > 1) {
+    <div class="members__pagination flex justify-center pt-4">
+      <div class="join">
+        <button
+          type="button"
+          class="members__prev-page join-item btn"
+          [disabled]="page() <= 1"
+          (click)="previousPage()"
+        >
+          «
+        </button>
+        <button type="button" class="join-item btn btn-disabled">
+          Seite {{ page() }} / {{ totalPages() }}
+        </button>
+        <button
+          type="button"
+          class="members__next-page join-item btn"
+          [disabled]="page() >= totalPages()"
+          (click)="nextPage()"
+        >
+          »
+        </button>
+      </div>
+    </div>
+  }
+</div>

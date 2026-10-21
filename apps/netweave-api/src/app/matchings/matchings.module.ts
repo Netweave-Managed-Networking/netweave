@@ -1,0 +1,49 @@
+import { Logger, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../auth/auth.module';
+import { MailModule } from '../mail/mail.module';
+import { MembersModule } from '../members/members.module';
+import { createLanguageModel, readLlmConfig } from './llm/llm-config';
+import { LlmMatchingStrategy } from './llm-matching.strategy';
+import { MatchingRun } from './matching-run.entity';
+import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
+import { Matching } from './matching.entity';
+import { MatchingsController } from './matchings.controller';
+import { MatchingsService } from './matchings.service';
+import { createRankingStrategy } from './ranking/ranking-strategies';
+import { RANKING_STRATEGY } from './ranking/ranking-strategy';
+import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
+import { StringLengthMatchingStrategy } from './string-length-matching.strategy';
+
+/** falls back to the dummy algorithm without LLM_PROVIDER */
+const createMatchingStrategy = (): MatchingStrategy => {
+  const logger = new Logger('MatchingStrategy');
+  const config = readLlmConfig(process.env);
+  if (!config) {
+    logger.warn(
+      'No LLM_PROVIDER configured, using the dummy string length matching',
+    );
+    return new StringLengthMatchingStrategy();
+  }
+  logger.log(
+    `Using llm matching with ${config.provider}/${config.model} (${config.concurrency} parallel calls)`,
+  );
+  return new LlmMatchingStrategy(createLanguageModel(config), config);
+};
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([Matching, MatchingRun]),
+    MembersModule,
+    AuthModule,
+    MailModule,
+  ],
+  controllers: [MatchingsController],
+  providers: [
+    MatchingsService,
+    RecommendationMailsService,
+    { provide: MATCHING_STRATEGY, useFactory: createMatchingStrategy },
+    { provide: RANKING_STRATEGY, useFactory: () => createRankingStrategy() },
+  ],
+})
+export class MatchingsModule {}

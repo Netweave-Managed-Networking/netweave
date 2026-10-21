@@ -1,0 +1,55 @@
+<div class="register-confirm">
+  <div
+    class="register-confirm__box bg-base-200 border-base-300 rounded-box w-sm border p-6 flex flex-col gap-4"
+  >
+    <h2 class="text-lg font-bold">Bitte bestätige deine E-Mail-Adresse</h2>
+
+    <p class="register-confirm__email">
+      Wir haben eine Mail an <strong>{{ email }}</strong> geschickt. Klicke auf
+      den Link in der Mail, um deine Registrierung abzuschließen.
+    </p>
+
+    <p class="register-confirm__spam-hint text-sm opacity-70">
+      Keine Mail im Posteingang? Schau auch in deinem Spam-Ordner nach.
+    </p>
+
+    <div class="flex flex-col gap-2">
+      <span>Mail nicht erhalten?</span>
+      <button
+        class="register-confirm__resend btn btn-neutral"
+        type="button"
+        [disabled]="cooldown() > 0 || resendState() === 'pending'"
+        (click)="resend()"
+      >
+        @if (resendState() === 'pending') {
+          <span class="loading loading-spinner loading-xs"></span>
+        }
+        Erneut senden
+        @if (cooldown() > 0) {
+          ({{ cooldown() }} s)
+        }
+      </button>
+
+      @if (resendState() === 'sent') {
+        <div role="status" class="register-confirm__sent alert alert-success">
+          <span>Wir haben dir eine neue Mail geschickt.</span>
+        </div>
+      }
+      @if (resendState() === 'error') {
+        <div role="alert" class="register-confirm__error alert alert-error">
+          <span
+            >Die Mail konnte nicht gesendet werden. Bitte versuche es später
+            erneut.</span
+          >
+        </div>
+      }
+    </div>
+
+    <a
+      class="register-confirm__change-email link"
+      routerLink="/register"
+      [queryParams]="{ email }"
+      >E-Mail-Adresse ändern</a
+    >
+  </div>
+</div>

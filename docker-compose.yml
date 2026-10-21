@@ -1,37 +1,22 @@
+name: netweave-${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}
 networks:
-  frontend:
   backend:
+  proxy:
+    name: netweave-proxy
+    external: true
 
 services:
-  nginx:
+  api:
     networks:
-      - frontend
-      - backend
-    image: nginx:alpine
-    container_name: netweave-proxy
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - /etc/letsencrypt/live/dev.netweave.de/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - /etc/letsencrypt/live/dev.netweave.de/privkey.pem:/etc/nginx/ssl/privkey.pem
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - netweave-api
-      - netweave-web
-    restart: unless-stopped
-
-  netweave-api:
-    networks:
-      - backend
-    image: ghcr.io/netweave-managed-networking/netweave-api:latest
-    container_name: netweave-api
-    ports:
-      - '3000:3000'
+      backend:
+      proxy:
+        aliases:
+          - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-api
+    image: ghcr.io/netweave-managed-networking/netweave-api:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     env_file:
       - .env
     depends_on:
-      netweave-db:
+      db:
         condition: service_healthy
     restart: unless-stopped
     deploy:
@@ -55,18 +40,17 @@ services:
       retries: 3
       start_period: 10s
 
-  netweave-web:
+  web:
     networks:
-      - frontend
-      - backend
-    image: ghcr.io/netweave-managed-networking/netweave-web:latest
-    container_name: netweave-web
+      backend:
+      proxy:
+        aliases:
+          - ${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}-web
+    image: ghcr.io/netweave-managed-networking/netweave-web:${IMAGE_TAG:?IMAGE_TAG must be set in .env}
     env_file:
       - .env
-    environment:
-      - SSR_API_URL=http://netweave-api:3000
     depends_on:
-      netweave-api:
+      api:
         condition: service_healthy
     restart: unless-stopped
     deploy:
@@ -78,13 +62,12 @@ services:
           cpus: '0.25'
           memory: 256M
 
-  netweave-db:
+  db:
     networks:
       - backend
     image: postgres:16-alpine
-    container_name: netweave-db
     ports:
-      - '5432:5432'
+      - '127.0.0.1:${DB_PUBLISHED_PORT:?DB_PUBLISHED_PORT must be set in .env}:5432'
     env_file:
       - .env
     environment:

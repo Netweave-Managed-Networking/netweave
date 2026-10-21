@@ -1,0 +1,10 @@
+# NOTE: when this file is changed, changes will apply only after a merge on main branch, same goes for proxy/docker-compose.yml
+
+# Global options
+{
+	# certificates from Let's Encrypt only (Caddy would otherwise also use ZeroSSL as a fallback)
+	acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+# one file per instance, untracked, created on the server
+import /etc/caddy/sites/*.caddyfile
