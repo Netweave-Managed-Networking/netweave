@@ -1,9 +1,10 @@
+name: netweave-e2e
 services:
   netweave-db-e2e:
     image: postgres:16-alpine
     container_name: netweave-db-e2e
     ports:
-      - '5433:5432'
+      - '127.0.0.1:5433:5432'
     env_file:
       - .env.e2e.api
     environment:
