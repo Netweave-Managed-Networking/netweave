@@ -186,20 +186,24 @@ Changing `INSTANCE_NAME` later changes the project and volume names, so the inst
 (see deploy.yml)
 
 ```text
-~/netweave/
-├── docker-compose.yml          # copied by every deploy
-├── .env                        # by hand, based on .env.example
-└── proxy/
-    ├── docker-compose.yml      # copied by every deploy
-    └── caddy/
-        ├── Caddyfile           # copied by every deploy
-        └── sites/              # by hand: one <INSTANCE_NAME>.caddyfile per instance, based on proxy/site.example.caddyfile
+  ~/netweave/
+  ├── releases/
+  │   └── <branch>/
+  │       └── docker-compose.yml      # copied by every push to <branch>
+  ├── instances/
+  │   └── <INSTANCE_NAME>/
+  │       └── .env                    # by hand, based on .env.example; IMAGE_TAG selects the branch
+  └── proxy/
+      ├── docker-compose.yml          # copied by every deploy
+      └── caddy/
+          ├── Caddyfile               # copied by every deploy
+          └── sites/                  # by hand: one <INSTANCE_NAME>.caddyfile per instance, based on proxy/site.example.caddyfile
 ```
 
 ### Configuration (.env)
 
 All variables are documented in `.env.example`.\
-On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=db`.\
+Each instance has its own `.env` in `instances/<INSTANCE_NAME>/`, shared by its `api`, `web` and `db` and uses `DB_HOST=db`.\
 `IMAGE_TAG`, `INSTANCE_NAME` and `DB_PUBLISHED_PORT` are only read by Compose. Per instance they set the image tag (branch), the name on the shared proxy network, and the database port published on 127.0.0.1 for SSH tunnels (e.g. DBeaver).\
 The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Caddy.
 
@@ -213,9 +217,9 @@ The web container needs no API URL: the frontend calls the relative `/api`, and 
 
 `.github/workflows/deploy.yml` runs on every push to `develop`:
 
-1. Build `netweave-api` and `netweave-web` and push them to GHCR, tagged with the branch name and the short commit SHA.
-2. Copy `docker-compose.yml`, `proxy/docker-compose.yml` and `proxy/caddy/Caddyfile` to `~/netweave` on the VPS. Then, over SSH: create the shared network if missing, pull images, validate the Caddy config, `docker compose up -d --remove-orphans` for the instance, start the proxy and reload Caddy.
-3. Verify that both images exist and that no container of either project is exited or restarting.
+1. it builds `netweave-api` and `netweave-web` and pushes them to GHCR, tagged with the branch name and the short commit SHA.
+2. it copies `docker-compose.yml` to `releases/<branch>/` and the proxy files to `proxy/`. Then it validates the Caddy config, updates every instance whose `IMAGE_TAG` equals the pushed branch, and starts and reloads the proxy.
+3. it verifies that both images exist and that no container of any instance on the server is exited or restarting.
 
 Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
 
@@ -229,10 +233,12 @@ Creating migrations: see [Change Database](#change-database).
 
 Run on the server in `~/netweave`:
 
+The examples below are for `INSTANCE_NAME=dev`.\
+Replace `dev` by whatever `INSTANCE_NAME` and `develop` by the `IMAGE_TAG` of that instance.
+
 ```sh
-  docker compose ps                                                  # instance container status
-  docker compose logs -f api                                         # follow API logs
-  docker compose up -d --force-recreate                              # apply a changed .env
-  docker compose -f proxy/docker-compose.yml logs -f caddy           # proxy logs, including certificate requests
-  docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile   # apply a changed site file
+  docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml ps
+  docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml logs -f api
+  docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml up -d --force-recreate  # apply a changed .env
+  docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile                # apply a changed site file
 ```
