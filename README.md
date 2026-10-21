@@ -6,6 +6,8 @@ The code written here is a pure result of the private work of Marvin Frede. It i
 The code written here also does not contain any code of [Netweave 1.0](https://github.com/Netweave-Managed-Networking/netweave-v1).\
 See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
 
+<br /><br /><br /><br /><br /><br />
+
 ## How to get started
 
 Run Netweave locally from source ([2A.](#2a-recommended-run-from-source)). It uses Angular's development server with live reload, and Docker only for the local database and Mailpit.\
@@ -80,6 +82,8 @@ Mailpit is started together with the database (see [2A. Recommended: run from so
 - It publishes no web port; the separate Caddy proxy (`proxy/docker-compose.yml`) serves it, so it is not meant for local use.
 - For local development use [2A. Recommended: run from source](#2a-recommended-run-from-source).
 
+<br /><br /><br /><br /><br /><br />
+
 ## Software
 
 This workspace uses [Nx](https://nx.dev) to manage the applications and
@@ -132,6 +136,8 @@ Use migrations when changing the database schema:
    npm run mig:show
    npm run mig:run
    ```
+
+<br /><br /><br /><br /><br /><br />
 
 ## Server setup
 
@@ -242,3 +248,57 @@ Replace `dev` by whatever `INSTANCE_NAME` and `develop` by the `IMAGE_TAG` of th
   docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml up -d --force-recreate  # apply a changed .env
   docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile                # apply a changed site file
 ```
+
+<br /><br /><br /><br /><br /><br />
+
+## Add an instance
+
+Example values: `INSTANCE_NAME=dummy`, domain `dummy.netweave.de`, branch `develop`.
+
+1. **Choose the values.**
+   - `INSTANCE_NAME`: unique, lowercase letters, digits and hyphens; never change it later.
+   - `IMAGE_TAG`: the branch the instance follows; `releases/<IMAGE_TAG>/` must already exist on the server, i.e. that branch has been deployed at least once.
+   - `DB_PUBLISHED_PORT`: unique per instance; `grep DB_PUBLISHED_PORT ~/netweave/instances/*/.env` shows the ones in use.
+   - The subdomain.
+
+2. **DNS.** At IONOS, add an A record for the subdomain pointing to the VPS. Check from the server with `getent hosts dummy.netweave.de`.
+
+3. **Instance `.env`.**
+
+   ```sh
+    ssh netweave
+    mkdir -p ~/netweave/instances/dummy
+    touch ~/netweave/instances/dummy/.env # paste the content of .env.example from the repo
+    chmod 600 ~/netweave/instances/dummy/.env
+   ```
+
+   - `INSTANCE_NAME=dummy`, `IMAGE_TAG=develop` and `DB_PUBLISHED_PORT=5433` (examples)
+   - `WEB_APP_URL=https://dummy.netweave.de` (example)
+   - `DB_HOST=db` and `DB_PORT=5432` (always set like this)
+   - `DB_USER=netweave_dummy_user`, `DB_PASSWORD` and `DB_DB=netweave_dummy_db`, (new for the instance, generate random password, e.g. `openssl rand -hex 24`)
+   - `JWT_SECRET`, (new for the instance, e.g. from `openssl rand -base64 48`)
+   - `REGISTRATION_WHITELIST` (use email for the first admin, which then can register)
+   - Mail decided per instance: `SEND_MAIL_ACTIVATED` (if `true`, check `SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE` / `SEQUENTIAL_TEST_MAIL_RECEIVER` and `SEND_RECOMMENDATION_MAILS`)
+   - `LLM_PROVIDER` (empty = no LLM costs)
+
+4. **Site file.**
+   - On the server, create `~/netweave/proxy/caddy/sites/dummy.caddyfile`
+   - paste the content of `proxy/site.example.caddyfile` from the repo
+   - fill in the domain and `INSTANCE_NAME`
+
+5. **Start the instance.**
+   - The next deploy of its branch starts it and reloads Caddy.
+   - To start it right away
+     - either re-run the latest workflow run of that branch in GitHub Actions ("Re-run all jobs").
+     - or
+       ```sh
+         cd ~/netweave
+         docker compose --project-directory instances/dummy -f releases/develop/docker-compose.yml up -d
+         docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile
+       ```
+   - From now on, every push to its branch updates it automatically.
+
+6. **Check.**
+   - `docker ps` shows `netweave-dummy-api-1`, `netweave-dummy-web-1` and `netweave-dummy-db-1` running.
+   - `https://dummy.netweave.de` loads with a valid certificate, which Caddy requests after the reload.
+   - The first admin from `REGISTRATION_WHITELIST` can register.
