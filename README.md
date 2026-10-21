@@ -1,17 +1,13 @@
 # Netweave
 
-## About
-
-The code written here is a pure result of the private work of Marvin Frede. It is not part of any Employment relationship.\
-The code written here also does not contain any code of [Netweave 1.0](https://github.com/Netweave-Managed-Networking/netweave-v1).\
-See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
-
-<br /><br /><br /><br /><br /><br />
-
 ## How to get started
 
 Run Netweave locally from source ([2A.](#2a-recommended-run-from-source)). It uses Angular's development server with live reload, and Docker only for the local database and Mailpit.\
 `docker-compose.yml` ([2B.](#2b-run-with-docker-compose)) is the server deployment file and not meant for local use.
+
+## About
+
+See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
 
 ### 1. Shared setup
 
