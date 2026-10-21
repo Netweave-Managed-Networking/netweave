@@ -3,7 +3,9 @@ name: Build & Deploy
 on:
   push:
     branches:
+      - main
       - develop
+      - 'release-*'
 
 env:
   REGISTRY: ghcr.io
@@ -87,6 +89,7 @@ jobs:
           target: ~/netweave/releases/${{ github.ref_name }}
 
       - name: Copy proxy to VPS
+        if: github.ref_name == 'main' # only after merge on main branch, changes in `Caddyfile` and `proxy/docker-compose.yml` will apply
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}

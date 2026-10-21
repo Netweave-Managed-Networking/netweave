@@ -221,10 +221,11 @@ The web container needs no API URL: the frontend calls the relative `/api`, and 
 
 ### Deployment pipeline
 
-`.github/workflows/deploy.yml` runs on every push to `develop`:
+`.github/workflows/deploy.yml` runs on every push to `main`, `develop` or any `release-` branch:
 
 1. it builds `netweave-api` and `netweave-web` and pushes them to GHCR, tagged with the branch name and the short commit SHA.
 2. it copies `docker-compose.yml` to `releases/<branch>/` and the proxy files to `proxy/`. Then it validates the Caddy config, updates every instance whose `IMAGE_TAG` equals the pushed branch, and starts and reloads the proxy.
+   - proxy files are only updated if pushed to `main` branch, though. This is because otherwise every branch would just overwrite it. So only main is able to do so (configured in deploy.yml:`Copy proxy to VPS`)
 3. it verifies that both images exist and that no container of any instance on the server is exited or restarting.
 
 Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
