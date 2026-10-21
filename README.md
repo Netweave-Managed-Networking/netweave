@@ -135,7 +135,7 @@ Use migrations when changing the database schema:
 
 ## Server setup
 
-As of 2026-10-20.
+As of 2026-10-21.
 
 ### Overview
 
@@ -160,21 +160,26 @@ flowchart LR
 
 ### Docker services
 
-Two Compose projects: `proxy` (from `proxy/docker-compose.yml`, name set in the file) and the dev instance `netweave` (from `docker-compose.yml`, name from the folder `~/netweave`).
+Compose projects:
 
-| Container        | Name on `netweave-proxy` | Project    | Published ports                                         | Notes                                                            |
-| ---------------- | ------------------------ | ---------- | ------------------------------------------------------- | ---------------------------------------------------------------- |
-| `proxy-caddy-1`  | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
-| `netweave-api-1` | `<INSTANCE_NAME>-api`    | `netweave` | none                                                    | healthcheck on `/api`                                            |
-| `netweave-web-1` | `<INSTANCE_NAME>-web`    | `netweave` | none                                                    | listens on 4000 inside Docker                                    |
-| `netweave-db-1`  | not on this network      | `netweave` | `<DB_PUBLISHED_PORT>` on 127.0.0.1 only, for SSH tunnel | data in volume `netweave_db-data`                                |
+- `proxy` (from `proxy/docker-compose.yml`, name set in the file), shared by all instances.
+- One project per instance, `netweave-<INSTANCE_NAME>` (from `docker-compose.yml`, name set via `name:` from `INSTANCE_NAME`), e.g. `netweave-dev`.
 
-Start order within the instance: db healthy → api healthy → web.
+| Container                        | Name on network `netweave-proxy` | Project                    | Published ports                                         | Notes                                                            |
+| -------------------------------- | -------------------------------- | -------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------- |
+| `proxy-caddy-1`                  | `proxy-caddy-1`                  | `proxy`                    | 80, 443 (tcp + udp)                                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
+| `netweave-<INSTANCE_NAME>-api-1` | `<INSTANCE_NAME>-api`            | `netweave-<INSTANCE_NAME>` | none                                                    | healthcheck on `/api`                                            |
+| `netweave-<INSTANCE_NAME>-web-1` | `<INSTANCE_NAME>-web`            | `netweave-<INSTANCE_NAME>` | none                                                    | listens on 4000 inside Docker                                    |
+| `netweave-<INSTANCE_NAME>-db-1`  | not on this network              | `netweave-<INSTANCE_NAME>` | `<DB_PUBLISHED_PORT>` on 127.0.0.1 only, for SSH tunnel | data in volume `netweave-<INSTANCE_NAME>_db-data`                |
+
+Start order within an instance: db healthy → api healthy → web.
 
 Networks:
 
-- `netweave_backend` is private to the instance and created by Compose.
+- `netweave-<INSTANCE_NAME>_backend` is private to each instance and created by Compose.
 - `netweave-proxy` is shared by all projects and created by the deploy if missing. Caddy joins it, and `api` and `web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; `db` never joins it.
+
+Changing `INSTANCE_NAME` later changes the project and volume names, so the instance would start with an empty database. Moving the data means copying the old volume into the new one with the containers stopped.
 
 ### Files on the server
 

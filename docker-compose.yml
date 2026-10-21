@@ -1,3 +1,4 @@
+name: netweave-${INSTANCE_NAME:?INSTANCE_NAME must be set in .env}
 networks:
   backend:
   proxy:
