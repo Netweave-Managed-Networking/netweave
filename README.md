@@ -8,9 +8,8 @@ See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-dia
 
 ## How to get started
 
-There are two ways to run Netweave locally. Use the source-based workflow for
-active development because it runs Angular's development server with live
-reload. Use Docker Compose when you want to run the deployment-like stack.
+Run Netweave locally from source ([2A.](#2a-recommended-run-from-source)). It uses Angular's development server with live reload, and Docker only for the local database and Mailpit.\
+`docker-compose.yml` ([2B.](#2b-run-with-docker-compose)) is the server deployment file and not meant for local use.
 
 ### 1. Shared setup
 
@@ -43,16 +42,16 @@ reload. Use Docker Compose when you want to run the deployment-like stack.
 This workflow needs Docker for the local database and Mailpit. Start both:
 
 ```sh
-   docker compose -f docker-compose.local.yml up -d
+  docker compose -f docker-compose.local.yml up -d
 ```
 
 The database uses the credentials from `.env` (`DB_USER`, `DB_PASSWORD`, `DB_DB`) and listens on `localhost:5432`.\
- `docker compose -f docker-compose.local.yml down -v` deletes it for a fresh start.
+`docker compose -f docker-compose.local.yml down -v` deletes it for a fresh start.
 
 Start the frontend and API together:
 
 ```sh
-npm run serve
+  npm run serve
 ```
 
 Then open [http://localhost:4200](http://localhost:4200). Nx starts the API as
@@ -78,7 +77,7 @@ Mailpit is started together with the database (see [2A. Recommended: run from so
 
 - `docker-compose.yml` is the server deployment file for one instance (see [Server setup](#server-setup)).
 - It starts PostgreSQL, the API and the server-rendered web app from prebuilt images, selected by `IMAGE_TAG`, instead of building the checked-out code.
-- It publishes no web port; the separate Caddy proxy (`proxy/docker-compose.yml`) serves it, so it is not meant for local use.\
+- It publishes no web port; the separate Caddy proxy (`proxy/docker-compose.yml`) serves it, so it is not meant for local use.
 - For local development use [2A. Recommended: run from source](#2a-recommended-run-from-source).
 
 ## Software
@@ -89,14 +88,14 @@ libraries.
 To explore the project graph, run:
 
 ```sh
-npm run nx graph
+  npm run nx graph
 ```
 
 To inspect the available targets for either application, run:
 
 ```sh
-npm run nx show project netweave-web
-npm run nx show project netweave-api
+  npm run nx show project netweave-web
+  npm run nx show project netweave-api
 ```
 
 ### Add Projects
@@ -104,8 +103,8 @@ npm run nx show project netweave-api
 Use Nx generators to create new libraries, components, services, ...:
 
 ```sh
-npm run nx g @nx/angular:library mylib
-npm run nx g c apps/netweave-web/src/app/components/.../name
+  npm run nx g @nx/angular:library mylib
+  npm run nx g c apps/netweave-web/src/app/components/.../name
 ```
 
 Use `npm run nx list` to see installed plugins and
@@ -140,7 +139,7 @@ As of 2026-10-20.
 
 ### Overview
 
-One VPS runs the dev instance (docker-compose.yml) behind a Caddy proxy (proxy/docker-compose.yml)\
+One VPS runs the dev instance (`docker-compose.yml`) behind a Caddy proxy (`proxy/docker-compose.yml`).\
 Every push to `develop` builds new images and redeploys via `.github/workflows/deploy.yml`.\
 Secrets exist only on the server and in GitHub secrets.
 
@@ -156,26 +155,26 @@ flowchart LR
   C -->|"url: /api*"| A["dev-api<br/>NestJS :3000"]
   C -->|"url: /"| W["dev-web<br/>Angular SSR :4000"]
   W -.->|"SSR: /api via public URL"| C
-  A --> D[("netweave-db<br/>:5432")]
+  A --> D[("db<br/>:5432")]
 ```
 
 ### Docker services
 
 Two Compose projects: `proxy` (from `proxy/docker-compose.yml`, name set in the file) and the dev instance `netweave` (from `docker-compose.yml`, name from the folder `~/netweave`).
 
-| Container        | Name on `netweave-proxy` | Project    | Published ports                         | Notes                                                            |
-| ---------------- | ------------------------ | ---------- | --------------------------------------- | ---------------------------------------------------------------- |
-| `proxy-caddy-1`  | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
-| `netweave-api-1` | `<INSTANCE_NAME>-api`    | `netweave` | none                                    | healthcheck on `/api`                                            |
-| `netweave-web-1` | `<INSTANCE_NAME>-web`    | `netweave` | none                                    | listens on 4000 inside Docker                                    |
-| `netweave-db-1`  | not on this network      | `netweave` | 5432 on `127.0.0.1` only for SSH tunnel | data in volume `netweave_db-data`                                |
+| Container        | Name on `netweave-proxy` | Project    | Published ports                                         | Notes                                                            |
+| ---------------- | ------------------------ | ---------- | ------------------------------------------------------- | ---------------------------------------------------------------- |
+| `proxy-caddy-1`  | `proxy-caddy-1`          | `proxy`    | 80, 443 (tcp + udp)                                     | mounts `proxy/caddy/`; certificates in volume `proxy_caddy-data` |
+| `netweave-api-1` | `<INSTANCE_NAME>-api`    | `netweave` | none                                                    | healthcheck on `/api`                                            |
+| `netweave-web-1` | `<INSTANCE_NAME>-web`    | `netweave` | none                                                    | listens on 4000 inside Docker                                    |
+| `netweave-db-1`  | not on this network      | `netweave` | `<DB_PUBLISHED_PORT>` on 127.0.0.1 only, for SSH tunnel | data in volume `netweave_db-data`                                |
 
 Start order within the instance: db healthy → api healthy → web.
 
 Networks:
 
 - `netweave_backend` is private to the instance and created by Compose.
-- `netweave-proxy` is shared by all projects and created by the deploy if missing. Caddy joins it, and `netweave-api` and `netweave-web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; the database never joins it.
+- `netweave-proxy` is shared by all projects and created by the deploy if missing. Caddy joins it, and `api` and `web` join it as `<INSTANCE_NAME>-api` and `<INSTANCE_NAME>-web`; `db` never joins it.
 
 ### Files on the server
 
@@ -196,7 +195,7 @@ Networks:
 
 All variables are documented in `.env.example`.\
 On the server, one `.env` is shared by the api, web and db containers and uses `DB_HOST=db`.\
-`IMAGE_TAG` and `INSTANCE_NAME` are only read by Compose: they pick the image tag and name the instance on the shared proxy network.\
+`IMAGE_TAG`, `INSTANCE_NAME` and `DB_PUBLISHED_PORT` are only read by Compose. Per instance they set the image tag (branch), the name on the shared proxy network, and the database port published on 127.0.0.1 for SSH tunnels (e.g. DBeaver).\
 The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Caddy.
 
 ### TLS certificates
@@ -226,9 +225,9 @@ Creating migrations: see [Change Database](#change-database).
 Run on the server in `~/netweave`:
 
 ```sh
-docker compose ps                                                  # instance container status
-docker compose logs -f api                                         # follow API logs
-docker compose up -d --force-recreate                              # apply a changed .env
-docker compose -f proxy/docker-compose.yml logs -f caddy           # proxy logs, including certificate requests
-docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile   # apply a changed site file
+  docker compose ps                                                  # instance container status
+  docker compose logs -f api                                         # follow API logs
+  docker compose up -d --force-recreate                              # apply a changed .env
+  docker compose -f proxy/docker-compose.yml logs -f caddy           # proxy logs, including certificate requests
+  docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile   # apply a changed site file
 ```
