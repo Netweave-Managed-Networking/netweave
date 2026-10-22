@@ -1,13 +1,13 @@
 # Netweave
 
+## About
+
+See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
+
 ## How to get started
 
 Run Netweave locally from source ([2A.](#2a-recommended-run-from-source)). It uses Angular's development server with live reload, and Docker only for the local database and Mailpit.\
 `docker-compose.yml` ([2B.](#2b-run-with-docker-compose)) is the server deployment file and not meant for local use.
-
-## About
-
-See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-diagram.puml)
 
 ### 1. Shared setup
 
@@ -34,6 +34,8 @@ See our [Glossary](./docs/glossary.md) or [Use Case Diagram](./docs/use-case-dia
    can register. More emails and domains, each with an optional role, can then
    be allowed from the settings page. New users get the role `viewer` unless
    their whitelist entry says otherwise.
+
+<br />
 
 ### 2A. Recommended: run from source
 
@@ -71,6 +73,8 @@ admin page; that override is stored in the database and survives a restart.
 
 Mailpit is started together with the database (see [2A. Recommended: run from source](#2a-recommended-run-from-source)).
 
+<br />
+
 ### 2B. Run with Docker Compose
 
 - `docker-compose.yml` is the server deployment file for one instance (see [Server setup](#server-setup)).
@@ -78,7 +82,7 @@ Mailpit is started together with the database (see [2A. Recommended: run from so
 - It publishes no web port; the separate Caddy proxy (`proxy/docker-compose.yml`) serves it, so it is not meant for local use.
 - For local development use [2A. Recommended: run from source](#2a-recommended-run-from-source).
 
-<br /><br /><br /><br /><br /><br />
+<br /><br />
 
 ## Software
 
@@ -98,6 +102,8 @@ To inspect the available targets for either application, run:
   npm run nx show project netweave-api
 ```
 
+<br />
+
 ### Add Projects
 
 Use Nx generators to create new libraries, components, services, ...:
@@ -109,6 +115,8 @@ Use Nx generators to create new libraries, components, services, ...:
 
 Use `npm run nx list` to see installed plugins and
 `npm run nx list <plugin-name>` to see their generators.
+
+<br />
 
 ### Change Database
 
@@ -133,7 +141,7 @@ Use migrations when changing the database schema:
    npm run mig:run
    ```
 
-<br /><br /><br /><br /><br /><br />
+<br />
 
 ## Server setup
 
@@ -145,9 +153,13 @@ One VPS runs the dev instance (`docker-compose.yml`) behind a Caddy proxy (`prox
 Every push to `develop` builds new images and redeploys via `.github/workflows/deploy.yml`.\
 Secrets exist only on the server and in GitHub secrets.
 
+<br />
+
 ### Server and DNS
 
 - Subdomains (like `dev.netweave.de`) are A records at IONOS pointing to the VPS.
+
+<br />
 
 ### Request flow
 
@@ -159,6 +171,8 @@ flowchart LR
   W -.->|"SSR: /api via public URL"| C
   A --> D[("db<br/>:5432")]
 ```
+
+<br />
 
 ### Docker services
 
@@ -183,6 +197,8 @@ Networks:
 
 Changing `INSTANCE_NAME` later changes the project and volume names, so the instance would start with an empty database. Moving the data means copying the old volume into the new one with the containers stopped.
 
+<br />
+
 ### Files on the server
 
 (see deploy.yml)
@@ -202,6 +218,8 @@ Changing `INSTANCE_NAME` later changes the project and volume names, so the inst
           └── sites/                  # by hand: one <INSTANCE_NAME>.caddyfile per instance, based on proxy/site.example.caddyfile
 ```
 
+<br />
+
 ### Configuration (.env)
 
 All variables are documented in `.env.example`.\
@@ -209,11 +227,15 @@ Each instance has its own `.env` in `instances/<INSTANCE_NAME>/`, shared by its 
 `IMAGE_TAG`, `INSTANCE_NAME` and `DB_PUBLISHED_PORT` are only read by Compose. Per instance they set the image tag (branch), the name on the shared proxy network, and the database port published on 127.0.0.1 for SSH tunnels (e.g. DBeaver).\
 The web container needs no API URL: the frontend calls the relative `/api`, and during SSR Angular resolves that against the requested host, so it goes through Caddy.
 
+<br />
+
 ### TLS certificates
 
 - Caddy requests and renews a Let's Encrypt certificate for every domain in a site file (CA set via `acme_ca` in `proxy/caddy/Caddyfile`).
 - The check runs over port 80 while Caddy keeps running, so renewals cause no downtime.
 - Certificates live in the volume `proxy_caddy-data`. Deleting it makes Caddy request new ones.
+
+<br />
 
 ### Deployment pipeline
 
@@ -226,11 +248,15 @@ The web container needs no API URL: the frontend calls the relative `/api`, and 
 
 Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
 
+<br />
+
 ### Database and migrations
 
 The API runs pending migrations on startup (see `apps/netweave-api/src/app/db/db.data-source.ts`), so an empty database needs no manual steps.\
 Postgres creates the user and database from `DB_USER`, `DB_PASSWORD` and `DB_DB` only on the first start of an empty volume.\
 Creating migrations: see [Change Database](#change-database).
+
+<br />
 
 ### Useful commands
 
@@ -246,7 +272,7 @@ Replace `dev` by whatever `INSTANCE_NAME` and `develop` by the `IMAGE_TAG` of th
   docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile                # apply a changed site file
 ```
 
-<br /><br /><br /><br /><br /><br />
+<br /><br />
 
 ## Add an instance
 
