@@ -1,4 +1,5 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
+
 import { Logger } from '@nestjs/common';
 import { RecommendationsDTO } from '@netweave/api-types';
 import { MailService } from '../../mail/mail.service';
@@ -42,9 +43,11 @@ describe('RecommendationMailsService', () => {
   let membersService: jest.Mocked<Pick<MembersService, 'getAllWithAnswers'>>;
   let mailService: jest.Mocked<Pick<MailService, 'sendMail'>>;
   const originalFlag = process.env.SEND_RECOMMENDATION_MAILS;
+  const originalSneakPeek = process.env.RECOMMENDATION_SNEAK_PEEK_MAIL;
 
   beforeEach(() => {
     delete process.env.SEND_RECOMMENDATION_MAILS;
+    delete process.env.RECOMMENDATION_SNEAK_PEEK_MAIL;
 
     membersService = {
       getAllWithAnswers: jest
@@ -66,11 +69,13 @@ describe('RecommendationMailsService', () => {
   });
 
   afterEach(() => {
-    if (originalFlag === undefined) {
-      delete process.env.SEND_RECOMMENDATION_MAILS;
-    } else {
+    if (originalFlag !== undefined) {
       process.env.SEND_RECOMMENDATION_MAILS = originalFlag;
-    }
+    } else delete process.env.SEND_RECOMMENDATION_MAILS;
+
+    if (originalSneakPeek !== undefined) {
+      process.env.SEND_RECOMMENDATION_MAILS = originalSneakPeek;
+    } else delete process.env.SEND_RECOMMENDATION_MAILS;
 
     jest.restoreAllMocks();
   });
@@ -82,6 +87,21 @@ describe('RecommendationMailsService', () => {
 
     // 3 has no email address, 4 has no matches
     expect(recipients()).toEqual(['one@example.com', 'two@example.com']);
+    expect(mailService.sendMail.mock.calls[0][0].html).toContain(
+      'two@example.com',
+    );
+  });
+
+  it('mails the RECOMMENDATION_SNEAK_PEEK_MAIL if set', async () => {
+    process.env.RECOMMENDATION_SNEAK_PEEK_MAIL = 'sneak-peek@example.com';
+    await service.sendForRun(42, recommendations);
+
+    expect(recipients()).toEqual([
+      'sneak-peek@example.com',
+      'one@example.com',
+      'sneak-peek@example.com',
+      'two@example.com',
+    ]);
     expect(mailService.sendMail.mock.calls[0][0].html).toContain(
       'two@example.com',
     );
@@ -126,12 +146,26 @@ describe('RecommendationMailsService', () => {
     );
   });
 
-  it('sends nothing when SEND_RECOMMENDATION_MAILS is false', async () => {
+  it('sends only to RECOMMENDATION_SNEAK_PEEK_MAIL if SEND_RECOMMENDATION_MAILS is false', async () => {
+    process.env.RECOMMENDATION_SNEAK_PEEK_MAIL = 'sneak-peek@example.com';
     process.env.SEND_RECOMMENDATION_MAILS = 'false';
 
     await service.sendForRun(42, recommendations);
 
-    expect(membersService.getAllWithAnswers).not.toHaveBeenCalled();
+    expect(membersService.getAllWithAnswers).toHaveBeenCalledTimes(1);
+    expect(mailService.sendMail).toHaveBeenCalledTimes(2); // 2 members
+    expect(mailService.sendMail.mock.calls[0][0].to).toContain(
+      'sneak-peek@example.com',
+    );
+  });
+
+  it('sends nothing if SEND_RECOMMENDATION_MAILS is false and RECOMMENDATION_SNEAK_PEEK_MAIL is not set', async () => {
+    process.env.RECOMMENDATION_SNEAK_PEEK_MAIL = '';
+    process.env.SEND_RECOMMENDATION_MAILS = 'false';
+
+    await service.sendForRun(42, recommendations);
+
+    expect(membersService.getAllWithAnswers).toHaveBeenCalledTimes(1);
     expect(mailService.sendMail).not.toHaveBeenCalled();
   });
 
