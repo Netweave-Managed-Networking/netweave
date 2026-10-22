@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@bodenkunde-bodenlabor.example"
+  },
+  "Member": {
+    "name": "NT_Test_Hochschul_AG_Bodenkunde_Bodenlabor",
+    "contact": "Dr. Niklas Brandt"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "23",
+      "category": "competencies",
+      "resources": "Wir untersuchen Böden, ihre Eigenschaften und ihre Rolle im Wasser- und Stoffhaushalt. Bei Bodenkartierung, Standortbewertung, Nährstofffragen und der Interpretation bodenbezogener Messungen bringen wir Fachwissen mit. Für landwirtschaftliche, waldbezogene und naturschutzfachliche Fragen können wir helfen, ein geeignetes Untersuchungsdesign zu entwickeln und Ergebnisse verständlich einzuordnen. Bodenbezogene Aspekte von Wiedervernässung und Wasserrückhalt sind ebenfalls interessant. Je nach Fragestellung können wir Probenahme und Laboranalysen in ein vereinbartes Forschungsprojekt einbinden; die Eignung der Methoden und die Kosten müssten wir gemeinsam klären.",
+      "requirements": "Wir brauchen bei manchen Projekten ergänzende biologische Informationen zur Vegetation und zu ausgewählten Tiergruppen. Für die Verknüpfung von Bodendaten mit der Entwicklung von Lebensräumen wäre Zusammenarbeit mit einer ökologischen Arbeitsgruppe oder einem Naturschutzpartner hilfreich."
+    },
+    {
+      "member_id": "23",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "23",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "23",
+      "category": "land",
+      "resources": "",
+      "requirements": "Wir suchen Untersuchungsflächen, auf denen verschiedene Nutzungs- oder Pflegeregime verglichen werden können. Interessant sind landwirtschaftliche Flächen, Waldstandorte und feuchte oder wiedervernässte Bereiche. Zugang und mögliche Probenahmen müssen mit den Verantwortlichen abgestimmt sein."
+    },
+    {
+      "member_id": "23",
+      "category": "equipment",
+      "resources": "Für abgestimmte Untersuchungen verfügen wir über Geräte zur Bodenprobenahme und über entsprechende Laborarbeitsmöglichkeiten an der Hochschule. Ob ein Gerät ausgeliehen werden kann oder die Untersuchung durch unser Team erfolgt, hängt vom Projekt und den bestehenden Regeln zur Nutzung ab.",
+      "requirements": ""
+    },
+    {
+      "member_id": "23",
+      "category": "networks",
+      "resources": "",
+      "requirements": "Wir möchten Kontakte zu landwirtschaftlichen Betrieben, Forststellen und Naturschutzorganisationen aufbauen, die Untersuchungsflächen und konkrete Fragen für gemeinsame Forschung einbringen."
+    },
+    {
+      "member_id": "23",
+      "category": "helping_hands",
+      "resources": "Passende Praxisfragen können Studierende unter wissenschaftlicher Betreuung in einer Abschlussarbeit bearbeiten. Dazu gehören zum Beispiel die Erfassung von Bodeneigenschaften, die Auswertung von Standortdaten und der Vergleich von Bewirtschaftungsformen. Zeitplan und Datennutzung werden mit den Partnern vereinbart.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "23",
+      "itemId": "Z1-G",
+      "weight": 20
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z1-I",
+      "weight": 30
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z1-S",
+      "weight": 35
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z2-G",
+      "weight": 20
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z2-I",
+      "weight": 35
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z2-S",
+      "weight": 30
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z3-G",
+      "weight": 15
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z3-I",
+      "weight": 30
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z3-S",
+      "weight": 35
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z4-G",
+      "weight": 25
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z4-I",
+      "weight": 25
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z4-W",
+      "weight": 15
+    },
+    {
+      "member_id": "23",
+      "itemId": "Z4-S",
+      "weight": 35
+    }
+  ]
+}

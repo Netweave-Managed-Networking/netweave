@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@forstamt-nordwald.example"
+  },
+  "Member": {
+    "name": "NT_Test_Forstamt_Nordwald",
+    "contact": "Miriam Hartmann"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Bei uns arbeiten Försterinnen und Förster mit Erfahrung in Waldökologie, standortgerechter Bewirtschaftung und Waldumbau. Wir beschäftigen uns viel damit, die Wälder an die Folgen des Klimawandels anzupassen. Über unsere landesweiten Fachstrukturen können wir auch Leute aus Hydrologie, Landschaftsplanung und der Entwicklung von Naturschutzmaßnahmen einbeziehen. Wir kennen uns mit öffentlich-rechtlichen Genehmigungen, Ausgleichsmaßnahmen und Anforderungen der FSC- und PEFC-Zertifizierung aus. Außerdem bringen wir praktische Erfahrung in Wegebau, Holzwirtschaft, Besucherlenkung und ökologischer Wegrandpflege mit. Nutzungskonflikte im Wald gehören ebenfalls zu unserem Alltag, etwa zwischen Naturschutz, Mountainbiken, Reiten und anderen Freizeitaktivitäten. Wir sind offen dafür, in Kooperationen neue Ansätze auszuprobieren und gute Erfahrungen anschließend weiterzuentwickeln.",
+      "requirements": "Für unsere Arbeit wäre mehr Wissen über Tierökologie hilfreich. Besonders zu Säugetieren, Vögeln, Amphibien, Reptilien und Wirbellosen suchen wir Leute, die ihre Erfahrungen mit uns teilen und mit uns auf konkrete Waldflächen schauen. Uns interessiert, welche Auswirkungen Bewirtschaftung und Waldumbau auf diese Tiere haben und wie wir ihre Lebensräume besser berücksichtigen können. Außerdem beschäftigen wir uns damit, wie sich andere Leistungen des Waldes neben der Holzproduktion sinnvoll in Wert setzen lassen. Bei Erholung, Wasserhaushalt, Klimaschutz und Biodiversität könnten wir Unterstützung gebrauchen, um aus solchen Leistungen tragfähige Ansätze für unsere Arbeit zu machen."
+    },
+    {
+      "category": "financial_resources",
+      "resources": "Für Maßnahmen auf unseren eigenen Landeswaldflächen verfügen wir über einen umfangreicheren Finanzpool. Damit können wir auch gemeinsame Naturschutz- oder Entwicklungsprojekte auf diesen Flächen unterstützen, wenn das Vorhaben zu unseren Aufgaben passt. Die Mittel sind auf unsere eigenen Flächen beschränkt. Projekte auf den Flächen anderer Organisationen lassen sich daraus nicht finanzieren, und freie Spenden an andere Vereine können wir aus diesem Pool ebenfalls nicht geben. Wenn eine Organisation eine Idee für eine Zusammenarbeit auf unseren Flächen hat, besprechen wir gern, was möglich ist.",
+      "requirements": ""
+    },
+    {
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "Wir betreuen ungefähr 12.000 Hektar Landeswald, verteilt über mehrere Landkreise. Dazu gehören vor allem Kiefern- und Fichtenbestände sowie Eichen- und Buchenwälder. Es gibt einen Flächenpool für Ausgleichsmaßnahmen und viele Wege und Wegränder, an denen ökologische Verbesserungen möglich sind. Für gemeinsame Naturschutzvorhaben oder die Erprobung neuer Ansätze können wir passende Bereiche prüfen. Welche Fläche infrage kommt und was dort möglich ist, müssten wir miteinander abstimmen.",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "Für unsere Arbeit stehen Forst- und Baumaschinen zur Verfügung. Damit können wir Waldpflege, Wegebau und andere Arbeiten im Gelände umsetzen. Wenn bei einer gemeinsamen Maßnahme technische Unterstützung gebraucht wird, können wir schauen, welche Maschine und welches Personal dafür infrage kommen. Einsatzort, Zeit, Kosten und die Eignung für die jeweilige Fläche müssen wir vorher besprechen.",
+      "requirements": ""
+    },
+    {
+      "category": "networks",
+      "resources": "Wir arbeiten überregional mit privaten Waldbesitzern und verschiedenen Behörden zusammen. Gute Verbindungen gibt es auch zum amtlichen Naturschutz. Über unsere landesweiten Fachstrukturen lassen sich weitere Ansprechpartner einbeziehen. Bei Vorhaben mit mehreren Beteiligten können wir helfen, die richtigen Leute zusammenzubringen und unterschiedliche Interessen zu besprechen. Wir haben Erfahrung damit, zwischen verschiedenen Waldnutzern zu vermitteln.",
+      "requirements": "Wir möchten produktive Kontakte zu Naturschutzverbänden aufbauen und bestehende Kontakte vertiefen. Uns interessieren deren Anregungen und Erfahrungen aus der praktischen Arbeit. Es wäre gut, wenn daraus gemeinsame Vorhaben entstehen und wir auch andere Sichtweisen auf unsere Wälder kennenlernen."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Wir können gemeinsame Projekte über längere Zeit fachlich begleiten. Dafür stehen bei uns Försterinnen und Förster sowie Ansprechpartner für einzelne Fachfragen bereit. In einer längerfristigen Zusammenarbeit lassen sich feste Ansprechpartner und regelmäßige Abstimmungen organisieren. Unser Beitrag liegt dabei vor allem in Planung und fachlicher Betreuung; zusätzliche Helfer für einzelne Pflegeaktionen können wir nicht pauschal zusagen.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 35
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 20
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 25
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 40
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 20
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 25
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 30
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 25
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 20
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 40
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 25
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 20
+    }
+  ]
+}

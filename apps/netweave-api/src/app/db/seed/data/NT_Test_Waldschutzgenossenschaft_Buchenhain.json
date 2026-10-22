@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@waldschutz-buchenhain.example"
+  },
+  "Member": {
+    "name": "NT_Test_Waldschutzgenossenschaft_Buchenhain",
+    "contact": "Stefan Mertens"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "15",
+      "category": "competencies",
+      "resources": "Wir bringen Erfahrung aus der Bewirtschaftung kleiner Privatwaldflächen mit. Wichtig ist uns eine gute forstfachliche Praxis, die wir mit dem zuständigen Förster vor Ort abstimmen. Wir können Erfahrungen zur Vorbereitung und Organisation von Pflanzungen, zur Aufarbeitung von Schadholz und zum Rücken und Aufsetzen von Holz einbringen. Wenn mehrere Waldbesitzer etwas gemeinsam angehen möchten, helfen wir bei der Abstimmung und beim Zusammenführen der einzelnen Vorhaben. Unser Wissen ist vor allem praktisch geprägt; konkrete Maßnahmen besprechen wir zusammen mit den beteiligten Eigentümern und den Forstfachleuten.",
+      "requirements": ""
+    },
+    {
+      "member_id": "15",
+      "category": "financial_resources",
+      "resources": "Unsere Kasse ist durch Rücklagen aus früher geförderter Schadholzaufarbeitung recht gut aufgestellt. Für Wiederbewaldungsmaßnahmen unserer Mitglieder haben wir einen Förderrahmen von 30.000 Euro vorgesehen. Pro abgestimmtem Pflanzvorhaben können wir bis zu 3.000 Euro für Pflanzen und notwendiges Pflanzmaterial beisteuern. Dafür brauchen wir Angaben zur Fläche, zur geplanten Pflanzung und zu den Kosten; der Vorstand prüft das Vorhaben zusammen mit der forstfachlichen Einschätzung. Die Unterstützung richtet sich an Wiederbewaldung auf den Waldflächen unserer Mitglieder. Allgemeine Spenden an andere Vereine oder die Finanzierung beliebiger Naturschutzprojekte sind aus diesem Förderrahmen nicht vorgesehen.",
+      "requirements": ""
+    },
+    {
+      "member_id": "15",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "15",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "15",
+      "category": "equipment",
+      "resources": "Wir haben zwölf Pflanzspaten, die unsere Mitglieder für abgestimmte Pflanzaktionen nutzen können. Außerdem steht ein mobiles Sägewerk zur Verfügung. Bei einer gemeinsamen Aktion können wir prüfen, ob es vor Ort eingesetzt werden kann. Termin, Transport, fachkundige Bedienung und Kosten müssen wir dafür vorher vereinbaren. Für die Planung möchten wir ungefähr zwei Wochen Vorlauf haben. Über größere Forstmaschinen verfügen wir selbst nicht.",
+      "requirements": "Für zwei geplante Arbeitseinsätze im November suchen wir eine Seilwinde zum Holzrücken und einen Pfahlbohrer für Zaunpfosten. Wir rechnen zunächst mit jeweils einem Arbeitstag und würden Einsatzort, Gelände und benötigte Bedienung vorher gemeinsam anschauen. Für größere Schadholzflächen brauchen wir außerdem Zugang zu einem Harvester und einer Rückemaschine, möglichst über einen Anbieter mit erfahrenem Bedienpersonal. Diese Maschinen möchten wir nicht selbst anschaffen; wir suchen eine passende Einsatz- oder Dienstleistungsmöglichkeit mit nachvollziehbarer Kostenvereinbarung."
+    },
+    {
+      "member_id": "15",
+      "category": "networks",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "15",
+      "category": "helping_hands",
+      "resources": "",
+      "requirements": "Wir möchten zwei bis drei jüngere Mitglieder gewinnen, die sich längerfristig engagieren. Gesucht ist Unterstützung beim Organisieren von Pflanzaktionen, beim Kontakt zu den Waldbesitzern und bei der Vorbereitung von Vorstandsterminen. Wer Interesse hat, könnte zunächst etwa zwei bis vier Stunden im Monat mitarbeiten und bei einzelnen Waldaktionen dabei sein. Uns ist wichtig, die Leute persönlich einzuarbeiten. Perspektivisch sollen daraus auch Menschen werden, die Verantwortung im Vorstand übernehmen. Zusätzliche Helfer für eine einzelne Pflanzaktion sind ebenfalls willkommen, ersetzen diesen Bedarf aber nicht."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "15",
+      "itemId": "Z1-G",
+      "weight": 70
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z2-G",
+      "weight": 65
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z2-S",
+      "weight": 15
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z3-G",
+      "weight": 70
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z4-G",
+      "weight": 75
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "15",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

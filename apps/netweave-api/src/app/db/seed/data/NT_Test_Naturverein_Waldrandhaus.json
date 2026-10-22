@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@naturverein-waldrandhaus.example"
+  },
+  "Member": {
+    "name": "NT_Test_Naturverein_Waldrandhaus",
+    "contact": "Petra Sommer"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "12",
+      "category": "competencies",
+      "resources": "Bei uns gibt es Leute mit ganz unterschiedlichen Hintergründen. Einige imkern hobbymäßig und betreuen Honigbienenvölker am Vereinshaus. Sie können Gruppen einen Einblick in die Imkerei geben und zeigen, was an den Völkern gerade zu beobachten ist. Ein Mitglied ist Jurist, allerdings nicht mit Schwerpunkt Umweltrecht. Er kann bei allgemeinen rechtlichen Fragen eine erste Orientierung geben und sich in einzelne Themen einarbeiten. Dazu kommt grundlegendes Planungs- und Bauwissen aus der beruflichen Stadtplanung eines Mitglieds. Ein anderer hat lange im Bereich Wind- und Solarenergie gearbeitet und bringt dazu Erfahrungswissen mit. Am Haus bieten wir einführende Umweltprogramme für Kindergruppen an. Außerdem organisieren wir Wanderungen, Radtouren und gelegentlich Pilzwanderungen. Bei Informationsständen nutzen wir Materialien unseres Bundesverbands zu verschiedenen Umweltthemen; die haben wir nicht selbst erstellt.",
+      "requirements": "Für Veranstaltungen wünschen wir uns je nach Thema Fachleute, die mehr Tiefe einbringen können, zum Beispiel zu Schutzgebieten, Fledermäusen oder den ökologischen Folgen von Planungen. Für anspruchsvollere Angebote suchen wir außerdem Erlebnispädagogen und andere Spezialisten, die ein passendes Programm mit einer Gruppe durchführen können. Bei der Öffentlichkeitsarbeit brauchen wir Unterstützung für regelmäßige Pressetexte, Medienkontakte und die Bewerbung unseres Jahresprogramms. Auch mit sozialen Medien kennen wir uns nicht gut aus. Facebook möchten wir für die Vereinskommunikation nicht nutzen; wir suchen jemanden, der andere Möglichkeiten kennt und mit uns eine passende, datensparsame Lösung entwickelt."
+    },
+    {
+      "member_id": "12",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Wir freuen uns über Spenden, mit denen wir unser Haus und unsere Vereinsangebote unterstützen können. Gerade wenn wir zusätzliche Fachleute für Veranstaltungen einladen oder neue Angebote entwickeln, fehlt uns manchmal das Geld. Uns ist wichtig, dass auch Menschen mit wenig Geld an unseren Aktivitäten teilnehmen können."
+    },
+    {
+      "member_id": "12",
+      "category": "premises",
+      "resources": "Unser größtes Pfund ist das vereinseigene Übernachtungshaus am Waldrand außerhalb von Osnabrück. Dort können Schulklassen, Kindergärten, Jugend- und Kindergruppen sowie Familien Freizeitaktivitäten, Aufenthalte und Fortbildungen durchführen. Es gibt Räume für Gruppen und die Möglichkeit, Umweltprogramme am Haus zu buchen. Wenn eine andere Organisation einen Aufenthalt oder eine gemeinsame Veranstaltung plant, können wir Nutzung, Betreuung und Kosten persönlich besprechen.",
+      "requirements": "Für Vorträge, Treffen und kleinere Veranstaltungen suchen wir zusätzlich Räume möglichst zentral in Osnabrück. Unser Haus liegt außerhalb, und für viele Menschen aus der Stadt ist die Anfahrt eine Hürde. Wir würden gern Räume einer anderen Organisation nach Absprache mitnutzen und auch gemeinsame Veranstaltungen anbieten. Dafür möchten wir keine eigenen zusätzlichen Räume dauerhaft vorhalten müssen."
+    },
+    {
+      "member_id": "12",
+      "category": "land",
+      "resources": "Zum Haus gehört ein Gelände direkt am Waldrand, auf dem Naturerlebnisse und Aktivitäten mit Gruppen möglich sind. Dort stehen auch unsere Honigbienenvölker. Für ein gemeinsames Umweltprogramm lässt sich schauen, was auf dem Gelände gut umzusetzen ist. Den angrenzenden Wald behandeln wir dabei nicht einfach als unsere eigene Fläche; wenn dort besondere Aktivitäten geplant sind, müssen Nutzung und Rahmen vorher geklärt werden.",
+      "requirements": ""
+    },
+    {
+      "member_id": "12",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "12",
+      "category": "networks",
+      "resources": "Wir sind mit unserem Landes- und Bundesverband verbunden und können deren Informationsmaterialien, Freizeitangebote und Anregungen für unsere Arbeit nutzen. Wenn für eine gemeinsame Aktion passende Angebote oder Ansprechpartner im Verband gesucht werden, können wir dort nachfragen. Die konkrete Durchführung und die Verfügbarkeit müssen jeweils mit den Beteiligten besprochen werden.",
+      "requirements": ""
+    },
+    {
+      "member_id": "12",
+      "category": "helping_hands",
+      "resources": "",
+      "requirements": "Wir suchen Menschen, die bei der Organisation und Durchführung unserer Veranstaltungen mithelfen, etwa beim Vorbereiten, beim Empfang oder beim Aufräumen. Genauso freuen wir uns über Menschen, die einfach an unseren Veranstaltungen teilnehmen. Nicht jeder muss gleich eine Aufgabe im Verein übernehmen. Im Moment fehlt uns beides: zusätzliche Aktive und mehr Leute, die unsere vorbereiteten Angebote tatsächlich nutzen."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "12",
+      "itemId": "Z1-G",
+      "weight": 60
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z1-I",
+      "weight": 15
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z1-S",
+      "weight": 15
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z2-G",
+      "weight": 55
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z2-I",
+      "weight": 20
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z2-S",
+      "weight": 15
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z3-G",
+      "weight": 55
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z3-I",
+      "weight": 20
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z3-W",
+      "weight": 10
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z3-S",
+      "weight": 15
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z4-G",
+      "weight": 65
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "12",
+      "itemId": "Z4-S",
+      "weight": 15
+    }
+  ]
+}

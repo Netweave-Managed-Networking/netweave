@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@naturschutz-stadtland.example"
+  },
+  "Member": {
+    "name": "NT_Test_Naturschutzverein_Stadtland",
+    "contact": "Bettina Kruse"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Bei uns gibt es Leute mit ganz unterschiedlichen Naturschutzkenntnissen. Wir machen Wildkatzenmonitoring, engagieren uns im Vogelschutz und betreuen Amphibienzäune. Viel Erfahrung haben wir auch mit Wildbienen und passenden Nisthilfen, mit Feldgrillen sowie mit der Beobachtung von Tag- und Nachtfaltern. Wir pflegen Streuobstwiesen, beschäftigen uns mit Blühstreifen und setzen Kamerunschafe zur Landschaftspflege ein. Dazu kommen ökologische Gartengestaltung und Erfahrungen aus einem früheren Naturwaldprojekt. Wir organisieren Naturerlebnisse für Jugendliche, Ferienaktionen und Biodiversitätstage; dabei darf der Spaß ruhig im Vordergrund stehen. Für Umweltfragen gibt es bei uns eine telefonische Anlaufstelle. Wir haben außerdem Erfahrung mit verständlichen Bauanleitungen, Infomaterialien und Öffentlichkeitsarbeit, mit Stellungnahmen zu Bauvorhaben und mit der Vermarktung von ökologischem Apfelsaft. Wer bei einem dieser Themen Unterstützung braucht, kann sich gern melden. Wir schauen dann gemeinsam, wer aus unserem Kreis etwas beitragen kann.",
+      "requirements": "Für Kartierungen und Monitoring fehlt uns immer wieder zusätzliche fachliche Unterstützung. Besonders bei Pflanzen, Laufkäfern und Faltern sowie bei der Bewertung von Wiesen und landwirtschaftlich genutzten Flächen könnten wir Hilfe gebrauchen. Es geht uns auch darum, aus den Beobachtungen sinnvolle Maßnahmen abzuleiten. Arbeitskreise oder Studierende mit passenden Abschlussarbeiten wären da interessante Partner. Beim Stellen von Förderanträgen brauchen wir ebenfalls Unterstützung, vor allem jemanden, der tatsächlich mitarbeitet und uns zeitlich entlastet."
+    },
+    {
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Für unsere eigenen Projekte brauchen wir häufig eine Cofinanzierung und sind auf Spenden angewiesen. Gerade Vorhaben über Landkreis- oder Landesgrenzen hinweg sind schwierig, weil die jeweiligen Förderstellen nicht immer zusammenpassen. Wir suchen Menschen oder Organisationen, die sich finanziell beteiligen oder mit uns eine Lösung für die Finanzierung finden."
+    },
+    {
+      "category": "premises",
+      "resources": "Wir nutzen ein Naturschutzzentrum als Anlaufstelle für Beratung und kleinere Veranstaltungen. Unser Ökogarten ist ebenfalls ein Treffpunkt, an dem man sich austauschen oder gemeinsam etwas über naturnahe Gartengestaltung lernen kann. Wenn eine andere Gruppe dort etwas mit uns machen möchte, lässt sich das persönlich besprechen.",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "Wir betreuen Streuobstwiesen und einen ökologisch gestalteten Garten. Dort gibt es Möglichkeiten für gemeinsame Pflegeaktionen, Naturbeobachtungen und Bildungsangebote. Was auf welcher Fläche möglich ist, müssen wir vorher miteinander abstimmen. Eine Waldfläche hatten wir früher für ein Naturwaldprojekt gepachtet. Dieser Pachtvertrag ist inzwischen ausgelaufen; die Waldfläche können wir deshalb nicht mehr für gemeinsame Projekte zur Verfügung stellen.",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "networks",
+      "resources": "Wir sind in einem regionalen Bienenbündnis aktiv und mit anderen Naturschutzgruppen verbunden. Über unsere Verbandskontakte reicht der Austausch auch über die Region hinaus. Wir bringen Naturschutzthemen in öffentliche Diskussionen ein, schreiben Stellungnahmen und organisieren bei Bedarf gemeinsame Aktionen. Dadurch haben wir Kontakte zu Menschen in Politik und Verwaltung und können dabei helfen, ein Anliegen bekannt zu machen. Vieles lebt von langjährigen persönlichen Beziehungen.",
+      "requirements": "Bei Projekten über Verwaltungsgrenzen hinweg wünschen wir uns Partner, die die zuständigen Stellen an einen Tisch bringen und dem Anliegen mehr Gewicht verschaffen können. Wir stoßen dort immer wieder an Grenzen zwischen Landkreisen, Ländern und Stiftungen. Außerdem gibt es bei der ökologischen Gestaltung von Gewässern Konflikte mit Unterhaltungsverbänden. Da suchen wir jemanden, der zwischen den Beteiligten vermittelt und hilft, wieder zu einem gemeinsamen Vorgehen zu kommen."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Bei uns engagieren sich Ehrenamtliche, die schon lange in der praktischen Naturschutzarbeit dabei sind. Einige können neue Helfer anleiten, Aktionen vorbereiten oder bei Veranstaltungen mithelfen. Wir arbeiten gern mit anderen Gruppen zusammen, wenn man sich persönlich kennt und sich die Arbeit vernünftig aufteilen lässt. Für zusätzliche größere Einsätze haben wir allerdings nur begrenzt Leute frei.",
+      "requirements": "Wir suchen weitere Ehrenamtliche, die bei der praktischen Naturschutzarbeit mit anpacken. Es geht zum Beispiel um Pflegeaktionen auf Streuobstwiesen und anderen Flächen oder um die Betreuung unserer Artenschutzprojekte. Manche Arbeiten bleiben liegen, weil immer dieselben Leute alles übernehmen. Auch wer nur gelegentlich Zeit hat, kann helfen; wir würden gemeinsam schauen, welche Aufgabe zu der Person passt."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 50
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 20
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 55
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 20
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 60
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 65
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@fischerei-wasserbogen.example"
+  },
+  "Member": {
+    "name": "NT_Test_Fischereiverein_Wasserbogen",
+    "contact": "Thomas Eilers"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Wir kennen uns mit Fischbeständen und der praktischen Arbeit an Gewässern aus. Ein Schwerpunkt ist das Abfischen von Regenrückhaltebecken, zum Beispiel wenn dort Wartungsarbeiten anstehen. Wir können einen Einsatz vor Ort einschätzen, fachlich begleiten und mit unserem Team durchführen. Dafür brauchen wir vorab Angaben zum Gewässer, zum Anlass und zum gewünschten Termin; den genauen Umfang klären wir nach einer Besichtigung. Außerdem beschäftigen wir uns damit, Fischbestände zu erhalten und zu fördern und den Lebensraum Wasser in einem guten Zustand zu halten. Unsere Jugendbetreuer vermitteln jungen Leuten beim Angeln auch, welche Fische im Gewässer leben und warum saubere Ufer und eine gute Wasserqualität wichtig sind. Für einen gemeinsamen Termin mit einer anderen Jugendgruppe könnten wir einen Nachmittag für ungefähr zehn bis zwölf Teilnehmende vorbereiten.",
+      "requirements": ""
+    },
+    {
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "Wir haben zwei Elektrofischereigeräte, ein Arbeitsboot und ergänzende Ausrüstung für das Abfischen und die vorübergehende Versorgung der gefangenen Fische. Damit übernehmen wir auch Aufträge für andere Organisationen. Die Geräte bieten wir zusammen mit unserem fachkundigen Team an, nicht zum selbstständigen Einsatz durch fremde Personen. Für einen geplanten Einsatz brauchen wir möglichst zwei Wochen Vorlauf. Ob das Boot und die Geräte für das jeweilige Gewässer geeignet sind und welche Abstimmungen erforderlich sind, klären wir vorher. Aufwand und Kosten vereinbaren wir passend zum Auftrag.",
+      "requirements": ""
+    },
+    {
+      "category": "networks",
+      "resources": "Wir haben eine Jugendgruppe und können für gemeinsame Aktionen den Kontakt zu unseren Jugendbetreuern herstellen. Die jungen Leute interessieren sich vor allem fürs Angeln. Für eine Veranstaltung am Gewässer könnten wir innerhalb der Gruppe nachfragen, wer dabei sein möchte. Auch erfahrene Vereinsmitglieder lassen sich für einen Austausch über Gewässerschutz ansprechen.",
+      "requirements": "An einem von uns betreuten Bachabschnitt grenzen auf ungefähr 800 Metern landwirtschaftlich genutzte Flächen an das Gewässer. Wir möchten dort den Eintrag von Nährstoffen und Pestiziden verringern und erreichen, dass die Uferbereiche stärker geschützt werden. Dafür suchen wir eine Organisation, die mit uns das Anliegen gegenüber Verwaltung und Politik vertritt und die Gespräche mit den angrenzenden Bewirtschaftern und Eigentümern unterstützt. Unser Ziel ist ein gemeinsamer Termin mit den zuständigen Stellen und den Landwirten, bei dem konkrete Maßnahmen und Zuständigkeiten vereinbart werden. Mit unserer Stimme allein kommen wir bisher nicht weit genug."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Für einen abgestimmten Einsatz können wir ein Team aus zwei erfahrenen Elektrofischern und ein bis zwei zusätzlichen Helfern zusammenstellen. Die Leute sind mit unserer Ausrüstung und den Abläufen vertraut. Termine müssen wir wegen Beruf und anderer Vereinsaufgaben gemeinsam planen. Bei einer Veranstaltung mit Jugendlichen könnten außerdem zwei Jugendbetreuer mitwirken. Wer mit uns zusammenarbeitet, hat einen festen Ansprechpartner; die Aufgaben verteilen wir im Team so, dass jeder weiß, was er übernimmt.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 35
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 25
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 30
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 30
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 25
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 35
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 30
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 35
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 25
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 40
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 25
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 25
+    }
+  ]
+}
