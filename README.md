@@ -320,7 +320,9 @@ Example values: `INSTANCE_NAME=dummy`, domain `dummy.netweave.de`, branch `devel
    - `DB_USER=netweave_dummy_user`, `DB_PASSWORD` and `DB_DB=netweave_dummy_db`, (new for the instance, generate random password, e.g. `openssl rand -hex 24`)
    - `JWT_SECRET`, (new for the instance, e.g. from `openssl rand -base64 48`)
    - `REGISTRATION_WHITELIST` (use email for the first admin, which then can register)
-   - Mail decided per instance: `SEND_MAIL_ACTIVATED` (if `true`, check `SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE` / `SEQUENTIAL_TEST_MAIL_RECEIVER` and `SEND_RECOMMENDATION_MAILS`)
+   - Mail decided per instance:
+     - `SEND_MAIL_ACTIVATED` (if `true`, check `SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE` / `SEQUENTIAL_TEST_MAIL_RECEIVER` and `SEND_RECOMMENDATION_MAILS`)
+     - `RECOMMENDATION_SNEAK_PEEK_MAIL` (if set, will receive recommendations)
    - `LLM_PROVIDER` (empty = no LLM costs)
 
 4. **Site file.**
