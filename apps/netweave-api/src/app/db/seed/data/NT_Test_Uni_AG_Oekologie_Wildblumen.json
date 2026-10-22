@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@oekologie-wildblumen.example"
+  },
+  "Member": {
+    "name": "NT_Test_Uni_AG_Oekologie_Wildblumen",
+    "contact": "Dr. Leonie Frank"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "16",
+      "category": "competencies",
+      "resources": "Wir beschäftigen uns mit der Ökologie von Lebensgemeinschaften und damit, wie Bewirtschaftung und Umweltveränderungen auf die biologische Vielfalt wirken. Bei Pflanzen und Vegetation, Laufkäfern sowie Tag- und Nachtfaltern bringen wir Erfahrung in Kartierung und Monitoring mit. Wir können Untersuchungen planen, Daten auswerten und die Entwicklung von Grünland, Agrarflächen und Waldlebensräumen fachlich einordnen. Zu Amphibien und anderen Tiergruppen arbeiten wir je nach Fragestellung mit passenden Fachleuten zusammen. Auch eine gemeinsame Begehung oder eine Lehrveranstaltung mit einem Praxispartner ist denkbar. Wir müssten vorher besprechen, welche Frage beantwortet werden soll und welchen Aufwand wir übernehmen können.",
+      "requirements": ""
+    },
+    {
+      "member_id": "16",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "16",
+      "category": "premises",
+      "resources": "",
+      "requirements": "Für Feldprojekte wären Arbeitsmöglichkeiten nahe an den Untersuchungsflächen hilfreich. Wir suchen Räume, in denen man Material vorbereiten, Daten bearbeiten und sich mit einer Gruppe zusammensetzen kann. Bei längeren Untersuchungen wären auch Übernachtungsmöglichkeiten interessant. Welche Ausstattung benötigt wird, hängt vom Projekt ab."
+    },
+    {
+      "member_id": "16",
+      "category": "land",
+      "resources": "",
+      "requirements": "Wir suchen geeignete Untersuchungsflächen in Wiesen, Agrarlandschaften und Wäldern. Besonders interessant sind Flächen, auf denen verschiedene Pflege- oder Bewirtschaftungsformen verglichen werden können. Für längerfristiges Monitoring brauchen wir verlässliche Absprachen mit den Eigentümern und Zugang über mehrere Untersuchungsphasen hinweg."
+    },
+    {
+      "member_id": "16",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "16",
+      "category": "networks",
+      "resources": "Wir stehen mit anderen Hochschulgruppen und Personen aus biologischen Facharbeitskreisen im Austausch. Wenn für ein gemeinsames Vorhaben ergänzendes Spezialwissen gebraucht wird, können wir nach passenden Ansprechpartnern fragen. Deren Beteiligung muss gesondert vereinbart werden.",
+      "requirements": "Wir möchten mehr Kontakte zu Kommunen, Naturschutzgruppen, Forststellen und landwirtschaftlichen Betrieben aufbauen, die Fragestellungen und Flächen für gemeinsame Forschung einbringen. Uns wäre ein offener Austausch über praktische Probleme und Erwartungen wichtig."
+    },
+    {
+      "member_id": "16",
+      "category": "helping_hands",
+      "resources": "Passende Fragen von Praxispartnern können wir in Abschlussarbeiten oder studentische Forschungsprojekte einbinden. Studierende können unter unserer Betreuung Vegetation oder ausgewählte Tiergruppen erfassen und Daten auswerten. Dafür müssen Thema, Untersuchungsdesign und Zeitplanung wissenschaftlich sinnvoll sein. Eine solche Zusammenarbeit ist längerfristig angelegt und umfasst die vereinbarte Forschungsaufgabe.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "16",
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z1-I",
+      "weight": 45
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z2-G",
+      "weight": 35
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z2-I",
+      "weight": 40
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z3-G",
+      "weight": 30
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z3-I",
+      "weight": 40
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z4-G",
+      "weight": 40
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z4-I",
+      "weight": 35
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z4-W",
+      "weight": 15
+    },
+    {
+      "member_id": "16",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

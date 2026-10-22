@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "umwelt@gemeinde-lindenau.example"
+  },
+  "Member": {
+    "name": "NT_Test_Gemeinde_Lindenau_Fachdienst_Umwelt",
+    "contact": "Julia Weber"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Wir können Auskünfte zur kommunalen Flächennutzung, Bauleitplanung und zu Kompensationsflächen geben. Bei bestehenden Ausgleichsflächen schauen wir in die Unterlagen, welche Nutzung und Pflege vorgesehen ist, und stimmen offene Fragen mit den zuständigen Stellen ab. Für ein gemeinsames Vorhaben können wir klären, welche Unterlagen gebraucht werden und welche Ansprechpartner einzubeziehen sind. Dafür benötigen wir zunächst die Lage der Fläche und eine kurze Beschreibung des Projekts. Auch zu Grünflächen, Gewässern, Bauakten und anderen kommunalen Planungsfragen können wir Auskunft geben oder die zuständige Stelle innerhalb der Verwaltung einbeziehen. Entscheidungen und Vereinbarungen halten wir schriftlich fest, damit die Zuständigkeiten für die weitere Umsetzung klar sind.",
+      "requirements": "Für eine geplante Streuobstwiese mit ungefähr zehn Bäumen suchen wir jemanden, der geeignete Obstsorten und Standorte beurteilt und einen Pflanz- und Pflegevorschlag erstellt. Die fachliche Anleitung bei der Pflanzung müsste ebenfalls übernommen werden; wir können diese Arbeit nicht selbst aus unserem Fachdienst heraus leisten. Für zwei weitere kleinere Grünflächen brauchen wir eine naturschutzfachliche Einschätzung, bevor wir die Pflege verändern oder Blühwiesen anlegen. Außerdem wünschen wir uns Unterstützung bei der Planung eines solchen Vorhabens: ein einfacher Lageplan, die notwendigen Abstimmungen und eine nachvollziehbare Aufteilung der Aufgaben zwischen Gemeinde, Verein und weiteren Beteiligten. Bei fachlichen Fragen beziehen wir bisher überwiegend die zuständigen Stellen des Landkreises ein."
+    },
+    {
+      "category": "financial_resources",
+      "resources": "Für kleinere Natur- und Umweltprojekte im Gemeindegebiet haben wir einen jährlichen Fördertopf von 8.000 Euro. Pro Vorhaben könnten wir nach Prüfung bis zu 2.000 Euro beisteuern, beispielsweise für Saatgut, Pflanzen oder Material einer Blühwiesenaktion. Dafür brauchen wir einen kurzen Antrag mit Projektbeschreibung, Kostenübersicht und verantwortlicher Organisation. Die Bewilligung hängt vom Vorhaben und den noch verfügbaren Mitteln ab; in manchen Jahren wird der Topf nicht vollständig abgerufen. Zusätzlich setzen wir Mittel für abgestimmte Kompensationsmaßnahmen ein, etwa für Gewässerrenaturierungen. Diese Mittel sind an den jeweiligen Ausgleichszweck gebunden und stehen nicht als allgemeine Vereinsförderung zur Verfügung.",
+      "requirements": ""
+    },
+    {
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "Wir können in begrenztem Umfang gemeindeeigene Flächen für ein abgestimmtes Umweltprojekt bereitstellen. Als Beispiel kommt eine kleinere Fläche von ungefähr 1.500 Quadratmetern für eine Pflanz- oder Blühwiesenaktion infrage. Vorher müssen wir prüfen, ob die vorgesehene Nutzung passt und wer die dauerhafte Pflege übernimmt. Ein Teil der früheren Ausgleichsflächen ist inzwischen verkauft oder verpachtet. Solche Flächen können wir nicht einfach anderen Gruppen zur Verfügung stellen, und auch bei Flächen mit festgelegtem Ausgleichszweck müssen bestehende Vorgaben berücksichtigt werden.",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "Über den Bauhof können wir ein Transportfahrzeug mit Anhänger und Geräte für die Grünflächenpflege einbringen. Bei einem abgestimmten Projekt wäre beispielsweise Unterstützung beim Materialtransport oder bei vorbereitenden Arbeiten möglich. Für einen kleineren Einsatz würden wir zunächst mit höchstens einem Arbeitstag planen. Wir brauchen ungefähr vier Wochen Vorlauf, weil der Bauhof seine regulären Aufgaben ebenfalls erledigen muss. Welche Geräte und Beschäftigten tatsächlich eingesetzt werden können, wird vorher mit der Bauhofleitung vereinbart.",
+      "requirements": ""
+    },
+    {
+      "category": "networks",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Für eine vorbereitete Umweltaktion können wir versuchen, Schülerinnen und Schüler sowie Praktikanten einzubinden. Wir denken dabei beispielsweise an eine Gruppe von sechs bis acht Personen, die für zwei bis drei Stunden bei einfachen Arbeiten nach Anleitung mithilft. Ob das klappt, hängt von den schulischen Absprachen, der Betreuung und den jeweiligen Praktikumszeiten ab. Die fachliche Leitung der Aktion und die notwendige Aufsicht müssen vorab geklärt sein. Eine dauerhaft verfügbare Gruppe von Pflegehelfern können wir damit nicht anbieten.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 70
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 10
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 70
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 65
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 20
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 65
+    }
+  ]
+}

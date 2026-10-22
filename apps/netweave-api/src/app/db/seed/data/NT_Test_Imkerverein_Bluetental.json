@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@imkerverein-bluetental.example"
+  },
+  "Member": {
+    "name": "NT_Test_Imkerverein_Bluetental",
+    "contact": "Sabine Fiedler"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "25",
+      "category": "competencies",
+      "resources": "Unser Schwerpunkt ist die Haltung von Honigbienen. Wir haben Erfahrung mit der Betreuung der Völker, Beobachtung ihrer Entwicklung und der Vermittlung von Imkereiwissen an Interessierte. Für eine Kindergruppe oder einen Verein können wir einen Besuch am Bienenstand oder einen verständlichen Beitrag zu Honigbienen und Bestäubung anbieten. Wir interessieren uns auch für bienenfreundliche Pflanzen und die Zusammenarbeit mit Menschen, die solche Flächen pflegen. Bei Fragen zu anderen Insektengruppen haben wir unterschiedliche Kenntnisse; umfassende Bestimmung von Wildbienen, Laufkäfern oder Faltern gehört nicht zu unserem allgemeinen Angebot.",
+      "requirements": "Wir würden gern mehr über Wildbienen und geeignete heimische Pflanzen für unterschiedliche Standorte lernen. Für eine gemeinsame Veranstaltung suchen wir eine entsprechend erfahrene Person. Bei der Ansprache jüngerer Menschen und der Darstellung unserer Arbeit nach außen könnten wir ebenfalls Unterstützung gebrauchen."
+    },
+    {
+      "member_id": "25",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "25",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "25",
+      "category": "land",
+      "resources": "Wir nutzen einen Vereinsbienenstand, an dem Besuche nach Absprache möglich sind. Dort können Gruppen einen Einblick in die Imkerei erhalten. Für andere Nutzungen oder eigenständige Arbeiten auf dem Gelände müsste die Zustimmung der Verantwortlichen gesondert eingeholt werden.",
+      "requirements": "Wir suchen Kontakte zu Eigentümern von Gärten, Grünflächen oder kleineren Flächen, die bienenfreundliche Pflanzen vorsehen möchten. Interessant wäre ein gemeinsam abgestimmter Standort für eine Demonstrationspflanzung oder ein weiteres Angebot am Bienenstand."
+    },
+    {
+      "member_id": "25",
+      "category": "equipment",
+      "resources": "Für gemeinsam abgestimmte Imkereiveranstaltungen verfügen wir über Anschauungsmaterial und grundlegende Imkereiausrüstung. Bei einem Besuch können wir besprechen, welche Materialien und Betreuung für die Gruppe benötigt werden. Eine allgemeine Geräteausleihe für andere Arbeitsbereiche ergibt sich daraus nicht.",
+      "requirements": ""
+    },
+    {
+      "member_id": "25",
+      "category": "networks",
+      "resources": "Wir kennen örtliche Imker und sind mit weiteren Imkergruppen verbunden. Wer einen Austausch zur praktischen Honigbienenhaltung sucht, kann über uns passende Personen kennenlernen. Gemeinsame Aktionen mit Schulen und anderen Vereinen sind nach Absprache denkbar.",
+      "requirements": ""
+    },
+    {
+      "member_id": "25",
+      "category": "helping_hands",
+      "resources": "Erfahrene Mitglieder können bei einer vereinbarten Imkereiveranstaltung die fachliche Begleitung übernehmen und neue Interessierte anleiten.",
+      "requirements": "Wir suchen jüngere Menschen, die längerfristig im Verein mitmachen und Aufgaben in der Organisation übernehmen möchten. Hilfe bei einzelnen Veranstaltungen ist willkommen; für die Betreuung von Bienenvölkern brauchen wir außerdem verlässliches Interesse über die Saison hinweg."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "25",
+      "itemId": "Z1-G",
+      "weight": 60
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z1-S",
+      "weight": 20
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z2-G",
+      "weight": 60
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z2-I",
+      "weight": 15
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z2-S",
+      "weight": 15
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z3-G",
+      "weight": 65
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z3-W",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z3-S",
+      "weight": 15
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z4-G",
+      "weight": 70
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z4-W",
+      "weight": 5
+    },
+    {
+      "member_id": "25",
+      "itemId": "Z4-S",
+      "weight": 15
+    }
+  ]
+}

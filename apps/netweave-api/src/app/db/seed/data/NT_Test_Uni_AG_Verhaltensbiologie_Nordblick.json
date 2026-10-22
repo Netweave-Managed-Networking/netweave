@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@ag-verhaltensbiologie-nordblick.example"
+  },
+  "Member": {
+    "name": "NT_Test_Uni_AG_Verhaltensbiologie_Nordblick",
+    "contact": "Dr. Hanna Becker"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "14",
+      "category": "competencies",
+      "resources": "Unsere Schwerpunkte liegen in Verhaltensbiologie, Verhaltensneuroendokrinologie und den genetischen Grundlagen von Verhalten. Wir untersuchen unter anderem Zusammenhänge zwischen Hormonen und Verhalten und bringen Erfahrung mit der Messung von Reproduktions- und Stresshormonen mit, auch anhand von Kotproben. Weitere Themen sind Verhaltensanalysen, Wohlergehensdiagnostik, Aktivitätsmuster und Fragen zu Tierpopulationen. Im Labor arbeiten wir unter anderem mit Mäusen als Tiermodell. Über betreute Abschlussarbeiten haben wir uns außerdem mit Mensch-Wildtier-Konflikten, Wiederansiedlungen und Arten wie Wolf, Luchs, Dachs und Marder beschäftigt. Wir führen regionale ornithologische Exkursionen durch und haben einige entsprechende Abschlussarbeiten betreut. Zum Amphibienschutz gibt es ebenfalls Erfahrung aus einer betreuten Abschlussarbeit. In der Lehre bieten wir Vorlesungen, Seminare und Laborübungen an. Dazu kommen Exkursionen zu Artenschutz und Mensch-Wildtier-Konflikten, auch im Zoo und in internationalen Naturschutzkontexten. Für einen fachlichen Austausch oder eine passende gemeinsame Veranstaltung sind wir offen.",
+      "requirements": ""
+    },
+    {
+      "member_id": "14",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "14",
+      "category": "premises",
+      "resources": "",
+      "requirements": "Wir suchen Arbeitsräume und Laborarbeitsmöglichkeiten direkt im Feld oder möglichst nahe an potenziellen Untersuchungsgebieten. Es wäre hilfreich, dort Beobachtungen vorbereiten, Daten bearbeiten und je nach Fragestellung auch Proben untersuchen zu können. Welche Räume und welche Ausstattung wir brauchen, hängt vom konkreten Projekt ab. Eine gemeinsame Nutzung vorhandener Möglichkeiten wäre für uns interessant; die Eignung für die geplanten Arbeiten müssten wir vorher zusammen klären."
+    },
+    {
+      "member_id": "14",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "14",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "14",
+      "category": "networks",
+      "resources": "",
+      "requirements": "Wir suchen Kooperationspartner, die Zugang zu geeigneten Wildtierpopulationen für wissenschaftliche Studien ermöglichen können. Interessant wären zum Beispiel Kontakte zu Schutzgebietsbetreuern, Naturschutzvereinen, Forststellen oder Menschen, die lokale Tierbestände regelmäßig beobachten. Uns geht es um passende Untersuchungsmöglichkeiten und verlässliche Zusammenarbeit vor Ort. Forschungsfrage, Art der Untersuchungen, Zugang zum Gebiet und die notwendigen Absprachen würden wir vor Beginn eines Projekts gemeinsam klären."
+    },
+    {
+      "member_id": "14",
+      "category": "helping_hands",
+      "resources": "Wir können passende praktische Fragestellungen in wissenschaftlich betreute Abschlussarbeiten einbinden. Themen können etwa Verhaltensbiologie, Mensch-Wildtier-Konflikte, die Wiederansiedlung größerer Säugetiere oder Untersuchungen zu Wolf, Luchs, Dachs und Marder sein. Wenn ein Partner eine geeignete Frage und Zugang zum Untersuchungsgebiet mitbringt, prüfen wir gemeinsam, ob das als Abschlussarbeit sinnvoll und machbar ist. Die Studierenden bearbeiten dann eine eigene wissenschaftliche Aufgabe mit unserer Betreuung. Sie stehen also nicht einfach als frei verfügbare Helfer für beliebige Pflegearbeiten zur Verfügung. Zeitplanung, Datenerhebung und die spätere Weitergabe der Ergebnisse würden wir vorher miteinander abstimmen.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "14",
+      "itemId": "Z1-G",
+      "weight": 65
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z1-I",
+      "weight": 15
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z2-G",
+      "weight": 60
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z2-I",
+      "weight": 20
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z3-G",
+      "weight": 65
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z3-I",
+      "weight": 15
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z3-W",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z4-G",
+      "weight": 70
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z4-I",
+      "weight": 15
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z4-W",
+      "weight": 5
+    },
+    {
+      "member_id": "14",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

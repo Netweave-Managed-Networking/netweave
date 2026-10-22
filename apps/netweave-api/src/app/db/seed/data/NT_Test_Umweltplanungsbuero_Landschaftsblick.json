@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@landschaftsblick-planung.example"
+  },
+  "Member": {
+    "name": "NT_Test_Umweltplanungsbuero_Landschaftsblick",
+    "contact": "Daniela Voigt"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "21",
+      "category": "competencies",
+      "resources": "Wir bearbeiten naturschutzfachliche Planungen, Biotop- und Vegetationsaufnahmen sowie Pflege- und Entwicklungskonzepte. Dazu gehören die Bewertung von Ausgleichsflächen, Blühflächen, Streuobstwiesen und Gewässerabschnitten. Wir können einen Pflanz- und Pflegeplan entwickeln und die Abstimmung zwischen Auftraggeber, Verwaltung und ausführenden Partnern unterstützen. Bei waldbezogenen Vorhaben beschäftigen wir uns auch damit, Leistungen wie Erholung, Wasserhaushalt und Biodiversität zu bewerten und in eine nachvollziehbare Planung einzubeziehen. Unsere Arbeit erfolgt auf Grundlage eines vereinbarten Auftrags mit Leistungsumfang und Honorar.",
+      "requirements": "Für einzelne Projekte benötigen wir ergänzende Spezialkenntnisse zu Tiergruppen, die wir selbst nicht vollständig abdecken. Besonders bei Laufkäfern, Faltern und speziellen Fragen der Tierökologie suchen wir passende Fachpartner. Bei anspruchsvollen Boden- und Wasserfragen wäre eine Zusammenarbeit mit entsprechenden Hochschulgruppen hilfreich."
+    },
+    {
+      "member_id": "21",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "21",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "21",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "21",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "21",
+      "category": "networks",
+      "resources": "Wir haben Kontakte zu Kommunen, ausführenden Betrieben und Fachleuten aus ergänzenden Planungsbereichen. Für ein beauftragtes Vorhaben können wir die passenden Beteiligten in die Abstimmung einbeziehen. Deren eigenständige Leistungen werden gesondert vereinbart.",
+      "requirements": "Wir möchten langfristige Kontakte zu wissenschaftlichen Gruppen und regionalen Naturschutzakteuren aufbauen, die Beobachtungen, Ortskenntnis oder Spezialwissen in gemeinsame Vorhaben einbringen."
+    },
+    {
+      "member_id": "21",
+      "category": "helping_hands",
+      "resources": "Für ein vereinbartes Projekt können wir fachliche Projektleitung und die Anleitung von Kartierungs- oder Pflegearbeiten übernehmen. Die Kapazität hängt von den laufenden Aufträgen ab. Umfang und Kosten müssen vorher mit dem Auftraggeber abgestimmt werden.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "21",
+      "itemId": "Z1-G",
+      "weight": 10
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z1-I",
+      "weight": 15
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z1-W",
+      "weight": 55
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z1-S",
+      "weight": 20
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z2-G",
+      "weight": 10
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z2-I",
+      "weight": 20
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z2-W",
+      "weight": 50
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z2-S",
+      "weight": 20
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z3-G",
+      "weight": 10
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z3-I",
+      "weight": 15
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z3-W",
+      "weight": 60
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z3-S",
+      "weight": 15
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z4-G",
+      "weight": 15
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z4-W",
+      "weight": 50
+    },
+    {
+      "member_id": "21",
+      "itemId": "Z4-S",
+      "weight": 25
+    }
+  ]
+}

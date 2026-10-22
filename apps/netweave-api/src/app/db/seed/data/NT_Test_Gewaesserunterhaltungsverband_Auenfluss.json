@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@unterhaltung-auenfluss.example"
+  },
+  "Member": {
+    "name": "NT_Test_Gewaesserunterhaltungsverband_Auenfluss",
+    "contact": "Martin Heuer"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "17",
+      "category": "competencies",
+      "resources": "Wir organisieren die Unterhaltung der von uns betreuten Fließgewässer und kennen die örtlichen Abflussverhältnisse, Uferabschnitte und Zugänge. Wir können Maßnahmen zur Gewässerpflege und ökologischen Aufwertung praktisch planen und mit den beteiligten Stellen abstimmen. Bei einem gemeinsamen Vorhaben können wir eine Begehung von etwa zwei Stunden und einen Vorschlag zur Durchführung vorbereiten. Dabei müssen Abfluss, angrenzende Nutzungen und ökologische Ziele zusammen betrachtet werden. Wir führen auch Gespräche zwischen Eigentümern, Kommunen und Naturschutzpartnern, wenn unterschiedliche Vorstellungen zur Unterhaltung bestehen.",
+      "requirements": "Für einen geplanten Pflegeabschnitt von ungefähr 600 Metern suchen wir biologische Unterstützung zur Beurteilung von Vegetation, Amphibien und gewässergebundenen Tierarten. Wir möchten vor dem Eingriff eine gemeinsame Begehung und danach eine kurze Empfehlung zum Zeitpunkt und zur Art der Arbeiten. Außerdem wäre eine spätere Kontrolle hilfreich, ob sich die vorgesehenen Verbesserungen tatsächlich einstellen."
+    },
+    {
+      "member_id": "17",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "17",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "17",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "17",
+      "category": "equipment",
+      "resources": "Wir können für abgestimmte Maßnahmen einen Bagger mit erfahrenem Fahrer, ein Transportfahrzeug mit Anhänger und Geräte für Uferpflege einbringen. Für ein kleineres Kooperationsprojekt wäre zunächst ein eintägiger Einsatz denkbar. Wir brauchen etwa vier Wochen Vorlauf. Einsatzort, Bodenverhältnisse, Zugang, geeignete Maschine, Finanzierung und die Abstimmungen zu der Maßnahme müssen vorher geklärt werden.",
+      "requirements": "Für begleitende Untersuchungen suchen wir mobile Geräte zur Dokumentation der Gewässerentwicklung, zum Beispiel geeignete Wasser-Messgeräte und eine Möglichkeit zur strukturierten Fotodokumentation. Wir würden die Geräte für zwei Begehungstage benötigen und die Anwendung mit dem Anbieter abstimmen."
+    },
+    {
+      "member_id": "17",
+      "category": "networks",
+      "resources": "Wir kennen Ansprechpartner bei Kommunen, Gewässereigentümern, angrenzenden Betrieben und den zuständigen Fachstellen. Für ein konkretes Gewässerschutzanliegen können wir eine Gesprächsrunde mit vier bis sechs Beteiligten organisieren. Wir können dabei helfen, Zuständigkeiten und praktische Handlungsmöglichkeiten zu klären; verbindliche Zusagen der anderen Beteiligten müssen diese selbst treffen.",
+      "requirements": "Wir möchten einen verlässlichen Kontakt zu einer ökologischen Arbeitsgruppe oder einem Naturschutzverein aufbauen, der einzelne Maßnahmen fachlich begleitet und mit uns die unterschiedlichen Ziele bespricht."
+    },
+    {
+      "member_id": "17",
+      "category": "helping_hands",
+      "resources": "Bei einem abgestimmten Einsatz können wir neben dem Maschinenführer zwei erfahrene Beschäftigte für Vorbereitung und Durchführung einplanen. Ihre Zeit ist an die vereinbarte Maßnahme gebunden. Für die allgemeine Vereinsarbeit anderer Organisationen stehen sie nicht zur Verfügung.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "17",
+      "itemId": "Z1-G",
+      "weight": 10
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z1-W",
+      "weight": 25
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z1-S",
+      "weight": 60
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z2-G",
+      "weight": 10
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z2-I",
+      "weight": 5
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z2-W",
+      "weight": 20
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z2-S",
+      "weight": 65
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z3-G",
+      "weight": 10
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z3-W",
+      "weight": 30
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z3-S",
+      "weight": 55
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z4-G",
+      "weight": 15
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z4-W",
+      "weight": 20
+    },
+    {
+      "member_id": "17",
+      "itemId": "Z4-S",
+      "weight": 60
+    }
+  ]
+}

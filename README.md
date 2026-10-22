@@ -143,6 +143,18 @@ Use migrations when changing the database schema:
 
 <br />
 
+### Seed test data
+
+Wipes all members, invitations, matchings and update reminders and refills them from the JSON files in `apps/netweave-api/src/app/db/seed/data/` (one file per member, format: `test-member.interface.ts`). Users, whitelist and mail settings are kept.
+
+```sh
+npm run db:seed
+```
+
+Requires `SEED_ALLOWED=true` in `.env` and at least one registered admin, who becomes the inviter of all seeded members.
+
+<br /><br />
+
 ## Server setup
 
 As of 2026-10-21.

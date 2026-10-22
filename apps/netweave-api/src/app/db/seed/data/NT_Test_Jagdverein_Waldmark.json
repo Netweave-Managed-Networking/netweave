@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@jagdverein-waldmark.example"
+  },
+  "Member": {
+    "name": "NT_Test_Jagdverein_Waldmark",
+    "contact": "Karl Brenner"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Viele von uns sind schon seit Jahrzehnten in ihren Revieren unterwegs. Wir kennen uns mit den Wildtieren hier in der Gegend aus und können aus der Praxis etwas zu ihren Lebensräumen und zum Umgang mit Wildbeständen sagen. Auch das Zusammenspiel von Landwirtschaft, Wald und Wild beschäftigt uns ständig. Dieses Wissen geben wir gern weiter, wenn Interesse besteht.",
+      "requirements": "Jäger haben im Umweltbereich oft keinen besonders guten Ruf. Wir würden gern besser vermitteln, was wir eigentlich machen und wo wir uns für Natur und Lebensräume einsetzen. Bei Öffentlichkeitsarbeit und einer verständlichen Darstellung nach außen könnten wir Unterstützung gebrauchen. Auch eine Einschätzung aus dem Naturschutz, welche unserer Maßnahmen sinnvoll sind und worauf wir rechtlich achten müssen, wäre hilfreich."
+    },
+    {
+      "category": "financial_resources",
+      "resources": "Wir leben hauptsächlich von unseren Mitgliedsbeiträgen und gelegentlichen Spenden. Viel Geld ist nicht übrig, aber für eine gemeinsame Aktion, hinter der unsere Mitglieder stehen, lässt sich meist ein kleiner Beitrag aufbringen.",
+      "requirements": "Wenn wir größere Maßnahmen für Lebensräume oder Veranstaltungen mit anderen Vereinen angehen, wird es finanziell schnell eng. Da wären Hinweise auf passende Fördermöglichkeiten oder jemand, der uns bei einem Antrag hilft, schon viel wert."
+    },
+    {
+      "category": "premises",
+      "resources": "Wir haben einen kleinen Vereinsraum, in dem wir unsere Treffen abhalten. Für einen Austausch in kleiner Runde reicht das gut. Über einzelne Mitglieder gibt es außerdem gelegentlich Unterstellmöglichkeiten, wenn man etwas für eine gemeinsame Aktion lagern muss.",
+      "requirements": "Wenn wir uns stärker für andere Gruppen öffnen, wäre ein größerer Raum für eine gemeinsame Veranstaltung hilfreich. Unser Vereinsraum ist dafür manchmal einfach zu klein."
+    },
+    {
+      "category": "land",
+      "resources": "Einige unserer Mitglieder sind Landwirte und haben eigene Flächen. Da gibt es immer wieder Ecken und Randbereiche, auf denen man etwas für Wildtiere oder den Naturschutz machen könnte. Was möglich ist, müsste man mit den jeweiligen Leuten besprechen. Über alle Flächen in unseren Jagdrevieren können wir natürlich nicht einfach verfügen.",
+      "requirements": "Für Maßnahmen an Hecken, Feldrändern oder kleinen Biotopen suchen wir Eigentümer, die mitmachen möchten. Es wäre gut, wenn solche Vorhaben nicht jedes Mal an der Frage hängen bleiben, wem die Fläche gehört und wen man ansprechen muss."
+    },
+    {
+      "category": "equipment",
+      "resources": "Unter unseren Mitgliedern sind mehrere Landwirte. Da sind Traktoren, Anhänger und verschiedene Geräte für Arbeiten auf den Flächen vorhanden. Wenn es um einen vernünftigen gemeinsamen Einsatz geht, lässt sich über diese Leute meistens etwas organisieren. Es hängt natürlich auch davon ab, was gerade auf den Höfen ansteht.",
+      "requirements": "Bei Arbeiten außerhalb der normalen Landwirtschaft fehlt manchmal das passende Spezialgerät. Da wären Kontakte zu Leuten hilfreich, die so etwas haben oder wissen, was man für die jeweilige Pflegearbeit sinnvoll einsetzen kann."
+    },
+    {
+      "category": "networks",
+      "resources": "Wir kennen viele Landwirte, Waldbesitzer und Förster hier vor Ort. Auch zur Gemeinde und zu anderen örtlichen Vereinen gibt es gute Verbindungen. Vieles läuft bei uns darüber, dass man sich seit Jahren kennt und einfach miteinander spricht.",
+      "requirements": "Wir suchen vor allem Kontakt zu Naturschutzvereinen und anderen Umweltgruppen. Bisher gibt es da eher Berührungsängste und manchmal auch Vorbehalte auf beiden Seiten. Wir würden gern erst einmal ins Gespräch kommen und schauen, ob man etwas gemeinsam machen kann. Uns wäre wichtig, dass das auf Augenhöhe geschieht."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Bei praktischen Einsätzen bekommen wir aus dem Verein normalerweise eine kleine Gruppe zusammen. Die Leute können draußen mit anpacken, sind mit Werkzeug vertraut und kennen sich untereinander gut. Wenn der Termin passt und klar ist, wofür man gebraucht wird, helfen einige auch bei Aktionen anderer Gruppen mit.",
+      "requirements": "Für größere gemeinsame Aktionen reichen die immer gleichen Leute auf Dauer nicht aus. Da wären zusätzliche Helfer willkommen. Außerdem würden wir gern mehr jüngere Menschen erreichen, die sich für die Arbeit im Revier und für gemeinsame Naturschutzaktionen interessieren."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 55
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 25
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 50
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 30
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 60
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 20
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 60
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 20
+    }
+  ]
+}

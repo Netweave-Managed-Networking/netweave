@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "umwelt@gemeinde-flussheim.example"
+  },
+  "Member": {
+    "name": "NT_Test_Gemeinde_Flussheim_Umweltbuero",
+    "contact": "Nora Albers"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "13",
+      "category": "competencies",
+      "resources": "Wir haben Erfahrung mit Amphibienschutzprojekten zusammen mit Ehrenamtlichen, mit der Anlage von Blühflächen und mit einer ökologischeren Bewirtschaftung kommunaler Grünflächen. Dazu kommen die Anlage von Blänken und die ökologische Aufwertung von Fließgewässern, häufig im Zusammenhang mit Kompensationsmaßnahmen. Bei Landschaftsentwicklung und Landschaftsarchitektur können wir Vorhaben fachlich und organisatorisch begleiten; daraus ergibt sich allerdings nicht automatisch eine frei verfügbare Projektfläche. Wir kennen die Abläufe von Bauleitplanung und Kompensationsmaßnahmen und bearbeiten auch Fragen zu Abfall und illegalen Müllablagerungen. Außerdem bringen wir Erfahrung in Klimaschutzmanagement, kommunalem Energiemanagement und der energetischen Entwicklung öffentlicher Gebäude mit. Für Schulgruppen können wir eine Unterrichtseinheit von ungefähr 90 Minuten zum kommunalen Klimaschutz vorbereiten. Wir bilden Naturführer aus und organisieren Führungen sowie Angebote an regionalen Umweltbildungsstandorten. Auch für eine gemeinsame öffentliche Naturführung von etwa zwei Stunden können wir die fachliche Vorbereitung übernehmen.",
+      "requirements": "Für drei neu angelegte Blühflächen suchen wir zusätzliche biologische Fachkenntnisse, um die ökologische Entwicklung zu beurteilen und die weitere Pflege anzupassen. Hilfreich wären zwei gemeinsame Begehungen während der Vegetationsperiode und eine kurze schriftliche Einschätzung zu Artenvorkommen, Pflege und möglichen Verbesserungen. Auch bei unseren Amphibienschutzprojekten möchten wir fachliche Rückfragen mit einer entsprechend erfahrenen Person besprechen können."
+    },
+    {
+      "member_id": "13",
+      "category": "financial_resources",
+      "resources": "Über unser kommunales Programm Naturnahes Flussheim können wir Projekte zum Natur- und Artenschutz, naturnahe Gärten und die Entwicklung von Gewässerrandstreifen unterstützen. Für diesen Programmbereich planen wir mit einem jährlichen Förderrahmen von 25.000 Euro; bei einzelnen Vorhaben wäre nach Prüfung ein Zuschuss bis zu 5.000 Euro möglich. Voraussetzung ist ein passendes Projekt im Gemeindegebiet mit Antrag, Kostenübersicht und benannter verantwortlicher Organisation. Eine Zusage erfolgt erst nach der Prüfung und hängt von den verfügbaren Mitteln ab. Für Lastenräder und Regenwassernutzung gibt es eigene Förderbereiche mit jeweils gesonderten Bedingungen. Wenn ein Vorhaben nicht über unsere Programme finanziert werden kann, können wir bei der Suche nach weiteren Fördergebern unterstützen.",
+      "requirements": ""
+    },
+    {
+      "member_id": "13",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "13",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "13",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "13",
+      "category": "networks",
+      "resources": "Wir koordinieren ein örtliches Netzwerk, in dem Jägerschaft, Naturschutzgruppen, landwirtschaftliche Interessenvertretung und Verwaltung zusammenarbeiten. Innerhalb der Verwaltung haben wir gute Kontakte zu den jeweils zuständigen Stellen. Wenn ein Naturschutzvorhaben mehrere Beteiligte betrifft, können wir einen gemeinsamen Termin organisieren und Aufgaben und Zuständigkeiten klären. Wir vermitteln auch zwischen Bürgern, Naturschutz und den ausführenden Kräften, wenn es unterschiedliche Vorstellungen zur Pflege kommunaler Grünflächen gibt. Bei einem konkreten Anliegen können wir zunächst eine Gesprächsrunde von ungefähr 60 bis 90 Minuten vorbereiten.",
+      "requirements": "Wir möchten uns regelmäßig mit Umweltbeauftragten und Umweltbüros anderer Kommunen austauschen. Wir stellen uns etwa vier Treffen im Jahr vor, gern online und jeweils ungefähr 90 Minuten. Interessant sind praktische Erfahrungen mit Förderprogrammen, kommunaler Grünflächenpflege und der Zusammenarbeit von Verwaltung und Ehrenamt. Wir suchen entsprechende Ansprechpartner, die an einem verlässlichen Austausch interessiert sind."
+    },
+    {
+      "member_id": "13",
+      "category": "helping_hands",
+      "resources": "Bei uns arbeiten zwei Klimaschutzmanagerinnen beziehungsweise Klimaschutzmanager. Für ein gemeinsam abgestimmtes Vorhaben können wir eine Person für einen zweistündigen Projektauftakt oder einen Workshop zur fachlichen und organisatorischen Abstimmung einplanen. Auch die weitere Koordination mit anderen Stellen ist möglich, wenn Aufgaben und Termine vorher festgelegt werden. Unsere Unterstützung liegt vor allem in Planung, Vermittlung und Begleitung; eine zusätzliche Mannschaft für praktische Pflegearbeiten können wir damit nicht zur Verfügung stellen.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "13",
+      "itemId": "Z1-G",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z1-S",
+      "weight": 70
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z2-G",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z2-S",
+      "weight": 65
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z3-G",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z3-S",
+      "weight": 65
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z4-G",
+      "weight": 15
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "13",
+      "itemId": "Z4-S",
+      "weight": 65
+    }
+  ]
+}

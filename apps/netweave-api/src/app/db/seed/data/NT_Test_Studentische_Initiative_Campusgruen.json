@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@campusgruen.example"
+  },
+  "Member": {
+    "name": "NT_Test_Studentische_Initiative_Campusgruen",
+    "contact": "Jona Richter"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "20",
+      "category": "competencies",
+      "resources": "Wir organisieren Nachhaltigkeitsaktionen auf dem Campus und haben Erfahrung mit Veranstaltungsplanung, einfachen digitalen Anmeldungen und der Ansprache von Studierenden. Für einen Verein könnten zwei von uns eine 90-minütige Gesprächsrunde zur Nachwuchsgewinnung vorbereiten und gemeinsam einen überschaubaren Aktionsplan entwickeln. Außerdem können wir bei der Aufbereitung von Informationen und einfachen Datentabellen helfen. Wir bringen Interesse und organisatorische Erfahrung mit; bei biologischen Kartierungen benötigen wir fachliche Anleitung.",
+      "requirements": "Für unsere nächste Pflanz- und Naturaktion suchen wir jemanden, der uns in etwa zwei Stunden erklärt, welche Arbeiten sinnvoll sind und wie die Gruppe angeleitet werden soll. Wir möchten mit einer erfahrenen Organisation zusammenarbeiten, statt die fachlichen Entscheidungen allein zu treffen."
+    },
+    {
+      "member_id": "20",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Für zwei gemeinsame Aktionstage fehlen uns noch rund 600 Euro für Fahrt, Material und Verpflegung. Wir suchen eine kleine Förderung oder eine Organisation, die einzelne Kosten übernehmen kann."
+    },
+    {
+      "member_id": "20",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "20",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "20",
+      "category": "equipment",
+      "resources": "",
+      "requirements": "Für diese Aktionstage benötigen wir acht Paar Arbeitshandschuhe und passende Handwerkzeuge, zum Beispiel Rechen oder Spaten. Eine Ausleihe für den jeweiligen Termin würde uns reichen."
+    },
+    {
+      "member_id": "20",
+      "category": "networks",
+      "resources": "Wir stehen mit studentischen Gruppen und der studentischen Interessenvertretung im Kontakt. Für eine gemeinsame Naturschutzaktion können wir einen Aufruf an interessierte Studierende weitergeben und eine kurze Informationsrunde organisieren. Ein Rücklauf von zehn Interessierten ist unser Ziel, aber keine Zusage.",
+      "requirements": "Wir suchen einen regionalen Praxispartner für wiederkehrende Umweltaktionen, am liebsten mit einem festen Ansprechpartner und einer rechtzeitig abgestimmten Planung."
+    },
+    {
+      "member_id": "20",
+      "category": "helping_hands",
+      "resources": "Für zwei Samstage im kommenden Frühjahr können wir nach Absprache eine Gruppe von sechs bis acht Studierenden für jeweils ungefähr vier Stunden zusammenstellen. Wir können Schnittgut zusammentragen, Material verteilen, nach Anleitung bei Pflanzungen helfen oder Anmeldung und Verpflegung übernehmen. Die fachliche Leitung stellt der Praxispartner. Es handelt sich um einzelne Aktionstage; eine längerfristige Mitarbeit in einem Vereinsvorstand ist damit nicht zugesagt.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "20",
+      "itemId": "Z1-G",
+      "weight": 40
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z1-I",
+      "weight": 35
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z2-G",
+      "weight": 35
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z2-I",
+      "weight": 40
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z3-G",
+      "weight": 35
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z3-I",
+      "weight": 35
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z4-G",
+      "weight": 50
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z4-I",
+      "weight": 30
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "20",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@landwirtschaft-feldmark.example"
+  },
+  "Member": {
+    "name": "NT_Test_Landwirtschaftsverband_Feldmark",
+    "contact": "Hendrik Lohmann"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "24",
+      "category": "competencies",
+      "resources": "Unsere Mitgliedsbetriebe bringen praktische Kenntnisse zu Ackerbau, Grünlandbewirtschaftung, Fruchtfolgen und Nährstoffmanagement mit. Wir können erläutern, wie vorgeschlagene Natur- und Gewässerschutzmaßnahmen im Betrieb umgesetzt werden könnten und welche Kosten und Arbeitsabläufe damit verbunden sind. Für ein gemeinsames Vorhaben können zwei Vertreter aus Betrieben an einer etwa zweistündigen Begehung teilnehmen. Unser Ziel ist eine Lösung, die ökologische Anforderungen und die Bewirtschaftung der Flächen nachvollziehbar zusammenbringt.",
+      "requirements": "Für einen geplanten Versuch mit Gewässerrandstreifen auf ungefähr einem Hektar suchen wir ökologische und bodenkundliche Begleitung. Wir möchten die Wirkung auf Vegetation und Nährstoffverhältnisse gemeinsam beurteilen und brauchen einen verständlichen Vorschlag für Erhebung, Pflege und spätere Auswertung."
+    },
+    {
+      "member_id": "24",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "24",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "24",
+      "category": "land",
+      "resources": "Drei Mitgliedsbetriebe sind bereit, über kleinere Demonstrations- und Untersuchungsflächen zu sprechen. Für einen abgestimmten Gewässerrandstreifen käme zusammen ungefähr ein Hektar infrage. Zugang, Bewirtschaftung, Finanzierung und Pflege müssen mit den jeweiligen Eigentümern und Betrieben vereinbart werden. Über diese Flächen verfügt der Verband nicht unabhängig von den Mitgliedern.",
+      "requirements": ""
+    },
+    {
+      "member_id": "24",
+      "category": "equipment",
+      "resources": "Über zwei Mitgliedsbetriebe können wir für abgestimmte Einsätze einen Traktor mit Anhänger und nach Verfügbarkeit eine Seilwinde oder einen Pfahlbohrer vermitteln. Ein Einsatz von jeweils einem Arbeitstag wäre im November grundsätzlich planbar. Gerät, fachkundige Bedienung, Termin und Kosten werden unmittelbar mit dem jeweiligen Eigentümer vereinbart. Der Verband besitzt diese Maschinen nicht selbst, und die Nennung ist noch keine verbindliche Reservierung.",
+      "requirements": ""
+    },
+    {
+      "member_id": "24",
+      "category": "networks",
+      "resources": "Wir vertreten lokale landwirtschaftliche Betriebe und kennen Ansprechpartner in den Mitgliedsbetrieben sowie bei regionalen Fach- und Verwaltungsstellen. Für ein konkretes Gewässerschutzanliegen können wir eine Gesprächsrunde mit drei bis fünf betroffenen Betrieben, einem Naturschutzpartner und der Kommune vorbereiten. Wir unterstützen die Suche nach einer Vereinbarung, können die einzelnen Betriebe aber nicht zu einer bestimmten Maßnahme verpflichten.",
+      "requirements": "Wir möchten einen festen Kontakt zu Naturschutz- und Gewässerakteuren aufbauen, damit Fragen zu Uferbereichen, Pflege und praktischen Maßnahmen regelmäßig gemeinsam besprochen werden."
+    },
+    {
+      "member_id": "24",
+      "category": "helping_hands",
+      "resources": "Bei einer gemeinsam geplanten Demonstrationsaktion können ein bis zwei Mitglieder ihre praktische Erfahrung einbringen und die Arbeit mit den vereinbarten Geräten begleiten. Das hängt von Saison, Betrieb und Termin ab.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "24",
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z1-W",
+      "weight": 35
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z1-S",
+      "weight": 25
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z2-G",
+      "weight": 30
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z2-W",
+      "weight": 35
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z2-S",
+      "weight": 25
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z3-G",
+      "weight": 25
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z3-W",
+      "weight": 40
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z3-S",
+      "weight": 25
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z4-G",
+      "weight": 40
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z4-W",
+      "weight": 25
+    },
+    {
+      "member_id": "24",
+      "itemId": "Z4-S",
+      "weight": 25
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@stiftung-auenland.example"
+  },
+  "Member": {
+    "name": "NT_Test_Stiftung_Auenland_Natur_und_Engagement",
+    "contact": "Clara Hansen"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "22",
+      "category": "competencies",
+      "resources": "Für einen Förderantrag können wir ein Vorgespräch von ungefähr 45 Minuten anbieten. Wir helfen dabei, Projektziel, Kosten und Zuständigkeiten übersichtlich darzustellen, und können auf weitere passende Fördergeber hinweisen. Die Prüfung und die Entscheidung über unsere eigene Förderung bleiben davon getrennte Schritte.",
+      "requirements": "Wir suchen für die fachliche Einschätzung von zwei geplanten Fördervorhaben externe Personen mit Erfahrung in Moorpflege und Umweltbildung. Gewünscht ist jeweils eine Beurteilung der Projektidee nach einem kurzen Gespräch und anhand der Unterlagen. Den Aufwand würden wir vorher vereinbaren."
+    },
+    {
+      "member_id": "22",
+      "category": "financial_resources",
+      "resources": "Für regionale Natur-, Umweltbildungs- und Engagementprojekte planen wir mit einem jährlichen Fördervolumen von 30.000 Euro. Einzelvorhaben können nach Prüfung mit 1.000 bis 5.000 Euro unterstützt werden. Denkbar sind etwa Material für Moorpflegeaktionen, Artenschutzmaßnahmen oder die Ausstattung eines gemeinwohlorientierten Bildungsangebots. Wir benötigen eine verantwortliche Organisation, eine Projektbeschreibung, einen Kostenplan und eine nachvollziehbare regionale Wirkung im Raum Osnabrück. Eine Förderung wird erst nach der Entscheidung unseres Gremiums zugesagt. Dauerhafte allgemeine Betriebskosten oder rein kommerzielle Aufträge fördern wir aus diesem Topf nicht.",
+      "requirements": ""
+    },
+    {
+      "member_id": "22",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "22",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "22",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "22",
+      "category": "networks",
+      "resources": "Wir kennen lokale Vereine, Einrichtungen und weitere Fördergeber. Bei einem konkreten Projekt können wir zwei bis drei passende Ansprechpartner für eine mögliche Zusammenarbeit vorschlagen oder ein gemeinsames Gespräch vorbereiten. Ihre Mitarbeit oder Finanzierung muss separat geklärt werden.",
+      "requirements": "Wir möchten unseren Kontakt zu kleineren lokalen Initiativen ausbauen, damit auch Gruppen mit wenig Antragserfahrung Zugang zu Beratung und passenden Kooperationen finden."
+    },
+    {
+      "member_id": "22",
+      "category": "helping_hands",
+      "resources": "",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "22",
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z1-W",
+      "weight": 20
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z1-S",
+      "weight": 40
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z2-G",
+      "weight": 25
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z2-W",
+      "weight": 20
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z2-S",
+      "weight": 45
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z3-G",
+      "weight": 30
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z3-W",
+      "weight": 25
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z3-S",
+      "weight": 35
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z4-G",
+      "weight": 35
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z4-W",
+      "weight": 20
+    },
+    {
+      "member_id": "22",
+      "itemId": "Z4-S",
+      "weight": 35
+    }
+  ]
+}
