@@ -286,8 +286,15 @@ Replace `dev` by whatever `INSTANCE_NAME` and `develop` by the `IMAGE_TAG` of th
 ```sh
   docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml ps
   docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml logs -f api
-  docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml up -d --force-recreate  # apply a changed .env
-  docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile                # apply a changed site file
+
+  # apply a changed .env
+  docker compose --project-directory instances/dev -f releases/develop/docker-compose.yml up -d --force-recreate
+
+  # wipe database and seed dummies from apps/netweave-api/src/app/db/seed/data/*.json
+  docker compose --project-directory instances/dummy -f releases/develop/docker-compose.yml exec api node dist/apps/netweave-api/seed.js dist/apps/netweave-api/seed-data
+
+  # apply a changed site file
+  docker compose -f proxy/docker-compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
 <br /><br />
