@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@heimatbund-wiesenland.example"
+  },
+  "Member": {
+    "name": "NT_Test_Heimatbund_Wiesenland",
+    "contact": "Anne Witte"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "11",
+      "category": "competencies",
+      "resources": "Unsere Mitgliedsvereine bringen viel Wissen zur regionalen Geschichte, zu dörflichen Strukturen, Heimatpflege und historischen Gebäuden mit. Einige engagieren sich besonders für den Erhalt der plattdeutschen Sprache. Für ein gemeinsames Bildungsprojekt könnten wir zum Beispiel jemanden für einen Vortrag von etwa 45 bis 60 Minuten oder für einen zweistündigen Rundgang durch einen Ortsteil vermitteln. Auch an Begleittexten zur Orts- und Landschaftsgeschichte können unsere Leute mitarbeiten. Im Umgang mit Verwaltung und Gremien wissen wir oft, wer für ein Anliegen zuständig ist und wie man eine Frage gut vorbereitet. Diese kurzen Wege helfen besonders dann, wenn ein Vorhaben mehrere Vereine und öffentliche Stellen betrifft. Wir organisieren außerdem Sternenwanderungen als gemeinsamen Wandertag mehrerer Ortsvereine. Für ein solches Vorhaben können wir die gemeinsame Planung und das Zusammenführen der örtlichen Gruppen übernehmen. Dabei verbinden wir gern vertraute Formen der Heimatpflege mit neuen Ideen anderer Partner.",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "premises",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "networks",
+      "resources": "Als Dachverband verbinden wir ungefähr 25 örtliche Heimat-, Kultur-, Verschönerungs- und Wandervereine. Darunter sind auch Gruppen, die sich mit Mühlen und historischen Landmaschinen beschäftigen. Wir kennen in den Vereinen die jeweiligen Ansprechpartner und wissen häufig, wer sich mit welchem Thema beschäftigt. Für ein regionales Projekt könnten wir zunächst drei bis fünf passende Vereine gezielt ansprechen und eine gemeinsame Gesprächsrunde organisieren. Wir sind außerdem Ansprechpartner für Heimatfragen beim Landkreis, im Beirat einer regionalen Naturschutzstiftung vertreten und arbeiten eng mit einem Naturpark zusammen. Über unsere Mitglieder gibt es weitere Verbindungen zu kommunalen Gremien und zur Verwaltung. Eine Mitarbeit oder Gerätebereitstellung durch einzelne Vereine muss immer mit ihnen selbst vereinbart werden; wir können den Kontakt herstellen und die Abstimmung unterstützen.",
+      "requirements": ""
+    },
+    {
+      "member_id": "11",
+      "category": "helping_hands",
+      "resources": "",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "11",
+      "itemId": "Z1-G",
+      "weight": 45
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z1-I",
+      "weight": 35
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z2-G",
+      "weight": 35
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z2-I",
+      "weight": 45
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z3-G",
+      "weight": 40
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z3-I",
+      "weight": 40
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z3-W",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z4-G",
+      "weight": 40
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z4-I",
+      "weight": 40
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "11",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

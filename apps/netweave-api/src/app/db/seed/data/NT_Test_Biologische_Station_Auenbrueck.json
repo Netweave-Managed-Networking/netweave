@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@biostation-auenbrueck.example"
+  },
+  "Member": {
+    "name": "NT_Test_Biologische_Station_Auenbrueck",
+    "contact": "Sabine Lenz"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Unsere Schwerpunkte sind der praktische Arten- und Moorschutz und die Umweltbildung. Beim Eulenschutz beraten wir zu Steinkauz und Schleiereule, bauen passende Nistkästen und helfen dabei, geeignete Standorte zu finden. Für eine Beratung vor Ort würden wir etwa ein bis zwei Stunden einplanen. Im Amphibienschutz können wir Gruppen beim Aufbau und bei der Betreuung von Schutzzäunen begleiten. Bei Wespen- und Hornissennestern schauen unsere fachkundigen Leute zunächst, ob ein Zusammenleben möglich ist; genehmigte Umsiedlungen können wir bei Bedarf ebenfalls übernehmen. Eine Kollegin beschäftigt sich besonders mit Moorschutz. Außerdem bieten wir ökologische und vogelkundliche Exkursionen, Wanderungen, Fahrradtouren und geführte Kanufahrten an. Für Kitas und Schulklassen vom Grundschulalter bis zur Oberstufe können wir Programme von ungefähr zwei bis drei Stunden zusammenstellen. Termine und Gruppengröße sprechen wir vorher persönlich ab.",
+      "requirements": ""
+    },
+    {
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Für die nächste Amphibiensaison und unsere Eulenschutzarbeit fehlen uns noch ungefähr 4.000 Euro. Davon möchten wir vor allem Zaunmaterial, Ersatzteile, Holz für Nistkästen und Fahrtkosten bezahlen. Finanzielle Unterstützung brauchen wir aber auch für unsere Bildungsangebote, damit die Teilnahme für Kinder und Jugendliche bezahlbar bleibt. Wir freuen uns über Zuschüsse, Spenden oder eine Organisation, die einen Teil dieser Kosten übernimmt."
+    },
+    {
+      "category": "premises",
+      "resources": "Unser Naturbildungszentrum hat eine Dauerausstellung und einen Spiel- und Erlebnisbereich für jüngere Kinder. Gruppen können das Zentrum im Rahmen eines vorher vereinbarten Besuchs nutzen. Auch Kindergeburtstage begleiten wir dort mit einem Naturprogramm; für dieses Angebot planen wir mit höchstens zwölf Kindern und etwa zweieinhalb Stunden. Wenn eine andere Organisation mit einer Kindergruppe kommen möchte, können wir gemeinsam etwas vorbereiten.",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "",
+      "requirements": "Für einen geplanten eintägigen Einsatz im Moorschutz suchen wir einen Bagger mit Fahrer für Erdarbeiten, die wir vorher mit den zuständigen Stellen abstimmen. Wir müssen noch gemeinsam klären, welches Gerät auf der Fläche geeignet ist; das möchten wir uns nicht allein nach der Größe des Baggers überlegen. Für den Transport von Zaunmaterial und Nistkästen könnten wir außerdem gelegentlich einen Anhänger gebrauchen, den wir mit unserem Fahrzeug ziehen dürfen. Zu Leihterminen und Kosten würden wir uns gern direkt austauschen."
+    },
+    {
+      "category": "networks",
+      "resources": "Wir haben einen guten Draht zum Landkreis, zur örtlichen Verwaltung und zur zuständigen Landesfachbehörde für Natur- und Gewässerschutz. Darüber konnten wir schon Unterstützung für einzelne Maßnahmen organisieren. Auch in der Bevölkerung gibt es Leute, die mithelfen oder Geräte zur Verfügung stellen. Wenn eine andere Naturschutzgruppe bei einem Vorhaben nicht weiß, wen sie ansprechen soll, können wir einen persönlichen Kontakt herstellen oder bei einem ersten Gespräch dabei sein. Eine Zusage für Geld oder Maschinen können wir natürlich nicht selbst geben.",
+      "requirements": ""
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Bei uns arbeiten erfahrene Leute für Artenschutz, Moorschutz und Umweltbildung eng zusammen. Wir betreuen auch Menschen im Freiwilligen Ökologischen Jahr und Praktikanten. Bei einer gemeinsamen Aktion können wir ein bis zwei Personen zur fachlichen Anleitung einplanen, wenn wir den Termin früh genug gemeinsam festlegen. Uns ist wichtig, neue Helfer persönlich einzubeziehen und zu schauen, welche Aufgaben ihnen liegen. Zusätzliche größere Arbeitseinsätze können wir mit unserem vorhandenen Team allein kaum übernehmen.",
+      "requirements": "Für die Amphibiensaison von Februar bis April suchen wir vier bis sechs weitere Freiwillige für den Aufbau des Schutzzauns und regelmäßige Kontrollen nach Einweisung. Es wäre gut, wenn jeder ungefähr einen festen Einsatz pro Woche übernehmen könnte; die genauen Zeiten stimmen wir in der Gruppe ab. Für Veranstaltungen im Naturbildungszentrum brauchen wir außerdem gelegentlich zwei bis drei Leute, die beim Empfang, bei der Vorbereitung und beim Aufräumen helfen. Auch jüngere Menschen, die erst einmal bei einer einzelnen Aktion reinschnuppern möchten, sind willkommen."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 60
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 65
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 65
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 75
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 5
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

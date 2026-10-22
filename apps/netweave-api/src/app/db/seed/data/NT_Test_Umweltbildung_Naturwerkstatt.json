@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "info@naturwerkstatt-bildung.example"
+  },
+  "Member": {
+    "name": "NT_Test_Umweltbildung_Naturwerkstatt",
+    "contact": "Mara Seidel"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "18",
+      "category": "competencies",
+      "resources": "Unser Team entwickelt Umweltbildungsangebote für Schulklassen, Jugendgruppen und Erwachsene. Wir haben zwei erfahrene Erlebnispädagogen und können einen halben Tag zu Biodiversität, Gewässern oder nachhaltigem Alltag gestalten. Für eine Gruppe von bis zu 20 Personen planen wir mit ungefähr drei Stunden; für ein solches Angebot würden wir 300 Euro zuzüglich vereinbarter Materialkosten berechnen. Auch ein gemeinsamer öffentlicher Vortrag oder eine Fortbildung für Ehrenamtliche ist möglich. Für Naturgruppen können wir helfen, Fachinhalte in verständliche Aktivitäten zu übersetzen.",
+      "requirements": "Für zwei geplante Veranstaltungen suchen wir Fachleute zu Fledermäusen und zum ökologischen Zustand kleiner Fließgewässer. Gewünscht sind jeweils ein etwa 45-minütiger Beitrag und eine anschließende gemeinsame Fragerunde. Wir brauchen dabei fachliche Tiefe, die über unsere eigenen einführenden Programme hinausgeht."
+    },
+    {
+      "member_id": "18",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Für die Ergänzung unseres Feldarbeitsraums fehlen uns etwa 4.500 Euro. Wir möchten damit zusätzliche Untersuchungsmaterialien und die Ausstattung für Gruppenarbeit finanzieren. Wir suchen einen Projektzuschuss oder eine Stiftung, die dieses regionale Bildungsangebot unterstützt."
+    },
+    {
+      "member_id": "18",
+      "category": "premises",
+      "resources": "Im Zentrum von Osnabrück haben wir einen Veranstaltungsraum für bis zu 30 Personen mit Beamer, Tischen und Stühlen. Andere Organisationen können ihn nach Absprache für Abendveranstaltungen nutzen; wir rechnen mit 50 Euro für einen Abend zur Deckung der Betriebskosten. Zusätzlich nutzen wir einen kleinen Feldarbeitsraum an unserem Außenstandort. Dort gibt es Arbeitsflächen, Wasser, Strom, einen Kühlschrank und Mikroskope für einfache Untersuchungen und Probenvorbereitung. Für wissenschaftliche Spezialanalysen müsste die Eignung mit dem Forschungsteam geprüft werden. Der Feldarbeitsraum ist ein einfacher Untersuchungsraum und kein Labor für jede analytische Fragestellung.",
+      "requirements": ""
+    },
+    {
+      "member_id": "18",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "18",
+      "category": "equipment",
+      "resources": "Für gebuchte oder gemeinsam abgestimmte Programme stehen acht Stereolupen, Bestimmungsmaterial und einfache Wasser-Messgeräte zur Verfügung. Wir können Geräte für zwei Untersuchungstage mit einer Einweisung bereitstellen. Die Ausleihe hängt von unseren eigenen Kursen ab und sollte ungefähr drei Wochen vorher vereinbart werden.",
+      "requirements": ""
+    },
+    {
+      "member_id": "18",
+      "category": "networks",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "18",
+      "category": "helping_hands",
+      "resources": "Für eine gemeinsam geplante Bildungsaktion können wir ein bis zwei Mitarbeitende zur pädagogischen Anleitung einplanen. Das gehört zur vereinbarten Veranstaltung und wird zeitlich und finanziell mit dem Partner abgestimmt.",
+      "requirements": "Wir suchen für zwei größere Veranstaltungstage jeweils drei zusätzliche Personen, die beim Empfang, Aufbau und Aufräumen helfen. Pro Termin wären etwa vier Stunden Unterstützung sinnvoll."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "18",
+      "itemId": "Z1-G",
+      "weight": 50
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z1-I",
+      "weight": 30
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z1-S",
+      "weight": 10
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z2-G",
+      "weight": 40
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z2-I",
+      "weight": 35
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z2-S",
+      "weight": 10
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z3-G",
+      "weight": 45
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z3-I",
+      "weight": 25
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z3-S",
+      "weight": 10
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z4-G",
+      "weight": 55
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z4-I",
+      "weight": 25
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "18",
+      "itemId": "Z4-S",
+      "weight": 10
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@naturschutz-moorwinkel.example"
+  },
+  "Member": {
+    "name": "NT_Test_Naturschutzverein_Moorwinkel",
+    "contact": "Helga Peters"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Wir machen seit vielen Jahren praktische Naturschutzarbeit, unter anderem an Wiesen, kleinen Gewässern und im Moor. Da ist einiges an Erfahrung zusammengekommen, was bei Pflegearbeiten sinnvoll ist und was eher nicht. Einige Mitglieder kennen sich auch im Umweltrecht gut aus und wissen, welche Stellen man bei Vorhaben fragen sollte. Unser Wissen geben wir gern im persönlichen Austausch weiter.",
+      "requirements": "Wir merken, dass wir mit unseren bisherigen Angeboten kaum noch junge Menschen erreichen. Die meisten Aktiven sind inzwischen älter, und bei den üblichen Veranstaltungen kommen oft dieselben Leute. Wir brauchen jemanden, der uns hilft, jüngere Menschen anzusprechen und unsere Arbeit so zu zeigen, dass sie sich angesprochen fühlen. Mit sozialen Medien kennen wir uns bisher nur wenig aus."
+    },
+    {
+      "category": "financial_resources",
+      "resources": "Wir haben Mitgliedsbeiträge, kleinere Spenden und für manche Vorhaben auch Fördermittel. Damit können wir unsere laufende Arbeit und überschaubare Aktionen finanzieren. Größere Beträge haben wir nicht frei zur Verfügung, aber bei einem gemeinsamen Naturschutzprojekt könnten wir uns im Rahmen unserer Möglichkeiten beteiligen.",
+      "requirements": "Für die Moorpflege und andere größere Aktionen brauchen wir immer wieder Geld für Material, Geräte und manchmal auch für Leistungen, die wir ehrenamtlich nicht schaffen. Unterstützung bei der Suche nach Fördermitteln und beim Schreiben von Anträgen wäre hilfreich."
+    },
+    {
+      "category": "premises",
+      "resources": "Es gibt einen kleinen Vereinsraum, in dem wir uns treffen, unsere Aktionen planen und Unterlagen aufbewahren. Für Besprechungen mit anderen Gruppen lässt er sich ebenfalls nutzen. Ein bisschen Material können wir dort auch lagern.",
+      "requirements": "Für unsere Pflegegeräte fehlt uns ein guter trockener Lagerplatz. Im Moment ist vieles bei einzelnen Mitgliedern verteilt. Das ist auf Dauer umständlich, gerade wenn wir eine größere Aktion vorbereiten."
+    },
+    {
+      "category": "land",
+      "resources": "Wir betreuen verschiedene Naturschutzflächen in der Umgebung, darunter auch einen Moorbereich. Die meisten Flächen gehören uns nicht selbst, aber wir stehen mit den Eigentümern in Kontakt und organisieren dort die Pflege. Für gemeinsame Aktionen oder um sich die Arbeit vor Ort anzuschauen, gibt es Möglichkeiten.",
+      "requirements": "Wir würden gern mehr angrenzende Flächen in unsere Naturschutzarbeit einbeziehen. Dafür brauchen wir Kontakt zu den Eigentümern und zu Landwirten, mit denen sich vernünftig über die Nutzung und mögliche Maßnahmen sprechen lässt."
+    },
+    {
+      "category": "equipment",
+      "resources": "Für die praktische Arbeit haben wir einiges an Handwerkzeug, Astscheren, Sägen und ein paar Motorsensen. Das meiste ist nicht neu, funktioniert aber. Für überschaubare Pflegeaktionen sind wir damit ganz ordentlich ausgestattet.",
+      "requirements": "Bei der Moorpflege kommen wir mit Handarbeit allein nicht immer weiter. Wir könnten gelegentlich größere Geräte, einen Anhänger oder Unterstützung durch Landwirte gebrauchen. Was sich dort überhaupt sinnvoll einsetzen lässt, müsste man gemeinsam vor Ort anschauen."
+    },
+    {
+      "category": "networks",
+      "resources": "Wir sind mit anderen Naturschutzgruppen und den zuständigen Stellen im Landkreis verbunden. Zur Gemeinde und zu einigen Schulen gibt es ebenfalls Kontakte, auch wenn vieles noch an einzelnen langjährigen Mitgliedern hängt. Wer mit einer Naturschutzfrage nicht weiterkommt, findet bei uns meistens jemanden, der einen Ansprechpartner kennt.",
+      "requirements": "Uns fehlen vor allem gute Kontakte zu Jugendgruppen und zu Menschen, die bisher nichts mit unserem Verein zu tun haben. Über Schulen, Vereine oder Ausbildungsbetriebe könnten wir vielleicht jüngere Leute erreichen. Auch mit Landwirten und Jägern würden wir gern mehr ins Gespräch kommen, wenn sich daraus etwas für die Flächen hier vor Ort ergibt."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Wir haben einen kleinen, verlässlichen Kreis von Ehrenamtlichen. Die meisten sind schon lange dabei und übernehmen Planung, Führungen oder praktische Pflegearbeiten, soweit es körperlich noch geht. Neue Helfer können wir bei den Einsätzen begleiten und ihnen zeigen, worauf es ankommt.",
+      "requirements": "Wir suchen freiwillige Helfer für unsere Moorpflegeaktionen. Es kommen immer weniger Leute, und einige unserer langjährigen Mitglieder können die anstrengenden Arbeiten nicht mehr übernehmen. Es würde schon helfen, wenn neue Leute gelegentlich bei einem Einsatz mitmachen, ohne gleich ein Vereinsamt übernehmen zu müssen."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 55
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 25
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 55
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 30
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 60
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 20
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 65
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 15
+    }
+  ]
+}

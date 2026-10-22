@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "umwelt@gemeinde-eichenfeld.example"
+  },
+  "Member": {
+    "name": "NT_Test_Gemeinde_Eichenfeld",
+    "contact": "Lars Petersen"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "10",
+      "category": "competencies",
+      "resources": "Wir bringen Erfahrung in der kommunalen Planung und im Umgang mit unseren Liegenschaften mit. Dazu gehören Bauleitplanung, Flächennutzungs- und Bebauungspläne, Bau- und Abbruchanträge sowie die Beteiligung an der Regionalplanung. Auch mit Ausgleichsflächen und Flurbereinigung beschäftigen wir uns. Wir kartieren kommunale Ausgleichsflächen und führen die Informationen dazu im Flächenkataster zusammen. Bei Fragen zur Gestaltung und zum Bau von Vorhaben können unsere Leute unterstützen oder die richtigen Ansprechpartner innerhalb der Verwaltung einbeziehen. Weitere Themen sind Hochbau, Tief- und Wasserbau, Verkehrsplanung, Wirtschaftsförderung und Breitbandversorgung. In der praktischen Grünflächenpflege haben wir Erfahrung mit Straßenbegleitbeeten, Parks, Friedhöfen und anderen kommunalen Grünanlagen. Weil wir vieles mit wenigen Mitarbeitenden organisieren, haben wir auch Erfahrung mit übersichtlichen Abläufen und der Verwaltung größerer Flächenbestände.",
+      "requirements": "Wir brauchen Fachbiologen, die beurteilen können, ob unsere Management- und Pflegemaßnahmen auf Ausgleichsflächen aus naturschutzfachlicher Sicht sinnvoll sind. Wir haben Kenntnisse in der Verwaltung und Pflege dieser Flächen, möchten die ökologische Bewertung aber durch entsprechende Fachleute ergänzen. Es wäre hilfreich, wenn jemand mit uns die Flächen anschaut, den Zustand einschätzt und verständliche Empfehlungen für die weitere Pflege gibt."
+    },
+    {
+      "member_id": "10",
+      "category": "financial_resources",
+      "resources": "Im Zusammenhang mit Flurbereinigung können für passende Maßnahmen Fördermittel in Betracht kommen, etwa für Bodenordnung, landwirtschaftliche Infrastruktur oder die Verbesserung des Naturhaushalts. Wir können mit Projektpartnern die Möglichkeiten im jeweiligen Verfahren und die zuständigen Ansprechpartner klären. Ob und in welcher Höhe eine Förderung möglich ist, wird für das einzelne Verfahren festgelegt. Ein Eigenanteil und die Beteiligung weiterer Begünstigter müssen ebenfalls geklärt werden. Das ist eine verfahrensgebundene Finanzierungsmöglichkeit; frei verfügbare Spenden für beliebige Vereinsprojekte können wir darüber nicht bereitstellen.",
+      "requirements": ""
+    },
+    {
+      "member_id": "10",
+      "category": "premises",
+      "resources": "Zu unseren kommunalen Liegenschaften gehören unter anderem Schulen, Kindergärten, das Rathaus und Feuerwehrgebäude. Wenn für ein gemeinsames Vorhaben ein Raum gebraucht wird, können wir prüfen, ob eine Nutzung möglich ist. Das muss zu den regulären Aufgaben des jeweiligen Gebäudes passen und mit den verantwortlichen Stellen abgestimmt werden.",
+      "requirements": ""
+    },
+    {
+      "member_id": "10",
+      "category": "land",
+      "resources": "Wir haben bebaute und unbebaute kommunale Liegenschaften, darunter Wald- und Ackerflächen, Grünanlagen und Ausgleichsflächen. Wir kümmern uns außerdem um Straßenbegleitbeete, größere Parkanlagen und Friedhöfe. Für eine Zusammenarbeit können wir schauen, ob sich eine geeignete kommunale Fläche finden lässt. Dabei müssen die bisherige Nutzung, bestehende Festlegungen und die spätere Pflege berücksichtigt werden. Gerade bei Ausgleichsflächen lässt sich die Nutzung nicht einfach beliebig ändern.",
+      "requirements": ""
+    },
+    {
+      "member_id": "10",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "10",
+      "category": "networks",
+      "resources": "Wir arbeiten gut mit Ehrenamtlichen und örtlichen Initiativen zusammen. Besonders über eine Initiative zu einem größeren Straßenbauvorhaben hat sich ein enger Austausch entwickelt. Als Gemeinde bringen wir uns auch in die Regionalplanung und in Diskussionen zu Stromtrassen und anderen übergeordneten Standortfragen ein. Wir können Anliegen in die kommunalen Gremien einbringen und Kontakte zu den zuständigen Stellen herstellen. Dadurch lassen sich Themen sichtbar machen und gemeinsame Positionen entwickeln; über die Entscheidungen anderer Stellen verfügen wir natürlich nicht.",
+      "requirements": "Wir möchten Kontakte zu Fachbiologen und Einrichtungen aufbauen, die Erfahrung mit der Beurteilung von Ausgleichsflächen haben. Uns wäre ein verlässlicher Austausch wichtig, damit wir bei konkreten Fragen zur Pflege und zum Management einen geeigneten Ansprechpartner finden. Kontakte zu entsprechenden Arbeitskreisen oder Forschungseinrichtungen wären ebenfalls interessant."
+    },
+    {
+      "member_id": "10",
+      "category": "helping_hands",
+      "resources": "",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "10",
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z1-I",
+      "weight": 10
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z1-W",
+      "weight": 25
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z1-S",
+      "weight": 35
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z2-G",
+      "weight": 25
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z2-I",
+      "weight": 10
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z2-W",
+      "weight": 30
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z2-S",
+      "weight": 35
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z3-G",
+      "weight": 25
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z3-I",
+      "weight": 10
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z3-W",
+      "weight": 35
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z3-S",
+      "weight": 30
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z4-G",
+      "weight": 30
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z4-I",
+      "weight": 10
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z4-W",
+      "weight": 25
+    },
+    {
+      "member_id": "10",
+      "itemId": "Z4-S",
+      "weight": 35
+    }
+  ]
+}

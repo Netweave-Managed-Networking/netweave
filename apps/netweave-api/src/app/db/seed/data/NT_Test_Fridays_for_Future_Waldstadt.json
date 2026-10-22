@@ -1,0 +1,135 @@
+{
+  "Invitation": {
+    "email": "kontakt@fff-waldstadt.example"
+  },
+  "Member": {
+    "name": "NT_Test_Fridays_for_Future_Waldstadt",
+    "contact": "Alex Neumann"
+  },
+  "Member_resources_requirements": [
+    {
+      "member_id": "19",
+      "category": "competencies",
+      "resources": "Wir haben Erfahrung damit, junge Menschen für Klimaschutzthemen anzusprechen, öffentliche Aktionen vorzubereiten und Inhalte verständlich zu vermitteln. Bei Pressetexten, kurzen Videos, Veranstaltungsankündigungen und digitaler Kommunikation können wir Ideen und praktische Unterstützung einbringen. Wenn ein Verein seine Arbeit besser erklären möchte, können wir gemeinsam schauen, welche Inhalte und Formen dazu passen. Auch Kommunikationswege ohne Facebook und mit sparsamer Datenerhebung interessieren uns. Wir würden vorher besprechen, ob die Ziele und die Zusammenarbeit für beide Seiten stimmig sind.",
+      "requirements": "Für unsere Veranstaltungen brauchen wir manchmal Fachleute, die Zusammenhänge zu Klima, Biodiversität, Landwirtschaft oder Gewässern gut erklären können. Wir möchten dabei verlässliche Inhalte vermitteln. Unterstützung bei der Planung größerer Veranstaltungen und beim verständlichen Umgang mit organisatorischen Vorgaben wäre ebenfalls hilfreich."
+    },
+    {
+      "member_id": "19",
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Unsere Gruppe hat kaum eigene Mittel. Für Veranstaltungen benötigen wir gelegentlich Unterstützung für Material, Technik oder Raummiete. Kleine Zuschüsse oder die Übernahme konkreter Kosten wären für uns hilfreich."
+    },
+    {
+      "member_id": "19",
+      "category": "premises",
+      "resources": "",
+      "requirements": "Wir suchen einen gut erreichbaren Raum für regelmäßige Treffen und die Vorbereitung von Aktionen. Eine gemeinsame Nutzung mit einem anderen Verein wäre gut, wenn wir die Termine verlässlich abstimmen können."
+    },
+    {
+      "member_id": "19",
+      "category": "land",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "19",
+      "category": "equipment",
+      "resources": "",
+      "requirements": ""
+    },
+    {
+      "member_id": "19",
+      "category": "networks",
+      "resources": "Wir kennen Jugendliche, studentische Gruppen und Menschen aus anderen örtlichen Klimaschutzinitiativen. Wir können gemeinsame Themen in unseren Kreis tragen und nachfragen, wer sich an einer Veranstaltung oder Aktion beteiligen möchte. Eine Teilnahme muss mit den jeweiligen Personen abgestimmt werden.",
+      "requirements": "Wir möchten Kontakte zu Naturschutzvereinen, wissenschaftlichen Gruppen und anderen lokalen Akteuren aufbauen. Interessant sind gemeinsame Veranstaltungen und ein Austausch darüber, wie Klimaschutz und konkrete Naturarbeit zusammengebracht werden können."
+    },
+    {
+      "member_id": "19",
+      "category": "helping_hands",
+      "resources": "Für passende gemeinsame Veranstaltungen können wir aus unserem Kreis Leute ansprechen, die bei Vorbereitung, Aufbau oder Information mithelfen. Das hängt von Schule, Studium und dem jeweiligen Termin ab. Unser Schwerpunkt liegt in Kommunikation und gemeinsamer Organisation.",
+      "requirements": ""
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "member_id": "19",
+      "itemId": "Z1-G",
+      "weight": 40
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z1-I",
+      "weight": 45
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z1-W",
+      "weight": 10
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z1-S",
+      "weight": 5
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z2-G",
+      "weight": 35
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z2-I",
+      "weight": 50
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z2-W",
+      "weight": 10
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z2-S",
+      "weight": 5
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z3-G",
+      "weight": 40
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z3-I",
+      "weight": 40
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z3-S",
+      "weight": 5
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z4-G",
+      "weight": 45
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z4-I",
+      "weight": 40
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "member_id": "19",
+      "itemId": "Z4-S",
+      "weight": 5
+    }
+  ]
+}
