@@ -615,16 +615,16 @@ h3. Developer Notes
   * optional: clicking an answer text makes range input jump to that point
 
 {code:html}
-<div class=""flex-col min-w-80"">
-  <div class=""w-full max-w-xl"">
+<div class='flex-col min-w-80'>
+  <div class='w-full max-w-xl'>
     {{ likertText() }}
   </div>
-  <div class=""w-full max-w-xl"">
-    <input type=""range"" min=""0"" max=""100"" value=""25"" class=""range w-full"" step=""25"" />
-    <div class=""flex justify-between px-2.5 mt-0 text-xs"">
+  <div class='w-full max-w-xl'>
+    <input type='range' min='0' max='100' value='25' class='range w-full' step='25' />
+    <div class='flex justify-between px-2.5 mt-0 text-xs'>
       <span>|</span><span>|</span><span>|</span><span>|</span><span>|</span>
     </div>
-    <div class=""flex justify-between px-2.5 mt-2 text-xs"">
+    <div class='flex justify-between px-2.5 mt-2 text-xs'>
       <span>stimmt<br /><strong>nicht</strong></span>
       <span>stimmt<br /><strong>wenig</strong></span>
       <span>stimmt<br /><strong>mittelmäßig</strong></span>
@@ -694,3 +694,72 @@ h3. Developer Notes
 * use Daisy UI Stat für die Darstellung der Zahlen, falls passend https://daisyui.com/components/stat/
 * „Daten aktualisiert“ einfach anahnd des Änderungszeitstempel am Member
 * Organisationen tauchen immer nur in einer Zahl auf; eine neu hinzugekommene Organisation, die danach auch ihre Daten aktualisiert hat, zählt nur als neu"
+"Bug","Matching schlägt fehl, mit AI_APICallError: Rate limit exceeded","NETW-9","NETW-9","High","Backend","_Beim Ausführen des Matchings schlägt die Berechnung mit dem Fehler AI_APICallError: Rate limit exceeded fehl. Pro NT-Paar und Kategorie wird ein eigener LLM-Call abgesetzt, wodurch das Rate Limit der LLM-API überschritten wird._
+
+h3. Akzeptanzkriterien
+* Matching-Berechnung fängt AI_APICallError: Rate limit exceeded ab und wartet
+* LLM-Calls werden clientseitig begrenzt, sodass das API-Limit (100 Requests/Minute) nicht überschritten wird
+* Bei einem Rate-Limit-Fehler (HTTP 429) wird der Call automatisch wiederholt
+  * Wartezeit richtet sich nach dem `retry-after` Header, falls vorhanden, sonst nach einer festen Wartezeit
+  * Anzahl der Wiederholungen ist begrenzt
+
+h3. Out of Scope
+* Reduzierung der Gesamt-Anzahl der LLM-Calls
+
+h3. Developer Notes
+* Problem: Mistral sendet kein retryAfter Header, deshalb brauchen wir nich einen Limiter o.Ä.
+* Lösungsvorschlag: Zweistufig aus clientseitigem Limiter (Bottleneck, knapp unter dem Quota von 100 Req/min) und Retry bei 429, der den `retry-after` Header nutzt
+* Retry außen, Limiter innen, SDK-Retries aus (`maxRetries: 0`)
+
+```ts
+import Bottleneck from 'bottleneck';
+import { generateText, APICallError } from 'ai';
+
+// --- Step 1: client-side limiter (slightly under the 100 req/min quota) ---
+const mistralLimiter = new Bottleneck({
+  reservoir: 90,
+  reservoirRefreshAmount: 90,
+  reservoirRefreshInterval: 60_000, // refill every 60s
+  maxConcurrent: 5,
+});
+
+// --- Step 2: 429 retry, uses retry-after if present, else fixed wait ---
+async function withRateLimitRetry<T>(
+  fn: () => Promise<T>,
+  { maxAttempts = 4, fallbackWaitMs = 20_000 } = {},
+): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!APICallError.isInstance(err) || err.statusCode !== 429 || attempt >= maxAttempts) {
+        throw err;
+      }
+
+      const header = err.responseHeaders?.['retry-after'];
+      let waitMs = fallbackWaitMs;
+      if (header) {
+        const seconds = Number(header);
+        waitMs = Number.isNaN(seconds)
+          ? Math.max(0, new Date(header).getTime() - Date.now())
+          : seconds * 1000;
+      }
+
+      // jitter so queued calls don't all retry at once
+      await new Promise((r) => setTimeout(r, waitMs + Math.random() * 1000));
+    }
+  }
+}
+
+// --- Usage: retry outside, limiter inside, SDK retries off ---
+const result = await withRateLimitRetry(() =>
+  mistralLimiter.schedule(() =>
+    generateText({
+      model: mistral('mistral-large-latest'),
+      prompt,
+      maxRetries: 0, // SDK retries would silently eat quota
+    })
+  )
+);
+```"
+
