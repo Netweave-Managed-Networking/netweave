@@ -12,6 +12,7 @@ import {
 import { CULTURE_ORIENTATIONS, CULTURE_TOPICS } from './culture.type';
 import { MemberCultureWeightUpsertDTO } from './member-culture-weight.upsert.dto.class';
 import { MemberResourceRequirementUpsertDTO } from './member-resource-requirement.upsert.dto.class';
+import { MemberViewOfEnvironmentAnswerUpsertDTO } from './member-view-of-environment-answer.upsert.dto.class';
 
 // weights are normalized by their topic's total, so a topic needs all of them and must not total 0
 const hasCompleteOrientationsPerTopic = (items: unknown): boolean =>
@@ -60,4 +61,11 @@ export class MemberUpsertDTO {
   @ValidateNested({ each: true })
   @Type(() => MemberCultureWeightUpsertDTO)
   declare public cultureWeights: MemberCultureWeightUpsertDTO[];
+
+  /** answered questions only, unanswered ones keep their stored answer */
+  @IsArray()
+  @ArrayUnique((item: MemberViewOfEnvironmentAnswerUpsertDTO) => item.itemId)
+  @ValidateNested({ each: true })
+  @Type(() => MemberViewOfEnvironmentAnswerUpsertDTO)
+  declare public viewOfEnvironmentAnswers: MemberViewOfEnvironmentAnswerUpsertDTO[];
 }
