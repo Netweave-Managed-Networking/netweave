@@ -3,6 +3,7 @@ import { createMistral } from '@ai-sdk/mistral';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { LanguageModel } from 'ai';
+import { LLM_RATE_LIMITS, RateLimit } from './llm-rate-limits';
 
 export const LLM_PROVIDERS = [
   'openai',
@@ -33,6 +34,7 @@ export interface LlmConfig {
   concurrency: number;
   timeoutMs: number; // per call
   reasoning: LlmReasoning;
+  rateLimit: RateLimit | null;
 }
 
 const DEFAULT_CONCURRENCY = 5;
@@ -71,6 +73,7 @@ export const readLlmConfig = (env: NodeJS.ProcessEnv): LlmConfig | null => {
     concurrency: positiveInt(env, 'LLM_CONCURRENCY', DEFAULT_CONCURRENCY),
     timeoutMs: positiveInt(env, 'LLM_TIMEOUT_MS', DEFAULT_TIMEOUT_MS),
     reasoning: reasoning as LlmReasoning,
+    rateLimit: LLM_RATE_LIMITS[provider as LlmProvider],
   };
 };
 
