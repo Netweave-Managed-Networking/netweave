@@ -19,6 +19,7 @@ const dto: MemberUpsertDTO = {
     { itemId: 'Z1-W', weight: 40 },
     { itemId: 'Z1-S', weight: 20 },
   ],
+  viewOfEnvironmentAnswers: [{ itemId: 'UA1', answer: 4 }],
 };
 
 describe('MemberController', () => {
@@ -53,6 +54,11 @@ describe('MemberController', () => {
           memberId: 7,
           ...item,
           topicTotal: 200,
+        })),
+        viewOfEnvironmentAnswers: dto.viewOfEnvironmentAnswers.map((item) => ({
+          id: 1,
+          memberId: 7,
+          ...item,
         })),
       }),
       confirmEmailChangeOrFail: jest.fn().mockResolvedValue(undefined),

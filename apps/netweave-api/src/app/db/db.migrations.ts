@@ -23,6 +23,7 @@ import { UsersAddEmailVerification1791100000000 } from './migrations/17911000000
 import { MatchingRunsAddRecommendations1791200000000 } from './migrations/1791200000000-matching-runs-add-recommendations';
 import { MembersAddEmail1791300000000 } from './migrations/1791300000000-members-add-email';
 import { MemberUpdateRemindersCreate1791400000000 } from './migrations/1791400000000-member-update-reminders-create';
+import { MemberViewOfEnvironmentAnswersCreate1791500000000 } from './migrations/1791500000000-member-view-of-environment-answers-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -50,4 +51,5 @@ export const Migrations = [
   MatchingRunsAddRecommendations1791200000000,
   MembersAddEmail1791300000000,
   MemberUpdateRemindersCreate1791400000000,
+  MemberViewOfEnvironmentAnswersCreate1791500000000,
 ];

@@ -4,6 +4,7 @@ import { BaseEntity } from '../db/entity/base/base.entity';
 import { Invitation } from '../invitations/invitation.entity';
 import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
+import { MemberViewOfEnvironmentAnswer } from './member-view-of-environment-answer.entity';
 
 @Entity({ name: 'members' })
 export class Member extends BaseEntity implements MemberDTO {
@@ -58,4 +59,7 @@ export class Member extends BaseEntity implements MemberDTO {
 
   @OneToMany(() => MemberCultureWeight, (cultureWeight) => cultureWeight.member)
   declare public cultureWeights?: MemberCultureWeight[]; // only set when loaded as relation
+
+  @OneToMany(() => MemberViewOfEnvironmentAnswer, (answer) => answer.member)
+  declare public viewOfEnvironmentAnswers?: MemberViewOfEnvironmentAnswer[]; // only set when loaded as relation
 }

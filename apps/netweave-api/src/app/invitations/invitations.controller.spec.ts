@@ -118,6 +118,9 @@ describe('InvitationsController', () => {
           cultureWeights: [
             { id: 1, memberId: 7, itemId: 'Z2-S', weight: 70, topicTotal: 130 },
           ],
+          viewOfEnvironmentAnswers: [
+            { id: 1, memberId: 7, itemId: 'UA3', answer: 0 },
+          ],
         },
       });
 
@@ -138,6 +141,7 @@ describe('InvitationsController', () => {
             },
           ],
           cultureWeights: [{ itemId: 'Z2-S', weight: 70 }],
+          viewOfEnvironmentAnswers: [{ itemId: 'UA3', answer: 0 }],
         },
       });
     });

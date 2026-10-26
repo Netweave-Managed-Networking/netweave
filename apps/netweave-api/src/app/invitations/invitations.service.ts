@@ -57,14 +57,18 @@ export class InvitationsService {
     });
   }
 
-  /** like findValidByToken, but also loads the member with their resources, requirements and culture weights */
+  /** like findValidByToken, but also loads the member with all their answers */
   public async findValidByTokenWithMember(
     token: string,
   ): Promise<Invitation | null> {
     return this.repository.findOne({
       where: { token, expireDate: MoreThan(new Date()) },
       relations: {
-        member: { resourcesRequirements: true, cultureWeights: true },
+        member: {
+          resourcesRequirements: true,
+          cultureWeights: true,
+          viewOfEnvironmentAnswers: true,
+        },
       },
     });
   }
