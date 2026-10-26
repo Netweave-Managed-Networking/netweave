@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { ResourceRequirementCategory } from '@netweave/api-types';
+import { APICallError } from 'ai';
 import { MockLanguageModelV4 } from 'ai/test';
 import 'reflect-metadata'; // the api-types (imported for the categories) contain decorated dto classes; nest loads it outside of tests
 import { MemberResourceRequirement } from '../members/member-resource-requirement.entity';
@@ -44,10 +45,19 @@ const mockModel = (answer: (prompt: string) => string | Promise<string>) =>
     }),
   });
 
+const apiError = (statusCode: number) =>
+  new APICallError({
+    message: `HTTP ${statusCode}`,
+    url: 'https://llm.example',
+    requestBodyValues: {},
+    statusCode,
+  });
+
 const options = {
   concurrency: 5,
   timeoutMs: 1000,
   reasoning: 'provider-default' as const,
+  rateLimit: null,
 };
 
 describe('LlmMatchingStrategy', () => {
@@ -267,6 +277,43 @@ describe('LlmMatchingStrategy', () => {
       details: { categories: [{ category: 'premises', score: null }] },
     });
     jest.restoreAllMocks();
+  });
+
+  it('keeps retrying llm calls that run into the rate limit (429) until they succeed', async () => {
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation();
+    let calls = 0;
+    const model = mockModel(() => {
+      if (++calls <= 5) throw apiError(429); // more than the retries for other errors
+      return '60';
+    });
+    const strategy = new LlmMatchingStrategy(model, {
+      ...options,
+      rateLimitBackoffMs: 1,
+    });
+
+    const result = await strategy.score(
+      member(1, [{ category: 'premises', requirements: 'Büro' }]),
+      member(2, [{ category: 'premises', resources: 'Halle' }]),
+    );
+
+    expect(result.score).toBe(60);
+    expect(model.doGenerateCalls).toHaveLength(6);
+    jest.restoreAllMocks();
+  });
+
+  it('fails on llm errors other than 429, without retrying those that are not transient', async () => {
+    const model = mockModel(() => {
+      throw apiError(401);
+    });
+    const strategy = new LlmMatchingStrategy(model, options);
+
+    await expect(
+      strategy.score(
+        member(1, [{ category: 'premises', requirements: 'Büro' }]),
+        member(2, [{ category: 'premises', resources: 'Halle' }]),
+      ),
+    ).rejects.toThrow('HTTP 401');
+    expect(model.doGenerateCalls).toHaveLength(1);
   });
 
   it('drops queued llm calls once the signal is aborted, e.g. because the run failed', async () => {

@@ -8,11 +8,8 @@ import {
 } from '@netweave/api-types';
 import { generateText, LanguageModel } from 'ai';
 import { Member } from '../members/member.entity';
-import {
-  ConcurrencyLimit,
-  createConcurrencyLimit,
-} from './llm/concurrency-limit';
 import { coveragePrompt, parseCoverageScore } from './llm/coverage-prompt';
+import { LlmCallQueue, LlmCallQueueOptions } from './llm/llm-call-queue';
 import { LlmConfig, LlmReasoning } from './llm/llm-config';
 import { MatchingResult, MatchingStrategy } from './matching-strategy';
 
@@ -21,19 +18,33 @@ export const LLM_MATCHING_CATEGORIES = RESOURCE_REQUIREMENT_CATEGORIES.filter(
 );
 
 const MAX_RETRIES = 3;
+const RATE_LIMIT_BACKOFF_MS = 20_000;
+const RETRY_DELAY_MS = 2_000;
+
+type LlmMatchingOptions = Pick<
+  LlmConfig,
+  'concurrency' | 'timeoutMs' | 'reasoning' | 'rateLimit'
+> &
+  Partial<Pick<LlmCallQueueOptions, 'rateLimitBackoffMs' | 'retryDelayMs'>>;
 
 /** per category: how well the potential match's resources cover the seeker's requirements, scored by an llm */
 export class LlmMatchingStrategy implements MatchingStrategy {
   private readonly logger = new Logger(LlmMatchingStrategy.name);
-  private readonly limit: ConcurrencyLimit;
+  private readonly queue: LlmCallQueue;
   private readonly timeoutMs: number;
   private readonly reasoning: LlmReasoning;
 
   public constructor(
     private readonly model: LanguageModel,
-    options: Pick<LlmConfig, 'concurrency' | 'timeoutMs' | 'reasoning'>,
+    options: LlmMatchingOptions,
   ) {
-    this.limit = createConcurrencyLimit(options.concurrency);
+    this.queue = new LlmCallQueue({
+      concurrency: options.concurrency,
+      rateLimit: options.rateLimit,
+      maxRetries: MAX_RETRIES,
+      rateLimitBackoffMs: options.rateLimitBackoffMs ?? RATE_LIMIT_BACKOFF_MS,
+      retryDelayMs: options.retryDelayMs ?? RETRY_DELAY_MS,
+    });
     this.timeoutMs = options.timeoutMs;
     this.reasoning = options.reasoning;
   }
@@ -98,19 +109,18 @@ export class LlmMatchingStrategy implements MatchingStrategy {
     resource: string,
     signal: AbortSignal | undefined,
   ): Promise<string> {
-    return this.limit(async () => {
-      signal?.throwIfAborted();
+    return this.queue.run(async () => {
       const { text } = await generateText({
         model: this.model,
         prompt: coveragePrompt(category, requirement, resource),
         temperature: 0,
-        maxRetries: MAX_RETRIES,
+        maxRetries: 0, // the queue retries, so retries keep to the rate limit too
         timeout: this.timeoutMs,
         reasoning: this.reasoning,
         abortSignal: signal,
       });
       return text;
-    });
+    }, signal);
   }
 }
 

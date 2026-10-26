@@ -24,6 +24,7 @@ describe('readLlmConfig', () => {
       concurrency: 10,
       timeoutMs: 30000,
       reasoning: 'none',
+      rateLimit: { requests: 90, intervalMs: 60_000 },
     });
   });
 
@@ -73,6 +74,7 @@ describe('createLanguageModel', () => {
         concurrency: 1,
         timeoutMs: 1,
         reasoning: 'provider-default',
+        rateLimit: null,
       });
 
       expect(model).toMatchObject({ modelId: 'some-model' });

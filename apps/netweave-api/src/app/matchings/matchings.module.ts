@@ -25,8 +25,11 @@ const createMatchingStrategy = (): MatchingStrategy => {
     );
     return new StringLengthMatchingStrategy();
   }
+  const rateLimit = config.rateLimit
+    ? `, at most ${config.rateLimit.requests} per ${config.rateLimit.intervalMs / 1000}s`
+    : '';
   logger.log(
-    `Using llm matching with ${config.provider}/${config.model} (${config.concurrency} parallel calls)`,
+    `Using llm matching with ${config.provider}/${config.model} (${config.concurrency} parallel calls${rateLimit})`,
   );
   return new LlmMatchingStrategy(createLanguageModel(config), config);
 };
