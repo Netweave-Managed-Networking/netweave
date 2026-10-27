@@ -23,11 +23,18 @@
           @for (user of userList; track user.id) {
             @let isMe = user.id === currentUserId();
             @let isPending = pendingUserId() === user.id;
-            @let isLocked = isMe || isPending;
+            @let isLocked = isMe || user.isOwner || isPending;
 
             <tr class="user-roles__row">
               <td class="user-roles__email-td">
                 {{ user.email }}
+                @if (user.isOwner) {
+                  <span
+                    class="user-roles__owner-badge badge badge-primary badge-sm ml-2"
+                    title="Verantwortlicher Account dieser Netweave-Instanz"
+                    >Owner</span
+                  >
+                }
                 @if (isMe) {
                   <span class="badge badge-ghost badge-sm ml-2">Du</span>
                 }
@@ -42,7 +49,11 @@
                   [attr.aria-label]="'Rolle von ' + user.email"
                   [disabled]="isLocked"
                   [title]="
-                    isMe ? 'Die eigene Rolle kann nicht geändert werden.' : ''
+                    isMe
+                      ? 'Die eigene Rolle kann nicht geändert werden.'
+                      : user.isOwner
+                        ? 'Die Rolle des Owners kann nicht geändert werden.'
+                        : ''
                   "
                   (change)="selectRole(user, roleSelect.value)"
                 >
@@ -71,7 +82,12 @@
               <td class="user-roles__remove-td w-1">
                 <app-user-remove
                   [toRemove]="user"
-                  [disabled]="isMe"
+                  [disabled]="isMe || user.isOwner"
+                  [disabledReason]="
+                    isMe
+                      ? 'Eigener Account kann nicht entfernt werden'
+                      : 'Owner kann nicht entfernt werden'
+                  "
                   (removed)="removeUser($event)"
                 />
               </td>
