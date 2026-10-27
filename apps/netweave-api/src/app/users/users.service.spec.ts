@@ -59,6 +59,20 @@ describe('UsersService', () => {
       expect(repository.save).not.toHaveBeenCalled();
     });
 
+    it('throws ForbiddenException when the user is the owner', async () => {
+      repository.findOneBy?.mockResolvedValue({
+        id: 2,
+        email: 'owner@example.de',
+        role: 'admin',
+        isOwner: true,
+      });
+
+      await expect(service.updateRole(2, 'viewer', 1)).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+      expect(repository.save).not.toHaveBeenCalled();
+    });
+
     it('throws ForbiddenException when the acting user changes their own role', async () => {
       await expect(service.updateRole(1, 'viewer', 1)).rejects.toBeInstanceOf(
         ForbiddenException,
@@ -85,6 +99,20 @@ describe('UsersService', () => {
 
       await expect(service.remove(99, 1)).rejects.toBeInstanceOf(
         NotFoundException,
+      );
+      expect(repository.remove).not.toHaveBeenCalled();
+    });
+
+    it('throws ForbiddenException when the user is the owner', async () => {
+      repository.findOneBy?.mockResolvedValue({
+        id: 2,
+        email: 'owner@example.de',
+        role: 'admin',
+        isOwner: true,
+      });
+
+      await expect(service.remove(2, 1)).rejects.toBeInstanceOf(
+        ForbiddenException,
       );
       expect(repository.remove).not.toHaveBeenCalled();
     });

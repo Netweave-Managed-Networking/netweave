@@ -7,6 +7,7 @@ import { User } from '../users/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { OwnershipService } from './ownership.service';
 import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 @Module({
@@ -22,7 +23,12 @@ import { RegistrationWhitelistService } from './registration-whitelist.service';
     forwardRef(() => MailModule),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthGuard, RegistrationWhitelistService],
+  providers: [
+    AuthService,
+    AuthGuard,
+    OwnershipService,
+    RegistrationWhitelistService,
+  ],
   exports: [AuthService, AuthGuard],
 })
 export class AuthModule {}

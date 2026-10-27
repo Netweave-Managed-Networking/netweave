@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
 import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
+import { OwnershipService } from './ownership.service';
 import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 const mockJwtService = {
@@ -35,6 +36,10 @@ const mockRegistrationWhitelist = {
 
 const mockMailService = {
   sendMail: jest.fn(),
+};
+
+const mockOwnership = {
+  onEmailVerified: jest.fn(),
 };
 
 /** the token from the link in the last sent confirmation mail */
@@ -71,6 +76,7 @@ describe('AuthService', () => {
           useValue: mockRegistrationWhitelist,
         },
         { provide: MailService, useValue: mockMailService },
+        { provide: OwnershipService, useValue: mockOwnership },
       ],
     }).compile();
 
@@ -293,7 +299,7 @@ describe('AuthService', () => {
             .digest('hex'),
           emailVerificationExpiresAt: expect.any(Object),
         },
-        select: ['id', 'email'],
+        select: ['id', 'email', 'role'],
       });
       expect(userRepo.update).toHaveBeenCalledWith(1, {
         emailVerifiedAt: expect.any(Date),
@@ -305,6 +311,15 @@ describe('AuthService', () => {
         email: 'test@example.com',
       });
       expect(result).toEqual('signed-token');
+    });
+
+    it('lets the ownership service decide whether the verified user becomes the owner', async () => {
+      const user = { id: 1, email: 'admin@example.com', role: 'admin' } as User;
+      userRepo.findOne.mockResolvedValue(user);
+
+      await service.verifyEmailOrFail('the-token');
+
+      expect(mockOwnership.onEmailVerified).toHaveBeenCalledWith(user);
     });
 
     it('throws BadRequestException for an unknown or expired token', async () => {

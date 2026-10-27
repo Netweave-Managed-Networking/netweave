@@ -1,10 +1,16 @@
 import { UserDTO, UserRole } from '@netweave/api-types';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Check, Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 import { Invitation } from '../invitations/invitation.entity';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 
+/**
+ * besides these constraints, a trigger prevents deleting the owner (see UsersAddOwner1791600000000).
+ * To transfer ownership, unset `is_owner` of the current owner and set it on the new one within one transaction.
+ */
 @Entity({ name: 'users' })
+@Index('UQ_users_is_owner', ['isOwner'], { unique: true, where: '"is_owner"' })
+@Check('CHK_users_owner_is_admin', `NOT "is_owner" OR "role" = 'admin'`)
 export class User extends BaseEntity implements UserDTO {
   @Column({ unique: true })
   declare public email: string;
@@ -15,6 +21,9 @@ export class User extends BaseEntity implements UserDTO {
   // SWC emits `Object` as design:type for imported type aliases, so TypeORM needs the type explicitly
   @Column({ type: 'varchar' })
   declare public role: UserRole;
+
+  @Column({ name: 'is_owner', default: false })
+  declare public isOwner: boolean;
 
   /** null until the user clicked the link in the confirmation mail; unverified users cannot log in */
   @Column({ name: 'email_verified_at', type: 'timestamptz', nullable: true })

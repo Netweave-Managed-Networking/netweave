@@ -16,6 +16,7 @@ import { MoreThan, Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { User } from '../users/user.entity';
 import { hashToken } from '../utils/hash-token';
+import { OwnershipService } from './ownership.service';
 import { RegistrationWhitelistService } from './registration-whitelist.service';
 
 export type AccessToken = string;
@@ -42,6 +43,7 @@ export class AuthService {
     private jwtService: JwtService,
     private registrationWhitelist: RegistrationWhitelistService,
     private mailService: MailService,
+    private ownership: OwnershipService,
   ) {}
 
   public static readonly EMAIL_VERIFICATION_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
@@ -121,7 +123,7 @@ export class AuthService {
         emailVerificationTokenHash: hashToken(token),
         emailVerificationExpiresAt: MoreThan(new Date()),
       },
-      select: ['id', 'email'],
+      select: ['id', 'email', 'role'],
     });
     if (!user)
       throw new BadRequestException('Invalid or expired verification token');
@@ -131,6 +133,7 @@ export class AuthService {
       emailVerificationTokenHash: null,
       emailVerificationExpiresAt: null,
     });
+    await this.ownership.onEmailVerified(user);
     return this.sign(user);
   }
 

@@ -10,6 +10,7 @@ const admin: UserDTO = {
   id: 1,
   email: 'admin@example.de',
   role: 'admin',
+  isOwner: false,
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-01T00:00:00.000Z'),
 };

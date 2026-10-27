@@ -1,9 +1,7 @@
 <div class="user-remove">
   <div class="tooltip tooltip-left tooltip-error">
     <div class="tooltip-content font-bold">
-      {{
-        disabled() ? 'Eigener Account kann nicht entfernt werden' : 'Entfernen'
-      }}
+      {{ disabled() ? disabledReason() : 'Entfernen' }}
     </div>
     <button
       class="user-remove__open btn btn-square"

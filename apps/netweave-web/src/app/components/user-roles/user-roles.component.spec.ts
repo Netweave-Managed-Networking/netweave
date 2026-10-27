@@ -9,6 +9,7 @@ const admin: UserDTO = {
   id: 1,
   email: 'admin@example.de',
   role: 'admin',
+  isOwner: false,
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-01T00:00:00.000Z'),
 };
@@ -17,8 +18,18 @@ const editor: UserDTO = {
   id: 2,
   email: 'editor@example.de',
   role: 'editor',
+  isOwner: false,
   createdAt: new Date('2026-02-01T00:00:00.000Z'),
   updatedAt: new Date('2026-02-01T00:00:00.000Z'),
+};
+
+const owner: UserDTO = {
+  id: 3,
+  email: 'owner@example.de',
+  role: 'admin',
+  isOwner: true,
+  createdAt: new Date('2025-12-01T00:00:00.000Z'),
+  updatedAt: new Date('2025-12-01T00:00:00.000Z'),
 };
 
 describe('UserRolesComponent', () => {
@@ -38,8 +49,8 @@ describe('UserRolesComponent', () => {
     TestBed.inject(AuthService).me.set(admin);
   });
 
-  async function create() {
-    vi.spyOn(http, 'get').mockReturnValue(of([admin, editor]));
+  async function create(users: UserDTO[] = [admin, editor]) {
+    vi.spyOn(http, 'get').mockReturnValue(of(users));
 
     const fixture = TestBed.createComponent(UserRolesComponent);
     fixture.detectChanges();
@@ -140,6 +151,24 @@ describe('UserRolesComponent', () => {
 
     const [adminRow] = rows(fixture);
     expect(removeButton(adminRow).disabled).toBe(true);
+  });
+
+  it('marks only the owner as owner', async () => {
+    const fixture = await create([admin, editor, owner]);
+
+    const [adminRow, editorRow, ownerRow] = rows(fixture);
+    expect(ownerRow.querySelector('.user-roles__owner-badge')).toBeTruthy();
+    expect(adminRow.querySelector('.user-roles__owner-badge')).toBeNull();
+    expect(editorRow.querySelector('.user-roles__owner-badge')).toBeNull();
+  });
+
+  it('does not allow changing the role of the owner or removing them', async () => {
+    const fixture = await create([admin, editor, owner]);
+
+    const ownerRow = rows(fixture)[2];
+    expect(select(ownerRow).disabled).toBe(true);
+    expect(saveButton(ownerRow).disabled).toBe(true);
+    expect(removeButton(ownerRow).disabled).toBe(true);
   });
 
   it('removes the user from the list and shows a success toast', async () => {

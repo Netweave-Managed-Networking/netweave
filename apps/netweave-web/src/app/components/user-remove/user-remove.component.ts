@@ -17,6 +17,8 @@ export class UserRemoveComponent {
 
   public toRemove = input.required<UserDTO>();
   public disabled = input(false);
+  /** tooltip shown while disabled */
+  public disabledReason = input('Eigener Account kann nicht entfernt werden');
   public removed = output<UserDTO>();
   protected loadingState = signal<LoadingState>('initial');
 

@@ -30,10 +30,15 @@ Run Netweave locally from source ([2A.](#2a-recommended-run-from-source)). It us
    application to send mail during local development.
 
 4. Only whitelisted emails can register. On a fresh instance, set
-   `REGISTRATION_WHITELIST` (e.g. `you@example.com:admin`) so the first admin
-   can register. More emails and domains, each with an optional role, can then
-   be allowed from the settings page. New users get the role `viewer` unless
-   their whitelist entry says otherwise.
+   `OWNER_EMAIL` (e.g. `you@example.com`) so the owner can register as admin.
+   More emails and domains, each with an optional role, can then be allowed
+   from the settings page or via `REGISTRATION_WHITELIST`. New users get the
+   role `viewer` unless their whitelist entry says otherwise.
+
+   The owner is the one account per instance that no other account can remove
+   or change the role of. To transfer the ownership, set `OWNER_EMAIL` to
+   another registered account and restart the api. Without `OWNER_EMAIL`, the
+   first admin to verify their email becomes the owner.
 
 <br />
 
@@ -319,7 +324,7 @@ Example values: `INSTANCE_NAME=dummy`, domain `dummy.netweave.de`, branch `devel
    - `DB_HOST=db` and `DB_PORT=5432` (always set like this)
    - `DB_USER=netweave_dummy_user`, `DB_PASSWORD` and `DB_DB=netweave_dummy_db`, (new for the instance, generate random password, e.g. `openssl rand -hex 24`)
    - `JWT_SECRET`, (new for the instance, e.g. from `openssl rand -base64 48`)
-   - `REGISTRATION_WHITELIST` (use email for the first admin, which then can register)
+   - `OWNER_EMAIL` (email of the owner, who then can register as admin)
    - Mail decided per instance:
      - `SEND_MAIL_ACTIVATED` (if `true`, check `SEQUENTIAL_TEST_MAIL_CRON_SCHEDULE` / `SEQUENTIAL_TEST_MAIL_RECEIVER` and `SEND_RECOMMENDATION_MAILS`)
      - `RECOMMENDATION_SNEAK_PEEK_MAIL` (if set, will receive recommendations)
@@ -345,4 +350,4 @@ Example values: `INSTANCE_NAME=dummy`, domain `dummy.netweave.de`, branch `devel
 6. **Check.**
    - `docker ps` shows `netweave-dummy-api-1`, `netweave-dummy-web-1` and `netweave-dummy-db-1` running.
    - `https://dummy.netweave.de` loads with a valid certificate, which Caddy requests after the reload.
-   - The first admin from `REGISTRATION_WHITELIST` can register.
+   - The owner from `OWNER_EMAIL` can register.
