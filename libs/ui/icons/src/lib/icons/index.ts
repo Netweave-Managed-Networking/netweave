@@ -6,5 +6,6 @@ export * from './plus/icon.plus';
 export * from './search/icon.search';
 export * from './settings/icon.settings';
 export * from './sidebar/icon.sidebar';
+export * from './sparkles/icon.sparkles';
 export * from './trash/icon.trash';
 export * from './users/icon.users';
