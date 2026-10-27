@@ -25,6 +25,7 @@ import {
 import { MemberCultureComponent } from './member-culture/member-culture.component';
 import { MemberGeneralDataComponent } from './member-general-data/member-general-data.component';
 import { MemberResourcesRequirementsComponent } from './member-resources-requirements/member-resources-requirements.component';
+import { MemberWorldviewComponent } from './member-worldview/member-worldview.component';
 
 @Component({
   selector: 'app-member-questions',
@@ -32,6 +33,7 @@ import { MemberResourcesRequirementsComponent } from './member-resources-require
     MemberGeneralDataComponent,
     MemberResourcesRequirementsComponent,
     MemberCultureComponent,
+    MemberWorldviewComponent,
   ],
   templateUrl: './member-questions.component.html',
 })

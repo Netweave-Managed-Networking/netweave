@@ -154,6 +154,7 @@ describe('MemberQuestionsComponent', () => {
         email: 'nt@example.com',
         resourcesRequirements: [],
         cultureWeights: [],
+        viewOfEnvironmentAnswers: [],
       },
     });
 
@@ -186,6 +187,7 @@ describe('MemberQuestionsComponent', () => {
       email: 'nt@example.com',
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
+      viewOfEnvironmentAnswers: [],
     });
     req.flush(savedResponse(req.request.body));
 
@@ -215,6 +217,7 @@ describe('MemberQuestionsComponent', () => {
       email: 'nt@example.com',
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
+      viewOfEnvironmentAnswers: [],
     });
     req.flush(savedResponse(req.request.body));
   });
@@ -299,6 +302,7 @@ describe('MemberQuestionsComponent', () => {
           email: 'nt@example.com',
           resourcesRequirements: [],
           cultureWeights: [],
+          viewOfEnvironmentAnswers: [],
         },
       });
 
@@ -446,6 +450,7 @@ describe('MemberQuestionsComponent', () => {
           },
         ],
         cultureWeights: [],
+        viewOfEnvironmentAnswers: [],
       },
     });
 
@@ -533,6 +538,7 @@ describe('MemberQuestionsComponent', () => {
         email: 'nt@example.com',
         resourcesRequirements: [],
         cultureWeights: [...savedZ3],
+        viewOfEnvironmentAnswers: [],
       },
     });
 
@@ -566,6 +572,83 @@ describe('MemberQuestionsComponent', () => {
         true,
       );
     }
+    req.flush(savedResponse(req.request.body));
+  });
+
+  const viewOfEnvironmentRanges = () =>
+    Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
+        'fieldset.member-worldview__view-of-environment input[type="range"]',
+      ),
+    );
+
+  it('shows the ten Umweltanschauung questions within the "Ökologische Weltanschauung" section', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
+
+    const section = query<HTMLElement>('section.member-worldview');
+    expect(section.querySelector('h2')?.textContent?.trim()).toBe(
+      'Ökologische Weltanschauung',
+    );
+    expect(
+      section
+        .querySelector('fieldset.member-worldview__view-of-environment legend')
+        ?.textContent?.trim(),
+    ).toBe('Umweltanschauung');
+    expect(
+      section.querySelector('.member-worldview__progress')?.textContent,
+    ).toMatch(/0\s+von\s+10 beantwortet/);
+    expect(viewOfEnvironmentRanges().length).toBe(10);
+    expect(section.textContent).toContain(
+      'Die Erde ist begrenzt. Deshalb können Bevölkerung, Konsum und Produktion nicht immer weiter wachsen.',
+    );
+  });
+
+  it('loads saved Umweltanschauung answers and saves changed and saved ones, leaving out unanswered', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: {
+        name: 'Acme e.V.',
+        contact: null,
+        email: 'nt@example.com',
+        resourcesRequirements: [],
+        cultureWeights: [],
+        viewOfEnvironmentAnswers: [
+          { itemId: 'UA2', answer: 0 },
+          { itemId: 'UA10', answer: 4 },
+        ],
+      },
+    });
+
+    const ranges = viewOfEnvironmentRanges();
+    expect(ranges[1].getAttribute('aria-valuetext')).toBe('stimmt nicht');
+    expect(ranges[9].getAttribute('aria-valuetext')).toBe('stimmt sehr');
+    expect(ranges[0].getAttribute('aria-valuetext')).toBe(
+      'Noch nicht beantwortet',
+    );
+
+    ranges[0].value = '3';
+    ranges[0].dispatchEvent(new Event('input'));
+    ranges[1].value = '1';
+    ranges[1].dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(
+      query<HTMLElement>('.member-worldview__progress').textContent,
+    ).toMatch(/3\s+von\s+10 beantwortet/);
+
+    query<HTMLButtonElement>('button.member-questions__submit').click();
+
+    const req = httpTesting.expectOne('/api/members/by-token/some-token');
+    expect(req.request.body.viewOfEnvironmentAnswers).toEqual([
+      { itemId: 'UA1', answer: 3 },
+      { itemId: 'UA2', answer: 1 },
+      { itemId: 'UA10', answer: 4 },
+    ]);
     req.flush(savedResponse(req.request.body));
   });
 });

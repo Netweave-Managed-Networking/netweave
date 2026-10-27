@@ -17,6 +17,7 @@ import { MailService } from '../mail/mail.service';
 import { hashToken } from '../utils/hash-token';
 import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
+import { MemberViewOfEnvironmentAnswer } from './member-view-of-environment-answer.entity';
 import { Member } from './member.entity';
 import { MembersService } from './members.service';
 
@@ -39,6 +40,7 @@ const dto: MemberUpsertDTO = {
   email: 'nt@example.com',
   resourcesRequirements: [],
   cultureWeights: [],
+  viewOfEnvironmentAnswers: [],
 };
 
 describe('MembersService', () => {
@@ -159,7 +161,7 @@ describe('MembersService', () => {
       );
     });
 
-    it('does not upsert when no resources, requirements and culture weights are given', async () => {
+    it('does not upsert when no answers are given', async () => {
       manager.findOne?.mockResolvedValue(null);
 
       await service.saveForInvitation(invitation, dto);
@@ -203,12 +205,39 @@ describe('MembersService', () => {
       );
     });
 
-    it('returns the saved member including its resources, requirements and culture weights', async () => {
+    it('upserts the view of environment answers of the member as given', async () => {
+      manager.findOne?.mockResolvedValue(null);
+
+      await service.saveForInvitation(invitation, {
+        ...dto,
+        viewOfEnvironmentAnswers: [
+          { itemId: 'UA1', answer: 4 },
+          { itemId: 'UA2', answer: 0 },
+          { itemId: 'UA10', answer: 2 },
+        ],
+      });
+
+      expect(manager.upsert).toHaveBeenCalledWith(
+        MemberViewOfEnvironmentAnswer,
+        [
+          { memberId: 7, itemId: 'UA1', answer: 4 },
+          { memberId: 7, itemId: 'UA2', answer: 0 },
+          { memberId: 7, itemId: 'UA10', answer: 2 },
+        ],
+        {
+          conflictPaths: ['memberId', 'itemId'],
+          skipUpdateIfNoValuesChanged: true,
+        },
+      );
+    });
+
+    it('returns the saved member including all its answers', async () => {
       const saved = {
         id: 7,
         ...dto,
         resourcesRequirements: [],
         cultureWeights: [],
+        viewOfEnvironmentAnswers: [],
       };
       manager.findOne?.mockResolvedValue(null);
       manager.findOneOrFail?.mockResolvedValue(saved);
@@ -217,7 +246,11 @@ describe('MembersService', () => {
 
       expect(manager.findOneOrFail).toHaveBeenCalledWith(Member, {
         where: { id: 7 },
-        relations: { resourcesRequirements: true, cultureWeights: true },
+        relations: {
+          resourcesRequirements: true,
+          cultureWeights: true,
+          viewOfEnvironmentAnswers: true,
+        },
       });
       expect(result).toBe(saved);
     });
@@ -523,6 +556,7 @@ describe('MembersService', () => {
       expect(changedCondition).toContain('member.updated_at > :since');
       expect(changedCondition).toContain('member_resources_requirements');
       expect(changedCondition).toContain('member_culture_weights');
+      expect(changedCondition).toContain('member_view_of_environment_answers');
       expect(queryBuilder.setParameter).toHaveBeenCalledWith('since', since);
     });
 

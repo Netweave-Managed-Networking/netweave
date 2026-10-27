@@ -1,0 +1,44 @@
+<section
+  class="member-worldview bg-base-100 border border-base-content/5 rounded-box p-6"
+>
+  <h2 class="text-lg font-semibold">Ökologische Weltanschauung</h2>
+  <p class="text-sm text-base-content/60 mt-1">
+    Gib bei jeder Aussage an, wie sehr sie aus Sicht deiner Organisation
+    zutrifft. Es gibt keine richtigen oder falschen Antworten.
+  </p>
+
+  <div class="divider my-4"></div>
+
+  <fieldset class="member-worldview__view-of-environment fieldset p-0">
+    <legend class="sr-only">Umweltanschauung</legend>
+
+    <div
+      class="member-worldview__heading flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-3"
+      aria-hidden="true"
+    >
+      <span class="text-base font-semibold">Umweltanschauung</span>
+
+      <span
+        class="member-worldview__progress flex items-center gap-2 text-xs text-base-content/60 tabular-nums"
+      >
+        <progress
+          class="progress progress-neutral w-24"
+          [value]="viewOfEnvironmentAnswered()"
+          [max]="viewOfEnvironmentQuestions.length"
+        ></progress>
+        {{ viewOfEnvironmentAnswered() }} von
+        {{ viewOfEnvironmentQuestions.length }} beantwortet
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      @for (question of viewOfEnvironmentQuestions; track question.itemId) {
+        <app-likert-question
+          [number]="$index + 1"
+          [text]="question.text"
+          [formField]="viewOfEnvironment()[question.itemId]"
+        />
+      }
+    </div>
+  </fieldset>
+</section>

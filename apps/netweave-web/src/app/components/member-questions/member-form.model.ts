@@ -3,11 +3,14 @@ import {
   CULTURE_TOPICS,
   CultureTopic,
   InvitationTokenDTO,
+  LikertAnswer,
   MemberUpsertDTO,
   parseCultureItemId,
   RESOURCE_REQUIREMENT_CATEGORIES,
   ResourceRequirementCategory,
   toCultureItemId,
+  VIEW_OF_ENVIRONMENT_ITEM_IDS,
+  ViewOfEnvironmentItemId,
 } from '@netweave/api-types';
 import { PriorityWeights } from '../priority-ranker/priority-ranker.layout';
 
@@ -19,12 +22,19 @@ export type ResourcesRequirementsModel = Record<
 /** null while unanswered */
 export type CultureWeightsModel = Record<CultureTopic, PriorityWeights | null>;
 
+/** null while unanswered */
+export type ViewOfEnvironmentAnswersModel = Record<
+  ViewOfEnvironmentItemId,
+  LikertAnswer | null
+>;
+
 export interface MemberFormModel {
   name: string;
   contact: string;
   email: string;
   resourcesRequirements: ResourcesRequirementsModel;
   cultureWeights: CultureWeightsModel;
+  viewOfEnvironmentAnswers: ViewOfEnvironmentAnswersModel;
 }
 
 // form fields need strings, while the API uses null for empty values
@@ -64,6 +74,16 @@ export const toMemberFormModel = (
     CULTURE_TOPICS.map((topic) => [topic, topicWeights(topic)]),
   ) as CultureWeightsModel; // fromEntries loses the key type
 
+  const savedAnswers = new Map(
+    member?.viewOfEnvironmentAnswers.map((item) => [item.itemId, item.answer]),
+  );
+  const viewOfEnvironmentAnswers = Object.fromEntries(
+    VIEW_OF_ENVIRONMENT_ITEM_IDS.map((itemId) => [
+      itemId,
+      savedAnswers.get(itemId) ?? null,
+    ]),
+  ) as ViewOfEnvironmentAnswersModel; // fromEntries loses the key type
+
   return {
     name: member?.name ?? '',
     contact: member?.contact ?? '',
@@ -71,6 +91,7 @@ export const toMemberFormModel = (
     email: invitation?.pendingEmail ?? invitation?.email ?? '',
     resourcesRequirements,
     cultureWeights,
+    viewOfEnvironmentAnswers,
   };
 };
 
@@ -80,6 +101,7 @@ export const toMemberUpsertDTO = ({
   email,
   resourcesRequirements,
   cultureWeights,
+  viewOfEnvironmentAnswers,
 }: MemberFormModel): MemberUpsertDTO => ({
   name,
   contact: contact || null,
@@ -98,5 +120,10 @@ export const toMemberUpsertDTO = ({
       itemId: toCultureItemId(topic, orientation),
       weight: weights[orientation],
     }));
+  }),
+  // unanswered questions are left out, so their stored answers are kept
+  viewOfEnvironmentAnswers: VIEW_OF_ENVIRONMENT_ITEM_IDS.flatMap((itemId) => {
+    const answer = viewOfEnvironmentAnswers[itemId];
+    return answer === null ? [] : [{ itemId, answer }];
   }),
 });

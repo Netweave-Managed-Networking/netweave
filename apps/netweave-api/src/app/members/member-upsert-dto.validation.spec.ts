@@ -16,6 +16,7 @@ const validateDTO = async (overrides: Record<string, unknown>) => {
     email: 'nt@example.com',
     resourcesRequirements: [],
     cultureWeights: [],
+    viewOfEnvironmentAnswers: [],
     ...overrides,
   });
   const errors = await validate(dto);
@@ -87,5 +88,53 @@ describe('MemberUpsertDTO culture weights validation', () => {
         ...topicWeights('Z1', [100, 90, 80, 70]).slice(1),
       ]),
     ).toContain('cultureWeights');
+  });
+});
+
+describe('MemberUpsertDTO view of environment answers validation', () => {
+  const validateAnswers = (viewOfEnvironmentAnswers: unknown) =>
+    validateDTO({ viewOfEnvironmentAnswers });
+
+  it('accepts no answers at all', async () => {
+    expect(await validateAnswers([])).toEqual([]);
+  });
+
+  it('accepts some questions answered with every Likert step', async () => {
+    expect(
+      await validateAnswers([
+        { itemId: 'UA1', answer: 0 },
+        { itemId: 'UA2', answer: 1 },
+        { itemId: 'UA5', answer: 2 },
+        { itemId: 'UA8', answer: 3 },
+        { itemId: 'UA10', answer: 4 },
+      ]),
+    ).toEqual([]);
+  });
+
+  it('rejects a question answered twice', async () => {
+    expect(
+      await validateAnswers([
+        { itemId: 'UA1', answer: 0 },
+        { itemId: 'UA1', answer: 4 },
+      ]),
+    ).toEqual(['viewOfEnvironmentAnswers']);
+  });
+
+  it.each([
+    ['an unknown item id', { itemId: 'UA11', answer: 2 }],
+    ['a culture item id', { itemId: 'Z1-G', answer: 2 }],
+    ['a negative answer', { itemId: 'UA1', answer: -1 }],
+    ['an answer above 4', { itemId: 'UA1', answer: 5 }],
+    ['a fractional answer', { itemId: 'UA1', answer: 1.5 }],
+    ['an answer as string', { itemId: 'UA1', answer: '2' }],
+    ['a missing answer', { itemId: 'UA1' }],
+  ])('rejects %s', async (_, item) => {
+    expect(await validateAnswers([item])).toEqual(['viewOfEnvironmentAnswers']);
+  });
+
+  it('rejects missing answers', async () => {
+    expect(await validateAnswers(undefined)).toEqual([
+      'viewOfEnvironmentAnswers',
+    ]);
   });
 });

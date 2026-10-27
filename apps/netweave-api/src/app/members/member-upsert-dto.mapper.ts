@@ -17,6 +17,9 @@ export const toMemberUpsertDTO = (member: Member): MemberUpsertDTO => ({
     itemId,
     weight,
   })),
+  viewOfEnvironmentAnswers: (member.viewOfEnvironmentAnswers ?? []).map(
+    ({ itemId, answer }) => ({ itemId, answer }),
+  ),
 });
 
 /** what the questionnaire of an invitation shows: the member's emails and answers, if already saved */

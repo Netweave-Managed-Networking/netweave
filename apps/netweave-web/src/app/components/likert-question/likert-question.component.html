@@ -1,0 +1,87 @@
+<div
+  class="likert-question flex gap-4 rounded-box border p-4 transition-colors duration-150 focus-within:border-base-content/30 sm:p-5"
+  [class]="
+    answered()
+      ? 'likert-question--answered border-base-content/15 bg-base-100'
+      : 'border-base-content/10 bg-base-200/50'
+  "
+>
+  @if (number(); as number) {
+    <span
+      class="likert-question__number flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums transition-colors duration-150"
+      [class]="
+        answered()
+          ? 'bg-neutral text-neutral-content'
+          : 'border border-base-content/20 text-base-content/50'
+      "
+      aria-hidden="true"
+    >
+      {{ number }}
+    </span>
+  }
+
+  <div class="flex min-w-0 flex-1 flex-col gap-4">
+    <p [id]="textId" class="likert-question__text leading-snug">
+      {{ text() }}
+    </p>
+
+    <div class="likert-question__scale w-full max-w-xl">
+      <input
+        type="range"
+        class="likert-question__range range range-sm w-full"
+        [class]="
+          answered() ? 'range-neutral' : 'text-base-content/25 [--range-fill:0]'
+        "
+        min="0"
+        [max]="steps.length - 1"
+        step="1"
+        [value]="position()"
+        [attr.aria-labelledby]="textId"
+        [attr.aria-valuetext]="valueText()"
+        (input)="selectFrom($event)"
+        (click)="selectFrom($event)"
+      />
+
+      <!-- inset by half the thumb (range-sm), so 0% and 100% are its outermost stops -->
+      <div class="relative mx-2.5" aria-hidden="true">
+        <div class="relative h-2 mt-1">
+          @for (step of steps; track step.answer) {
+            <span
+              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-150"
+              [class]="
+                value() === step.answer
+                  ? 'size-2 bg-neutral'
+                  : 'size-1 bg-base-content/25'
+              "
+              [style.left.%]="step.position"
+            ></span>
+          }
+        </div>
+
+        <div class="relative h-9 mt-1">
+          @for (step of steps; track step.answer) {
+            @let selected = value() === step.answer;
+
+            <button
+              type="button"
+              tabindex="-1"
+              class="likert-question__label absolute -translate-x-1/2 cursor-pointer rounded-field px-1 text-center text-xs leading-tight whitespace-nowrap transition-colors duration-150"
+              [class]="
+                selected
+                  ? 'likert-question__label--selected text-base-content'
+                  : 'text-base-content/50 hover:text-base-content/80'
+              "
+              [style.left.%]="step.position"
+              (click)="select(step.answer)"
+            >
+              <span class="opacity-70">stimmt</span><br />
+              <span [class]="selected ? 'font-bold' : 'font-medium'">{{
+                step.label
+              }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

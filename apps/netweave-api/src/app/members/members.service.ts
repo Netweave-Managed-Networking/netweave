@@ -31,6 +31,7 @@ import { MailService } from '../mail/mail.service';
 import { hashToken } from '../utils/hash-token';
 import { MemberCultureWeight } from './member-culture-weight.entity';
 import { MemberResourceRequirement } from './member-resource-requirement.entity';
+import { MemberViewOfEnvironmentAnswer } from './member-view-of-environment-answer.entity';
 import { Member } from './member.entity';
 
 @Injectable()
@@ -108,7 +109,10 @@ export class MembersService {
     });
   }
 
-  /** whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything */
+  /**
+   * whether any resource, requirement or culture answer changed after `since`, to skip runs that would not change anything.
+   * worldview answers are left out until they count in the matching (NETW-57)
+   */
   public async haveAnswersChangedSince(since: Date): Promise<boolean> {
     const manager = this.membersRepository.manager;
     const where = { updatedAt: MoreThan(since) };
@@ -124,7 +128,7 @@ export class MembersService {
 
   /**
    * members created after `since`, and older ones that changed their data after it; a member is never in both.
-   * besides the member row itself this looks at its resources, requirements and culture weights, as saving only
+   * besides the member row itself this looks at all its answers (resources, requirements, culture, worldview), as saving only
    * those leaves the member's own updated_at untouched. without `since` all members count as new
    */
   public async getChangedSince(
@@ -152,7 +156,8 @@ export class MembersService {
       .andWhere(
         `(member.updated_at > :since
           OR EXISTS (SELECT 1 FROM member_resources_requirements rr WHERE rr.member_id = member.id AND rr.updated_at > :since)
-          OR EXISTS (SELECT 1 FROM member_culture_weights cw WHERE cw.member_id = member.id AND cw.updated_at > :since))`,
+          OR EXISTS (SELECT 1 FROM member_culture_weights cw WHERE cw.member_id = member.id AND cw.updated_at > :since)
+          OR EXISTS (SELECT 1 FROM member_view_of_environment_answers voe WHERE voe.member_id = member.id AND voe.updated_at > :since))`,
       )
       .setParameter('since', since)
       .orderBy('member.name', 'ASC')
@@ -162,7 +167,7 @@ export class MembersService {
   }
 
   /**
-   * creates or updates the member of an invitation, including its resources, requirements and culture weights, and marks
+   * creates or updates the member of an invitation, including all its answers, and marks
    * the invitation as answered. A new email is not taken over but mailed a confirmation link, see confirmEmailChangeOrFail
    *
    * @throws ConflictException when the email is already used by another member
@@ -191,6 +196,7 @@ export class MembersService {
 
           await this.upsertResourcesRequirements(manager, member.id, dto);
           await this.upsertCultureWeights(manager, member.id, dto);
+          await this.upsertViewOfEnvironmentAnswers(manager, member.id, dto);
 
           // only the first save counts as answer date, later edits keep it
           await manager.update(
@@ -205,7 +211,11 @@ export class MembersService {
           // re-read, so the caller gets what is actually stored
           return manager.findOneOrFail(Member, {
             where: { id: member.id },
-            relations: { resourcesRequirements: true, cultureWeights: true },
+            relations: {
+              resourcesRequirements: true,
+              cultureWeights: true,
+              viewOfEnvironmentAnswers: true,
+            },
           });
         },
       );
@@ -356,6 +366,25 @@ export class MembersService {
     }));
 
     await manager.upsert(MemberCultureWeight, rows, {
+      conflictPaths: ['memberId', 'itemId'],
+      skipUpdateIfNoValuesChanged: true,
+    });
+  }
+
+  private async upsertViewOfEnvironmentAnswers(
+    manager: EntityManager,
+    memberId: number,
+    { viewOfEnvironmentAnswers }: MemberUpsertDTO,
+  ): Promise<void> {
+    if (viewOfEnvironmentAnswers.length === 0) return; // typeorm rejects an empty upsert
+
+    const rows = viewOfEnvironmentAnswers.map(({ itemId, answer }) => ({
+      memberId,
+      itemId,
+      answer,
+    }));
+
+    await manager.upsert(MemberViewOfEnvironmentAnswer, rows, {
       conflictPaths: ['memberId', 'itemId'],
       skipUpdateIfNoValuesChanged: true,
     });
