@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { createLanguageModel, readLlmConfig } from './llm-config';
 
 describe('readLlmConfig', () => {
@@ -71,10 +72,6 @@ describe('createLanguageModel', () => {
         model: 'some-model',
         apiKey: 'secret',
         baseUrl: 'http://localhost:11434/v1',
-        concurrency: 1,
-        timeoutMs: 1,
-        reasoning: 'provider-default',
-        rateLimit: null,
       });
 
       expect(model).toMatchObject({ modelId: 'some-model' });

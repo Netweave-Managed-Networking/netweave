@@ -2,17 +2,11 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createMistral } from '@ai-sdk/mistral';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { LLM_PROVIDERS, LlmProvider } from '@netweave/api-types';
 import { LanguageModel } from 'ai';
 import { LLM_RATE_LIMITS, RateLimit } from './llm-rate-limits';
 
-export const LLM_PROVIDERS = [
-  'openai',
-  'anthropic',
-  'mistral',
-  'openai-compatible', // e.g. ollama, vllm
-] as const;
-
-export type LlmProvider = (typeof LLM_PROVIDERS)[number];
+export { LLM_PROVIDERS, type LlmProvider };
 
 export const LLM_REASONING_LEVELS = [
   'provider-default',
@@ -70,19 +64,30 @@ export const readLlmConfig = (env: NodeJS.ProcessEnv): LlmConfig | null => {
     model,
     apiKey: env['LLM_API_KEY']?.trim() || undefined,
     baseUrl,
-    concurrency: positiveInt(env, 'LLM_CONCURRENCY', DEFAULT_CONCURRENCY),
-    timeoutMs: positiveInt(env, 'LLM_TIMEOUT_MS', DEFAULT_TIMEOUT_MS),
+    ...readLlmTuning(env),
     reasoning: reasoning as LlmReasoning,
     rateLimit: LLM_RATE_LIMITS[provider as LlmProvider],
   };
 };
+
+export const readLlmTuning = (
+  env: NodeJS.ProcessEnv,
+): Pick<LlmConfig, 'concurrency' | 'timeoutMs'> => ({
+  concurrency: positiveInt(env, 'LLM_CONCURRENCY', DEFAULT_CONCURRENCY),
+  timeoutMs: positiveInt(env, 'LLM_TIMEOUT_MS', DEFAULT_TIMEOUT_MS),
+});
+
+export type LlmAccess = Pick<
+  LlmConfig,
+  'provider' | 'model' | 'apiKey' | 'baseUrl'
+>;
 
 export const createLanguageModel = ({
   provider,
   model,
   apiKey,
   baseUrl,
-}: LlmConfig): LanguageModel => {
+}: LlmAccess): LanguageModel => {
   switch (provider) {
     case 'openai':
       return createOpenAI({ apiKey, baseURL: baseUrl })(model);

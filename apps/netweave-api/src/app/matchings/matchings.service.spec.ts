@@ -5,7 +5,10 @@ import { MemberResourceRequirement } from '../members/member-resource-requiremen
 import { Member } from '../members/member.entity';
 import { MembersService } from '../members/members.service';
 import { MatchingRun } from './matching-run.entity';
-import { MatchingStrategy } from './matching-strategy';
+import {
+  MatchingStrategy,
+  MatchingStrategyResolver,
+} from './matching-strategy';
 import { Matching } from './matching.entity';
 import { RankingStrategy } from './ranking/ranking-strategy';
 import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
@@ -61,6 +64,7 @@ describe('MatchingsService', () => {
     >
   >;
   let strategy: jest.Mocked<MatchingStrategy>;
+  let strategyResolver: jest.Mocked<MatchingStrategyResolver>;
   let rankingStrategy: jest.Mocked<RankingStrategy>;
   let recommendationMails: jest.Mocked<
     Pick<RecommendationMailsService, 'sendForRun'>
@@ -90,6 +94,8 @@ describe('MatchingsService', () => {
       ),
     };
 
+    strategyResolver = { forRun: jest.fn().mockResolvedValue(strategy) };
+
     rankingStrategy = {
       name: 'test-ranking',
       rank: jest.fn().mockReturnValue(recommendations),
@@ -102,7 +108,7 @@ describe('MatchingsService', () => {
     service = new MatchingsService(
       repository as unknown as Repository<MatchingRun>,
       membersService as unknown as MembersService,
-      strategy,
+      strategyResolver,
       rankingStrategy,
       recommendationMails as unknown as RecommendationMailsService,
     );
@@ -241,6 +247,22 @@ describe('MatchingsService', () => {
 
       expect(insertedRows()).toHaveLength(40 * 39);
       expect(manager.insert).toHaveBeenCalledTimes(40);
+    });
+
+    it('marks the run as failed without scoring when its llm access cannot be resolved', async () => {
+      strategyResolver.forRun.mockRejectedValue(
+        new Error('Unsupported state or unable to authenticate data'),
+      );
+      jest.spyOn(Logger.prototype, 'error').mockImplementation();
+
+      await service.calculateScheduled();
+
+      expect(strategy.score).not.toHaveBeenCalled();
+      expect(manager.update).toHaveBeenCalledWith(
+        MatchingRun,
+        { id: 42, failedAt: IsNull(), cancelledAt: IsNull() },
+        { failedAt: expect.any(Date) },
+      );
     });
 
     it('keeps the scores of completed seekers when a later seeker fails, and marks the run as failed', async () => {
@@ -906,7 +928,7 @@ describe('MatchingsService', () => {
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
-        strategy,
+        strategyResolver,
         rankingStrategy,
         recommendationMails as unknown as RecommendationMailsService,
       );
@@ -954,7 +976,7 @@ describe('MatchingsService', () => {
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
-        strategy,
+        strategyResolver,
         rankingStrategy,
         recommendationMails as unknown as RecommendationMailsService,
       );
@@ -974,7 +996,7 @@ describe('MatchingsService', () => {
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
-        strategy,
+        strategyResolver,
         rankingStrategy,
         recommendationMails as unknown as RecommendationMailsService,
       );
@@ -991,7 +1013,7 @@ describe('MatchingsService', () => {
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
-        strategy,
+        strategyResolver,
         rankingStrategy,
         recommendationMails as unknown as RecommendationMailsService,
       );
@@ -1008,7 +1030,7 @@ describe('MatchingsService', () => {
       service = new MatchingsService(
         repository as unknown as Repository<MatchingRun>,
         membersService as unknown as MembersService,
-        strategy,
+        strategyResolver,
         rankingStrategy,
         recommendationMails as unknown as RecommendationMailsService,
       );

@@ -4,6 +4,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { HealthCheckModule } from './health-check/health-check.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { LlmConfigModule } from './llm-config/llm-config.module';
 import { MailModule } from './mail/mail.module';
 import { MatchingsModule } from './matchings/matchings.module';
 import { MembersModule } from './members/members.module';
@@ -18,6 +19,7 @@ import { SequentialTestMailerModule } from './utils/sequential-test-mailer.servi
     AuthModule,
     HealthCheckModule,
     InvitationsModule,
+    LlmConfigModule,
     MailModule,
     MatchingsModule,
     SequentialTestMailerModule,

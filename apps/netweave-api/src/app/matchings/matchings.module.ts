@@ -1,38 +1,18 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
+import { LlmConfigModule } from '../llm-config/llm-config.module';
 import { MailModule } from '../mail/mail.module';
 import { MembersModule } from '../members/members.module';
-import { createLanguageModel, readLlmConfig } from './llm/llm-config';
-import { LlmMatchingStrategy } from './llm-matching.strategy';
+import { LlmMatchingStrategyResolver } from './llm-matching-strategy.resolver';
 import { MatchingRun } from './matching-run.entity';
-import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
+import { MATCHING_STRATEGY_RESOLVER } from './matching-strategy';
 import { Matching } from './matching.entity';
 import { MatchingsController } from './matchings.controller';
 import { MatchingsService } from './matchings.service';
 import { createRankingStrategy } from './ranking/ranking-strategies';
 import { RANKING_STRATEGY } from './ranking/ranking-strategy';
 import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
-import { StringLengthMatchingStrategy } from './string-length-matching.strategy';
-
-/** falls back to the dummy algorithm without LLM_PROVIDER */
-const createMatchingStrategy = (): MatchingStrategy => {
-  const logger = new Logger('MatchingStrategy');
-  const config = readLlmConfig(process.env);
-  if (!config) {
-    logger.warn(
-      'No LLM_PROVIDER configured, using the dummy string length matching',
-    );
-    return new StringLengthMatchingStrategy();
-  }
-  const rateLimit = config.rateLimit
-    ? `, at most ${config.rateLimit.requests} per ${config.rateLimit.intervalMs / 1000}s`
-    : '';
-  logger.log(
-    `Using llm matching with ${config.provider}/${config.model} (${config.concurrency} parallel calls${rateLimit})`,
-  );
-  return new LlmMatchingStrategy(createLanguageModel(config), config);
-};
 
 @Module({
   imports: [
@@ -40,12 +20,16 @@ const createMatchingStrategy = (): MatchingStrategy => {
     MembersModule,
     AuthModule,
     MailModule,
+    LlmConfigModule,
   ],
   controllers: [MatchingsController],
   providers: [
     MatchingsService,
     RecommendationMailsService,
-    { provide: MATCHING_STRATEGY, useFactory: createMatchingStrategy },
+    {
+      provide: MATCHING_STRATEGY_RESOLVER,
+      useClass: LlmMatchingStrategyResolver,
+    },
     { provide: RANKING_STRATEGY, useFactory: () => createRankingStrategy() },
   ],
 })

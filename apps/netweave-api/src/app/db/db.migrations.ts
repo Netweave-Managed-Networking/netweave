@@ -25,6 +25,7 @@ import { MembersAddEmail1791300000000 } from './migrations/1791300000000-members
 import { MemberUpdateRemindersCreate1791400000000 } from './migrations/1791400000000-member-update-reminders-create';
 import { MemberViewOfEnvironmentAnswersCreate1791500000000 } from './migrations/1791500000000-member-view-of-environment-answers-create';
 import { UsersAddOwner1791600000000 } from './migrations/1791600000000-users-add-owner';
+import { LlmConfigCreate1791700000000 } from './migrations/1791700000000-llm-config-create';
 
 export const Migrations = [
   CreateOrganization1776427891713,
@@ -54,4 +55,5 @@ export const Migrations = [
   MemberUpdateRemindersCreate1791400000000,
   MemberViewOfEnvironmentAnswersCreate1791500000000,
   UsersAddOwner1791600000000,
+  LlmConfigCreate1791700000000,
 ];
