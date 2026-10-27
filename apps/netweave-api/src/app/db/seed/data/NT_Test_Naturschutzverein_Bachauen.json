@@ -1,0 +1,112 @@
+{
+  "Invitation": {
+    "email": "kontakt@naturschutz-bachauen.example"
+  },
+  "Member": {
+    "name": "NT_Test_Naturschutzverein_Bachauen",
+    "contact": "Martin Seifert"
+  },
+  "Member_resources_requirements": [
+    {
+      "category": "competencies",
+      "resources": "Bei uns arbeiten Leute mit viel Erfahrung in der praktischen Naturschutzarbeit, im Landschaftsgartenbau und in der Umweltbildung. Wir kennen uns mit Moorpflege, Streuobstwiesen, alten Obstsorten sowie Baumschnitt und Baumpflanzungen aus. Wir halten auch eine Herde Bentheimer Schafe und bringen Erfahrung mit ihrer Haltung und mit Beweidung mit. Unsere Biodiversitätsberaterin berät Privatleute zu ihren Gärten und Betriebe zu ihren Außenflächen. Für eine erste gemeinsame Begehung würden wir etwa zwei Stunden einplanen; den weiteren Aufwand und die Finanzierung besprechen wir vorher. Für Schulklassen und Jugendgruppen können wir einen halben Tag zu Gewässern, Wiesen oder Artenvielfalt gestalten. Wir übernehmen dabei die fachliche Anleitung, die Begleitung der Gruppe müsste mit organisiert werden.",
+      "requirements": ""
+    },
+    {
+      "category": "financial_resources",
+      "resources": "",
+      "requirements": "Für zwei geplante Pflegewochenenden im nächsten Frühjahr fehlen uns insgesamt noch etwa 3.000 Euro. Davon sollen vor allem Material, die Abfuhr des Schnittguts und notwendige Maschineneinsätze bezahlt werden. Wir suchen dafür Zuschüsse oder Spenden und gern auch jemanden, der mit uns einen passenden Förderantrag vorbereitet. Unsere laufenden Mittel reichen für zusätzliche Projekte häufig nicht aus."
+    },
+    {
+      "category": "premises",
+      "resources": "Unser Naturschutzzentrum hat einen Vortragsraum für ungefähr 35 Personen mit Tischen, Stühlen und Beamer. Dazu gibt es eine kleine Küche, in der wir bei Veranstaltungen Kaffee und einen einfachen Imbiss vorbereiten. Andere Vereine können den Raum nach Absprache für Vorträge, Besprechungen oder kleinere Workshops nutzen. Abends und am Wochenende geht das grundsätzlich auch, nur muss jemand aus unserem Team vor Ort sein. Das Zentrum ist außerdem eine Anlaufstelle für Besucher und Vereinsmitglieder.",
+      "requirements": ""
+    },
+    {
+      "category": "land",
+      "resources": "Rund um unser Zentrum betreuen wir einen Teich mit Bachlauf, Auenwald, weitere Waldstücke, Streuobstwiesen, Kopfbäume und einen ehemaligen Steinbruch. Diese Flächen eignen sich für Naturerkundungen, Umweltbildung und gemeinsame Pflegeaktionen. Für eine Gruppe von bis zu 20 Personen können wir einen geführten Rundgang von etwa zwei Stunden anbieten. Einzelne Bereiche sind empfindlich; wenn eine andere Gruppe dort etwas machen möchte, sprechen wir deshalb vorher über Ort und Ablauf. Bei Flächen, die uns nicht gehören, müssen wir die Nutzung auch mit den Eigentümern abstimmen.",
+      "requirements": ""
+    },
+    {
+      "category": "equipment",
+      "resources": "Für unsere Landschaftspflege stehen uns ein kleiner Trecker mit Anhänger, ein Transportfahrzeug und verschiedene Pflegegeräte zur Verfügung. Dazu gehören Motorsensen, Sägen und Werkzeuge für Baum- und Gehölzpflege. Bei einem gemeinsamen Arbeitseinsatz können wir den Trecker mit einer eingewiesenen Person aus unserem Team einplanen, zum Beispiel für den Abtransport von Schnittgut. Wir brauchen dafür ungefähr zwei Wochen Vorlauf und müssen den Einsatz mit unseren eigenen Terminen abstimmen. Ohne eine Person aus unserem Team geben wir den Trecker derzeit nicht heraus.",
+      "requirements": ""
+    },
+    {
+      "category": "networks",
+      "resources": "Wir haben Kontakte zu Schulen, anderen Naturschutzgruppen und Menschen, die ihre Gärten oder betrieblichen Außenflächen naturnäher gestalten wollen. Über unsere Bildungsangebote erreichen wir auch Jugendliche, selbst wenn diese später nicht automatisch im Verein aktiv werden. Für ein gemeinsames Bildungsangebot können wir bestehende Ansprechpartner an Schulen ansprechen; ob eine Schule mitmacht, entscheidet sie natürlich selbst.",
+      "requirements": "Wir wünschen uns Unterstützung im Austausch mit Behörden. Bei Pflegevorhaben und Förderanträgen bleibt manchmal unklar, welche Stelle zuständig ist und welche Unterlagen gebraucht werden. Hilfreich wäre jemand mit guten Kontakten zu den zuständigen Stellen, der bei einem gemeinsamen Gespräch vermittelt. Wir möchten daraus einen verlässlicheren Austausch entwickeln."
+    },
+    {
+      "category": "helping_hands",
+      "resources": "Wir haben eine Biodiversitätsberaterin, Leute für die Umweltbildung und erfahrene Praktiker für Landschaftspflege, Baumschnitt und Pflanzungen. Dazu kommt ein eingespielter Kreis von Ehrenamtlichen. Bei einem gemeinsamen Einsatz können wir zwei erfahrene Leute zur Anleitung neuer Helfer einplanen, wenn der Termin frühzeitig abgestimmt wird. Unser Team kann aber nicht zusätzlich die gesamte praktische Arbeit für andere Gruppen übernehmen.",
+      "requirements": "Für die beiden Pflegewochenenden suchen wir jeweils sechs bis acht zusätzliche Freiwillige, die etwa vier Stunden mithelfen können. Es geht um das Zusammentragen von Schnittgut, das Freihalten von Arbeitsbereichen und weitere Arbeiten nach Anleitung. Wir brauchen auch zwei Leute, die die Anmeldung der Helfer, Kaffee und Verpflegung übernehmen. Wer lieber organisiert als körperlich arbeitet, kann also genauso helfen. Langfristig suchen wir außerdem jüngere Menschen, die regelmäßig mitmachen möchten; unsere aktive Vereinsgruppe wird immer älter."
+    }
+  ],
+  "Member_culture_weights": [
+    {
+      "itemId": "Z1-G",
+      "weight": 30
+    },
+    {
+      "itemId": "Z1-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z1-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z1-S",
+      "weight": 50
+    },
+    {
+      "itemId": "Z2-G",
+      "weight": 25
+    },
+    {
+      "itemId": "Z2-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z2-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z2-S",
+      "weight": 55
+    },
+    {
+      "itemId": "Z3-G",
+      "weight": 35
+    },
+    {
+      "itemId": "Z3-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z3-W",
+      "weight": 15
+    },
+    {
+      "itemId": "Z3-S",
+      "weight": 45
+    },
+    {
+      "itemId": "Z4-G",
+      "weight": 30
+    },
+    {
+      "itemId": "Z4-I",
+      "weight": 5
+    },
+    {
+      "itemId": "Z4-W",
+      "weight": 10
+    },
+    {
+      "itemId": "Z4-S",
+      "weight": 55
+    }
+  ]
+}

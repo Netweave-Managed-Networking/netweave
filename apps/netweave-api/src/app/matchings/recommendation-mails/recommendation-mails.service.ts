@@ -30,12 +30,13 @@ export class RecommendationMailsService {
     runId: number,
     recommendations: RecommendationsDTO,
   ): Promise<void> {
-    if (process.env.SEND_RECOMMENDATION_MAILS === 'false') {
+    const sendEnabled = process.env.SEND_RECOMMENDATION_MAILS !== 'false';
+    const sneakPeekAddress = process.env.RECOMMENDATION_SNEAK_PEEK_MAIL;
+
+    if (!sendEnabled)
       this.logger.log(
         `SEND_RECOMMENDATION_MAILS is false, not sending the recommendation mails of matching run ${runId}`,
       );
-      return;
-    }
 
     try {
       const members = await this.membersService.getAllWithAnswers();
@@ -47,26 +48,18 @@ export class RecommendationMailsService {
       // sequentially, so a big network does not flood the smtp server
       for (const memberRecommendations of recommendations.members) {
         const recipient = contacts.get(memberRecommendations.seekerId);
+        const mail =
+          recipient &&
+          buildRecommendationMail(memberRecommendations, recipient, contacts);
 
-        if (!recipient) {
-          continue;
-        }
+        if (!mail) continue;
 
-        const mail = buildRecommendationMail(
-          memberRecommendations,
-          recipient,
-          contacts,
-        );
+        if (sneakPeekAddress)
+          this.mailService.sendMail({ ...mail, to: sneakPeekAddress });
 
-        if (!mail) {
-          continue;
-        }
-
-        if (await this.mailService.sendMail(mail)) {
-          sent++;
-        } else {
-          failed++;
-        }
+        if (!sendEnabled) continue;
+        else if (await this.mailService.sendMail(mail)) sent++;
+        else failed++;
       }
 
       const skipped = recommendations.members.length - sent - failed;
