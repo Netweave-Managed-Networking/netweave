@@ -47,4 +47,19 @@ describe('SettingsComponent', () => {
       fixture.nativeElement.querySelector('app-manager-invitations'),
     ).toBeFalsy();
   });
+
+  it('switches to the llm settings tab when clicked', () => {
+    const fixture = create();
+
+    const tabs = fixture.nativeElement.querySelectorAll('.settings__tab');
+    (tabs[2] as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('app-llm-settings'),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector('app-mail-settings'),
+    ).toBeFalsy();
+  });
 });

@@ -1,0 +1,162 @@
+<div class="llm-settings w-full max-w-2xl flex flex-col gap-6">
+  <fieldset
+    class="llm-settings__form fieldset bg-base-100 border border-base-content/5 rounded-box p-4 flex flex-col gap-4"
+  >
+    <legend class="fieldset-legend">KI-Zugang</legend>
+
+    <label class="flex items-start gap-2 cursor-pointer">
+      <input
+        class="llm-settings__source-netweave radio mt-0.5"
+        type="radio"
+        name="llm-settings-source"
+        [checked]="source() === 'netweave'"
+        (change)="setSource('netweave')"
+      />
+      <span class="flex flex-col">
+        <span>Netweave-KI-Zugang verwenden</span>
+        <span class="text-base-content/60 text-sm"
+          >Von Netweave bereitgestellt und finanziert.</span
+        >
+      </span>
+    </label>
+
+    <label class="flex items-start gap-2 cursor-pointer">
+      <input
+        class="llm-settings__source-own radio mt-0.5"
+        type="radio"
+        name="llm-settings-source"
+        [checked]="source() === 'own'"
+        (change)="setSource('own')"
+      />
+      <span class="flex flex-col">
+        <span>Eigenen KI-API-Zugang verwenden</span>
+        <span class="text-base-content/60 text-sm"
+          >Anfragen und Kosten laufen über Ihren Zugang beim Anbieter.</span
+        >
+      </span>
+    </label>
+
+    @if (source() === 'own') {
+      <div class="flex flex-col gap-4 pt-2">
+        <div class="flex flex-col gap-1">
+          <label class="label" for="llm-settings-provider">Anbieter</label>
+          <select
+            id="llm-settings-provider"
+            class="select w-full"
+            [formField]="ownForm.provider"
+          >
+            @for (provider of providers; track provider) {
+              <!-- [selected] needed: options render after the select's value is set -->
+              <option
+                [value]="provider"
+                [selected]="provider === ownForm.provider().value()"
+              >
+                {{ providerLabels[provider] }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="label" for="llm-settings-model">Modell</label>
+          <input
+            id="llm-settings-model"
+            class="input w-full"
+            type="text"
+            placeholder="z. B. gpt-4.1-mini"
+            [formField]="ownForm.model"
+          />
+        </div>
+
+        @if (ownModel().provider === 'openai-compatible') {
+          <div class="flex flex-col gap-1">
+            <label class="label" for="llm-settings-base-url"
+              >Endpoint-URL</label
+            >
+            <input
+              id="llm-settings-base-url"
+              class="input w-full"
+              type="url"
+              placeholder="https://llm.example.com/v1"
+              [formField]="ownForm.baseUrl"
+            />
+          </div>
+        }
+
+        <div class="flex flex-col gap-1">
+          <label class="label" for="llm-settings-api-key">
+            API-Key
+            @if (hasStoredApiKey()) {
+              <span class="text-base-content/60"
+                >(aktuell gesetzt, leer lassen zum Beibehalten)</span
+              >
+            } @else if (ownModel().provider === 'openai-compatible') {
+              <span class="text-base-content/60">(optional)</span>
+            }
+          </label>
+          <input
+            id="llm-settings-api-key"
+            class="input w-full"
+            type="password"
+            autocomplete="new-password"
+            [formField]="ownForm.apiKey"
+          />
+        </div>
+      </div>
+    }
+
+    @if (removesOwnAccess()) {
+      <div role="alert" class="llm-settings__remove-hint alert alert-warning">
+        Beim Speichern wird der eigene KI-Zugang inklusive API-Key gelöscht.
+      </div>
+    }
+
+    <div class="flex items-center gap-2 pt-2">
+      <button
+        class="llm-settings__submit btn btn-accent"
+        [disabled]="!canSave()"
+        (click)="submit()"
+      >
+        Speichern
+      </button>
+
+      @if (source() === 'own') {
+        <button
+          class="llm-settings__test btn"
+          [disabled]="ownForm().invalid() || testState() === 'pending'"
+          (click)="test()"
+        >
+          Verbindung testen
+        </button>
+      }
+
+      @if (saveState() === 'success') {
+        <span class="text-success text-sm">Gespeichert.</span>
+      }
+      @if (saveState() === 'error') {
+        <span class="text-error text-sm">Speichern fehlgeschlagen.</span>
+      }
+    </div>
+
+    @if (source() === 'own') {
+      @if (testState() === 'pending') {
+        <span class="text-sm">Testaufruf läuft …</span>
+      }
+      @if (testState() === 'success') {
+        <span class="llm-settings__test-result text-success text-sm"
+          >Testaufruf erfolgreich.</span
+        >
+      }
+      @if (testState() === 'error') {
+        <span class="llm-settings__test-result text-error text-sm">
+          Testaufruf fehlgeschlagen. {{ testError() }}
+        </span>
+      }
+    }
+
+    <p class="text-base-content/60 text-sm">
+      Änderungen gelten ab dem nächsten Matching-Lauf. Bestehende Ergebnisse
+      werden nicht neu berechnet.
+    </p>
+  </fieldset>
+</div>
