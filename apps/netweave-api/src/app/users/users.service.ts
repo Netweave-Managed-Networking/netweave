@@ -20,6 +20,7 @@ export class UsersService {
 
   /**
    * @throws ForbiddenException when an admin tries to change their own role (prevents admin lockout)
+   * or the owner's role (the owner always stays admin)
    * @throws NotFoundException when no user with the given id exists
    */
   public async updateRole(
@@ -32,12 +33,15 @@ export class UsersService {
 
     const user = await this.repository.findOneBy({ id });
     if (!user) throw new NotFoundException(`User ${id} not found`);
+    if (user.isOwner)
+      throw new ForbiddenException('The role of the owner cannot be changed');
 
     return await this.repository.save({ ...user, role });
   }
 
   /**
    * @throws ForbiddenException when an admin tries to remove their own account (prevents admin lockout)
+   * or the owner's account (additionally prevented by a db trigger)
    * @throws NotFoundException when no user with the given id exists
    */
   public async remove(
@@ -49,6 +53,8 @@ export class UsersService {
 
     const user = await this.repository.findOneBy({ id });
     if (!user) throw new NotFoundException(`User ${id} not found`);
+    if (user.isOwner)
+      throw new ForbiddenException('The owner cannot be removed');
 
     await this.repository.remove(user);
     return true;

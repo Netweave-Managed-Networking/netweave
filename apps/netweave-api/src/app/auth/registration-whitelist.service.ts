@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { USER_ROLES, UserRole } from '@netweave/api-types';
 import { isEmailOrDomain } from '@netweave/utils';
 import { Raw, Repository } from 'typeorm';
+import { parseOwnerEmail } from './ownership.service';
 import { UserEmailWhitelist } from '../user-email-whitelists/user-email-whitelist.entity';
 
 export type RegistrationWhitelistEntry = Readonly<{
@@ -47,14 +48,16 @@ export function parseRegistrationWhitelist(
 
 /**
  * decides whether an email may register and which role it receives,
- * based on the whitelist in the database and the one in the env config
+ * based on the whitelist in the database and the one in the env config (incl. `OWNER_EMAIL`)
  */
 @Injectable()
 export class RegistrationWhitelistService {
   private readonly logger = new Logger(RegistrationWhitelistService.name);
 
-  private readonly configEntries: RegistrationWhitelistEntry[] =
-    parseRegistrationWhitelist(process.env.REGISTRATION_WHITELIST);
+  private readonly configEntries: RegistrationWhitelistEntry[] = [
+    ...parseRegistrationWhitelist(process.env.REGISTRATION_WHITELIST),
+    ...ownerEntry(parseOwnerEmail(process.env.OWNER_EMAIL)),
+  ];
 
   public constructor(
     @InjectRepository(UserEmailWhitelist)
@@ -106,6 +109,11 @@ export class RegistrationWhitelistService {
         UserRole | undefined
       >((best, role) => (isMorePrivileged(role, best) ? role : best), undefined);
   }
+}
+
+/** the configured owner may always register, as admin */
+function ownerEntry(ownerEmail: string | null): RegistrationWhitelistEntry[] {
+  return ownerEmail ? [{ emailOrDomain: ownerEmail, role: 'admin' }] : [];
 }
 
 function isMorePrivileged(

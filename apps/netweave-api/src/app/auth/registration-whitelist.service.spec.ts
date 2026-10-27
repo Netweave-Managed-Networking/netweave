@@ -64,9 +64,21 @@ describe('RegistrationWhitelistService', () => {
     repository = { find: jest.fn().mockResolvedValue([]) };
   });
 
+  afterEach(() => {
+    delete process.env.OWNER_EMAIL;
+  });
+
   afterAll(() => {
     if (originalEnv === undefined) delete process.env.REGISTRATION_WHITELIST;
     else process.env.REGISTRATION_WHITELIST = originalEnv;
+  });
+
+  it('lets the configured owner register as admin', async () => {
+    process.env.OWNER_EMAIL = 'Owner@Example.com';
+    const service = createService();
+    dbEntries({ emailOrDomain: 'owner@example.com', role: 'viewer' });
+
+    expect(await service.findRoleFor('owner@example.com')).toBe('admin');
   });
 
   it('returns null when nothing matches', async () => {
