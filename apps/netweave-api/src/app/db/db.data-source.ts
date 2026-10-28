@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Invitation } from '../invitations/invitation.entity';
+import { LlmConfig } from '../llm-config/llm-config.entity';
 import { MailConfig } from '../mail/mail-config.entity';
 import { MatchingRun } from '../matchings/matching-run.entity';
 import { Matching } from '../matchings/matching.entity';
@@ -28,6 +29,7 @@ export default new DataSource({
   // we need to specify entities here for typeorm CLI, otherwise (when using autoLoadEntities: true) it won't find them and won't generate migrations
   entities: [
     Invitation,
+    LlmConfig,
     MailConfig,
     Matching,
     MatchingRun,

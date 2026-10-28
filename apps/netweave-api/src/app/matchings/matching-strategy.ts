@@ -15,4 +15,8 @@ export interface MatchingStrategy {
   ): Promise<MatchingResult>;
 }
 
-export const MATCHING_STRATEGY = Symbol('MATCHING_STRATEGY');
+export interface MatchingStrategyResolver {
+  forRun(): Promise<MatchingStrategy>;
+}
+
+export const MATCHING_STRATEGY_RESOLVER = Symbol('MATCHING_STRATEGY_RESOLVER');

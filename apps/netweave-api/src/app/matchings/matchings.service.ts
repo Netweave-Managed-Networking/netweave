@@ -18,7 +18,10 @@ import {
 import { MembersService } from '../members/members.service';
 import { hasAnswers } from './matching-input';
 import { MatchingRun } from './matching-run.entity';
-import { MATCHING_STRATEGY, MatchingStrategy } from './matching-strategy';
+import {
+  MATCHING_STRATEGY_RESOLVER,
+  MatchingStrategyResolver,
+} from './matching-strategy';
 import { Matching } from './matching.entity';
 import { RANKING_STRATEGY, RankingStrategy } from './ranking/ranking-strategy';
 import { RecommendationMailsService } from './recommendation-mails/recommendation-mails.service';
@@ -53,8 +56,8 @@ export class MatchingsService {
     @InjectRepository(MatchingRun)
     private matchingRunsRepository: Repository<MatchingRun>,
     private membersService: MembersService,
-    @Inject(MATCHING_STRATEGY)
-    private matchingStrategy: MatchingStrategy,
+    @Inject(MATCHING_STRATEGY_RESOLVER)
+    private matchingStrategyResolver: MatchingStrategyResolver,
     @Inject(RANKING_STRATEGY)
     private rankingStrategy: RankingStrategy,
     private recommendationMailsService: RecommendationMailsService,
@@ -281,6 +284,7 @@ export class MatchingsService {
       HEARTBEAT_INTERVAL_MS,
     );
     try {
+      const matchingStrategy = await this.matchingStrategyResolver.forRun();
       const members = (await this.membersService.getAllForMatching()).filter(
         hasAnswers,
       );
@@ -296,11 +300,7 @@ export class MatchingsService {
             const potentialMatches = members.filter((m) => m.id !== seeker.id);
             const results = await Promise.all(
               potentialMatches.map((potentialMatch) =>
-                this.matchingStrategy.score(
-                  seeker,
-                  potentialMatch,
-                  abort.signal,
-                ),
+                matchingStrategy.score(seeker, potentialMatch, abort.signal),
               ),
             );
             const rows = potentialMatches.map((potentialMatch, i) => ({

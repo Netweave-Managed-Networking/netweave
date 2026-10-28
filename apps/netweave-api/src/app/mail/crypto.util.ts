@@ -11,14 +11,14 @@ const KEY_SALT = 'netweave-mail-config';
 /**
  * derives an encryption key from JWT_SECRET rather than requiring a dedicated
  * secret env var, mirroring this app's minimal-config style. as a side effect,
- * rotating JWT_SECRET makes previously stored mail passwords undecryptable,
+ * rotating JWT_SECRET makes previously stored mail passwords and llm api keys undecryptable,
  * same as it already invalidates existing sessions.
  */
 function deriveKey(): Buffer {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error(
-      'JWT_SECRET must be set to encrypt/decrypt mail config secrets',
+      'JWT_SECRET must be set to encrypt/decrypt stored config secrets (mail, llm)',
     );
   }
 
