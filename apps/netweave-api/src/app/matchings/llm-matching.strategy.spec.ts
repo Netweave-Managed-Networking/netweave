@@ -111,10 +111,10 @@ describe('LlmMatchingStrategy', () => {
 
     const prompt = JSON.stringify(model.doGenerateCalls[0].prompt);
     expect(prompt).toContain(
-      'Bedarf, den Netzwerteilnehmer A hat:\\nBohrmaschine',
+      'Bedarf, den Netzwerteilnehmer A hat:\\n  Bohrmaschine',
     );
     expect(prompt).toContain(
-      'Ressource, über die Netzwerteilnehmer B verfügt:\\nAkkuschrauber',
+      'Ressource, über die Netzwerteilnehmer B verfügt:\\n  Akkuschrauber',
     );
     expect(prompt).not.toContain('Laptop');
     expect(prompt).not.toContain('Beamer');
