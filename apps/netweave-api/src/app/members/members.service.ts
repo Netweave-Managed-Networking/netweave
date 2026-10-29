@@ -193,7 +193,7 @@ export class MembersService {
             ...existing,
             name: dto.name,
             contact: dto.contact || null,
-            // unanswered keeps the stored answer, like the other questions
+            // null keeps the stored answer
             viewOfNature: dto.viewOfNature ?? existing?.viewOfNature ?? null,
             // the invitation's email until the member confirms another one
             email: existing?.email ?? invitation.email,

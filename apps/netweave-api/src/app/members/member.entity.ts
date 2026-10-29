@@ -54,7 +54,7 @@ export class Member extends BaseEntity implements MemberDTO {
   })
   declare public emailChangeExpiresAt: Date | null;
 
-  /** Naturanschauung; one answer only, so kept on the member itself. null while unanswered */
+  /** Naturanschauung, null while unanswered */
   @Column({ name: 'view_of_nature', type: 'varchar', nullable: true })
   declare public viewOfNature: ViewOfNature | null;
 
