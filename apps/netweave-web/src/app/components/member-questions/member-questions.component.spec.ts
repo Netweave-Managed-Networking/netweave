@@ -9,6 +9,8 @@ import {
   InvitationTokenDTO,
   MemberUpsertDTO,
   RESOURCE_REQUIREMENT_CATEGORIES,
+  VIEW_OF_NATURE_IMAGES,
+  VIEW_OF_NATURE_OPTIONS,
 } from '@netweave/api-types';
 import { MemberQuestionsComponent } from './member-questions.component';
 
@@ -690,8 +692,15 @@ describe('MemberQuestionsComponent', () => {
 
     const options = fieldset.querySelectorAll('.member-view-of-nature__option');
     expect(options.length).toBe(4);
-    options.forEach((option) =>
-      expect(option.querySelector('svg')).toBeTruthy(),
+    expect(
+      Array.from(options, (option) =>
+        option.querySelector('img')?.getAttribute('src'),
+      ),
+    ).toEqual(
+      VIEW_OF_NATURE_OPTIONS.map(
+        (option) =>
+          `data:image/svg+xml,${encodeURIComponent(VIEW_OF_NATURE_IMAGES[option])}`,
+      ),
     );
     expect(fieldset.textContent).toContain(
       'Die Natur ist äußerst robust. Auch nach großen Störungen stellt sich das Gleichgewicht wieder ein.',
