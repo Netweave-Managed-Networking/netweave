@@ -9,6 +9,8 @@ import {
   InvitationTokenDTO,
   MemberUpsertDTO,
   RESOURCE_REQUIREMENT_CATEGORIES,
+  VIEW_OF_NATURE_IMAGES,
+  VIEW_OF_NATURE_OPTIONS,
 } from '@netweave/api-types';
 import { MemberQuestionsComponent } from './member-questions.component';
 
@@ -155,6 +157,7 @@ describe('MemberQuestionsComponent', () => {
         resourcesRequirements: [],
         cultureWeights: [],
         viewOfEnvironmentAnswers: [],
+        viewOfNature: null,
       },
     });
 
@@ -188,6 +191,7 @@ describe('MemberQuestionsComponent', () => {
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
       viewOfEnvironmentAnswers: [],
+      viewOfNature: null,
     });
     req.flush(savedResponse(req.request.body));
 
@@ -218,6 +222,7 @@ describe('MemberQuestionsComponent', () => {
       resourcesRequirements: emptyResourcesRequirements,
       cultureWeights: [],
       viewOfEnvironmentAnswers: [],
+      viewOfNature: null,
     });
     req.flush(savedResponse(req.request.body));
   });
@@ -303,6 +308,7 @@ describe('MemberQuestionsComponent', () => {
           resourcesRequirements: [],
           cultureWeights: [],
           viewOfEnvironmentAnswers: [],
+          viewOfNature: null,
         },
       });
 
@@ -451,6 +457,7 @@ describe('MemberQuestionsComponent', () => {
         ],
         cultureWeights: [],
         viewOfEnvironmentAnswers: [],
+        viewOfNature: null,
       },
     });
 
@@ -539,6 +546,7 @@ describe('MemberQuestionsComponent', () => {
         resourcesRequirements: [],
         cultureWeights: [...savedZ3],
         viewOfEnvironmentAnswers: [],
+        viewOfNature: null,
       },
     });
 
@@ -621,6 +629,7 @@ describe('MemberQuestionsComponent', () => {
           { itemId: 'UA2', answer: 0 },
           { itemId: 'UA10', answer: 4 },
         ],
+        viewOfNature: null,
       },
     });
 
@@ -649,6 +658,113 @@ describe('MemberQuestionsComponent', () => {
       { itemId: 'UA2', answer: 1 },
       { itemId: 'UA10', answer: 4 },
     ]);
+    req.flush(savedResponse(req.request.body));
+  });
+
+  const viewOfNatureRadios = () =>
+    Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
+        'fieldset.member-worldview__view-of-nature input[type="radio"]',
+      ),
+    );
+
+  it('shows the Naturanschauung question with four depictions, none selected, within the "Ökologische Weltanschauung" section', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
+
+    const fieldset = query<HTMLFieldSetElement>(
+      'section.member-worldview fieldset.member-worldview__view-of-nature',
+    );
+    expect(fieldset.querySelector('legend')?.textContent?.trim()).toBe(
+      'Naturanschauung',
+    );
+    expect(
+      fieldset
+        .querySelector('.member-view-of-nature__question')
+        ?.textContent?.replace(/\s+/g, ' ')
+        .trim(),
+    ).toBe(
+      'Entscheide, welche Naturdarstellung am ehesten deinem Blick auf die Natur entspricht.',
+    );
+
+    const options = fieldset.querySelectorAll('.member-view-of-nature__option');
+    expect(options.length).toBe(4);
+    expect(
+      Array.from(options, (option) =>
+        option.querySelector('img')?.getAttribute('src'),
+      ),
+    ).toEqual(
+      VIEW_OF_NATURE_OPTIONS.map(
+        (option) =>
+          `data:image/svg+xml,${encodeURIComponent(VIEW_OF_NATURE_IMAGES[option])}`,
+      ),
+    );
+    expect(fieldset.textContent).toContain(
+      'Die Natur ist äußerst robust. Auch nach großen Störungen stellt sich das Gleichgewicht wieder ein.',
+    );
+    expect(viewOfNatureRadios().some((radio) => radio.checked)).toBe(false);
+  });
+
+  it('sends no view of nature while unanswered', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: null,
+    });
+
+    typeInto('input#name', 'Acme e.V.');
+    fixture.detectChanges();
+
+    query<HTMLButtonElement>('button.member-questions__submit').click();
+
+    const req = httpTesting.expectOne('/api/members/by-token/some-token');
+    expect(req.request.body.viewOfNature).toBeNull();
+    req.flush(savedResponse(req.request.body));
+  });
+
+  it('loads the saved view of nature and saves a changed one, with exactly one selected', async () => {
+    await loadInvitation({
+      email: 'nt@example.com',
+      pendingEmail: null,
+      member: {
+        name: 'Acme e.V.',
+        contact: null,
+        email: 'nt@example.com',
+        resourcesRequirements: [],
+        cultureWeights: [],
+        viewOfEnvironmentAnswers: [],
+        viewOfNature: 'fragile',
+      },
+    });
+
+    const radios = viewOfNatureRadios();
+    expect(radios.map((radio) => radio.checked)).toEqual([
+      false,
+      true,
+      false,
+      false,
+    ]);
+
+    radios[3].click();
+    fixture.detectChanges();
+
+    expect(radios.map((radio) => radio.checked)).toEqual([
+      false,
+      false,
+      false,
+      true,
+    ]);
+    expect(
+      query('.member-view-of-nature__option--selected')?.textContent,
+    ).toContain('Innerhalb bestimmter Grenzen ist die Natur robust.');
+
+    query<HTMLButtonElement>('button.member-questions__submit').click();
+
+    const req = httpTesting.expectOne('/api/members/by-token/some-token');
+    expect(req.request.body.viewOfNature).toBe('reasonably_robust');
     req.flush(savedResponse(req.request.body));
   });
 });

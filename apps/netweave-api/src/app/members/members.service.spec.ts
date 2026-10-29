@@ -41,6 +41,7 @@ const dto: MemberUpsertDTO = {
   resourcesRequirements: [],
   cultureWeights: [],
   viewOfEnvironmentAnswers: [],
+  viewOfNature: null,
 };
 
 describe('MembersService', () => {
@@ -86,6 +87,7 @@ describe('MembersService', () => {
       expect(manager.save).toHaveBeenCalledWith(Member, {
         name: 'Acme e.V.',
         contact: 'Erika Musterfrau',
+        viewOfNature: null,
         email: 'nt@example.com',
         invitation: { id: 123 },
       });
@@ -108,8 +110,34 @@ describe('MembersService', () => {
         contact: 'Erika Musterfrau',
         email: 'nt@example.com',
         pendingEmail: null,
+        viewOfNature: null,
         invitation: { id: 123 },
       });
+    });
+
+    it('stores the view of nature as given', async () => {
+      manager.findOne?.mockResolvedValue({ id: 7, viewOfNature: 'robust' });
+
+      await service.saveForInvitation(invitation, {
+        ...dto,
+        viewOfNature: 'unpredictable',
+      });
+
+      expect(manager.save).toHaveBeenCalledWith(
+        Member,
+        expect.objectContaining({ viewOfNature: 'unpredictable' }),
+      );
+    });
+
+    it('keeps the stored view of nature when none is given', async () => {
+      manager.findOne?.mockResolvedValue({ id: 7, viewOfNature: 'robust' });
+
+      await service.saveForInvitation(invitation, dto);
+
+      expect(manager.save).toHaveBeenCalledWith(
+        Member,
+        expect.objectContaining({ viewOfNature: 'robust' }),
+      );
     });
 
     it('stores an empty contact as null', async () => {

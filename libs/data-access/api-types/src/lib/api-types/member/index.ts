@@ -10,3 +10,5 @@ export * from './member.upsert.dto.class';
 export * from './resource-requirement-categories';
 export * from './resource-requirement-category.type';
 export * from './view-of-environment.type';
+export * from './view-of-nature-images';
+export * from './view-of-nature.type';

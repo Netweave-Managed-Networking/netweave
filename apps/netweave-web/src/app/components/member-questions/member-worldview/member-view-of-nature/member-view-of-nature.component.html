@@ -1,0 +1,42 @@
+<p [id]="questionId" class="member-view-of-nature__question leading-snug pb-3">
+  Entscheide, welche Naturdarstellung am ehesten deinem Blick auf die Natur
+  entspricht.
+</p>
+
+<div
+  class="member-view-of-nature grid grid-cols-1 gap-3 sm:grid-cols-2"
+  role="radiogroup"
+  [attr.aria-labelledby]="questionId"
+>
+  @for (item of options; track item.option) {
+    @let selected = value() === item.option;
+
+    <label
+      class="member-view-of-nature__option flex cursor-pointer flex-col gap-4 rounded-box border p-4 transition-colors duration-150 hover:border-base-content/30 sm:p-5"
+      [class]="
+        selected
+          ? 'member-view-of-nature__option--selected border-neutral bg-base-100 ring-1 ring-neutral'
+          : 'border-base-content/10 bg-base-200/50'
+      "
+    >
+      <span
+        class="flex h-28 items-center justify-center rounded-field bg-base-100 p-3"
+      >
+        <img [src]="item.image" alt="" class="max-h-full max-w-full" />
+      </span>
+
+      <span class="flex items-start gap-3">
+        <input
+          type="radio"
+          class="radio radio-sm radio-neutral mt-0.5"
+          [name]="radioName"
+          [checked]="selected"
+          (change)="value.set(item.option)"
+        />
+        <span class="leading-snug" [class.font-medium]="selected">
+          {{ item.text }}
+        </span>
+      </span>
+    </label>
+  }
+</div>

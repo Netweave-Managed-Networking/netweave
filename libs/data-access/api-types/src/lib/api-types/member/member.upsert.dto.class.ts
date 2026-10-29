@@ -3,6 +3,7 @@ import {
   ArrayUnique,
   IsArray,
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,6 +14,7 @@ import { CULTURE_ORIENTATIONS, CULTURE_TOPICS } from './culture.type';
 import { MemberCultureWeightUpsertDTO } from './member-culture-weight.upsert.dto.class';
 import { MemberResourceRequirementUpsertDTO } from './member-resource-requirement.upsert.dto.class';
 import { MemberViewOfEnvironmentAnswerUpsertDTO } from './member-view-of-environment-answer.upsert.dto.class';
+import { VIEW_OF_NATURE_OPTIONS, ViewOfNature } from './view-of-nature.type';
 
 // weights are normalized by their topic's total, so a topic needs all of them and must not total 0
 const hasCompleteOrientationsPerTopic = (items: unknown): boolean =>
@@ -68,4 +70,9 @@ export class MemberUpsertDTO {
   @ValidateNested({ each: true })
   @Type(() => MemberViewOfEnvironmentAnswerUpsertDTO)
   declare public viewOfEnvironmentAnswers: MemberViewOfEnvironmentAnswerUpsertDTO[];
+
+  /** null while unanswered, which keeps the stored answer */
+  @IsOptional()
+  @IsIn(VIEW_OF_NATURE_OPTIONS)
+  declare public viewOfNature: ViewOfNature | null;
 }

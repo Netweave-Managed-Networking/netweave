@@ -3,8 +3,8 @@
 >
   <h2 class="text-lg font-semibold">Ökologische Weltanschauung</h2>
   <p class="text-sm text-base-content/60 mt-1">
-    Gib bei jeder Aussage an, wie sehr sie aus Sicht deiner Organisation
-    zutrifft. Es gibt keine richtigen oder falschen Antworten.
+    Wie blickt deine Organisation auf Umwelt und Natur? Es gibt keine richtigen
+    oder falschen Antworten.
   </p>
 
   <div class="divider my-4"></div>
@@ -31,6 +31,11 @@
       </span>
     </div>
 
+    <p class="text-sm text-base-content/60 pb-3">
+      Gib bei jeder Aussage an, wie sehr sie aus Sicht deiner Organisation
+      zutrifft.
+    </p>
+
     <div class="flex flex-col gap-3">
       @for (question of viewOfEnvironmentQuestions; track question.itemId) {
         <app-likert-question
@@ -40,5 +45,13 @@
         />
       }
     </div>
+  </fieldset>
+
+  <div class="divider my-4"></div>
+
+  <fieldset class="member-worldview__view-of-nature fieldset p-0">
+    <legend class="fieldset-legend text-base pt-0 pb-3">Naturanschauung</legend>
+
+    <app-member-view-of-nature [formField]="viewOfNature()" />
   </fieldset>
 </section>
