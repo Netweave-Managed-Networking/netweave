@@ -1,4 +1,4 @@
-/** the Naturanschauung of the ecological worldview: which depiction of nature a member identifies with */
+/** Naturanschauung: which depiction of nature a member identifies with */
 export const VIEW_OF_NATURE_OPTIONS = [
   'robust',
   'fragile',
