@@ -11,6 +11,7 @@ import {
   toCultureItemId,
   VIEW_OF_ENVIRONMENT_ITEM_IDS,
   ViewOfEnvironmentItemId,
+  ViewOfNature,
 } from '@netweave/api-types';
 import { PriorityWeights } from '../priority-ranker/priority-ranker.layout';
 
@@ -35,6 +36,8 @@ export interface MemberFormModel {
   resourcesRequirements: ResourcesRequirementsModel;
   cultureWeights: CultureWeightsModel;
   viewOfEnvironmentAnswers: ViewOfEnvironmentAnswersModel;
+  /** null while unanswered */
+  viewOfNature: ViewOfNature | null;
 }
 
 // form fields need strings, while the API uses null for empty values
@@ -92,6 +95,7 @@ export const toMemberFormModel = (
     resourcesRequirements,
     cultureWeights,
     viewOfEnvironmentAnswers,
+    viewOfNature: member?.viewOfNature ?? null,
   };
 };
 
@@ -102,6 +106,7 @@ export const toMemberUpsertDTO = ({
   resourcesRequirements,
   cultureWeights,
   viewOfEnvironmentAnswers,
+  viewOfNature,
 }: MemberFormModel): MemberUpsertDTO => ({
   name,
   contact: contact || null,
@@ -126,4 +131,5 @@ export const toMemberUpsertDTO = ({
     const answer = viewOfEnvironmentAnswers[itemId];
     return answer === null ? [] : [{ itemId, answer }];
   }),
+  viewOfNature,
 });
