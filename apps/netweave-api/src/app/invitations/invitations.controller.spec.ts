@@ -121,6 +121,7 @@ describe('InvitationsController', () => {
           viewOfEnvironmentAnswers: [
             { id: 1, memberId: 7, itemId: 'UA3', answer: 0 },
           ],
+          viewOfNature: 'reasonably_robust',
         },
       });
 
@@ -142,6 +143,7 @@ describe('InvitationsController', () => {
           ],
           cultureWeights: [{ itemId: 'Z2-S', weight: 70 }],
           viewOfEnvironmentAnswers: [{ itemId: 'UA3', answer: 0 }],
+          viewOfNature: 'reasonably_robust',
         },
       });
     });

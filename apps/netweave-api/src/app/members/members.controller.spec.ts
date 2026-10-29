@@ -20,6 +20,7 @@ const dto: MemberUpsertDTO = {
     { itemId: 'Z1-S', weight: 20 },
   ],
   viewOfEnvironmentAnswers: [{ itemId: 'UA1', answer: 4 }],
+  viewOfNature: 'fragile',
 };
 
 describe('MemberController', () => {

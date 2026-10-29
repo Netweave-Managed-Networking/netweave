@@ -17,6 +17,7 @@ const validateDTO = async (overrides: Record<string, unknown>) => {
     resourcesRequirements: [],
     cultureWeights: [],
     viewOfEnvironmentAnswers: [],
+    viewOfNature: null,
     ...overrides,
   });
   const errors = await validate(dto);
@@ -136,5 +137,29 @@ describe('MemberUpsertDTO view of environment answers validation', () => {
     expect(await validateAnswers(undefined)).toEqual([
       'viewOfEnvironmentAnswers',
     ]);
+  });
+});
+
+describe('MemberUpsertDTO view of nature validation', () => {
+  it.each(['robust', 'fragile', 'unpredictable', 'reasonably_robust'])(
+    'accepts %s',
+    async (viewOfNature) => {
+      expect(await validateDTO({ viewOfNature })).toEqual([]);
+    },
+  );
+
+  it.each([null, undefined])(
+    'accepts %s as unanswered',
+    async (viewOfNature) => {
+      expect(await validateDTO({ viewOfNature })).toEqual([]);
+    },
+  );
+
+  it.each([
+    ['an unknown option', 'chaotic'],
+    ['an empty string', ''],
+    ['a number', 1],
+  ])('rejects %s', async (_, viewOfNature) => {
+    expect(await validateDTO({ viewOfNature })).toEqual(['viewOfNature']);
   });
 });

@@ -1,5 +1,12 @@
-import { MemberDTO } from '@netweave/api-types';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { MemberDTO, ViewOfNature } from '@netweave/api-types';
+import {
+  Check,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from '../db/entity/base/base.entity';
 import { Invitation } from '../invitations/invitation.entity';
 import { MemberCultureWeight } from './member-culture-weight.entity';
@@ -7,6 +14,10 @@ import { MemberResourceRequirement } from './member-resource-requirement.entity'
 import { MemberViewOfEnvironmentAnswer } from './member-view-of-environment-answer.entity';
 
 @Entity({ name: 'members' })
+@Check(
+  'CHK_members_view_of_nature',
+  `"view_of_nature" IN ('robust', 'fragile', 'unpredictable', 'reasonably_robust')`,
+)
 export class Member extends BaseEntity implements MemberDTO {
   @Column()
   declare public name: string;
@@ -42,6 +53,10 @@ export class Member extends BaseEntity implements MemberDTO {
     select: false,
   })
   declare public emailChangeExpiresAt: Date | null;
+
+  /** Naturanschauung; one answer only, so kept on the member itself. null while unanswered */
+  @Column({ name: 'view_of_nature', type: 'varchar', nullable: true })
+  declare public viewOfNature: ViewOfNature | null;
 
   @OneToOne(() => Invitation, (invitation) => invitation.member, {
     nullable: true,
