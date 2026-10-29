@@ -24,7 +24,7 @@ const WIPED_TABLES = [
  * Wipes all member data and refills it from one JSON file per member.
  * Usage: seed <directory with *.json files>
  *
- * - Refuses to run unless SEED_ALLOWED=true (set only locally and on instances meant for test data).
+ * - Refuses to run unless DB_SEED_ALLOWED=true (set only locally and on instances meant for test data).
  * - Wiped: see list of wiped tables above
  * - Kept: users, registration whitelist, mail settings.
  * - Everything runs in one transaction: if anything fails, the database stays as it was.
@@ -39,9 +39,9 @@ async function main(): Promise<void> {
   const members = loadSeedMembers(dir);
   console.log(`✅ ${members.length} member file(s) in ${dir} are valid`);
 
-  if (process.env['SEED_ALLOWED'] !== 'true') {
+  if (process.env['DB_SEED_ALLOWED'] !== 'true') {
     throw new Error(
-      '❌ Refusing to seed: SEED_ALLOWED is not "true" in this environment',
+      '❌ Refusing to seed: DB_SEED_ALLOWED is not "true" in this environment',
     );
   }
 

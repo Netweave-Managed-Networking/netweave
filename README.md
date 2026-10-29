@@ -156,7 +156,7 @@ Wipes all members, invitations, matchings and update reminders and refills them 
 npm run db:seed
 ```
 
-Requires `SEED_ALLOWED=true` in `.env` and at least one registered admin, who becomes the inviter of all seeded members.
+Requires `DB_SEED_ALLOWED=true` in `.env` and at least one registered admin, who becomes the inviter of all seeded members.
 
 <br /><br />
 
