@@ -507,6 +507,26 @@ describe('MembersService', () => {
     });
   });
 
+  describe('getAllForMatching', () => {
+    it('loads all answers the matching and ranking need, including the view of environment ones', async () => {
+      const membersRepository = { find: jest.fn().mockResolvedValue([]) };
+      service = new MembersService(
+        membersRepository as unknown as Repository<Member>,
+        mailService as unknown as MailService,
+      );
+
+      await service.getAllForMatching();
+
+      expect(membersRepository.find).toHaveBeenCalledWith({
+        relations: {
+          resourcesRequirements: true,
+          cultureWeights: true,
+          viewOfEnvironmentAnswers: true,
+        },
+      });
+    });
+  });
+
   describe('getChangedSince', () => {
     const select = { id: true, name: true };
     const order = { name: 'ASC' };

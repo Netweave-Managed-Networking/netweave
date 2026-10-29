@@ -6,11 +6,12 @@ import {
   RankingScore,
   RankingCandidate,
 } from './category-matching';
-import { CultureProfile, toCultureProfile } from './culture-profile';
+import { CultureProfile } from './culture-profile';
 import { CultureWeighting } from './culture-weighting';
+import { toMemberProfiles } from './member-profile';
 
 export interface RankingInput {
-  members: Pick<Member, 'id' | 'cultureWeights'>[];
+  members: Pick<Member, 'id' | 'cultureWeights' | 'viewOfEnvironmentAnswers'>[];
   matchings: Pick<
     Matching,
     'memberSeekerId' | 'memberPotentialMatchId' | 'details'
@@ -33,12 +34,7 @@ export class ComposedRankingStrategy implements RankingStrategy {
   ) {}
 
   public rank({ members, matchings }: RankingInput): RecommendationsDTO {
-    const profiles = new Map(
-      members.map(({ id, cultureWeights }) => [
-        id,
-        toCultureProfile(cultureWeights ?? []),
-      ]),
-    );
+    const profiles = toMemberProfiles(members);
 
     const candidatesBySeeker = new Map<number, RankingCandidate[]>();
 
@@ -51,8 +47,8 @@ export class ComposedRankingStrategy implements RankingStrategy {
         memberId: potentialMatchId,
         categories: matching.details?.categories ?? [],
         cultureScore: this.cultureScore(
-          profiles.get(seekerId),
-          profiles.get(potentialMatchId),
+          profiles.get(seekerId)?.culture,
+          profiles.get(potentialMatchId)?.culture,
         ),
       });
       candidatesBySeeker.set(seekerId, candidates);
