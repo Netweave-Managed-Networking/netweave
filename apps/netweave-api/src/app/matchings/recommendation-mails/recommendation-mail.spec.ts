@@ -10,6 +10,8 @@ const match = (memberId: number) => ({
   rankingScore: 80,
   matchingScore: 80,
   cultureScore: null,
+  viewOfEnvironmentScore: null,
+  viewOfNatureScore: null,
 });
 
 const recipient: RecommendationContact = {

@@ -29,12 +29,20 @@ const overall = (seekerId: number, ...matchIds: number[]) => ({
     rankingScore: 80,
     matchingScore: 80,
     cultureScore: null,
+    viewOfEnvironmentScore: null,
+    viewOfNatureScore: null,
   })),
 });
 
 const recommendations: RecommendationsDTO = {
   strategy: 'max-category',
-  weights: { matching: 80, culture: 20, nep: 0 },
+  weights: {
+    matching: 80,
+    culture: 10,
+    viewOfEnvironment: 5,
+    viewOfNature: 5,
+    nep: 0,
+  },
   members: [overall(1, 2, 3), overall(2, 1), overall(3, 1), overall(4)],
 };
 

@@ -16,15 +16,21 @@ interface CategoryMatch {
   score: number;
 }
 
+/** how well both members fit beyond their resources, null where one of both has not answered */
+export type ProfileScores = Pick<
+  RankedMatchDTO,
+  'cultureScore' | 'viewOfEnvironmentScore' | 'viewOfNatureScore'
+>;
+
 export interface RankingCandidate {
   memberId: number;
   categories: CategoryScore[];
-  cultureScore: number | null;
+  scores: ProfileScores;
 }
 
 export type RankingScore = (
   matchingScore: number,
-  cultureScore: number | null,
+  scores: ProfileScores,
 ) => number;
 
 export interface CategoryMatching {
@@ -87,7 +93,7 @@ export class MaxCategoryMatching implements CategoryMatching {
   }
 }
 
-// culture alone is no reason to connect, so only categories with an actual matching result count
+// culture or world view alone is no reason to connect, so only categories with an actual matching result count
 const matchedCategories = ({ categories }: RankingCandidate): CategoryMatch[] =>
   categories.filter(
     (category): category is CategoryMatch =>
@@ -101,14 +107,14 @@ const bestCategory = (candidate: RankingCandidate): CategoryMatch | null => {
 };
 
 const toRankedMatch = (
-  { memberId, cultureScore }: RankingCandidate,
+  { memberId, scores }: RankingCandidate,
   matchingScore: number,
   rankingScore: RankingScore,
 ): RankedMatchDTO => ({
   memberId,
-  rankingScore: rankingScore(matchingScore, cultureScore),
+  rankingScore: rankingScore(matchingScore, scores),
   matchingScore,
-  cultureScore,
+  ...scores,
 });
 
 const topMatches = <T extends RankedMatchDTO>(matches: T[]): T[] =>
