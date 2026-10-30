@@ -3,6 +3,8 @@ import { ResourceRequirementCategory } from '../member/resource-requirement-cate
 export interface RankingWeightsDTO {
   matching: number;
   culture: number;
+  viewOfEnvironment: number;
+  viewOfNature: number;
   nep: number;
 }
 
@@ -12,6 +14,8 @@ export interface RankedMatchDTO {
   rankingScore: number;
   matchingScore: number;
   cultureScore: number | null; // null if one of both has no culture answers
+  viewOfEnvironmentScore: number | null; // null if one of both has not answered all view of environment questions
+  viewOfNatureScore: number | null; // null if one of both has not chosen a view of nature
 }
 
 export interface CategoryRankedMatchDTO extends RankedMatchDTO {
