@@ -6,9 +6,18 @@ import {
   ResourceRequirementCategory,
   ResourceRequirementCategoryText,
 } from '@netweave/api-types';
-import { generateText, LanguageModel } from 'ai';
+import {
+  generateText,
+  LanguageModel,
+  NoObjectGeneratedError,
+  Output,
+} from 'ai';
 import { Member } from '../members/member.entity';
-import { coveragePrompt, parseCoverageScore } from './llm/coverage-prompt';
+import {
+  coveragePrompt,
+  coverageScoreSchema,
+  parseCoverageScore,
+} from './llm/coverage-prompt';
 import { LlmCallQueue, LlmCallQueueOptions } from './llm/llm-call-queue';
 import { LlmConfig, LlmReasoning } from './llm/llm-config';
 import { MatchingResult, MatchingStrategy } from './matching-strategy';
@@ -80,12 +89,12 @@ export class LlmMatchingStrategy implements MatchingStrategy {
         if (score === null) {
           this.logger.warn(
             `Member ${potentialMatch.id} for member ${seeker.id}, ${category}: unusable llm answer ` +
-              `"${answer.slice(0, 100)}", stored as not assessable`,
+              `"${answer.slice(0, 100)}", netweave interpreted this as: not assessable`,
           );
         } else {
           this.logger.debug(
             `Member ${potentialMatch.id} for member ${seeker.id}, ${category}: llm answered ` +
-              `${JSON.stringify(answer)}, score ${score}`,
+              `${JSON.stringify(answer)}, netweave interpreted this as score: ${score}`,
           );
         }
         return { category, score };
@@ -110,16 +119,25 @@ export class LlmMatchingStrategy implements MatchingStrategy {
     signal: AbortSignal | undefined,
   ): Promise<string> {
     return this.queue.run(async () => {
-      const { text } = await generateText({
-        model: this.model,
-        prompt: coveragePrompt(category, requirement, resource),
-        temperature: 0,
-        maxRetries: 0, // the queue retries, so retries keep to the rate limit too
-        timeout: this.timeoutMs,
-        reasoning: this.reasoning,
-        abortSignal: signal,
-      });
-      return text;
+      try {
+        const { text } = await generateText({
+          model: this.model,
+          prompt: coveragePrompt(category, requirement, resource),
+          temperature: 0,
+          maxOutputTokens: 30,
+          output: Output.object({ schema: coverageScoreSchema }),
+          maxRetries: 0, // the queue retries, so retries keep to the rate limit too
+          timeout: this.timeoutMs,
+          reasoning: this.reasoning,
+          abortSignal: signal,
+        });
+        return text;
+      } catch (error) {
+        if (NoObjectGeneratedError.isInstance(error)) {
+          return error.text ?? '';
+        }
+        throw error;
+      }
     }, signal);
   }
 }

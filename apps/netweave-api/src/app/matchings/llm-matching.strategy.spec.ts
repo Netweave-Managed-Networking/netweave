@@ -29,20 +29,26 @@ const member = (id: number, entries: Entry[]): Member =>
 /** a model answering with whatever `answer` returns for the prompt it got */
 const mockModel = (answer: (prompt: string) => string | Promise<string>) =>
   new MockLanguageModelV4({
-    doGenerate: async ({ prompt }) => ({
-      content: [{ type: 'text', text: await answer(JSON.stringify(prompt)) }],
-      finishReason: { unified: 'stop', raw: 'stop' },
-      usage: {
-        inputTokens: {
-          total: 1,
-          noCache: 1,
-          cacheRead: undefined,
-          cacheWrite: undefined,
+    doGenerate: async ({ prompt }) => {
+      const response = await answer(JSON.stringify(prompt));
+      const structuredResponse = /^\d+$/.test(response)
+        ? JSON.stringify({ score: Number(response) })
+        : response;
+      return {
+        content: [{ type: 'text', text: structuredResponse }],
+        finishReason: { unified: 'stop', raw: 'stop' },
+        usage: {
+          inputTokens: {
+            total: 1,
+            noCache: 1,
+            cacheRead: undefined,
+            cacheWrite: undefined,
+          },
+          outputTokens: { total: 1, text: 1, reasoning: undefined },
         },
-        outputTokens: { total: 1, text: 1, reasoning: undefined },
-      },
-      warnings: [],
-    }),
+        warnings: [],
+      };
+    },
   });
 
 const apiError = (statusCode: number) =>
@@ -79,6 +85,7 @@ describe('LlmMatchingStrategy', () => {
     const result = await strategy.score(seeker, potentialMatch);
 
     expect(model.doGenerateCalls).toHaveLength(2);
+    expect(model.doGenerateCalls[0].maxOutputTokens).toBe(30);
     expect(result.details?.categories).toEqual(
       expect.arrayContaining([
         { category: 'premises', score: 80 },
@@ -210,7 +217,7 @@ describe('LlmMatchingStrategy', () => {
   it('logs the raw llm answer of every assessed category as debug', async () => {
     const debug = jest.spyOn(Logger.prototype, 'debug').mockImplementation();
     const strategy = new LlmMatchingStrategy(
-      mockModel(() => ' 85\n'),
+      mockModel(() => '{"score":85}'),
       options,
     );
 
@@ -220,7 +227,7 @@ describe('LlmMatchingStrategy', () => {
     );
 
     expect(debug).toHaveBeenCalledWith(
-      'Member 2 for member 1, premises: llm answered " 85\\n", score 85',
+      'Member 2 for member 1, premises: llm answered "{\\"score\\":85}", netweave interpreted this as score: 85',
     );
     debug.mockRestore();
   });

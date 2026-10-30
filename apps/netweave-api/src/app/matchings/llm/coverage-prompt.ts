@@ -1,4 +1,9 @@
 import { ResourceRequirementCategoryText } from '@netweave/api-types';
+import { z } from 'zod';
+
+export const coverageScoreSchema = z.object({
+  score: z.number().int().min(0).max(100),
+});
 
 /** prompt as specified in NETW-35 */
 export const coveragePrompt = (
@@ -45,9 +50,14 @@ Ressource, über die Netzwerteilnehmer B verfügt:
 
 `;
 
-/** null if the answer is not a single integer between 0 and 100 */
+/** null if the answer does not match the structured coverage score format */
 export const parseCoverageScore = (answer: string): number | null => {
-  const numbers = answer.match(/-?\d+(?:[.,]\d+)?/g) ?? [];
-  const score = numbers.length === 1 ? Number(numbers[0]) : NaN;
-  return Number.isInteger(score) && score >= 0 && score <= 100 ? score : null;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(answer);
+  } catch {
+    return null;
+  }
+  const result = coverageScoreSchema.safeParse(parsed);
+  return result.success ? result.data.score : null;
 };
