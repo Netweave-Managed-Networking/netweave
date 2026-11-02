@@ -75,11 +75,19 @@ const match = (memberId: number) => ({
   rankingScore: 80,
   matchingScore: 80,
   cultureScore: null,
+  viewOfEnvironmentScore: null,
+  viewOfNatureScore: null,
 });
 
 const recommendations: RecommendationsDTO = {
   strategy: 'mixed, to see both layouts',
-  weights: { matching: 80, culture: 20, nep: 0 },
+  weights: {
+    matching: 80,
+    culture: 10,
+    viewOfEnvironment: 5,
+    viewOfNature: 5,
+    nep: 0,
+  },
   members: [
     // category-separation layout
     {

@@ -18,12 +18,18 @@ const viewOfEnvironmentAnswers = VIEW_OF_ENVIRONMENT_ITEM_IDS.map((itemId) => ({
 describe('toMemberProfiles', () => {
   it('calculates the culture profile and the view of environment score of each member', () => {
     const profiles = toMemberProfiles([
-      { id: 1, cultureWeights, viewOfEnvironmentAnswers },
+      {
+        id: 1,
+        cultureWeights,
+        viewOfEnvironmentAnswers,
+        viewOfNature: 'fragile',
+      },
     ]);
 
     expect(profiles.get(1)).toEqual({
       culture: { G: 50, I: 50, W: 0, S: 0 },
       viewOfEnvironmentScore: 2,
+      viewOfNature: 'fragile',
     });
   });
 
@@ -33,20 +39,26 @@ describe('toMemberProfiles', () => {
     ) as MemberViewOfEnvironmentAnswer[];
 
     expect(
-      toMemberProfiles([{ id: 1, viewOfEnvironmentAnswers: changed }]).get(1)
-        ?.viewOfEnvironmentScore,
+      toMemberProfiles([
+        { id: 1, viewOfEnvironmentAnswers: changed, viewOfNature: null },
+      ]).get(1)?.viewOfEnvironmentScore,
     ).toBe(2.1);
   });
 
   it('has null values for members whose answers were not loaded or are incomplete', () => {
     const profiles = toMemberProfiles([
-      { id: 1 },
-      { id: 2, viewOfEnvironmentAnswers: viewOfEnvironmentAnswers.slice(1) },
+      { id: 1, viewOfNature: null },
+      {
+        id: 2,
+        viewOfEnvironmentAnswers: viewOfEnvironmentAnswers.slice(1),
+        viewOfNature: null,
+      },
     ]);
 
     expect(profiles.get(1)).toEqual({
       culture: null,
       viewOfEnvironmentScore: null,
+      viewOfNature: null,
     });
     expect(profiles.get(2)?.viewOfEnvironmentScore).toBeNull();
   });

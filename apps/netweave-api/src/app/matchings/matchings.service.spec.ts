@@ -50,7 +50,13 @@ const answered = (id: number, requirements = 'a need'): Member =>
 
 const recommendations: RecommendationsDTO = {
   strategy: 'test-ranking',
-  weights: { matching: 80, culture: 20, nep: 0 },
+  weights: {
+    matching: 80,
+    culture: 10,
+    viewOfEnvironment: 5,
+    viewOfNature: 5,
+    nep: 0,
+  },
   members: [],
 };
 

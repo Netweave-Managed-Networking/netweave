@@ -3,15 +3,22 @@ import { Member } from '../../members/member.entity';
 import { Matching } from '../matching.entity';
 import {
   CategoryMatching,
+  ProfileScores,
   RankingScore,
   RankingCandidate,
 } from './category-matching';
-import { CultureProfile } from './culture-profile';
 import { CultureWeighting } from './culture-weighting';
-import { toMemberProfiles } from './member-profile';
+import { MemberProfile, toMemberProfiles } from './member-profile';
+import {
+  viewOfEnvironmentSimilarity,
+  viewOfNatureSimilarity,
+} from './world-view-similarity';
 
 export interface RankingInput {
-  members: Pick<Member, 'id' | 'cultureWeights' | 'viewOfEnvironmentAnswers'>[];
+  members: Pick<
+    Member,
+    'id' | 'cultureWeights' | 'viewOfEnvironmentAnswers' | 'viewOfNature'
+  >[];
   matchings: Pick<
     Matching,
     'memberSeekerId' | 'memberPotentialMatchId' | 'details'
@@ -46,9 +53,9 @@ export class ComposedRankingStrategy implements RankingStrategy {
       candidates.push({
         memberId: potentialMatchId,
         categories: matching.details?.categories ?? [],
-        cultureScore: this.cultureScore(
-          profiles.get(seekerId)?.culture,
-          profiles.get(potentialMatchId)?.culture,
+        scores: this.profileScores(
+          profiles.get(seekerId),
+          profiles.get(potentialMatchId),
         ),
       });
       candidatesBySeeker.set(seekerId, candidates);
@@ -69,24 +76,40 @@ export class ComposedRankingStrategy implements RankingStrategy {
     };
   }
 
-  private cultureScore(
-    seeker: CultureProfile | null | undefined,
-    potentialMatch: CultureProfile | null | undefined,
-  ): number | null {
-    if (!seeker || !potentialMatch) return null;
-
-    return this.cultureWeighting.score(seeker, potentialMatch);
+  private profileScores(
+    seeker: MemberProfile | undefined,
+    potentialMatch: MemberProfile | undefined,
+  ): ProfileScores {
+    return {
+      cultureScore: scoreOfBoth(
+        seeker?.culture,
+        potentialMatch?.culture,
+        (a, b) => this.cultureWeighting.score(a, b),
+      ),
+      viewOfEnvironmentScore: scoreOfBoth(
+        seeker?.viewOfEnvironmentScore,
+        potentialMatch?.viewOfEnvironmentScore,
+        viewOfEnvironmentSimilarity,
+      ),
+      viewOfNatureScore: scoreOfBoth(
+        seeker?.viewOfNature,
+        potentialMatch?.viewOfNature,
+        viewOfNatureSimilarity,
+      ),
+    };
   }
 
-  // weighted average; a segment without a value (no culture answers, nep not implemented yet) is left out
-  // entirely, so it does not drag the score down as a 0 would
+  // weighted average; a segment without a value (no culture or world view answers, nep not implemented yet) is
+  // left out entirely, so it does not drag the score down as a 0 would
   private readonly rankingScore: RankingScore = (
     matchingScore,
-    cultureScore,
+    { cultureScore, viewOfEnvironmentScore, viewOfNatureScore },
   ) => {
     const segments = [
       { weight: this.weights.matching, score: matchingScore },
       { weight: this.weights.culture, score: cultureScore },
+      { weight: this.weights.viewOfEnvironment, score: viewOfEnvironmentScore },
+      { weight: this.weights.viewOfNature, score: viewOfNatureScore },
       { weight: this.weights.nep, score: null },
     ].filter(
       (segment): segment is { weight: number; score: number } =>
@@ -103,6 +126,16 @@ export class ComposedRankingStrategy implements RankingStrategy {
     return weightedScore / totalWeight;
   };
 }
+
+// compared with null, as a view of environment score of 0 is a valid answer
+const scoreOfBoth = <T>(
+  seeker: T | null | undefined,
+  potentialMatch: T | null | undefined,
+  score: (seeker: T, potentialMatch: T) => number,
+): number | null =>
+  seeker == null || potentialMatch == null
+    ? null
+    : score(seeker, potentialMatch);
 
 const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);

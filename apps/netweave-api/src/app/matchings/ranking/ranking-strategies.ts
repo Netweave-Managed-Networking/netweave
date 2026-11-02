@@ -9,7 +9,10 @@ import { ComposedRankingStrategy, RankingStrategy } from './ranking-strategy';
 
 const DEFAULT_WEIGHTS: RankingWeightsDTO = {
   matching: 80,
-  culture: 20,
+  culture: 10,
+  // the ecological world view, split equally between its two components
+  viewOfEnvironment: 5,
+  viewOfNature: 5,
   nep: 0,
 };
 
