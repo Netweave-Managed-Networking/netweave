@@ -1,5 +1,6 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 import { MemberRecommendationsDTO } from '@netweave/api-types';
+import { ECOLOGICAL_WORLD_VIEW_HINTS } from './ecological-world-view-hints';
 import {
   buildRecommendationMail,
   RecommendationContact,
@@ -20,6 +21,8 @@ const recipient: RecommendationContact = {
   email: 'seeker@example.com',
   resources: {},
   culture: null,
+  viewOfEnvironmentScore: null,
+  viewOfNature: null,
 };
 
 const contacts = new Map<number, RecommendationContact>([
@@ -31,6 +34,8 @@ const contacts = new Map<number, RecommendationContact>([
       email: 'tafel@example.com',
       resources: { premises: 'Saal für 80 Personen', equipment: 'Kühlwagen' },
       culture: 'W',
+      viewOfEnvironmentScore: 3,
+      viewOfNature: 'fragile',
     },
   ],
   [
@@ -41,6 +46,8 @@ const contacts = new Map<number, RecommendationContact>([
       email: 'werkstatt@example.com',
       resources: { premises: 'Halle', helping_hands: 'Azubis\nab Mai' },
       culture: null,
+      viewOfEnvironmentScore: null,
+      viewOfNature: null,
     },
   ],
   [
@@ -51,6 +58,8 @@ const contacts = new Map<number, RecommendationContact>([
       email: 'haus@example.com',
       resources: {},
       culture: 'G',
+      viewOfEnvironmentScore: 2.2,
+      viewOfNature: 'robust',
     },
   ],
 ]);
@@ -189,6 +198,8 @@ describe('buildRecommendationMail', () => {
           email: 'a@b.c',
           resources: { land: '<img src=x>' },
           culture: 'G',
+          viewOfEnvironmentScore: null,
+          viewOfNature: null,
         },
       ],
     ]);
@@ -274,6 +285,88 @@ describe('buildRecommendationMail', () => {
 
     it('has no hints when no match has culture answers', () => {
       expect(hintSection(clan, overall(3))).toBeNull();
+    });
+  });
+
+  describe('hints on the ecological world view', () => {
+    const seeker: RecommendationContact = {
+      ...recipient,
+      viewOfEnvironmentScore: 2,
+      viewOfNature: 'fragile',
+    };
+
+    const overall = (...memberIds: number[]): MemberRecommendationsDTO => ({
+      kind: 'overall',
+      seekerId: 1,
+      matches: memberIds.map((memberId) => ({
+        ...match(memberId),
+        category: 'land',
+      })),
+    });
+
+    /** everything from the hint heading to the end of the mail, null without hints */
+    const hintSection = (
+      recipient: RecommendationContact,
+      recommendations: MemberRecommendationsDTO,
+    ): string | null => {
+      const html =
+        buildRecommendationMail(recommendations, recipient, contacts)?.html ??
+        '';
+      const start = html.indexOf(
+        '<h3>Hinweise zur ökologischen Weltanschauung',
+      );
+
+      return start === -1 ? null : html.slice(start);
+    };
+
+    it('lists one combined hint per match at the end of the mail', () => {
+      // Tafel: 3 - 2 = +1, same view of nature; Nachbarschaftshaus: 2.2 - 2 + 0.5 = +0.7
+      expect(hintSection(seeker, overall(2, 4))).toBe(
+        '<h3>Hinweise zur ökologischen Weltanschauung</h3><ul>' +
+          `<li><strong>Tafel</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['match-slightly-more']}</li>` +
+          `<li><strong>Nachbarschaftshaus</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['match-slightly-more']}</li>` +
+          '</ul>',
+      );
+    });
+
+    it('picks the text by the direction from recipient to match', () => {
+      expect(
+        hintSection({ ...seeker, viewOfEnvironmentScore: 4 }, overall(2)),
+      ).toContain(ECOLOGICAL_WORLD_VIEW_HINTS['recipient-slightly-more']);
+      expect(
+        hintSection({ ...seeker, viewOfEnvironmentScore: 1 }, overall(2)),
+      ).toContain(ECOLOGICAL_WORLD_VIEW_HINTS['match-clearly-more']);
+    });
+
+    it('does not reveal the view of environment or nature on its own', () => {
+      const text = (hintSection(seeker, overall(2, 4)) ?? '').replace(
+        /<[^>]+>/g,
+        '',
+      );
+
+      expect(text).not.toContain('fragile');
+      expect(text).not.toContain('robust');
+      expect(text).not.toMatch(/\d/);
+    });
+
+    it('leaves out matches without world view answers or without email', () => {
+      expect(hintSection(seeker, overall(3, 2, 99))).toBe(
+        '<h3>Hinweise zur ökologischen Weltanschauung</h3><ul>' +
+          `<li><strong>Tafel</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['match-slightly-more']}</li>` +
+          '</ul>',
+      );
+    });
+
+    it('has no hints when the recipient has not answered the view of environment', () => {
+      expect(
+        hintSection({ ...seeker, viewOfEnvironmentScore: null }, overall(2)),
+      ).toBeNull();
+    });
+
+    it('has no hints when the recipient has not chosen a view of nature', () => {
+      expect(
+        hintSection({ ...seeker, viewOfNature: null }, overall(2)),
+      ).toBeNull();
     });
   });
 });

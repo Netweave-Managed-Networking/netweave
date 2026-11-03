@@ -9,6 +9,7 @@ import {
   dominantOrientation,
   toCultureProfile,
 } from '../ranking/culture-profile';
+import { toViewOfEnvironmentScore } from '../ranking/view-of-environment-score';
 import {
   buildRecommendationMail,
   RecommendationContact,
@@ -91,6 +92,10 @@ const toContacts = (members: Member[]): Map<number, RecommendationContact> => {
       email: member.email,
       resources: toResources(member.resourcesRequirements ?? []),
       culture: toCulture(member.cultureWeights ?? []),
+      viewOfEnvironmentScore: toViewOfEnvironmentScore(
+        member.viewOfEnvironmentAnswers ?? [],
+      ),
+      viewOfNature: member.viewOfNature,
     });
   }
 

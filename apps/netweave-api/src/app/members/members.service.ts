@@ -109,7 +109,11 @@ export class MembersService {
   /** everything the recommendation mails need */
   public async getAllWithAnswers(): Promise<Member[]> {
     return this.membersRepository.find({
-      relations: { resourcesRequirements: true, cultureWeights: true },
+      relations: {
+        resourcesRequirements: true,
+        cultureWeights: true,
+        viewOfEnvironmentAnswers: true,
+      },
     });
   }
 

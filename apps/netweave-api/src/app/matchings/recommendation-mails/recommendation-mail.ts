@@ -8,8 +8,12 @@ import {
 import { SendMailInput } from '../../mail/mail.service';
 import { escapeHtml } from '../../utils/escape-html';
 import { CULTURE_HINTS } from './culture-hints';
+import {
+  EcologicalWorldView,
+  ecologicalWorldViewHint,
+} from './ecological-world-view-hints';
 
-export interface RecommendationContact {
+export interface RecommendationContact extends EcologicalWorldView {
   name: string;
   contact: string | null;
   email: string;
@@ -50,7 +54,21 @@ export const buildRecommendationMail = (
       `<p>Hallo ${greeting},</p>` +
       '<p>auf Basis der aktuellen Matching-Berechnung empfehlen wir dir, mit folgenden Netzwerkteilnehmern Kontakt aufzunehmen:</p>' +
       body +
-      cultureHints(recommendations, recipient, contacts),
+      hints(
+        'Hinweise zur kulturellen Stimmigkeit',
+        recommendations,
+        contacts,
+        (match) =>
+          recipient.culture && match.culture
+            ? CULTURE_HINTS[recipient.culture][match.culture]
+            : null,
+      ) +
+      hints(
+        'Hinweise zur ökologischen Weltanschauung',
+        recommendations,
+        contacts,
+        (match) => ecologicalWorldViewHint(recipient, match),
+      ),
   };
 };
 
@@ -113,25 +131,22 @@ const listItem = (
   ];
 };
 
-const cultureHints = (
+/** one hint per recommended member, matches without a hint (null) are left out, as is the section without any */
+const hints = (
+  heading: string,
   recommendations: MemberRecommendationsDTO,
-  recipient: RecommendationContact,
   contacts: ReadonlyMap<number, RecommendationContact>,
+  hintOf: (match: RecommendationContact) => string | null,
 ): string => {
-  if (!recipient.culture) {
-    return '';
-  }
-
   const items: string[] = [];
 
   for (const memberId of recommendedMemberIds(recommendations)) {
     const match = contacts.get(memberId);
+    const hint = match && hintOf(match);
 
-    if (!match?.culture) {
+    if (!match || !hint) {
       continue;
     }
-
-    const hint = CULTURE_HINTS[recipient.culture][match.culture];
 
     items.push(
       `<li><strong>${escapeHtml(match.name)}</strong>: ${escapeHtml(hint)}</li>`,
@@ -142,10 +157,7 @@ const cultureHints = (
     return '';
   }
 
-  return renderSection({
-    heading: 'Hinweise zur kulturellen Stimmigkeit',
-    items,
-  });
+  return renderSection({ heading, items });
 };
 
 /** in the order of the mail, every member only once */

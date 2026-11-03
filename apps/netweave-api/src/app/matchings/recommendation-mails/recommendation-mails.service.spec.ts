@@ -1,10 +1,16 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 
 import { Logger } from '@nestjs/common';
-import { RecommendationsDTO } from '@netweave/api-types';
+import {
+  LikertAnswer,
+  RecommendationsDTO,
+  VIEW_OF_ENVIRONMENT_ITEM_IDS,
+  VIEW_OF_ENVIRONMENT_REVERSED_ITEM_IDS,
+} from '@netweave/api-types';
 import { MailService } from '../../mail/mail.service';
 import { Member } from '../../members/member.entity';
 import { MembersService } from '../../members/members.service';
+import { ECOLOGICAL_WORLD_VIEW_HINTS } from './ecological-world-view-hints';
 import { RecommendationMailsService } from './recommendation-mails.service';
 
 const member = (id: number, email: string | null): Member =>
@@ -211,5 +217,39 @@ describe('RecommendationMailsService', () => {
     const [toOne, toTwo] = mailService.sendMail.mock.calls.map(([m]) => m.html);
     expect(toOne).toContain('<strong>Member 2</strong>: Clan -&gt; Hierarchie');
     expect(toTwo).toContain('<strong>Member 1</strong>: Hierarchie -&gt; Clan');
+  });
+
+  it('gives the hints on the ecological world view by the answers of recipient and match', async () => {
+    // all ten questions answered, so the view of environment score is `score`
+    const viewOfEnvironmentAnswers = (score: LikertAnswer) =>
+      VIEW_OF_ENVIRONMENT_ITEM_IDS.map((itemId) => ({
+        itemId,
+        answer: (VIEW_OF_ENVIRONMENT_REVERSED_ITEM_IDS.has(itemId)
+          ? 4 - score
+          : score) as LikertAnswer,
+      }));
+
+    membersService.getAllWithAnswers.mockResolvedValue([
+      {
+        ...member(1, 'one@example.com'),
+        viewOfEnvironmentAnswers: viewOfEnvironmentAnswers(1),
+        viewOfNature: 'fragile',
+      } as Member,
+      {
+        ...member(2, 'two@example.com'),
+        viewOfEnvironmentAnswers: viewOfEnvironmentAnswers(3),
+        viewOfNature: 'fragile',
+      } as Member,
+    ]);
+
+    await service.sendForRun(42, recommendations);
+
+    const [toOne, toTwo] = mailService.sendMail.mock.calls.map(([m]) => m.html);
+    expect(toOne).toContain(
+      `<strong>Member 2</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['match-clearly-more']}`,
+    );
+    expect(toTwo).toContain(
+      `<strong>Member 1</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['recipient-clearly-more']}`,
+    );
   });
 });
