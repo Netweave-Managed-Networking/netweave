@@ -1,6 +1,6 @@
 {
   "cSpell.language": "en,de",
-  "cSpell.words": ["adhocracy", "netweave", "selectables"],
+  "cSpell.words": ["adhocracy", "likert", "netweave", "selectables"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "css.lint.unknownAtRules": "ignore", // allow tailwind syntax "@plugin" as css rule for daisyui
   "editor.defaultFormatter": "esbenp.prettier-vscode",
