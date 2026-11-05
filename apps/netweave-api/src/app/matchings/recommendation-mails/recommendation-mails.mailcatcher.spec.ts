@@ -10,6 +10,7 @@ import { MailConfig } from '../../mail/mail-config.entity';
 import { MailService } from '../../mail/mail.service';
 import { Member } from '../../members/member.entity';
 import { MembersService } from '../../members/members.service';
+import { CULTURE_HINTS } from './culture-hints';
 import { RecommendationMailsService } from './recommendation-mails.service';
 
 /**
@@ -197,7 +198,7 @@ const caughtMail = async (to: string): Promise<MailpitMessage> => {
       expect(mail.HTML).not.toContain('Schreinermeister');
       // only for the match with culture answers, and only once
       expect(mail.HTML).toContain('Hinweise zur kulturellen Stimmigkeit');
-      expect(mail.HTML.match(/Clan -&gt; Hierarchie/g)).toHaveLength(1);
+      expect(mail.HTML.split(CULTURE_HINTS.G.S)).toHaveLength(2);
     });
 
     it('delivers the overall mail with the resources of the best category', async () => {
