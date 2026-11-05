@@ -1,5 +1,6 @@
 import 'reflect-metadata'; // the api-types contain decorated dto classes; nest loads it outside of tests
 import { MemberRecommendationsDTO } from '@netweave/api-types';
+import { CULTURE_HINTS } from './culture-hints';
 import { ECOLOGICAL_WORLD_VIEW_HINTS } from './ecological-world-view-hints';
 import {
   buildRecommendationMail,
@@ -243,15 +244,15 @@ describe('buildRecommendationMail', () => {
     it('lists the hint for each match at the end of the mail', () => {
       expect(hintSection(clan, overall(2, 4))).toBe(
         '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
-          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
-          '<li><strong>Nachbarschaftshaus</strong>: Clan -&gt; Clan</li>' +
+          `<li><strong>Tafel</strong>: ${CULTURE_HINTS.G.W}</li>` +
+          `<li><strong>Nachbarschaftshaus</strong>: ${CULTURE_HINTS.G.G}</li>` +
           '</ul>',
       );
     });
 
     it('picks the text by the direction from recipient to match', () => {
-      expect(hintSection(clan, overall(2))).toContain('Clan -&gt; Markt');
-      expect(hintSection(market, overall(4))).toContain('Markt -&gt; Clan');
+      expect(hintSection(clan, overall(2))).toContain(CULTURE_HINTS.G.W);
+      expect(hintSection(market, overall(4))).toContain(CULTURE_HINTS.W.G);
     });
 
     it('lists a match recommended in several categories only once', () => {
@@ -266,7 +267,7 @@ describe('buildRecommendationMail', () => {
 
       expect(hintSection(clan, recommendations)).toBe(
         '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
-          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          `<li><strong>Tafel</strong>: ${CULTURE_HINTS.G.W}</li>` +
           '</ul>',
       );
     });
@@ -274,7 +275,7 @@ describe('buildRecommendationMail', () => {
     it('leaves out matches without culture answers or without email', () => {
       expect(hintSection(clan, overall(3, 2, 99))).toBe(
         '<h3>Hinweise zur kulturellen Stimmigkeit</h3><ul>' +
-          '<li><strong>Tafel</strong>: Clan -&gt; Markt</li>' +
+          `<li><strong>Tafel</strong>: ${CULTURE_HINTS.G.W}</li>` +
           '</ul>',
       );
     });

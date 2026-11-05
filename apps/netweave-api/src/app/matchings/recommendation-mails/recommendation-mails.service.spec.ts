@@ -10,6 +10,7 @@ import {
 import { MailService } from '../../mail/mail.service';
 import { Member } from '../../members/member.entity';
 import { MembersService } from '../../members/members.service';
+import { CULTURE_HINTS } from './culture-hints';
 import { ECOLOGICAL_WORLD_VIEW_HINTS } from './ecological-world-view-hints';
 import { RecommendationMailsService } from './recommendation-mails.service';
 
@@ -215,8 +216,8 @@ describe('RecommendationMailsService', () => {
     await service.sendForRun(42, recommendations);
 
     const [toOne, toTwo] = mailService.sendMail.mock.calls.map(([m]) => m.html);
-    expect(toOne).toContain('<strong>Member 2</strong>: Clan -&gt; Hierarchie');
-    expect(toTwo).toContain('<strong>Member 1</strong>: Hierarchie -&gt; Clan');
+    expect(toOne).toContain(`<strong>Member 2</strong>: ${CULTURE_HINTS.G.S}`);
+    expect(toTwo).toContain(`<strong>Member 1</strong>: ${CULTURE_HINTS.S.G}`);
   });
 
   it('gives the hints on the ecological world view by the answers of recipient and match', async () => {

@@ -15,22 +15,22 @@ export type EcologicalWorldViewCase =
 
 /**
  * from the perspective of the seeker A, the recommended member is B. differences are no reason
- * against a cooperation, so none of the texts is phrased negatively. placeholders until the final texts are delivered
+ * against a cooperation, so none of the texts is phrased negatively
  */
 export const ECOLOGICAL_WORLD_VIEW_HINTS: Record<
   EcologicalWorldViewCase,
   string
 > = {
   similar:
-    'Eure ökologische Weltanschauung ist ähnlich – eine gute Grundlage für ein gemeinsames Verständnis.',
+    'Ihre Organisationen haben ähnliche grundlegende Sichtweisen auf Natur- und Umweltthemen. Das kann die Zusammenarbeit erleichtern, weil entsprechende Einschätzungen voraussichtlich gut miteinander vereinbar sind.',
   'match-slightly-more':
-    'Die Organisation ist tendenziell etwas stärker ökologisch ausgerichtet als ihr – vielleicht findet ihr hier neue Impulse.',
+    'Die empfohlene Organisation gewichtet Natur- und Umweltschutz tendenziell stärker als Ihre Organisation. Das muss einer Zusammenarbeit nicht im Weg stehen, kann aber dazu führen, dass Umweltfolgen oder Schutzinteressen unterschiedlich bewertet werden. Ein früher Austausch über gemeinsame Ziele und Prioritäten kann hier hilfreich sein.',
   'match-clearly-more':
-    'Die Organisation ist deutlich stärker ökologisch ausgerichtet als ihr – ein Austausch darüber kann für beide Seiten bereichernd sein.',
+    'Die empfohlene Organisation gewichtet Natur- und Umweltschutz deutlich stärker als Ihre Organisation. Dadurch können bei Entscheidungen unterschiedliche Einschätzungen dazu entstehen, wie stark ökologische Belange berücksichtigt werden sollten. Es kann hilfreich sein, Erwartungen und gemeinsame Ziele früh offen abzustimmen.',
   'seeker-slightly-more':
-    'Ihr seid tendenziell etwas stärker ökologisch ausgerichtet als die Organisation – vielleicht könnt ihr hier eigene Impulse einbringen.',
+    'Ihre Organisation gewichtet Natur- und Umweltschutz tendenziell stärker als die empfohlene Organisation. Das muss einer Zusammenarbeit nicht im Weg stehen, kann aber dazu führen, dass Umweltfolgen oder Schutzinteressen unterschiedlich bewertet werden. Ein früher Austausch über gemeinsame Ziele und Prioritäten kann hier hilfreich sein.',
   'seeker-clearly-more':
-    'Ihr seid deutlich stärker ökologisch ausgerichtet als die Organisation – sprecht eure Erwartungen daran am besten frühzeitig an.',
+    'Ihre Organisation gewichtet Natur- und Umweltschutz deutlich stärker als die empfohlene Organisation. Dadurch können bei Entscheidungen unterschiedliche Einschätzungen dazu entstehen, wie stark ökologische Belange berücksichtigt werden sollten. Es kann hilfreich sein, Erwartungen und gemeinsame Ziele früh offen abzustimmen.',
 };
 
 /** added to the view of environment difference when both have chosen a different view of nature */
