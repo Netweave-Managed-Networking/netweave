@@ -13,7 +13,7 @@ const view = (
 ): EcologicalWorldView => ({ viewOfEnvironmentScore, viewOfNature });
 
 describe('ecologicalWorldViewDifference', () => {
-  it('is the view of environment score of the match minus the one of the recipient', () => {
+  it('is the view of environment score of the match minus the one of the seeker', () => {
     expect(ecologicalWorldViewDifference(view(2), view(3))).toBe(1);
     expect(ecologicalWorldViewDifference(view(3), view(2))).toBe(-1);
   });
@@ -54,21 +54,21 @@ describe('ecologicalWorldViewCase', () => {
     [0.75, 'match-slightly-more'],
     [1, 'match-slightly-more'],
     [1.25, 'match-clearly-more'],
-    [-0.75, 'recipient-slightly-more'],
-    [-1, 'recipient-slightly-more'],
-    [-1.25, 'recipient-clearly-more'],
+    [-0.75, 'seeker-slightly-more'],
+    [-1, 'seeker-slightly-more'],
+    [-1.25, 'seeker-clearly-more'],
   ])('maps %d to %s', (difference, expected) => {
     expect(ecologicalWorldViewCase(difference)).toBe(expected);
   });
 });
 
 describe('ecologicalWorldViewHint', () => {
-  it('picks the text by the direction from recipient to match', () => {
+  it('picks the text by the direction from seeker to match', () => {
     expect(ecologicalWorldViewHint(view(1), view(3))).toBe(
       ECOLOGICAL_WORLD_VIEW_HINTS['match-clearly-more'],
     );
     expect(ecologicalWorldViewHint(view(3), view(1))).toBe(
-      ECOLOGICAL_WORLD_VIEW_HINTS['recipient-clearly-more'],
+      ECOLOGICAL_WORLD_VIEW_HINTS['seeker-clearly-more'],
     );
   });
 

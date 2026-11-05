@@ -249,7 +249,7 @@ describe('RecommendationMailsService', () => {
       `<strong>Member 2</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['match-clearly-more']}`,
     );
     expect(toTwo).toContain(
-      `<strong>Member 1</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['recipient-clearly-more']}`,
+      `<strong>Member 1</strong>: ${ECOLOGICAL_WORLD_VIEW_HINTS['seeker-clearly-more']}`,
     );
   });
 });

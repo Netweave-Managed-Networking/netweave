@@ -332,7 +332,7 @@ describe('buildRecommendationMail', () => {
     it('picks the text by the direction from recipient to match', () => {
       expect(
         hintSection({ ...seeker, viewOfEnvironmentScore: 4 }, overall(2)),
-      ).toContain(ECOLOGICAL_WORLD_VIEW_HINTS['recipient-slightly-more']);
+      ).toContain(ECOLOGICAL_WORLD_VIEW_HINTS['seeker-slightly-more']);
       expect(
         hintSection({ ...seeker, viewOfEnvironmentScore: 1 }, overall(2)),
       ).toContain(ECOLOGICAL_WORLD_VIEW_HINTS['match-clearly-more']);

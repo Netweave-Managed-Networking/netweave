@@ -10,11 +10,11 @@ export type EcologicalWorldViewCase =
   | 'similar'
   | 'match-slightly-more'
   | 'match-clearly-more'
-  | 'recipient-slightly-more'
-  | 'recipient-clearly-more';
+  | 'seeker-slightly-more'
+  | 'seeker-clearly-more';
 
 /**
- * from the perspective of the recipient A, the recommended member is B. differences are no reason
+ * from the perspective of the seeker A, the recommended member is B. differences are no reason
  * against a cooperation, so none of the texts is phrased negatively. placeholders until the final texts are delivered
  */
 export const ECOLOGICAL_WORLD_VIEW_HINTS: Record<
@@ -27,9 +27,9 @@ export const ECOLOGICAL_WORLD_VIEW_HINTS: Record<
     'Die Organisation ist tendenziell etwas stärker ökologisch ausgerichtet als ihr – vielleicht findet ihr hier neue Impulse.',
   'match-clearly-more':
     'Die Organisation ist deutlich stärker ökologisch ausgerichtet als ihr – ein Austausch darüber kann für beide Seiten bereichernd sein.',
-  'recipient-slightly-more':
+  'seeker-slightly-more':
     'Ihr seid tendenziell etwas stärker ökologisch ausgerichtet als die Organisation – vielleicht könnt ihr hier eigene Impulse einbringen.',
-  'recipient-clearly-more':
+  'seeker-clearly-more':
     'Ihr seid deutlich stärker ökologisch ausgerichtet als die Organisation – sprecht eure Erwartungen daran am besten frühzeitig an.',
 };
 
@@ -37,27 +37,27 @@ export const ECOLOGICAL_WORLD_VIEW_HINTS: Record<
 const VIEW_OF_NATURE_DIFFERENCE = 0.5;
 
 /**
- * how much more ecologically minded the recommended member is than the recipient, positive when it is more.
+ * how much more ecologically minded the recommended member is than the seeker, positive when it is more.
  * the view of nature has no direction, so a difference in it only widens the difference in the view of environment.
  * null if one of both has not answered
  */
 export const ecologicalWorldViewDifference = (
-  recipient: EcologicalWorldView,
+  seeker: EcologicalWorldView,
   match: EcologicalWorldView,
 ): number | null => {
   if (
-    recipient.viewOfEnvironmentScore == null ||
+    seeker.viewOfEnvironmentScore == null ||
     match.viewOfEnvironmentScore == null ||
-    recipient.viewOfNature == null ||
+    seeker.viewOfNature == null ||
     match.viewOfNature == null
   ) {
     return null;
   }
 
   const environment =
-    match.viewOfEnvironmentScore - recipient.viewOfEnvironmentScore;
+    match.viewOfEnvironmentScore - seeker.viewOfEnvironmentScore;
   const nature =
-    recipient.viewOfNature === match.viewOfNature
+    seeker.viewOfNature === match.viewOfNature
       ? 0
       : VIEW_OF_NATURE_DIFFERENCE;
 
@@ -70,18 +70,18 @@ export const ecologicalWorldViewCase = (
 ): EcologicalWorldViewCase => {
   if (difference > 1) return 'match-clearly-more';
   if (difference > 0.5) return 'match-slightly-more';
-  if (difference < -1) return 'recipient-clearly-more';
-  if (difference < -0.5) return 'recipient-slightly-more';
+  if (difference < -1) return 'seeker-clearly-more';
+  if (difference < -0.5) return 'seeker-slightly-more';
 
   return 'similar';
 };
 
 /** null if one of both has not answered */
 export const ecologicalWorldViewHint = (
-  recipient: EcologicalWorldView,
+  seeker: EcologicalWorldView,
   match: EcologicalWorldView,
 ): string | null => {
-  const difference = ecologicalWorldViewDifference(recipient, match);
+  const difference = ecologicalWorldViewDifference(seeker, match);
 
   return difference == null
     ? null
