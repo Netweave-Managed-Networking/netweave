@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { UserEmailWhitelistDTO } from '@netweave/api-types';
 
 import { IconTrash } from '@netweave/icons';
@@ -10,7 +10,6 @@ import { LoadingState } from '../../types/loading-state.type';
   selector: 'app-manager-invitation-delete',
   imports: [IconTrash],
   templateUrl: './manager-invitation-delete.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./manager-invitation-delete.component.scss'],
 })
 export class ManagerInvitationDeleteComponent {

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required, validate } from '@angular/forms/signals';
 import { InvitationCreateDTO, InvitationDTO } from '@netweave/api-types';
 import { isEmail } from 'class-validator';
@@ -16,7 +16,6 @@ interface Feedback {
 @Component({
   selector: 'app-invite-participant',
   imports: [FormField, IconMail],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invite-participant.component.html',
 })
 export class InviteParticipantComponent {

@@ -6,7 +6,6 @@ import {
   inject,
   resource,
   signal,
-  ChangeDetectionStrategy
 } from '@angular/core';
 import { MemberListItemDTO, PaginatedDTO } from '@netweave/api-types';
 import { IconSearch } from '@netweave/icons';
@@ -20,7 +19,6 @@ const SEARCH_DEBOUNCE_MS = 300; // waits for a pause in typing, so not every key
 @Component({
   selector: 'app-members',
   imports: [IconSearch, MemberListItemComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './members.component.html',
 })
 export class MembersComponent {

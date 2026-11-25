@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, of, take, tap } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
@@ -11,7 +11,6 @@ type ResendState = 'idle' | 'pending' | 'sent' | 'error';
   selector: 'app-register-confirm',
   imports: [RouterLink],
   templateUrl: './register-confirm.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./register-confirm.component.scss'],
 })
 export class RegisterConfirmComponent {

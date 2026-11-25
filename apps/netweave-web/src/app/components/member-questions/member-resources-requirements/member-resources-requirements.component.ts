@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import {
   RESOURCE_REQUIREMENT_CATEGORIES,
@@ -9,7 +9,6 @@ import { ResourcesRequirementsModel } from '../member-form.model';
 @Component({
   selector: 'app-member-resources-requirements',
   imports: [FormField],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-resources-requirements.component.html',
 })
 export class MemberResourcesRequirementsComponent {

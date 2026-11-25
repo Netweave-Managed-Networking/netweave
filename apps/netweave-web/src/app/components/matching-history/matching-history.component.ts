@@ -8,7 +8,6 @@ import {
   resource,
   ResourceRef,
   signal,
-  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   MatchingRunDTO,
@@ -69,7 +68,6 @@ const durationOf = (run: MatchingRunListItemDTO): string | null => {
   selector: 'app-matching-history',
   imports: [DatePipe, IconPlus],
   templateUrl: './matching-history.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./matching-history.component.scss'],
 })
 export class MatchingHistoryComponent {

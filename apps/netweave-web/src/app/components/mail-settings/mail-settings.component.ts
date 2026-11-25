@@ -6,7 +6,6 @@ import {
   resource,
   ResourceRef,
   signal,
-  ChangeDetectionStrategy
 } from '@angular/core';
 import { form, FormField, required, validate } from '@angular/forms/signals';
 import { MailConfigDTO, MailConfigUpdateDTO } from '@netweave/api-types';
@@ -40,7 +39,6 @@ const EMPTY_MODEL: MailSettingsFormModel = {
   selector: 'app-mail-settings',
   imports: [FormField],
   templateUrl: './mail-settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./mail-settings.component.scss'],
 })
 export class MailSettingsComponent {

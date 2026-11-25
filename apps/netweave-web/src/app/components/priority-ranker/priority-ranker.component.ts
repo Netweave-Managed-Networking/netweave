@@ -9,7 +9,6 @@ import {
   signal,
   viewChild,
   viewChildren,
-  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import {
@@ -50,7 +49,6 @@ let nextInstance = 0;
  */
 @Component({
   selector: 'app-priority-ranker',
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './priority-ranker.component.html',
 })
 export class PriorityRankerComponent

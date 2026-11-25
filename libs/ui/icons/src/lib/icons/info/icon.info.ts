@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'icon-info',
@@ -13,7 +13,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
       stroke: var(--stroke);
     }
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"

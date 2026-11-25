@@ -7,7 +7,6 @@ import {
   resource,
   ResourceRef,
   signal,
-  ChangeDetectionStrategy
 } from '@angular/core';
 import { form, FormField, required, validate } from '@angular/forms/signals';
 import {
@@ -58,7 +57,6 @@ const TEST_ERROR_TEXTS: Record<LlmConfigTestError, string> = {
   selector: 'app-llm-settings',
   imports: [FormField],
   templateUrl: './llm-settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./llm-settings.component.scss'],
 })
 export class LlmSettingsComponent {

@@ -1,4 +1,4 @@
-import { Component, computed, input, model, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input, model } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { LIKERT_ANSWERS, LIKERT_MAX, LikertAnswer } from '@netweave/api-types';
 
@@ -23,7 +23,6 @@ let nextInstance = 0;
  */
 @Component({
   selector: 'app-likert-question',
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './likert-question.component.html',
 })
 export class LikertQuestionComponent

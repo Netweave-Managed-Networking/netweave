@@ -3,14 +3,13 @@ import {
   HttpErrorResponse,
   HttpStatusCode,
 } from '@angular/common/http';
-import { afterNextRender, Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { afterNextRender, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MemberEmailConfirmationDTO } from '@netweave/api-types';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-member-email-confirm',
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-email-confirm.component.html',
 })
 export class MemberEmailConfirmComponent {

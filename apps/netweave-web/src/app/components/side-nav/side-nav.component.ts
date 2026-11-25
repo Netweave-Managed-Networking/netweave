@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
@@ -23,7 +23,6 @@ import { HasSideNavId } from '../../interfaces/has-side-nav-id.interface';
     RouterLink,
     HasRoleDirective,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './side-nav.component.html',
 })
 export class SideNavComponent implements HasSideNavId {

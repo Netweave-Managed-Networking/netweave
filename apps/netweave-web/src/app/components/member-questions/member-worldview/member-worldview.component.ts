@@ -1,4 +1,4 @@
-import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import {
   VIEW_OF_ENVIRONMENT_ITEM_IDS,
@@ -13,7 +13,6 @@ import { VIEW_OF_ENVIRONMENT_STATEMENTS } from './view-of-environment-statements
 @Component({
   selector: 'app-member-worldview',
   imports: [FormField, LikertQuestionComponent, MemberViewOfNatureComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-worldview.component.html',
 })
 export class MemberWorldviewComponent {

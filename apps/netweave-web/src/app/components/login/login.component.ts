@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   form,
   FormField,
@@ -20,7 +20,6 @@ export interface LoginFormValue {
   selector: 'app-login',
   imports: [FormField, RouterLink],
   templateUrl: './login.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {

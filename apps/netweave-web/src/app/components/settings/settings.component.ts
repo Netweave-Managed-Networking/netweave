@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { IconMail, IconSettings, IconSparkles } from '@netweave/icons';
 import { LlmSettingsComponent } from '../llm-settings/llm-settings.component';
 import { MailSettingsComponent } from '../mail-settings/mail-settings.component';
@@ -19,7 +19,6 @@ type SettingsTab = 'manager' | 'mail' | 'llm';
     LlmSettingsComponent,
   ],
   templateUrl: './settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {

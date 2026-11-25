@@ -1,10 +1,9 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-member-general-data',
   imports: [FormField],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-general-data.component.html',
 })
 export class MemberGeneralDataComponent {
