@@ -20,7 +20,11 @@
       "@netweave/design": ["libs/ui/design/src/index.ts"],
       "@netweave/utils": ["libs/utils/utils/src/index.ts"],
       "@netweave/icons": ["libs/ui/icons/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }

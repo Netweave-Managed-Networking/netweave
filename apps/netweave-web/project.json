@@ -9,15 +9,23 @@
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "allowedCommonJsDependencies": ["validator"],
-        "assets": [{ "glob": "**/*", "input": "apps/netweave-web/public" }],
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/netweave-web/public"
+          }
+        ],
         "browser": "apps/netweave-web/src/main.ts",
         "inlineStyleLanguage": "scss",
         "outputMode": "server",
         "outputPath": "dist/apps/netweave-web",
         "server": "apps/netweave-web/src/main.server.ts",
-        "ssr": { "entry": "apps/netweave-web/src/server.ts" },
+        "ssr": {
+          "entry": "apps/netweave-web/src/server.ts"
+        },
         "styles": ["apps/netweave-web/src/styles.css"],
         "tsConfig": "apps/netweave-web/tsconfig.app.json"
       },
@@ -42,12 +50,19 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "dependsOn": ["netweave-api:serve"],
+      "readyWhen": {
+        "signal": true
+      },
+      "options": {
+        "proxyConfig": "apps/netweave-web/proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "netweave-web:build:production"
@@ -55,15 +70,20 @@
         "development": {
           "buildTarget": "netweave-web:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "dependsOn": ["netweave-api:serve"],
-      "options": {
-        "proxyConfig": "apps/netweave-web/proxy.conf.json"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     },
     "test": {
       "executor": "@angular/build:unit-test",
@@ -77,7 +97,11 @@
         "port": 4200,
         "staticFilePath": "dist/apps/netweave-web/browser",
         "spa": true
-      }
+      },
+      "readyWhen": {
+        "signal": true
+      },
+      "dependsOn": ["build"]
     }
   }
 }
