@@ -263,7 +263,9 @@ The web container needs no API URL: the frontend calls the relative `/api`, and 
    - proxy files are only updated if pushed to `main` branch, though. This is because otherwise every branch would just overwrite it. So only main is able to do so (configured in deploy.yml:`Copy proxy to VPS`)
 3. it verifies that both images exist and that no container of any instance on the server is exited or restarting.
 
-Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`.
+Secrets: `VPS_HOST`, `VPS_SSH_PORT`, `VPS_USER`, `VPS_SSH_KEY`, `GHCR_TOKEN`
+
+- to renew `GHCR_TOKEN`, create: [PATs (classic)](https://github.com/settings/tokens) and fill: [Netweave Secrets](https://github.com/Netweave-Managed-Networking/netweave/settings/secrets/actions).
 
 <br />
 
