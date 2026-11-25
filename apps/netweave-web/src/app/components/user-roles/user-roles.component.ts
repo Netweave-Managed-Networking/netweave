@@ -6,6 +6,7 @@ import {
   resource,
   ResourceRef,
   signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
@@ -27,6 +28,7 @@ const TOAST_DURATION_MS = 3000;
 @Component({
   selector: 'app-user-roles',
   imports: [DatePipe, UserRemoveComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './user-roles.component.html',
 })
 export class UserRolesComponent {

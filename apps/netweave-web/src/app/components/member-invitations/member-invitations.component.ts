@@ -7,6 +7,7 @@ import {
   resource,
   ResourceRef,
   signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   InvitationDisplayStatus,
@@ -79,6 +80,7 @@ const COMPARATORS: Record<
 @Component({
   selector: 'app-member-invitations',
   imports: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-invitations.component.html',
 })
 export class MemberInvitationsComponent {

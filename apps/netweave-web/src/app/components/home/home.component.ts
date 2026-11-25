@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DevInfosComponent } from '../dev-infos/dev-infos.component';
 import { InviteParticipantComponent } from '../invite-participant/invite-participant.component';
 import { MatchingRunComponent } from '../matching-run/matching-run.component';
@@ -12,6 +12,7 @@ import { MemberChangesComponent } from '../member-changes/member-changes.compone
     MemberChangesComponent,
     DevInfosComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './home.component.html',
 })
 export class HomeComponent {}

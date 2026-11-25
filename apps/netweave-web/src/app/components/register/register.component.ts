@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   form,
   FormField,
@@ -26,6 +26,7 @@ export const PASSWORD_MIN_LENGTH = 8;
   selector: 'app-register',
   imports: [FormField, RouterLink],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {

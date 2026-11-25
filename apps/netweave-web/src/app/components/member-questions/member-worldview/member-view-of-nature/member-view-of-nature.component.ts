@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { Component, model, ChangeDetectionStrategy } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import {
   VIEW_OF_NATURE_IMAGES,
@@ -13,6 +13,7 @@ let nextInstance = 0;
 /** Naturanschauung: pick one of four depictions of nature. null until answered */
 @Component({
   selector: 'app-member-view-of-nature',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-view-of-nature.component.html',
 })
 export class MemberViewOfNatureComponent

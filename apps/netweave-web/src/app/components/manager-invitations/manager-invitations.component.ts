@@ -6,6 +6,7 @@ import {
   resource,
   ResourceRef,
   signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   UserEmailWhitelistCreatedDTO,
@@ -25,6 +26,7 @@ const TOAST_DURATION_MS = 3000;
   selector: 'app-manager-invitations',
   imports: [ManagerInvitationCreateComponent, ManagerInvitationDeleteComponent],
   templateUrl: './manager-invitations.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./manager-invitations.component.scss'],
 })
 export class ManagerInvitationsComponent {

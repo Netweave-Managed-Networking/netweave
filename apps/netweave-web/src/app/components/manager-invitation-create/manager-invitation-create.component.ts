@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, linkedSignal, output, signal } from '@angular/core';
+import { Component, inject, linkedSignal, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { form, FormField, required, validate } from '@angular/forms/signals';
 import {
   DEFAULT_USER_ROLE,
@@ -20,6 +20,7 @@ import { USER_ROLE_LABELS } from '../../types/user-role-labels';
   selector: 'app-manager-invitation-create',
   imports: [FormField, IconInfo, IconPlus],
   templateUrl: './manager-invitation-create.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./manager-invitation-create.component.scss'],
 })
 export class ManagerInvitationCreateComponent {

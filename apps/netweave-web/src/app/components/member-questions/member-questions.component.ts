@@ -10,6 +10,7 @@ import {
   inject,
   resource,
   signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { form, required, validate } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
@@ -35,6 +36,7 @@ import { MemberWorldviewComponent } from './member-worldview/member-worldview.co
     MemberCultureComponent,
     MemberWorldviewComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-questions.component.html',
 })
 export class MemberQuestionsComponent {

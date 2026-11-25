@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, output, signal } from '@angular/core';
+import { Component, DestroyRef, inject, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchingRunDTO } from '@netweave/api-types';
 import { catchError, filter, interval, of, switchMap, take, tap } from 'rxjs';
@@ -12,6 +12,7 @@ const POLL_INTERVAL_MS = 2000; // how often to check whether a triggered run has
   selector: 'app-matching-run',
   imports: [DatePipe],
   templateUrl: './matching-run.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./matching-run.component.scss'],
 })
 export class MatchingRunComponent {

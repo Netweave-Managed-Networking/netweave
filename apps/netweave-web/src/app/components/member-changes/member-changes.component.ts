@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   MemberChangeItemDTO,
   MemberChangesSinceMatchingDTO,
@@ -9,6 +9,7 @@ import { catchError, of, take } from 'rxjs';
 /** how many organizations joined or changed their data since the latest matching run, to judge whether a new one pays off */
 @Component({
   selector: 'app-member-changes',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-changes.component.html',
 })
 export class MemberChangesComponent {

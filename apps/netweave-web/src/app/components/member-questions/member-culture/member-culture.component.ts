@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import { CULTURE_ORIENTATIONS, CULTURE_TOPICS } from '@netweave/api-types';
 import { PriorityRankerComponent } from '../../priority-ranker/priority-ranker.component';
@@ -16,6 +16,7 @@ const STATEMENT_MARKER_COLORS = [
 @Component({
   selector: 'app-member-culture',
   imports: [FormField, PriorityRankerComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './member-culture.component.html',
 })
 export class MemberCultureComponent {

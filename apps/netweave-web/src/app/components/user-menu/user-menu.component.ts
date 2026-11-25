@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
   templateUrl: './user-menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user-menu.component.scss'],
 })
 export class UserMenuComponent {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MemberListItemDTO } from '@netweave/api-types';
 
 /**
@@ -8,6 +8,7 @@ import { MemberListItemDTO } from '@netweave/api-types';
 @Component({
   selector: 'app-member-list-item',
   templateUrl: './member-list-item.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'row',
     class: 'member-list-item grid grid-cols-2 gap-4 px-4 py-3',
