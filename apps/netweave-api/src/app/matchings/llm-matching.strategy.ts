@@ -91,6 +91,16 @@ export class LlmMatchingStrategy implements MatchingStrategy {
             `Member ${potentialMatch.id} for member ${seeker.id}, ${category}: unusable llm answer ` +
               `"${answer.slice(0, 100)}", netweave interpreted this as: not assessable`,
           );
+          this.logger.debug(
+            `Member #${potentialMatch.id} ${potentialMatch.name} for member #${seeker.id} ${seeker.name}, ${category}\n
+            Matching resource of #${potentialMatch.id} to requirement of #${seeker.id}, with:\n
+            requirement of #${seeker.id}\n
+            ${requirement}\n
+            \n
+            resource of #${potentialMatch.id}:\n
+            ${resource}
+            `,
+          );
         } else {
           this.logger.debug(
             `Member ${potentialMatch.id} for member ${seeker.id}, ${category}: llm answered ` +

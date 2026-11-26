@@ -336,7 +336,7 @@ export class MatchingsService {
       });
 
       if (finished) {
-        this.logger.debug(
+        this.logger.log(
           `matching run finished with ${recommendations.members.length} recommendations`,
         );
         // fire and forget, so the run does not wait for every mail to go out
