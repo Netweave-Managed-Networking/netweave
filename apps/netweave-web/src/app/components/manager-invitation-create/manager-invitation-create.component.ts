@@ -4,8 +4,8 @@ import { form, FormField, required, validate } from '@angular/forms/signals';
 import {
   DEFAULT_USER_ROLE,
   USER_ROLES,
-  UserEmailWhitelistCreateDTO,
   UserEmailWhitelistCreatedDTO,
+  UserEmailWhitelistCreateDTO,
   UserRole,
 } from '@netweave/api-types';
 import { isDomain } from '@netweave/utils';

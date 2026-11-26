@@ -98,7 +98,12 @@ export class AuthService {
   public async resendVerificationMailOrFail(email: string): Promise<void> {
     const user = await this.userRepo.findOne({
       where: { email },
-      select: ['id', 'email', 'emailVerifiedAt', 'emailVerificationExpiresAt'],
+      select: {
+        id: true,
+        email: true,
+        emailVerifiedAt: true,
+        emailVerificationExpiresAt: true
+      },
     });
     if (!user || user.emailVerifiedAt) return;
 
@@ -123,7 +128,11 @@ export class AuthService {
         emailVerificationTokenHash: hashToken(token),
         emailVerificationExpiresAt: MoreThan(new Date()),
       },
-      select: ['id', 'email', 'role'],
+      select: {
+        id: true,
+        email: true,
+        role: true
+      },
     });
     if (!user)
       throw new BadRequestException('Invalid or expired verification token');
@@ -146,7 +155,12 @@ export class AuthService {
       'id' | 'email' | 'passwordHash' | 'emailVerifiedAt'
     > | null = await this.userRepo.findOne({
       where: { email },
-      select: ['id', 'email', 'passwordHash', 'emailVerifiedAt'],
+      select: {
+        id: true,
+        email: true,
+        passwordHash: true,
+        emailVerifiedAt: true
+      },
     });
 
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))

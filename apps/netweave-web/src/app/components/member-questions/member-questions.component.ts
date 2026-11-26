@@ -17,12 +17,12 @@ import { InvitationTokenDTO } from '@netweave/api-types';
 import { isEmail } from 'class-validator';
 import { catchError, firstValueFrom, of, take, tap } from 'rxjs';
 import { LoadingState } from '../../types/loading-state.type';
+import { MemberCultureComponent } from './member-culture/member-culture.component';
 import {
   MemberFormModel,
   toMemberFormModel,
   toMemberUpsertDTO,
 } from './member-form.model';
-import { MemberCultureComponent } from './member-culture/member-culture.component';
 import { MemberGeneralDataComponent } from './member-general-data/member-general-data.component';
 import { MemberResourcesRequirementsComponent } from './member-resources-requirements/member-resources-requirements.component';
 import { MemberWorldviewComponent } from './member-worldview/member-worldview.component';

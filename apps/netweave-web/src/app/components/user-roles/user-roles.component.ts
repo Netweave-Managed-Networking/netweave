@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
   Component,
@@ -7,7 +8,6 @@ import {
   ResourceRef,
   signal,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import {
   USER_ROLES,
   UserDTO,
