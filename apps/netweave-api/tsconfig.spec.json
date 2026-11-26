@@ -2,8 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
-    "moduleResolution": "node10",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "allowJs": true, // lets ts-jest transform the esm-only ai sdk, see jest.config.cts
     "types": ["jest", "node"]
   },
